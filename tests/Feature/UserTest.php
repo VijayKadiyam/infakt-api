@@ -29,6 +29,7 @@ class UserTest extends TestCase
       'doj'               =>  '12-02-2019',
       'dob'               =>  '04-05-1992',
       'company_designation_id'  =>  1,
+      'company_state_id'  =>  1,
       'company_state_branch_id' => 1,
       'pf_no'                   =>  '1234567654',
       'uan_no'                  =>  '1234565432',
@@ -74,6 +75,7 @@ class UserTest extends TestCase
           'doj'               =>  '12-02-2019',
           'dob'               =>  '04-05-1992',
           'company_designation_id'  =>  1,
+          'company_state_id' => 1,
           'company_state_branch_id' => 1,
           'pf_no'                   =>  '1234567654',
           'uan_no'                  =>  '1234565432',
@@ -95,6 +97,7 @@ class UserTest extends TestCase
             'doj',
             'dob',
             'company_designation_id',
+            'company_state_id',
             'company_state_branch_id',
             'pf_no',
             'uan_no',
@@ -187,7 +190,8 @@ class UserTest extends TestCase
             'asm_area',
             'asm_name',
             'uid_no',
-            'terms_accepted'
+            'terms_accepted',
+            'company_state_id'
           ],
           'success'
         ]);

@@ -94,7 +94,8 @@ class CompanyUserTest extends TestCase
             'asm_name',
             'uid_no',
             'terms_accepted',
-            'companies'
+            'company_state_id',
+            'companies',
           ]
         ]);;;
   }

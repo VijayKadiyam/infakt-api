@@ -55,7 +55,8 @@ class StockTest extends TestCase
       'sku_type_id' =>  $this->skuType->id,
       'offer_id'    =>  $this->offer->id,
       'price'       =>  '201',
-      'qty'     =>  20
+      'qty'     =>  20,
+      'invoice_no'  =>  'no'
     ];
   }
 
@@ -99,6 +100,7 @@ class StockTest extends TestCase
             'offer_id',
             'price',
             'qty',
+            'invoice_no',
             'sku_id',
             'updated_at',
             'created_at',
@@ -158,6 +160,7 @@ class StockTest extends TestCase
             'price',
             'created_at',
             'updated_at',
+            'invoice_no'
           ]
       ]);
   }

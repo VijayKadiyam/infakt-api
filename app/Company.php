@@ -236,4 +236,24 @@ class Company extends Model
   {
     return $this->hasMany(Retailer::class);
   }
+
+  /*
+   * A company has many units
+   *
+   *@
+   */
+  public function units()
+  {
+    return $this->hasMany(Unit::class);
+  }
+
+  /*
+   * A company has many products
+   *
+   *@
+   */
+  public function products()
+  {
+    return $this->hasMany(Product::class);
+  }
 }
