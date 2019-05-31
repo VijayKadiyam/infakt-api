@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Retailer;
+use App\ReferencePlan;
 
 class RetailersController extends Controller
 {
@@ -17,9 +18,9 @@ class RetailersController extends Controller
      *
    *@
    */
-  public function index()
+  public function index(ReferencePlan $referencePlan)
   {
-    $retailers = request()->company->retailers;
+    $retailers = $referencePlan->retailers;
 
     return response()->json([
       'data'     =>  $retailers,
@@ -32,7 +33,7 @@ class RetailersController extends Controller
    *
    *@
    */
-  public function store(Request $request)
+  public function store(Request $request, ReferencePlan $referencePlan)
   {
     $request->validate([
       'name'    =>  'required',
@@ -40,7 +41,7 @@ class RetailersController extends Controller
     ]);
 
     $retailer = new Retailer($request->all());
-    $request->company->retailers()->save($retailer);
+    $referencePlan->retailers()->save($retailer);
 
     return response()->json([
       'data'    =>  $retailer
@@ -52,7 +53,7 @@ class RetailersController extends Controller
    *
    *@
    */
-  public function show(Retailer $retailer)
+  public function show(ReferencePlan $referencePlan, Retailer $retailer)
   {
     return response()->json([
       'data'   =>  $retailer
@@ -64,7 +65,7 @@ class RetailersController extends Controller
    *
    *@
    */
-  public function update(Request $request, Retailer $retailer)
+  public function update(Request $request, ReferencePlan $referencePlan, Retailer $retailer)
   {
     $request->validate([
       'name'  =>  'required',

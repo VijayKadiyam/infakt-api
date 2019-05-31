@@ -27,7 +27,7 @@ class ProductTest extends TestCase
     ]);
 
     $this->payload = [ 
-      'name'     =>  'Product 1'
+      'name'     =>  'Product 2'
     ];
   }
 
@@ -36,5 +36,93 @@ class ProductTest extends TestCase
   {
     $this->json('post', '/api/products')
       ->assertStatus(401); 
+  }
+
+  /** @test */
+  function it_requires_following_details()
+  {
+    $this->json('post', '/api/products', [], $this->headers)
+      ->assertStatus(422)
+      ->assertExactJson([
+          "errors"  =>  [
+            "name"    =>  ["The name field is required."]
+          ],
+          "message" =>  "The given data was invalid."
+        ]);
+  }
+
+  /** @test */
+  function add_new_product()
+  {
+    $this->disableEH();
+    $this->json('post', '/api/products', $this->payload, $this->headers)
+      ->assertStatus(201)
+      ->assertJson([
+          'data'   =>[
+            'name' => 'Product 2'
+          ]
+        ])
+      ->assertJsonStructureExact([
+          'data'   => [
+            'name',
+            'company_id',
+            'updated_at',
+            'created_at',
+            'id'
+          ]
+        ]);
+  }
+
+  /** @test */
+  function list_of_products()
+  {
+    $this->json('GET', '/api/products',[], $this->headers)
+      ->assertStatus(200)
+      ->assertJsonStructure([
+          'data' => [
+            0=>[
+              'name'
+            ] 
+          ]
+        ]);
+      $this->assertCount(1, Product::all());
+  }
+
+  /** @test */
+  function show_single_product()
+  {
+    $this->disableEH();
+    $this->json('get', "/api/products/1", [], $this->headers)
+      ->assertStatus(200)
+      ->assertJson([
+          'data'  => [
+            'name'=> 'Product 1',
+          ]
+        ]);
+  }
+
+  /** @test */
+  function update_single_product()
+  {
+    $payload = [ 
+      'name'  =>  'Product 1 Updated'
+    ];
+
+    $this->json('patch', '/api/products/1', $payload, $this->headers)
+      ->assertStatus(200)
+      ->assertJson([
+          'data'    => [
+            'name'  =>  'Product 1 Updated',
+          ]
+       ])
+      ->assertJsonStructureExact([
+          'data'  => [
+            'id',
+            'company_id',
+            'name',
+            'created_at',
+            'updated_at'
+          ]
+      ]);
   }
 }

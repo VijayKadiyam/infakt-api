@@ -77,13 +77,15 @@ Route::post('upload_signature', 'UploadController@uploadSignature');
 Route::post('upload_bill/{id}', 'UploadController@uploadBill');
 
 Route::resource('products', 'ProductsController');
-Route::resource('skus', 'SkusController');
+Route::resource('products/{product}/skus', 'SkusController');
 Route::resource('sku_types', 'SkuTypesController');
 Route::resource('offer_types', 'OfferTypesController');
 Route::resource('offers', 'OffersController');
 Route::resource('skus/{skus}/stocks', 'StocksController');
 Route::resource('stocks/{stock}/sales', 'SalesController');
-Route::resource('retailers', 'RetailersController');
+
+Route::resource('reference_plans', 'ReferencePlansController');
+Route::resource('reference_plans/{reference_plan}/retailers', 'RetailersController');
 
 Route::resource('units', 'UnitsController');
 

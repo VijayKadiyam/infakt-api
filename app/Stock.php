@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Stock extends Model
 {
   protected $fillable = [
-    'qty', 'sku_type_id', 'offer_id', 'price', 'invoice_no'
+    'qty', 'sku_type_id', 'offer_id', 'price', 'invoice_no', 'unit_id'
   ];
 
   /*
@@ -49,5 +49,15 @@ class Stock extends Model
   public function sales()
   {
     return $this->hasMany(Sale::class);
+  }
+
+  /*
+   * A stock belongs to unit
+   *
+   *@
+   */
+  public function unit()
+  {
+    return $this->belongsTo(Unit::class);
   }
 }

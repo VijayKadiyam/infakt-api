@@ -1,0 +1,38 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class UpdateSkus1Table extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        if (Schema::hasColumn('skus', 'company_id'))
+        {
+            Schema::table('skus', function (Blueprint $table)
+            {
+                $table->dropColumn('company_id');
+            });
+        }
+
+        Schema::table('skus', function (Blueprint $table) {
+            $table->integer('product_id')->nullable();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        //
+    }
+}

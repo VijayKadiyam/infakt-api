@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Sku;
+use App\Product;
 
 class SkusController extends Controller
 {
@@ -17,9 +18,9 @@ class SkusController extends Controller
      *
    *@
    */
-  public function index()
+  public function index(Product $product)
   {
-    $skus = request()->company->skus;
+    $skus = $product->skus;
 
     return response()->json([
       'data'     =>  $skus,
@@ -32,14 +33,14 @@ class SkusController extends Controller
    *
    *@
    */
-  public function store(Request $request)
+  public function store(Request $request, Product $product)
   {
     $request->validate([
       'name'    =>  'required'
     ]);
 
     $sku = new Sku($request->all());
-    $request->company->skus()->save($sku);
+    $product->skus()->save($sku);
 
     return response()->json([
       'data'    =>  $sku
@@ -51,7 +52,7 @@ class SkusController extends Controller
    *
    *@
    */
-  public function show(Sku $skus)
+  public function show(Product $product, Sku $skus)
   {
     return response()->json([
       'data'   =>  $skus
@@ -63,7 +64,7 @@ class SkusController extends Controller
    *
    *@
    */
-  public function update(Request $request, Sku $skus)
+  public function update(Request $request, Product $product, Sku $skus)
   {
     $request->validate([
       'name'  =>  'required',

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\Sku;
 use App\SkuType;
+use App\Product;
 
 class SkuTest extends TestCase
 {
@@ -23,8 +24,12 @@ class SkuTest extends TestCase
     $this->user->assignCompany($this->company->id);
     $this->headers['company-id'] = $this->company->id;
 
-    factory(Sku::class)->create([
+    $this->product = factory(Product::class)->create([
       'company_id'  =>  $this->company->id,
+    ]);
+
+    factory(Sku::class)->create([
+      'product_id'  =>  $this->product->id,
     ]);
 
     $this->payload = [ 
@@ -35,14 +40,14 @@ class SkuTest extends TestCase
   /** @test */
   function user_must_be_logged_in_before_accessing_the_controller()
   {
-    $this->json('post', '/api/skus')
+    $this->json('post', '/api/products/' . $this->product->id . '/skus')
       ->assertStatus(401); 
   }
 
   /** @test */
   function it_requires_following_details()
   {
-    $this->json('post', '/api/skus', [], $this->headers)
+    $this->json('post', '/api/products/' . $this->product->id . '/skus', [], $this->headers)
       ->assertStatus(422)
       ->assertExactJson([
           "errors"  =>  [
@@ -55,7 +60,7 @@ class SkuTest extends TestCase
   /** @test */
   function add_new_sku()
   {
-    $this->json('post', '/api/skus', $this->payload, $this->headers)
+    $this->json('post', '/api/products/' . $this->product->id . '/skus', $this->payload, $this->headers)
       ->assertStatus(201)
       ->assertJson([
           'data'   =>[
@@ -65,7 +70,7 @@ class SkuTest extends TestCase
       ->assertJsonStructureExact([
           'data'   => [
             'name',
-            'company_id',
+            'product_id',
             'updated_at',
             'created_at',
             'id'
@@ -76,7 +81,7 @@ class SkuTest extends TestCase
   /** @test */
   function list_of_skus()
   {
-    $this->json('GET', '/api/skus',[], $this->headers)
+    $this->json('GET', '/api/products/' . $this->product->id . '/skus',[], $this->headers)
       ->assertStatus(200)
       ->assertJsonStructure([
           'data' => [
@@ -91,7 +96,7 @@ class SkuTest extends TestCase
   /** @test */
   function show_single_sku()
   {
-    $this->json('get', "/api/skus/1", [], $this->headers)
+    $this->json('get', '/api/products/' . $this->product->id . '/skus/1', [], $this->headers)
       ->assertStatus(200)
       ->assertJson([
           'data'  => [
@@ -107,7 +112,7 @@ class SkuTest extends TestCase
       'name'  =>  'Santoor 1'
     ];
 
-    $this->json('patch', '/api/skus/1', $payload, $this->headers)
+    $this->json('patch', '/api/products/' . $this->product->id . '/skus/1', $payload, $this->headers)
       ->assertStatus(200)
       ->assertJson([
           'data'    => [
@@ -117,10 +122,10 @@ class SkuTest extends TestCase
       ->assertJsonStructureExact([
           'data'  => [
             'id',
-            'company_id',
             'name',
             'created_at',
-            'updated_at'
+            'updated_at',
+            'product_id',
           ]
       ]);
   }

@@ -13,7 +13,7 @@ use App\Sale;
 use App\OfferType;
 use App\Offer;
 use App\Retailer;
-
+use App\Product;
 
 class SaleTest extends TestCase
 {
@@ -29,8 +29,12 @@ class SaleTest extends TestCase
     $this->user->assignCompany($this->company->id);
     $this->headers['company-id'] = $this->company->id;
 
-    $this->sku = factory(Sku::class)->create([
+    $this->product = factory(Product::class)->create([
       'company_id'  =>  $this->company->id,
+    ]);
+
+    $this->sku = factory(Sku::class)->create([
+      'product_id'  =>  $this->product->id,
     ]);
 
     $this->skuType = factory(SkuType::class)->create([
@@ -52,8 +56,12 @@ class SaleTest extends TestCase
      'offer_id'    =>  $this->offer->id,
       'price'       =>  '200'   ]);
 
-    $this->retailer = factory(Retailer::class)->create([
+    $this->referencePlan = factory(\App\ReferencePlan::class)->create([
       'company_id'  =>  $this->company->id 
+    ]);
+
+    $this->retailer = factory(Retailer::class)->create([
+      'reference_plan_id'  =>  $this->referencePlan->id 
     ]);
 
     factory(Sale::class)->create([

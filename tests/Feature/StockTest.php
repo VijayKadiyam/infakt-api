@@ -11,6 +11,7 @@ use App\SkuType;
 use App\Stock;
 use App\OfferType;
 use App\Offer;
+use App\Product;
 
 class StockTest extends TestCase
 {
@@ -30,8 +31,12 @@ class StockTest extends TestCase
       'company_id'  =>  $this->company->id 
     ]);
 
-    $this->sku = factory(Sku::class)->create([
+    $this->product = factory(Product::class)->create([
       'company_id'  =>  $this->company->id,
+    ]);
+
+    $this->sku = factory(Sku::class)->create([
+      'product_id'  =>  $this->product->id,
     ]);
 
     $this->offerType = factory(OfferType::class)->create([
@@ -160,7 +165,8 @@ class StockTest extends TestCase
             'price',
             'created_at',
             'updated_at',
-            'invoice_no'
+            'invoice_no',
+            'unit_id'
           ]
       ]);
   }

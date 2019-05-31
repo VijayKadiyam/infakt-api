@@ -11,13 +11,13 @@ class Sku extends Model
   ];
 
   /*
-   * A company state belongs to company
+   * A company state belongs to product
    *
    *@
    */
-  public function company()
+  public function product()
   {
-    return $this->belongsTo(Company::class);
+    return $this->belongsTo(Product::class);
   }
 
   /*
@@ -28,6 +28,6 @@ class Sku extends Model
   public function stocks()
   {
     return $this->hasMany(Stock::class)
-      ->with('sku', 'sku_type', 'offer');
+      ->with('sku', 'sku_type', 'offer', 'unit');
   }
 }

@@ -29,4 +29,14 @@ class Retailer extends Model
     {
       return $this->hasMany(Sale::class);
     }
+
+    /*
+     * A retailer belongs to reference plan
+     *
+     *@
+     */
+    public function reference_plan()
+    {
+      return $this->belongsTo(ReferencePlan::class);
+    }
 }

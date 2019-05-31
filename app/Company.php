@@ -254,6 +254,18 @@ class Company extends Model
    */
   public function products()
   {
-    return $this->hasMany(Product::class);
+    return $this->hasMany(Product::class)
+      ->with('skus');
+  }
+
+  /*
+   * A company has many reference plans
+   *
+   *@
+   */
+  public function reference_plans()
+  {
+    return $this->hasMany(ReferencePlan::class)
+      ->with('retailers');
   }
 }

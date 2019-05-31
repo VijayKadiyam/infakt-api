@@ -20,4 +20,15 @@ class Product extends Model
     return $this->belongsTo(Company::class);
   }
 
+  /*
+   * A product has many skus
+   *
+   *@
+   */
+  public function skus()
+  {
+    return $this->hasMany(Sku::class)
+      ->with('stocks');
+  }
+
 }

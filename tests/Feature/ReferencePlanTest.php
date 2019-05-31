@@ -6,9 +6,9 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use App\Retailer;
+use App\ReferencePlan;
 
-class RetailerTest extends TestCase
+class ReferencePlanTest extends TestCase
 {
   use DatabaseTransactions;
   
@@ -22,57 +22,50 @@ class RetailerTest extends TestCase
     $this->user->assignCompany($this->company->id);
     $this->headers['company-id'] = $this->company->id;
 
-    $this->referencePlan = factory(\App\ReferencePlan::class)->create([
+    factory(\App\ReferencePlan::class)->create([
       'company_id'  =>  $this->company->id 
     ]);
 
-    factory(Retailer::class)->create([
-      'reference_plan_id'  =>  $this->referencePlan->id 
-    ]);
-
     $this->payload = [ 
-      'name'     =>  'Retailer 2',
-      'address'   =>  'address 2'
+      'name'     =>  'CST',
     ];
   }
 
-    /** @test */
+  /** @test */
   function user_must_be_logged_in_before_accessing_the_controller()
   {
-    $this->json('post', '/api/reference_plans/'. $this->referencePlan->id . '/retailers')
+    $this->json('post', '/api/reference_plans')
       ->assertStatus(401); 
   }
 
   /** @test */
   function it_requires_following_details()
   {
-    $this->json('post', '/api/reference_plans/'. $this->referencePlan->id . '/retailers', [], $this->headers)
+    $this->json('post', '/api/reference_plans', [], $this->headers)
       ->assertStatus(422)
       ->assertExactJson([
           "errors"  =>  [
-            "name"    =>  ["The name field is required."],
-            "address"    =>  ["The address field is required."]
+            "name"    =>  ["The name field is required."]
           ],
           "message" =>  "The given data was invalid."
         ]);
   }
 
   /** @test */
-  function add_new_retailer()
+  function add_new_reference_plan()
   {
     $this->disableEH();
-    $this->json('post', '/api/reference_plans/'. $this->referencePlan->id . '/retailers', $this->payload, $this->headers)
+    $this->json('post', '/api/reference_plans', $this->payload, $this->headers)
       ->assertStatus(201)
       ->assertJson([
           'data'   =>[
-            'name' => 'Retailer 2'
+            'name' => 'CST'
           ]
         ])
       ->assertJsonStructureExact([
           'data'   => [
             'name',
-            'address',
-            'reference_plan_id',
+            'company_id',
             'updated_at',
             'created_at',
             'id'
@@ -81,9 +74,9 @@ class RetailerTest extends TestCase
   }
 
   /** @test */
-  function list_of_retailers()
+  function list_of_reference_plans()
   {
-    $this->json('GET', '/api/reference_plans/'. $this->referencePlan->id . '/retailers',[], $this->headers)
+    $this->json('GET', '/api/reference_plans',[], $this->headers)
       ->assertStatus(200)
       ->assertJsonStructure([
           'data' => [
@@ -92,43 +85,43 @@ class RetailerTest extends TestCase
             ] 
           ]
         ]);
-      $this->assertCount(1, Retailer::all());
+      $this->assertCount(1, ReferencePlan::all());
   }
 
   /** @test */
-  function show_single_retailer()
+  function show_single_reference_plan()
   {
-    $this->json('get', '/api/reference_plans/'. $this->referencePlan->id . '/retailers/1', [], $this->headers)
+    $this->disableEH();
+    $this->json('get', "/api/reference_plans/1", [], $this->headers)
       ->assertStatus(200)
       ->assertJson([
           'data'  => [
-            'name'=> 'Retailer 1',
+            'name'=> 'Mulund',
           ]
         ]);
   }
 
   /** @test */
-  function update_single_retailer()
+  function update_single_reference_plan()
   {
     $payload = [ 
-      'name'  =>  'Retailer 1 updated'
+      'name'  =>  'Mulund Updated'
     ];
 
-    $this->json('patch', '/api/reference_plans/'. $this->referencePlan->id . '/retailers/1', $payload, $this->headers)
+    $this->json('patch', '/api/reference_plans/1', $payload, $this->headers)
       ->assertStatus(200)
       ->assertJson([
           'data'    => [
-            'name'  =>  'Retailer 1 updated',
+            'name'  =>  'Mulund Updated',
           ]
        ])
       ->assertJsonStructureExact([
           'data'  => [
             'id',
+            'company_id',
             'name',
-            'address',
             'created_at',
-            'updated_at',
-            'reference_plan_id',
+            'updated_at'
           ]
       ]);
   }
