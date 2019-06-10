@@ -69,6 +69,7 @@ Route::resource('voucher_types', 'VoucherTypesController');
 Route::resource('vouchers', 'VouchersController');
 
 Route::resource('user_locations', 'UserLocationsController');
+Route::resource('geolocator_user_locations', 'GeolocatorUserLocationsController');
 
 // Uploads
 Route::post('upload_profile_image', 'UploadController@uploadProfileImage');

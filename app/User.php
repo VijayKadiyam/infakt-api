@@ -236,5 +236,15 @@ class User extends Authenticatable
   {
     return $this->hasMany(UserLocation::class);
   }
+
+  /*
+   * An user has many geolocator user locations
+   *
+   *@
+   */
+  public function geolocator_user_locations()
+  {
+    return $this->hasMany(GeolocatorUserLocation::class);
+  }
 }
 
