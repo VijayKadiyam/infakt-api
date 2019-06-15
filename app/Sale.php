@@ -11,13 +11,13 @@ class Sale extends Model
   ];
 
   /*
-   * A sale belongs to stock
+   * A sale belongs to sku
    *
    *@
    */
-  public function stock()
+  public function sku()
   {
-    return $this->belongsTO(Stock::class);
+    return $this->belongsTO(Sku::class);
   }
 
   /*

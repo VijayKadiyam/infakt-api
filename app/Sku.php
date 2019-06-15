@@ -30,4 +30,14 @@ class Sku extends Model
     return $this->hasMany(Stock::class)
       ->with('sku', 'sku_type', 'offer', 'unit');
   }
+
+  /*
+   * A sku has many sales
+   *
+   *@
+   */
+  public function sales()
+  {
+    return $this->hasMany(Sale::class);
+  }
 }

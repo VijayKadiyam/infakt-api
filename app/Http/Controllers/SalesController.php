@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use APp\Stock;
 use App\Sale;
+use App\Sku;
 
 class SalesController extends Controller
 {
@@ -18,9 +19,9 @@ class SalesController extends Controller
      *
    *@
    */
-  public function index(Stock $stock)
+  public function index(Sku $sku)
   {
-    $sales = $stock->sales;
+    $sales = $sku->sales;
 
     return response()->json([
       'data'     =>  $sales
@@ -32,16 +33,16 @@ class SalesController extends Controller
    *
    *@
    */
-  public function store(Request $request, Stock $stock)
+  public function store(Request $request, Sku $sku)
   {
     $request->validate([
       'qty'    =>  'required',
-      'stock_id'  =>   'required',
+      'sku_id'  =>   'required',
       'retailer_id'  =>   'required'
     ]);
 
     $sale = new Sale($request->all());
-    $stock->sales()->save($sale);
+    $sku->sales()->save($sale);
 
     return response()->json([
       'data'    =>  $sale
@@ -53,7 +54,7 @@ class SalesController extends Controller
    *
    *@
    */
-  public function show(Stock $stock, Sale $sale)
+  public function show(Sku $sku, Sale $sale)
   {
     return response()->json([
       'data'   =>  $sale
@@ -65,7 +66,7 @@ class SalesController extends Controller
    *
    *@
    */
-  public function update(Request $request, Stock $stock, Sale $sale)
+  public function update(Request $request, Sku $sku, Sale $sale)
   {
     $request->validate([
       'qty'  =>  'required',

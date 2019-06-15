@@ -84,7 +84,8 @@ Route::resource('sku_types', 'SkuTypesController');
 Route::resource('offer_types', 'OfferTypesController');
 Route::resource('offers', 'OffersController');
 Route::resource('skus/{skus}/stocks', 'StocksController');
-Route::resource('stocks/{stock}/sales', 'SalesController');
+Route::resource('skus/{sku}/sales', 'SalesController');
+// Route::resource('stocks/{stock}/sales', 'SalesController');
 
 Route::resource('reference_plans', 'ReferencePlansController');
 Route::resource('reference_plans/{reference_plan}/retailers', 'RetailersController');

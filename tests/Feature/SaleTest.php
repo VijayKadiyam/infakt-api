@@ -65,13 +65,13 @@ class SaleTest extends TestCase
     ]);
 
     factory(Sale::class)->create([
-      'stock_id'  =>  $this->stock->id,
+      'sku_id'  =>  $this->sku->id,
       'qty' =>  20,
       'retailer_id' =>  $this->retailer->id
     ]);
 
     $this->payload = [ 
-      'stock_id'  =>  $this->stock->id,
+      'sku_id'  =>  $this->sku->id,
       'qty'     =>  20,
       'retailer_id' =>  $this->retailer->id
     ];
@@ -80,19 +80,19 @@ class SaleTest extends TestCase
   /** @test */
   function user_must_be_logged_in_before_accessing_the_controller()
   {
-    $this->json('post', '/api/stocks/' . $this->stock->id . '/sales')
+    $this->json('post', '/api/skus/' . $this->sku->id . '/sales')
       ->assertStatus(401); 
   }
 
   /** @test */
   function it_requires_following_details()
   {
-    $this->json('post', '/api/stocks/' . $this->stock->id . '/sales', [], $this->headers)
+    $this->json('post', '/api/skus/' . $this->sku->id . '/sales', [], $this->headers)
       ->assertStatus(422)
       ->assertExactJson([
           "errors"  =>  [
             "qty"    =>  ["The qty field is required."],
-            'stock_id' =>  ["The stock id field is required."],
+            'sku_id' =>  ["The sku id field is required."],
             'retailer_id' =>  ["The retailer id field is required."]
           ],
           "message" =>  "The given data was invalid."
@@ -103,7 +103,7 @@ class SaleTest extends TestCase
   function add_new_sale()
   {
     $this->disableEH();
-    $this->json('post', '/api/stocks/' . $this->stock->id . '/sales', $this->payload, $this->headers)
+    $this->json('post', '/api/skus/' . $this->sku->id . '/sales', $this->payload, $this->headers)
       ->assertStatus(201)
       ->assertJson([
           'data'   =>[
@@ -114,7 +114,7 @@ class SaleTest extends TestCase
           'data'   => [
             'qty',
             'retailer_id',
-            'stock_id',
+            'sku_id',
             'updated_at',
             'created_at',
             'id'
@@ -123,10 +123,10 @@ class SaleTest extends TestCase
   }
 
   /** @test */
-  function list_of_stocks()
+  function list_of_sales()
   {
     $this->disableEH();
-    $this->json('GET', '/api/stocks/' . $this->stock->id . '/sales',[], $this->headers)
+    $this->json('GET', '/api/skus/' . $this->sku->id . '/sales',[], $this->headers)
       ->assertStatus(200)
       ->assertJsonStructure([
           'data' => [
@@ -142,7 +142,7 @@ class SaleTest extends TestCase
   /** @test */
   function show_single_sale()
   {
-    $this->json('get', '/api/stocks/' . $this->stock->id . '/sales/1', [], $this->headers)
+    $this->json('get', '/api/skus/' . $this->sku->id . '/sales/1', [], $this->headers)
       ->assertStatus(200)
       ->assertJson([
           'data'  => [
@@ -158,7 +158,7 @@ class SaleTest extends TestCase
       'qty'  =>  '21'
     ];
 
-    $this->json('patch', '/api/stocks/' . $this->stock->id . '/sales/1', $payload, $this->headers)
+    $this->json('patch', '/api/skus/' . $this->sku->id . '/sales/1', $payload, $this->headers)
       ->assertStatus(200)
       ->assertJson([
           'data'    => [
@@ -168,11 +168,11 @@ class SaleTest extends TestCase
       ->assertJsonStructureExact([
           'data'  => [
             'id',
-            'stock_id',
             'qty',
             'retailer_id',
             'created_at',
             'updated_at',
+            'sku_id',
           ]
       ]);
   }
