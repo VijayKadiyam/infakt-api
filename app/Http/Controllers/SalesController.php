@@ -15,6 +15,20 @@ class SalesController extends Controller
   }
 
   /*
+   * To get all sales
+   *
+   *@
+   */
+  public function index()
+  {
+    $sales = Sale::all();
+
+    return response()->json([
+      'data'     =>  $sales
+    ], 200);
+  }
+
+  /*
    * To get all sales of stock
      *
    *@
