@@ -118,7 +118,8 @@ class SaleTest extends TestCase
             'updated_at',
             'created_at',
             'id'
-          ]
+          ],
+          'success'
         ]);
   }
 
@@ -173,7 +174,8 @@ class SaleTest extends TestCase
             'created_at',
             'updated_at',
             'sku_id',
-          ]
+          ],
+          'success'
       ]);
   }
 }

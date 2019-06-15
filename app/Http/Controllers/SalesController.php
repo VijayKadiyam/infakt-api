@@ -45,7 +45,8 @@ class SalesController extends Controller
     $sku->sales()->save($sale);
 
     return response()->json([
-      'data'    =>  $sale
+      'data'    =>  $sale,
+      'success'  => true
     ], 201); 
   }
 
@@ -75,7 +76,8 @@ class SalesController extends Controller
     $sale->update($request->all());
       
     return response()->json([
-      'data'  =>  $sale
+      'data'  =>  $sale,
+      'success' =>  true
     ], 200);
   }
 }
