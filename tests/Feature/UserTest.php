@@ -191,7 +191,8 @@ class UserTest extends TestCase
             'asm_name',
             'uid_no',
             'terms_accepted',
-            'company_state_id'
+            'company_state_id',
+            'address'
           ],
           'success'
         ]);

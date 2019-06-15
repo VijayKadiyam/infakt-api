@@ -129,6 +129,15 @@ class RetailerTest extends TestCase
             'created_at',
             'updated_at',
             'reference_plan_id',
+            'retailer_code',
+            'proprietor_name',
+            'phone',
+            'gst_no',
+            'bank_name',
+            'ac_no',
+            'ifsc_code',
+            'branch',
+            'cheque_path'
           ]
       ]);
   }
