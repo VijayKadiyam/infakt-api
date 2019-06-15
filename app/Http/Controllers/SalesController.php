@@ -19,7 +19,7 @@ class SalesController extends Controller
    *
    *@
    */
-  public function index()
+  public function all()
   {
     $sales = Sale::all();
 
