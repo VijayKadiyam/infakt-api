@@ -21,7 +21,7 @@ class SalesController extends Controller
    */
   public function all()
   {
-    $sales = Sale::all();
+    $sales = Sale::with('retailer', 'sku')->get();
 
     return response()->json([
       'data'     =>  $sales
