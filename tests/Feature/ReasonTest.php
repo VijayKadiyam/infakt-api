@@ -100,4 +100,29 @@ class ReasonTest extends TestCase
           ]
         ]);
   }
+
+  /** @test */
+  function update_single_reason()
+  {
+    $payload = [ 
+      'name'  =>  'Reason 1 Updated'
+    ];
+
+    $this->json('patch', '/api/reasons/1', $payload, $this->headers)
+      ->assertStatus(200)
+      ->assertJson([
+          'data'    => [
+            'name'  =>  'Reason 1 Updated',
+          ]
+       ])
+      ->assertJsonStructureExact([
+          'data'  => [
+            'id',
+            'company_id',
+            'name',
+            'created_at',
+            'updated_at'
+          ]
+      ]);
+  }
 }

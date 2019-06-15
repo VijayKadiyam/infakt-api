@@ -81,4 +81,22 @@ class ReasonsController extends Controller
           ]
       ]);
   }
+
+  /*
+   * To update a reason
+   *
+   *@
+   */
+  public function update(Request $request, Reason $reason)
+  {
+    $request->validate([
+      'name'  =>  'required',
+    ]);
+
+    $reason->update($request->all());
+      
+    return response()->json([
+      'data'  =>  $reason
+    ], 200);
+  }
 }
