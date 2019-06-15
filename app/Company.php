@@ -268,4 +268,14 @@ class Company extends Model
     return $this->hasMany(ReferencePlan::class)
       ->with('retailers');
   }
+
+  /*
+   * A company has many reasons
+   *
+   *@
+   */
+  public function reasons()
+  {
+    return $this->hasMany(Reason::class);
+  }
 }

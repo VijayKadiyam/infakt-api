@@ -47,6 +47,7 @@ Route::resource('transport_modes', 'TransportModesController');
 Route::resource('travelling_ways', 'TravellingWaysController');
 Route::resource('feedbacks', 'FeedbacksController');
 Route::resource('plans', 'PlansController');
+Route::resource('reasons', 'ReasonsController');
 Route::resource('plans/{plan}/plan_actual', 'PlanActualController');
 Route::resource('plans/{plan}/plan_travelling_details', 'PlanTravellingDetailsController');
 Route::resource('companies/{company}/company_designations', 'CompanyDesignationsController');
