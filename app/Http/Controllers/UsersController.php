@@ -107,4 +107,21 @@ class UsersController extends Controller
       'success' =>  true
     ], 200);
   }
+
+  /*
+   * To check or update unique id
+   *
+   *@
+   */
+  public function checkOrUpdateUniqueID(Request $request, User $user)
+  {
+    if($user->unique_id == null) {
+      $user->update($request->all());
+    }
+
+    return response()->json([
+      'data'  =>  $user,
+      'success' =>  $user->unique_id == $request->unique_id ? true : false
+    ], 200);
+  }
 }

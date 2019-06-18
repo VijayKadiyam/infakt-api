@@ -70,6 +70,7 @@ class PasswordResetTest extends TestCase
             'terms_accepted',
             'company_state_id',
             'address',
+            'unique_id'
           ]
         ]);
   }

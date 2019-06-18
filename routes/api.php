@@ -37,6 +37,7 @@ Route::resource('permissions', 'PermissionsController');
 Route::resource('permission_role', 'PermissionRoleController');
 
 Route::resource('users', 'UsersController');
+Route::patch('users/{user}/uniqueID', 'UsersController@checkOrUpdateUniqueID');
 
 Route::resource('companies', 'CompaniesController');
 Route::resource('company_user', 'CompanyUserController');

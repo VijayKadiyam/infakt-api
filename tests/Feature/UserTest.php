@@ -192,7 +192,57 @@ class UserTest extends TestCase
             'uid_no',
             'terms_accepted',
             'company_state_id',
-            'address'
+            'address',
+            'unique_id'
+          ],
+          'success'
+        ]);
+  }
+
+  /** @test */
+  function update_unique_id()
+  {
+    $this->disableEH();
+    $payload = [
+      'unique_id' =>  '123'
+    ];
+
+    $this->json('patch', '/api/users/1/uniqueID', $payload, $this->headers)
+      ->assertStatus(200)
+      ->assertJson([
+          'data'    =>  [
+            'unique_id' => '123',
+          ],
+          'success' => true
+        ])
+      ->assertJsonStructureExact([
+          'data'  => [
+            'id',
+            'name',
+            'email',
+            'email_verified_at',
+            'active',
+            'phone',
+            'api_token',
+            'doj',
+            'dob',
+            'company_designation_id',
+            'company_state_branch_id',
+            'pf_no',
+            'uan_no',
+            'esi_no',
+            'created_at',
+            'updated_at',
+            'salary',
+            'image_path',
+            'employee_code',
+            'asm_area',
+            'asm_name',
+            'uid_no',
+            'terms_accepted',
+            'company_state_id',
+            'address',
+            'unique_id'
           ],
           'success'
         ]);
