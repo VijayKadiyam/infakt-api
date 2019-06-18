@@ -115,7 +115,7 @@ class UsersController extends Controller
    */
   public function checkOrUpdateUniqueID(Request $request, User $user)
   {
-    if($user->unique_id == null) {
+    if($user->unique_id == null | $user->unique_id == '') {
       $user->update($request->all());
     }
 
