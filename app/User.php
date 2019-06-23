@@ -52,6 +52,16 @@ class User extends Authenticatable
   }
 
   /*
+   * An user belongs to company state
+   *
+   *@
+   */
+  public function company_state()
+  {
+    return $this->belongsTo(CompanyState::class);
+  }
+
+  /*
    * An user belongs to company state branch
    *
    *@
