@@ -18,8 +18,8 @@ class CreateMarksTable extends Migration
             $table->integer('user_id');
             $table->string('in_lat');
             $table->string('in_lng');
-            $table->string('out_lat');
-            $table->string('out_lng');
+            $table->string('out_lat')->nullable();
+            $table->string('out_lng')->nullable();
             $table->timestamps();
         });
     }
