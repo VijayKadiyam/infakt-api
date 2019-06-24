@@ -94,4 +94,7 @@ Route::resource('reference_plans/{reference_plan}/retailers', 'RetailersControll
 
 Route::resource('units', 'UnitsController');
 
+Route::resource('marks', 'MarksController');
+
+
 

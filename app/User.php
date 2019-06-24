@@ -256,5 +256,15 @@ class User extends Authenticatable
   {
     return $this->hasMany(GeolocatorUserLocation::class);
   }
+
+  /*
+   * An user has many marks
+   *
+   *@
+   */
+  public function marks()
+  {
+    return $this->hasMany(Mark::class);
+  }
 }
 
