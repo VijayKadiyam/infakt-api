@@ -74,8 +74,8 @@ class MarksController extends Controller
     $request->validate([
       'in_lat'   =>  'required',
       'in_lng'   =>  'required',
-      'out_lat'  =>  'required',
-      'out_lng'  =>  'required'    
+      // 'out_lat'  =>  'required',
+      // 'out_lng'  =>  'required'    
     ]);
 
     $mark->update($request->all());
