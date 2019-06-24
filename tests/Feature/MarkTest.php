@@ -104,6 +104,25 @@ class MarkTest extends TestCase
   }
 
   /** @test */
+  function list_of_marks_of_specific_dat()
+  {
+    $this->disableEH();
+    $this->json('GET', "/api/marks?date=" . $this->date,[], $this->headers)
+      ->assertStatus(200)
+      ->assertJsonStructure([
+          'data' => [
+            0 =>  [
+              'in_lat',
+              'in_lng',
+              'out_lat',
+              'out_lng'
+            ]
+          ]
+        ]);
+    $this->assertCount(1, Mark::all());
+  }
+
+  /** @test */
   function show_single_mark()
   {
     $this->json('get', "/api/marks/1", [], $this->headers)

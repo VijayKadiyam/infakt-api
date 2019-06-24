@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Mark;
+use \Carbon\Carbon;
 
 class MarksController extends Controller
 {
@@ -19,7 +20,10 @@ class MarksController extends Controller
    */
   public function index(Request $request)
   {
-    $marks = request()->user()->marks;
+    // $marks = request()->user()->marks;
+
+    $marks = Mark::whereDate('created_at', Carbon::today())
+      ->where('user_id', '=', $request->user()->id)->latest()->get();
 
     return response()->json([
       'data'     =>  $marks,
