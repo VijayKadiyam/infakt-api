@@ -137,7 +137,9 @@ class RetailerTest extends TestCase
             'ac_no',
             'ifsc_code',
             'branch',
-            'cheque_path'
+            'cheque_path',
+            'retailer_category_id',
+            'retailer_classification_id'
           ]
       ]);
   }
