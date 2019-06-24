@@ -39,4 +39,24 @@ class Retailer extends Model
     {
       return $this->belongsTo(ReferencePlan::class);
     }
+
+    /*
+     *  A retailer belongs to retailer category
+     *
+     *@
+     */
+    public function retailer_category()
+    {
+      return $this->belongsTo(RetailerCategory::class);
+    }
+
+    /*
+     *  A retailer blongs to retailer classification
+     *
+     *@
+     */
+    public function retailer_classification()
+    {
+      return $this->belongsTo(RetailerClassification::class);
+    }
 }

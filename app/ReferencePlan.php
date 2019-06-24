@@ -28,6 +28,6 @@ class ReferencePlan extends Model
   public function retailers()
   {
     return $this->hasMany(Retailer::class)
-      ->with('sales');
+      ->with('sales', 'retailer_category', 'retailer_classification');
   }
 }
