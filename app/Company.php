@@ -278,4 +278,24 @@ class Company extends Model
   {
     return $this->hasMany(Reason::class);
   }
+
+  /*
+   * A company has many retailer categories
+   *
+   *@
+   */
+  public function retailer_categories()
+  {
+    return $this->hasMany(RetailerCategory::class);
+  }
+
+  /*
+   * A company has many retailer classifications
+   *
+   *@
+   */
+  public function retailer_classifications()
+  {
+    return $this->hasMany(RetailerClassification::class);
+  }
 }
