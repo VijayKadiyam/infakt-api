@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Storage;
 use App\PlanTravellingDetail;
+use App\Retailer;
 
 class UploadController extends Controller
 {
@@ -93,6 +94,28 @@ class UploadController extends Controller
     $planTravellingDetail = PlanTravellingDetail::where('id', '=', $id)->first();
     $planTravellingDetail->image_path = $path;
     $planTravellingDetail->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path 
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function uploadRetailer(Request $request, $id)
+  {
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = "retailerImages/" . $id . '/' . $name;
+
+    Storage::disk('s3')->put($path, $realImage, 'public');
+
+    $retailer = Retailer::where('id', '=', $id)->first();
+    $retailer->image_path = $path;
+    $retailer->update();
 
     return response()->json([
       'data'  => [
