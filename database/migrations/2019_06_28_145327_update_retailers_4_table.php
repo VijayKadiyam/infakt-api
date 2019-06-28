@@ -14,7 +14,7 @@ class UpdateRetailers4Table extends Migration
     public function up()
     {
         Schema::table('retailers', function (Blueprint $table) {
-            $table->integer('image_path')->nullable();
+            $table->string('image_path')->nullable();
             $table->integer('lat')->nullable();
             $table->integer('lng')->nullable();
         });
