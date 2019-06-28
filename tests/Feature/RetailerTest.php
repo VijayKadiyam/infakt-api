@@ -139,7 +139,10 @@ class RetailerTest extends TestCase
             'branch',
             'cheque_path',
             'retailer_category_id',
-            'retailer_classification_id'
+            'retailer_classification_id',
+            'image_path', 
+            'lat',
+            'lng'
           ]
       ]);
   }
