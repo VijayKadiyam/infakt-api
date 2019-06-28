@@ -102,7 +102,8 @@ class SupervisorUserTest extends TestCase
           'company_state_id',
           'address',
           'unique_id',
-          'supervisors'
+          'appointment_letter',
+          'supervisors',
         ]
       ]);
   }

@@ -95,6 +95,7 @@ class RoleUserTest extends TestCase
           'company_state_id',
           'address',
           'unique_id',
+          'appointment_letter',
           'roles'
         ]
       ]);

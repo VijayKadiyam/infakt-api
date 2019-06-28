@@ -97,6 +97,7 @@ class CompanyUserTest extends TestCase
             'company_state_id',
             'address',
             'unique_id',
+            'appointment_letter',
             'companies',
           ]
         ]);;;
