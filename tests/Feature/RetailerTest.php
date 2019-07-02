@@ -78,7 +78,7 @@ class RetailerTest extends TestCase
       'retailer_id' =>  '1',
       'approved'     =>  0
     ];
-    $this->json('GET', '/api/approve_retailer', $payload, $this->headers)
+    $this->json('POST', '/api/approve_retailer', $payload, $this->headers)
       ->assertStatus(200)
       ->assertJsonStructure([
           'data' => [
