@@ -58,4 +58,20 @@ class RetailerTest extends TestCase
         ]);
       // $this->assertCount(1, ReferencePlan::all());
   }
+
+  /** @test */
+  function to_approve_retailer()
+  {
+    $payload = [
+      'retailer_id' =>  '1',
+      'approved'     =>  0
+    ];
+    $this->json('GET', '/api/approve_retailer/1', $payload, $this->headers)
+      ->assertStatus(200)
+      ->assertJsonStructure([
+          'data' => [
+            'name'
+          ]
+        ]);
+  }
 }

@@ -100,4 +100,19 @@ class RetailersController extends Controller
       'success'   =>  true
     ], 200);
   }
+
+  public function singleApproveRetailer(Request $request)
+  {
+    $request->validate([
+      'retailer_id' => 'required',
+      'approved'    =>  'required'
+    ]);
+
+    $retailer = Retailer::where('id', '=', $request->retailer_id)->first();
+    $retailer->update($request->all());
+    
+    return response()->json([
+      'data'   =>  $retailer
+    ], 200);  
+  }
 }
