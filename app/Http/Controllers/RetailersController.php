@@ -103,6 +103,15 @@ class RetailersController extends Controller
 
   public function singleApproveRetailer(Request $request)
   {
+    $retailer = Retailer::where('id', '=', $request->id)->first();
+    
+    return response()->json([
+      'data'   =>  $retailer
+    ], 200);  
+  }
+
+  public function approveRetailer(Request $request)
+  {
     $request->validate([
       'retailer_id' => 'required',
       'approved'    =>  'required'
