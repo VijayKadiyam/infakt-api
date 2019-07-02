@@ -92,6 +92,7 @@ Route::get('sales', 'SalesController@all');
 
 Route::resource('reference_plans', 'ReferencePlansController');
 Route::resource('reference_plans/{reference_plan}/retailers', 'RetailersController');
+Route::get('un_approved_retailers', 'RetailersController@unApprovedRetailers');
 
 Route::resource('units', 'UnitsController');
 Route::resource('retailer_categories', 'RetailerCategoriesController');

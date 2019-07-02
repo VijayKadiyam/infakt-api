@@ -77,4 +77,27 @@ class RetailersController extends Controller
       'data'  =>  $retailer
     ], 200);
   }
+
+  /*
+   * To get Un Approved Retailers
+   *
+   *@
+   */
+  public function unApprovedRetailers()
+  {
+    $retailers = [];
+    $referencePlans = request()->company->reference_plans;
+    foreach ($referencePlans as $referencePlan) {
+      // dd($referencePlan->retailers->where('approved', '=', '0')->toArray());
+      $rets = $referencePlan->retailers->where('approved', '=', '0')->toArray();
+      foreach ($rets as $ret) {
+        $retailers[] = $ret;
+      }
+    }
+
+    return response()->json([
+      'data'     =>  $retailers,
+      'success'   =>  true
+    ], 200);
+  }
 }
