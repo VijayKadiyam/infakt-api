@@ -24,6 +24,7 @@ class PlansController extends Controller
     if(request()->user_id) {
       $plans = Plan::where('user_id', '=', request()->user_id)
         ->with('plan_actuals', 'allowance_type', 'user', 'plan_travelling_details')
+        ->orderBy('date', 'ASC')
         ->get();
     }
 
@@ -31,7 +32,10 @@ class PlansController extends Controller
       $plans = Plan::where('user_id', '=', request()->user_id)
         ->whereMonth('date', '=', request()->month)
         ->with('plan_actuals', 'allowance_type', 'user', 'plan_travelling_details')
+        ->orderBy('date', 'ASC')
         ->get();
+
+      // dd($plans->toArray());
     }
 
     return response()->json([

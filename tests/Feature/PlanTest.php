@@ -16,10 +16,6 @@ class PlanTest extends TestCase
   {
     parent::setUp();
 
-    factory(Plan::class)->create([
-      'user_id'  =>  $this->user->id 
-    ]);
-
     $this->company = factory(\App\Company::class)->create([
       'name' => 'test'
     ]);
@@ -30,11 +26,22 @@ class PlanTest extends TestCase
       'company_id'  =>  $this->company->id 
     ]);
 
+    $this->date = (\Carbon\Carbon::now()->format('Y-m-d'));
     $this->month = (\Carbon\Carbon::now()->format('m'));
+
+    factory(Plan::class)->create([
+      'user_id'  =>  $this->user->id ,
+      'date'  =>  $this->date,
+    ]);
+
+    factory(Plan::class)->create([
+      'user_id'  =>  $this->user->id ,
+      'date'  =>  \Carbon\Carbon::now()->addDays(-1),
+    ]);
 
     $this->payload = [ 
       'allowance_type_id' =>  $this->allowanceType->id,
-      'date'  =>  '2019-03-02',
+      'date'  =>  $this->date,
       'plan'  =>  'Mumbai'
     ];
   }
@@ -69,7 +76,7 @@ class PlanTest extends TestCase
       ->assertStatus(201)
       ->assertJson([
           'data'   =>[
-            'date'  =>  '2019-03-02',
+            'date'  =>  $this->date,
             'plan'  =>  'Mumbai'
           ]
         ])
@@ -99,13 +106,14 @@ class PlanTest extends TestCase
             ] 
           ]
         ]);
-      $this->assertCount(1, Plan::all());
+      $this->assertCount(2, Plan::all());
   }
 
   /** @test */
   function list_of_plan_of_request_user()
   {
-    $this->json('GET', '/api/plans?user_id=' . $this->user->id . '&date=' . $this->month,[], $this->headers)
+    $this->disableEH();
+    $this->json('GET', '/api/plans?user_id=' . $this->user->id . '&month=' . $this->month,[], $this->headers)
       ->assertStatus(200)
       ->assertJsonStructure([
           'data' => [
@@ -114,7 +122,7 @@ class PlanTest extends TestCase
             ] 
           ]
         ]);
-      $this->assertCount(1, Plan::all());
+      $this->assertCount(2, Plan::all());
   }
 
   /** @test */
@@ -125,7 +133,7 @@ class PlanTest extends TestCase
       ->assertStatus(200)
       ->assertJson([
           'data'  => [
-            'date' => '2019-03-02',
+            'date' => $this->date,
           ]
         ]);
   }
