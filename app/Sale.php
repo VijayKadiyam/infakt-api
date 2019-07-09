@@ -27,6 +27,7 @@ class Sale extends Model
    */
   public function retailer()
   {
-    return $this->belongsTo(Retailer::class);
+    return $this->belongsTo(Retailer::class)
+      ->with('retailer_category', 'retailer_classification');
   }
 }

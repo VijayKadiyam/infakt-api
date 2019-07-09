@@ -141,6 +141,23 @@ class SaleTest extends TestCase
   }
 
   /** @test */
+  function list_of_sales_of_a_month()
+  {
+    $this->disableEH();
+    $this->json('GET', '/api/skus/' . $this->sku->id . '/sales',[], $this->headers)
+      ->assertStatus(200)
+      ->assertJsonStructure([
+          'data' => [
+            0=>[
+              'qty'
+            ] 
+          ]
+        ]);
+
+      $this->assertCount(1, Sale::all());
+  }
+
+  /** @test */
   function show_single_sale()
   {
     $this->json('get', '/api/skus/' . $this->sku->id . '/sales/1', [], $this->headers)
