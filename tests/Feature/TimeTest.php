@@ -11,6 +11,7 @@ class TimeTest extends TestCase
 {
   use DatabaseTransactions;
   
+  
   public function setUp()
   {
     parent::setUp();
