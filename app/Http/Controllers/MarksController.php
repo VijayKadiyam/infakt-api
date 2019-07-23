@@ -25,8 +25,6 @@ class MarksController extends Controller
     {
       $marks = Mark::whereDate('created_at', $request->date)
         ->where('user_id', '=', $request->id)->latest()->get();
-
-      dd($marks->toArray());
     }
     else {
       $marks = Mark::whereDate('created_at', Carbon::today())
