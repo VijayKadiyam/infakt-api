@@ -25,6 +25,14 @@ class MarksController extends Controller
     $marks = Mark::whereDate('created_at', Carbon::today())
       ->where('user_id', '=', $request->user()->id)->latest()->get();
 
+    if($request->date && $request->user_id)
+    {
+      $marks = Mark::whereDate('created_at', $request->date)
+        ->where('user_id', '=', $request->user_id)->latest()->get();
+
+      dd($marks->toArray());
+    }
+
     return response()->json([
       'data'     =>  $marks,
       'success' =>  true

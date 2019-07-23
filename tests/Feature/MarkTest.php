@@ -107,7 +107,7 @@ class MarkTest extends TestCase
   function list_of_marks_of_specific_dat()
   {
     $this->disableEH();
-    $this->json('GET', "/api/marks?date=" . $this->date,[], $this->headers)
+    $this->json('GET', "/api/marks?date=" . $this->date . "&user_id=" . $this->user->id,[], $this->headers)
       ->assertStatus(200)
       ->assertJsonStructure([
           'data' => [
