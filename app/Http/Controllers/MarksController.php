@@ -10,7 +10,7 @@ class MarksController extends Controller
 {
   public function __construct()
   {
-    $this->middleware(['auth:api', 'company']);
+    // $this->middleware(['auth:api', 'company']);
   }
 
   /*
