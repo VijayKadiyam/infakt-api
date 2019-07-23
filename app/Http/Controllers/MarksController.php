@@ -21,10 +21,10 @@ class MarksController extends Controller
   public function index(Request $request)
   {
     // $marks = request()->user()->marks;
-    if($request->date && $request->user_id)
+    if($request->date && $request->id)
     {
       $marks = Mark::whereDate('created_at', $request->date)
-        ->where('user_id', '=', $request->user_id)->latest()->get();
+        ->where('user_id', '=', $request->id)->latest()->get();
 
       dd($marks->toArray());
     }
