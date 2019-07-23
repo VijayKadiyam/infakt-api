@@ -21,16 +21,16 @@ class MarksController extends Controller
   public function index(Request $request)
   {
     // $marks = request()->user()->marks;
-
-    $marks = Mark::whereDate('created_at', Carbon::today())
-      ->where('user_id', '=', $request->user()->id)->latest()->get();
-
     if($request->date && $request->user_id)
     {
       $marks = Mark::whereDate('created_at', $request->date)
         ->where('user_id', '=', $request->user_id)->latest()->get();
 
       dd($marks->toArray());
+    }
+    else {
+      $marks = Mark::whereDate('created_at', Carbon::today())
+      ->where('user_id', '=', $request->user()->id)->latest()->get();
     }
 
     return response()->json([
