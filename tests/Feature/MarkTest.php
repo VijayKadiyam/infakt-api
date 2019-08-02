@@ -27,6 +27,7 @@ class MarkTest extends TestCase
     ]);
 
     $this->date = (\Carbon\Carbon::now()->format('Y-m-d'));
+    $this->month = (\Carbon\Carbon::now()->format('m'));
     $this->toDate = (\Carbon\Carbon::now()->addDay()->format('Y-m-d'));
     $this->payload = [ 
       'in_lat'   =>  '23.34',
@@ -108,6 +109,25 @@ class MarkTest extends TestCase
   {
     $this->disableEH();
     $this->json('GET', "/api/marks?date=" . $this->date . "&id=" . $this->user->id,[], $this->headers)
+      ->assertStatus(200)
+      ->assertJsonStructure([
+          'data' => [
+            0 =>  [
+              'in_lat',
+              'in_lng',
+              'out_lat',
+              'out_lng'
+            ]
+          ]
+        ]);
+    $this->assertCount(1, Mark::all());
+  }
+
+  /** @test */
+  function list_of_marks_of_specific_month()
+  {
+    $this->disableEH();
+    $this->json('GET', "/api/marks?month=" . $this->month . "&id=" . $this->user->id,[], $this->headers)
       ->assertStatus(200)
       ->assertJsonStructure([
           'data' => [

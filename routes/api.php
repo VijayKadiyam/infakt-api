@@ -103,5 +103,6 @@ Route::resource('retailer_classifications', 'RetailerClassificationsController')
 Route::resource('marks', 'MarksController');
 
 Route::get('time', 'TimesController@index');
+Route::get('geocode', 'GeocodesController@index');
 
 

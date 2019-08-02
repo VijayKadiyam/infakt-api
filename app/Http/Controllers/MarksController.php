@@ -26,6 +26,11 @@ class MarksController extends Controller
       $marks = Mark::whereDate('created_at', $request->date)
         ->where('user_id', '=', $request->id)->latest()->get();
     }
+    else if($request->month && $request->id)
+    {
+      $marks = Mark::whereMonth('created_at', $request->month)
+        ->where('user_id', '=', $request->id)->latest()->get();
+    }
     else {
       $marks = Mark::whereDate('created_at', Carbon::today())
       ->where('user_id', '=', $request->user()->id)->latest()->get();
