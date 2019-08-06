@@ -15,6 +15,8 @@ class GeocodesController extends Controller
     $statusCode = $response->getStatusCode();
     $content = json_decode($response->getBody(), true);
 
+    dd($content['results'][0]['formatted_address']);
+
     return response()->json([
       'data'  =>  $content
     ]);

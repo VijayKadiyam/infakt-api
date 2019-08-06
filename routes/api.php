@@ -104,5 +104,6 @@ Route::resource('marks', 'MarksController');
 
 Route::get('time', 'TimesController@index');
 Route::get('geocode', 'GeocodesController@index');
+Route::post('sendEmail', 'SendEmailController@index');
 
 
