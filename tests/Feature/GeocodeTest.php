@@ -19,11 +19,12 @@ class GeocodeTest extends TestCase
   /** @test */
   function get_the_geocode()
   {
-    $this->json('GET', '/api/geocode', [])
+    $this->disableEH();
+    $this->json('GET', '/api/geocode?lat=17&lng=19', [])
       ->assertStatus(200)
       ->assertJsonStructure([
           'data'  =>  [
-            'datetime'
+            
           ]
       ]);
   }

@@ -33,7 +33,17 @@ class MarksController extends Controller
     }
     else {
       $marks = Mark::whereDate('created_at', Carbon::today())
-      ->where('user_id', '=', $request->user()->id)->latest()->get();
+        ->where('user_id', '=', $request->user()->id)->latest()->get();
+    }
+    $geocodesController = new GeocodesController();
+    foreach($marks as $mark) {
+      $request->request->add(['lat' => $mark->in_lat]);
+      $request->request->add(['lng' => $mark->in_lng]);
+      $mark['address_in'] = json_decode($geocodesController->index($request)->getContent())->data;
+
+      $request->request->add(['lat' => $mark->out_lat]);
+      $request->request->add(['lng' => $mark->out_lng]);
+      $mark['address_out'] = json_decode($geocodesController->index($request)->getContent())->data;
     }
 
     return response()->json([
