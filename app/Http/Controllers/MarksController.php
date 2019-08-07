@@ -45,6 +45,7 @@ class MarksController extends Controller
       $request->request->add(['lng' => $mark->out_lng]);
       $mark['address_out'] = json_decode($geocodesController->index($request)->getContent())->data;
     }
+    
 
     return response()->json([
       'data'     =>  $marks,
