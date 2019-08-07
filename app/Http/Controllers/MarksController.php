@@ -42,9 +42,11 @@ class MarksController extends Controller
         $request->request->add(['lng' => $mark->in_lng]);
         $mark['address_in'] = json_decode($geocodesController->index($request)->getContent())->data;
       }
-      // $request->request->add(['lat' => $mark->out_lat]);
-      // $request->request->add(['lng' => $mark->out_lng]);
-      // $mark['address_out'] = json_decode($geocodesController->index($request)->getContent())->data;
+      if($mark->out_lat) {
+        $request->request->add(['lat' => $mark->out_lat]);
+        $request->request->add(['lng' => $mark->out_lng]);
+        $mark['address_out'] = json_decode($geocodesController->index($request)->getContent())->data;
+      }
     }
 
     return response()->json([
