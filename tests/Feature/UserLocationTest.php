@@ -29,7 +29,29 @@ class UserLocationTest extends TestCase
     $this->date = (\Carbon\Carbon::now()->format('Y-m-d'));
 
     $this->payload = [ 
-      'content' =>  'Location Content'
+      'content' =>  [
+        "uuid"    => "0b1ce00c-6950-4e6b-be2c-69bed89f39e5",
+        "coords"  =>  [
+          "speed"     => -1, 
+          "heading"   => -1, 
+          "accuracy"  => 38.2, 
+          "altitude"  => 526,
+          "latitude"  => 18.3573019, 
+          "longitude" =>   74.6269666
+        ], 
+        "extras"  => [],
+        "battery" => [
+          "level"       =>  0.65,
+          "is_charging" => false
+        ], 
+        "activity"  => [
+          "type"        => "still", 
+          "confidence"  => 100
+        ], 
+        "odometer"  => 73057.3, 
+        "is_moving" =>true, 
+        "timestamp" => "2019-08-08T06:20:21.950Z"
+      ]
     ];
   }
 
@@ -60,13 +82,16 @@ class UserLocationTest extends TestCase
     $this->json('post', '/api/user_locations', $this->payload, $this->headers)
       ->assertStatus(201)
       ->assertJson([
-          'data'   =>[
-            'content' =>  'Location Content'
+          'data'   => [
+            'content' =>  [
+              'coords'  => []
+            ]
           ]
         ])
       ->assertJsonStructureExact([
           'data'   => [
             'content',
+            'address',
             'user_id',
             'updated_at',
             'created_at',
@@ -140,6 +165,7 @@ class UserLocationTest extends TestCase
             'content',
             'created_at',
             'updated_at',
+            'address'
           ],
           'success'
       ]);

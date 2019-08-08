@@ -22,7 +22,7 @@ class GeocodesController extends Controller
     
 
     return response()->json([
-      'data'  =>  $content['results'][0]['formatted_address']
+      'data'  =>  $content['results'] ? $content['results'][0]['formatted_address'] : ''
     ]);
   }
   
