@@ -52,13 +52,13 @@ class UserLocationsController extends Controller
     $userLocation = new UserLocation($request->all());
     $userLocation->address = '';
 
-    // $geocodesController = new GeocodesController();
-    // if($userLocation->content['coords']['latitude'])
-    // {
-    //   $request->request->add(['lat' => $userLocation->content['coords']['latitude']]);
-    //   $request->request->add(['lng' => $userLocation->content['coords']['longitude']]);
-    //   $userLocation->address = json_decode($geocodesController->index($request)->getContent())->data;
-    // }
+    $geocodesController = new GeocodesController();
+    if($userLocation->content['coords']['latitude'])
+    {
+      $request->request->add(['lat' => $userLocation->content['coords']['latitude']]);
+      $request->request->add(['lng' => $userLocation->content['coords']['longitude']]);
+      $userLocation->address = json_decode($geocodesController->index($request)->getContent())->data;
+    }
 
     // return ($userLocation);
     $request->user()->user_locations()->save($userLocation);
