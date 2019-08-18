@@ -194,7 +194,17 @@ class UserTest extends TestCase
             'company_state_id',
             'address',
             'unique_id',
-            'appointment_letter'
+            'appointment_letter',
+            'contract_expiry',
+            'resume_path',
+            'photo_path', 
+            'residential_proof_path',
+            'education_proof_path',
+            'pan_card_path',
+            'adhaar_card_path',
+            'esi_card_path',
+            'cancelled_cheque_path',
+            'salary_slip_path'
           ],
           'success'
         ]);
@@ -244,7 +254,17 @@ class UserTest extends TestCase
             'company_state_id',
             'address',
             'unique_id',
-            'appointment_letter'
+            'appointment_letter',
+            'contract_expiry',
+            'resume_path',
+            'photo_path', 
+            'residential_proof_path',
+            'education_proof_path',
+            'pan_card_path',
+            'adhaar_card_path',
+            'esi_card_path',
+            'cancelled_cheque_path',
+            'salary_slip_path'
           ],
           'success'
         ]);
@@ -300,7 +320,17 @@ class UserTest extends TestCase
             'company_state_id',
             'address',
             'unique_id',
-            'appointment_letter'
+            'appointment_letter',
+            'contract_expiry',
+            'resume_path',
+            'photo_path', 
+            'residential_proof_path',
+            'education_proof_path',
+            'pan_card_path',
+            'adhaar_card_path',
+            'esi_card_path',
+            'cancelled_cheque_path',
+            'salary_slip_path'
           ],
           'success'
         ]);

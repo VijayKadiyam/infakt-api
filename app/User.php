@@ -16,7 +16,7 @@ class User extends Authenticatable
    * @var array
    */
   protected $fillable = [
-    'name', 'email', 'password', 'phone', 'doj', 'dob', 'company_designation_id', 'company_state_branch_id', 'pf_no', 'uan_no', 'esi_no', 'active', 'salary', 'image_path', 'employee_code', 'asm_area', 'asm_name', 'uid_no', 'company_state_id', 'address', 'unique_id', 'appointment_letter'
+    'name', 'email', 'password', 'phone', 'doj', 'dob', 'company_designation_id', 'company_state_branch_id', 'pf_no', 'uan_no', 'esi_no', 'active', 'salary', 'image_path', 'employee_code', 'asm_area', 'asm_name', 'uid_no', 'company_state_id', 'address', 'unique_id', 'appointment_letter', 'contract_expiry', 'resume_path', 'photo_path', 'residential_proof_path', 'education_proof_path', 'pan_card_path', 'adhaar_card_path', 'esi_card_path', 'cancelled_cheque_path', 'salary_slip_path'
   ];
 
   /**
@@ -265,6 +265,36 @@ class User extends Authenticatable
   public function marks()
   {
     return $this->hasMany(Mark::class);
+  }
+
+  public function user_appointment_letters()
+  {
+    return $this->hasMany(UserAppointmentLetter::class);
+  }
+
+  public function user_experience_letters()
+  {
+    return $this->hasMany(UserExperienceLetter::class);
+  }
+
+  public function user_warning_letters()
+  {
+    return $this->hasMany(UserWarningLetter::class);
+  }
+
+  public function user_promotion_letters()
+  {
+    return $this->hasMany(UserPromotionLetter::class);
+  }
+
+  public function user_renewal_letters()
+  {
+    return $this->hasMany(UserRenewalLetter::class);
+  }
+
+  public function user_increemental_letters()
+  {
+    return $this->hasMany(UserIncreementalLetter::class);
   }
 }
 
