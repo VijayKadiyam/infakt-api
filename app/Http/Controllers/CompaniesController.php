@@ -49,7 +49,7 @@ class CompaniesController extends Controller
     $company->saveDefaultCompanyLeaves();
 
     return response()->json([
-      'data'    =>  $company
+      'data'    =>  $company,
     ], 201); 
   }
 

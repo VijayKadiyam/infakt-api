@@ -114,6 +114,10 @@ Route::resource('user_renewal_letters', 'UserRenewalLettersController');
 Route::resource('user_increemental_letters', 'UserIncreementalLettersController');
 
 Route::post('user_profile_image', 'UserUploadsController@profileImage');
+
+Route::post('mobile_photo_image', 'MobileUploadsController@mobilePhotoImage');
+
+
 Route::post('company_pds', 'CompanyUploadsController@pds');
 Route::post('company_form2', 'CompanyUploadsController@form2');
 Route::post('company_form11', 'CompanyUploadsController@form11');
