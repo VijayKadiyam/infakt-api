@@ -116,6 +116,7 @@ Route::resource('user_increemental_letters', 'UserIncreementalLettersController'
 Route::post('user_profile_image', 'UserUploadsController@profileImage');
 
 Route::post('mobile_photo_image', 'MobileUploadsController@mobilePhotoImage');
+Route::post('mobile_residential_proof_image', 'MobileUploadsController@mobileResidentialProofImage');
 
 
 Route::post('company_pds', 'CompanyUploadsController@pds');
