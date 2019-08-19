@@ -117,6 +117,12 @@ Route::post('user_profile_image', 'UserUploadsController@profileImage');
 
 Route::post('mobile_photo_image', 'MobileUploadsController@mobilePhotoImage');
 Route::post('mobile_residential_proof_image', 'MobileUploadsController@mobileResidentialProofImage');
+Route::post('mobile_education_proof_image', 'MobileUploadsController@mobileEducationProofImage');
+Route::post('mobile_pan_card_image', 'MobileUploadsController@mobilePanCardImage');
+Route::post('mobile_adhaar_card_image', 'MobileUploadsController@mobileAdhaarCardImage');
+Route::post('mobile_esi_card_image', 'MobileUploadsController@mobileEsiCardImage');
+Route::post('mobile_cancelled_cheque_image', 'MobileUploadsController@mobileCancelledChequeImage');
+Route::post('mobile_salary_slip_image', 'MobileUploadsController@mobileSalarySlipImage');
 
 
 Route::post('company_pds', 'CompanyUploadsController@pds');
