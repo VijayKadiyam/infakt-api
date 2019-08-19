@@ -3,9 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\User;
+use Illuminate\Support\Facades\Storage;
 
 class MobileUploadsController extends Controller
 {
+  public function __construct()
+  {
+    $this->middleware(['auth:api', 'company']);
+  }
+  
   public function mobilePhotoImage(Request $request)
   {
     $image = $request->image;
