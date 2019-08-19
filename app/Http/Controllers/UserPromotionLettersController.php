@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\UserPromotionLetter;
+use App\User;
 
 class UserPromotionLettersController extends Controller
 {
@@ -12,9 +13,9 @@ class UserPromotionLettersController extends Controller
     $this->middleware(['auth:api', 'company']);
   }
 
-  public function index(Request $request)
+  public function index(Request $request, User $user)
   {
-    $userPromotionLetter = request()->user()->user_promotion_letters;
+    $userPromotionLetter = $user->user_promotion_letters;
 
     return response()->json([
       'data'     =>  $userPromotionLetter,
@@ -22,28 +23,28 @@ class UserPromotionLettersController extends Controller
     ], 200);
   }
 
-  public function store(Request $request)
+  public function store(Request $request, User $user)
   {
     $request->validate([
       'letter'          =>  'required',
     ]);
 
     $UserPromotionLetter = new UserPromotionLetter($request->all());
-    $request->user()->user_promotion_letters()->save($UserPromotionLetter);
+    $user->user_promotion_letters()->save($UserPromotionLetter);
 
     return response()->json([
       'data'    =>  $UserPromotionLetter
     ], 201); 
   }
 
-  public function show(UserPromotionLetter $userPromotionLetter)
+  public function show(User $user, UserPromotionLetter $userPromotionLetter)
   {
     return response()->json([
       'data'   =>  $userPromotionLetter
     ], 200);   
   }
 
-  public function update(Request $request, UserPromotionLetter $userPromotionLetter)
+  public function update(Request $request, User $user, UserPromotionLetter $userPromotionLetter)
   {
     $request->validate([
       'letter'        =>  'required',

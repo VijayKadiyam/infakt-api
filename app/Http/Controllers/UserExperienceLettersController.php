@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\UserExperienceLetter;
+use App\User;
 
 class UserExperienceLettersController extends Controller
 {
@@ -11,9 +12,9 @@ class UserExperienceLettersController extends Controller
   {
     $this->middleware(['auth:api', 'company']);
   }
-  public function index(Request $request)
+  public function index(Request $request, User $user)
   {
-    $userExperienceLetter = request()->user()->user_experience_letters;
+    $userExperienceLetter = $user->user_experience_letters;
 
     return response()->json([
       'data'     =>  $userExperienceLetter,
@@ -21,28 +22,28 @@ class UserExperienceLettersController extends Controller
     ], 200);
   }
 
-  public function store(Request $request)
+  public function store(Request $request, User $user)
   {
     $request->validate([
       'letter'          =>  'required',
     ]);
 
     $userExperienceLetter = new UserExperienceLetter($request->all());
-    $request->user()->user_experience_letters()->save($userExperienceLetter);
+    $user->user_experience_letters()->save($userExperienceLetter);
 
     return response()->json([
       'data'    =>  $userExperienceLetter
     ], 201); 
   }
 
-  public function show(UserExperienceLetter $userExperienceLetter)
+  public function show(User $user, UserExperienceLetter $userExperienceLetter)
   {
     return response()->json([
       'data'   =>  $userExperienceLetter
     ], 200);   
   }
 
-  public function update(Request $request, UserExperienceLetter $userExperienceLetter)
+  public function update(Request $request, User $user, UserExperienceLetter $userExperienceLetter)
   {
     $request->validate([
       'letter'        =>  'required',

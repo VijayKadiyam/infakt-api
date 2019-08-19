@@ -106,12 +106,12 @@ Route::get('time', 'TimesController@index');
 Route::get('geocode', 'GeocodesController@index');
 Route::post('sendEmail', 'SendEmailController@index');
 
-Route::resource('user_appointment_letters', 'UserAppointmentLettersController');
-Route::resource('user_experience_letters', 'UserExperienceLettersController');
-Route::resource('user_warning_letters', 'UserWarningLettersController');
-Route::resource('user_promotion_letters', 'UserPromotionLettersController');
-Route::resource('user_renewal_letters', 'UserRenewalLettersController');
-Route::resource('user_increemental_letters', 'UserIncreementalLettersController');
+Route::resource('users/{user}/user_appointment_letters', 'UserAppointmentLettersController');
+Route::resource('users/{user}/user_experience_letters', 'UserExperienceLettersController');
+Route::resource('users/{user}/user_warning_letters', 'UserWarningLettersController');
+Route::resource('users/{user}/user_promotion_letters', 'UserPromotionLettersController');
+Route::resource('users/{user}/user_renewal_letters', 'UserRenewalLettersController');
+Route::resource('users/{user}/user_increemental_letters', 'UserIncreementalLettersController');
 
 Route::post('user_profile_image', 'UserUploadsController@profileImage');
 

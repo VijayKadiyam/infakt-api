@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\UserRenewalLetter;
+use App\User;
 
 class UserRenewalLettersController extends Controller
 {
@@ -12,9 +13,9 @@ class UserRenewalLettersController extends Controller
     $this->middleware(['auth:api', 'company']);
   }
 
-  public function index(Request $request)
+  public function index(Request $request, User $user)
   {
-    $userRenewalLetters = request()->user()->user_renewal_letters;
+    $userRenewalLetters = $user->user_renewal_letters;
 
     return response()->json([
       'data'     =>  $userRenewalLetters,
@@ -22,28 +23,28 @@ class UserRenewalLettersController extends Controller
     ], 200);
   }
 
-  public function store(Request $request)
+  public function store(Request $request, User $user)
   {
     $request->validate([
       'letter'          =>  'required',
     ]);
 
     $userRenewalLetter = new UserRenewalLetter($request->all());
-    $request->user()->user_renewal_letters()->save($userRenewalLetter);
+    $user->user_renewal_letters()->save($userRenewalLetter);
 
     return response()->json([
       'data'    =>  $userRenewalLetter
     ], 201); 
   }
 
-  public function show(UserRenewalLetter $userRenewalLetter)
+  public function show(User $user, UserRenewalLetter $userRenewalLetter)
   {
     return response()->json([
       'data'   =>  $userRenewalLetter
     ], 200);   
   }
 
-  public function update(Request $request, UserRenewalLetter $userRenewalLetter)
+  public function update(Request $request, User $user, UserRenewalLetter $userRenewalLetter)
   {
     $request->validate([
       'letter'        =>  'required',

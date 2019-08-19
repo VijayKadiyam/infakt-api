@@ -34,14 +34,14 @@ class UserIncreementalLetterTest extends TestCase
   /** @test */
   function user_must_be_logged_in_before_accessing_the_controller()
   {
-    $this->json('post', '/api/user_increemental_letters')
+    $this->json('post', '/api/users/' . $this->user->id . '/user_increemental_letters')
       ->assertStatus(401); 
   }
 
   /** @test */
   function it_requires_following_details()
   {
-    $this->json('post', '/api/user_increemental_letters', [], $this->headers)
+    $this->json('post', '/api/users/' . $this->user->id . '/user_increemental_letters', [], $this->headers)
       ->assertStatus(422)
       ->assertExactJson([
           "errors"  =>  [
@@ -55,7 +55,7 @@ class UserIncreementalLetterTest extends TestCase
   function add_new_letter()
   {
     $this->disableEH();
-    $this->json('post', '/api/user_increemental_letters', $this->payload, $this->headers)
+    $this->json('post', '/api/users/' . $this->user->id . '/user_increemental_letters', $this->payload, $this->headers)
       ->assertStatus(201)
       ->assertJson([
           'data'   =>[
@@ -77,7 +77,7 @@ class UserIncreementalLetterTest extends TestCase
   function list_of_letters()
   {
 
-    $this->json('GET', '/api/user_increemental_letters',[], $this->headers)
+    $this->json('GET', '/api/users/' . $this->user->id . '/user_increemental_letters',[], $this->headers)
       ->assertStatus(200)
       ->assertJsonStructure([
           'data' => [
@@ -92,7 +92,7 @@ class UserIncreementalLetterTest extends TestCase
   /** @test */
   function show_single_letter()
   {
-    $this->json('get', "/api/user_increemental_letters/1", [], $this->headers)
+    $this->json('get', "/api/users/" . $this->user->id . "/user_increemental_letters/1", [], $this->headers)
       ->assertStatus(200)
       ->assertJson([
           'data'  => [
@@ -108,7 +108,7 @@ class UserIncreementalLetterTest extends TestCase
       'letter'        =>  'Letter 1 Updated',
     ];
 
-    $this->json('patch', '/api/user_increemental_letters/1', $payload, $this->headers)
+    $this->json('patch', '/api/users/' . $this->user->id . '/user_increemental_letters/1', $payload, $this->headers)
       ->assertStatus(200)
       ->assertJson([
           'data'    => [

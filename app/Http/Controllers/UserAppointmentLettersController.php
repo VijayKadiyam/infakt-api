@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\UserAppointmentLetter;
+use App\User;
 
 class UserAppointmentLettersController extends Controller
 {
@@ -12,9 +13,9 @@ class UserAppointmentLettersController extends Controller
     $this->middleware(['auth:api', 'company']);
   }
 
-  public function index(Request $request)
+  public function index(Request $request, User $user)
   {
-    $userAppointmentLetter = request()->user()->user_appointment_letters;
+    $userAppointmentLetter = $user->user_appointment_letters;
 
     return response()->json([
       'data'     =>  $userAppointmentLetter,
@@ -22,28 +23,28 @@ class UserAppointmentLettersController extends Controller
     ], 200);
   }
 
-  public function store(Request $request)
+  public function store(Request $request, User $user)
   {
     $request->validate([
       'letter'          =>  'required',
     ]);
 
     $userAppointmentLetter = new UserAppointmentLetter($request->all());
-    $request->user()->user_appointment_letters()->save($userAppointmentLetter);
+    $user->user_appointment_letters()->save($userAppointmentLetter);
 
     return response()->json([
       'data'    =>  $userAppointmentLetter
     ], 201); 
   }
 
-  public function show(UserAppointmentLetter $userAppointmentLetter)
+  public function show(User $user, UserAppointmentLetter $userAppointmentLetter)
   {
     return response()->json([
       'data'   =>  $userAppointmentLetter
     ], 200);   
   }
 
-  public function update(Request $request, UserAppointmentLetter $userAppointmentLetter)
+  public function update(Request $request, User $user, UserAppointmentLetter $userAppointmentLetter)
   {
     $request->validate([
       'letter'        =>  'required',
