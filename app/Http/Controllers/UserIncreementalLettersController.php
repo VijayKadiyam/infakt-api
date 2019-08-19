@@ -16,7 +16,8 @@ class UserIncreementalLettersController extends Controller
     $userIncreementalLetter = request()->user()->user_increemental_letters;
 
     return response()->json([
-      'data'     =>  $userIncreementalLetter
+      'data'     =>  $userIncreementalLetter,
+      'success'   =>  true
     ], 200);
   }
 

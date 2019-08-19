@@ -16,7 +16,8 @@ class UserExperienceLettersController extends Controller
     $userExperienceLetter = request()->user()->user_experience_letters;
 
     return response()->json([
-      'data'     =>  $userExperienceLetter
+      'data'     =>  $userExperienceLetter,
+      'success'   =>  true
     ], 200);
   }
 

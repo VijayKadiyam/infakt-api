@@ -17,7 +17,8 @@ class UserPromotionLettersController extends Controller
     $userPromotionLetter = request()->user()->user_promotion_letters;
 
     return response()->json([
-      'data'     =>  $userPromotionLetter
+      'data'     =>  $userPromotionLetter,
+      'success'   =>  true
     ], 200);
   }
 

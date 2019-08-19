@@ -17,7 +17,8 @@ class UserRenewalLettersController extends Controller
     $userRenewalLetters = request()->user()->user_renewal_letters;
 
     return response()->json([
-      'data'     =>  $userRenewalLetters
+      'data'     =>  $userRenewalLetters,
+      'success'   =>  true
     ], 200);
   }
 

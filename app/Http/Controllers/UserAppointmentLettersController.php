@@ -17,7 +17,8 @@ class UserAppointmentLettersController extends Controller
     $userAppointmentLetter = request()->user()->user_appointment_letters;
 
     return response()->json([
-      'data'     =>  $userAppointmentLetter
+      'data'     =>  $userAppointmentLetter,
+      'success'   =>  true
     ], 200);
   }
 

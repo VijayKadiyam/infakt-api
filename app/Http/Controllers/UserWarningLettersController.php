@@ -17,7 +17,8 @@ class UserWarningLettersController extends Controller
     $userWarningLetter = request()->user()->user_warning_letters;
 
     return response()->json([
-      'data'     =>  $userWarningLetter
+      'data'     =>  $userWarningLetter,
+      'success'   =>  true
     ], 200);
   }
 
