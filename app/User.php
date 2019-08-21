@@ -296,5 +296,15 @@ class User extends Authenticatable
   {
     return $this->hasMany(UserIncreementalLetter::class);
   }
+
+  public function user_termination_letters()
+  {
+    return $this->hasMany(UserTerminationLetter::class);
+  }
+
+  public function user_full_final_letters()
+  {
+    return $this->hasMany(UserFullFinalLetter::class);
+  }
 }
 

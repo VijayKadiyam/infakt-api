@@ -112,6 +112,8 @@ Route::resource('users/{user}/user_warning_letters', 'UserWarningLettersControll
 Route::resource('users/{user}/user_promotion_letters', 'UserPromotionLettersController');
 Route::resource('users/{user}/user_renewal_letters', 'UserRenewalLettersController');
 Route::resource('users/{user}/user_increemental_letters', 'UserIncreementalLettersController');
+Route::resource('users/{user}/user_termination_letters', 'UserTerminationLettersController');
+Route::resource('users/{user}/user_full_final_letters', 'UserFullFinalLettersController');
 
 Route::post('user_profile_image', 'UserUploadsController@profileImage');
 
