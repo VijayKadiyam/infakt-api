@@ -107,6 +107,12 @@ class CompanyLeavePatternTest extends TestCase
             'graduity_form_word_path',
             'graduity_form_pdf_path',
             'welcome_note',
+            'welcome_email_subject',
+            'welcome_email_body',
+            'df_1_email_subject',
+            'df_1_email_body',
+            'df_2_email_subject',
+            'df_2_email_body',
             'leave_patterns'
           ]
         ]);;;
