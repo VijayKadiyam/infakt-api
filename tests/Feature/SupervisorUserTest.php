@@ -113,7 +113,19 @@ class SupervisorUserTest extends TestCase
           'esi_card_path',
           'cancelled_cheque_path',
           'salary_slip_path',
+          'birth_certificate_path',
+          'passport_path',
+          'driving_license_path',
+          'school_leaving_certificate_path',
+          'mark_sheet_path',
+          'experience_certificate_path',
+          'prev_emp_app_letter_path',
+          'form_2_path',
+          'form_11_path',
+          'graduity_form_path',
+          'app_letter_path',
           'supervisors',
+
         ]
       ]);
   }
