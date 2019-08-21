@@ -125,6 +125,17 @@ Route::post('mobile_adhaar_card_image', 'MobileUploadsController@mobileAdhaarCar
 Route::post('mobile_esi_card_image', 'MobileUploadsController@mobileEsiCardImage');
 Route::post('mobile_cancelled_cheque_image', 'MobileUploadsController@mobileCancelledChequeImage');
 Route::post('mobile_salary_slip_image', 'MobileUploadsController@mobileSalarySlipImage');
+Route::post('mobile_birth_certificate_image', 'MobileUploadsController@mobileBirthCertificateImage');
+Route::post('mobile_passport_image', 'MobileUploadsController@mobilePassportImage');
+Route::post('mobile_driving_license_image', 'MobileUploadsController@mobileDrivingLicenseImage');
+Route::post('mobile_school_leaving_certificate_image', 'MobileUploadsController@mobileSchoolLeavingCertificateImage');
+Route::post('mobile_mark_sheet_image', 'MobileUploadsController@mobileMarkSheetImage');
+Route::post('mobile_experience_certificate_image', 'MobileUploadsController@mobileExperienceCertificateImage');
+Route::post('mobile_prev_emp_app_letter_image', 'MobileUploadsController@mobilePrevEmpAppLetterImage');
+Route::post('mobile_form_2_image', 'MobileUploadsController@mobileForm2Image');
+Route::post('mobile_form_11_image', 'MobileUploadsController@mobileForm11Image');
+Route::post('mobile_graduity_form_image', 'MobileUploadsController@mobileGraduityFormImage');
+Route::post('mobile_app_letter_image', 'MobileUploadsController@mobileAppLetterImage');
 
 
 Route::post('company_pds', 'CompanyUploadsController@pds');

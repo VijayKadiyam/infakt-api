@@ -188,4 +188,247 @@ class MobileUploadsController extends Controller
       'success' =>  true
     ]);
   }
+
+  public function mobileBirthCertificateImage(Request $request)
+  {
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'users/' . request()->user()->id . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $user = User::where('id', '=', request()->user()->id)->first();
+    $user->birth_certificate_path = $path;
+    $user->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function mobilePassportImage(Request $request)
+  {
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'users/' . request()->user()->id . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $user = User::where('id', '=', request()->user()->id)->first();
+    $user->passport_path = $path;
+    $user->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function mobileDrivingLicenseImage(Request $request)
+  {
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'users/' . request()->user()->id . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $user = User::where('id', '=', request()->user()->id)->first();
+    $user->driving_license_path = $path;
+    $user->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function mobileSchoolLeavingCertificateImage(Request $request)
+  {
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'users/' . request()->user()->id . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $user = User::where('id', '=', request()->user()->id)->first();
+    $user->school_leaving_certificate_path = $path;
+    $user->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function mobileMarkSheetImage(Request $request)
+  {
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'users/' . request()->user()->id . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $user = User::where('id', '=', request()->user()->id)->first();
+    $user->mark_sheet_path = $path;
+    $user->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function mobileExperienceCertificateImage(Request $request)
+  {
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'users/' . request()->user()->id . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $user = User::where('id', '=', request()->user()->id)->first();
+    $user->experience_certificate_path = $path;
+    $user->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function mobilePrevEmpAppLetterImage(Request $request)
+  {
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'users/' . request()->user()->id . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $user = User::where('id', '=', request()->user()->id)->first();
+    $user->prev_emp_app_letter_path = $path;
+    $user->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function mobileForm2Image(Request $request)
+  {
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'users/' . request()->user()->id . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $user = User::where('id', '=', request()->user()->id)->first();
+    $user->form_2_path = $path;
+    $user->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function mobileForm11Image(Request $request)
+  {
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'users/' . request()->user()->id . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $user = User::where('id', '=', request()->user()->id)->first();
+    $user->form_11_path = $path;
+    $user->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function mobileGraduityFormImage(Request $request)
+  {
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'users/' . request()->user()->id . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $user = User::where('id', '=', request()->user()->id)->first();
+    $user->graduity_form_path = $path;
+    $user->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function mobileAppLetterImage(Request $request)
+  {
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'users/' . request()->user()->id . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $user = User::where('id', '=', request()->user()->id)->first();
+    $user->app_letter_path = $path;
+    $user->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
 }
+
