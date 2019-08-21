@@ -15,10 +15,10 @@ class UserTerminationLettersController extends Controller
 
   public function index(Request $request, User $user)
   {
-    $userTerminationLetter = $user->user_termination_letters;
+    $userTerminationLetters = $user->user_termination_letters;
 
     return response()->json([
-      'data'     =>  $userTerminationLetter,
+      'data'     =>  $userTerminationLetters,
       'success'   =>  true
     ], 200);
   }
