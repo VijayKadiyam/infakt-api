@@ -430,5 +430,27 @@ class MobileUploadsController extends Controller
       'success' =>  true
     ]);
   }
+
+  public function mobilePdsFormImage(Request $request)
+  {
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'users/' . request()->user()->id . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $user = User::where('id', '=', request()->user()->id)->first();
+    $user->pds_form_path = $path;
+    $user->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
 }
 

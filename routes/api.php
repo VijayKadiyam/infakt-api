@@ -136,6 +136,7 @@ Route::post('mobile_form_2_image', 'MobileUploadsController@mobileForm2Image');
 Route::post('mobile_form_11_image', 'MobileUploadsController@mobileForm11Image');
 Route::post('mobile_graduity_form_image', 'MobileUploadsController@mobileGraduityFormImage');
 Route::post('mobile_app_letter_image', 'MobileUploadsController@mobileAppLetterImage');
+Route::post('mobile_pds_form_image', 'MobileUploadsController@mobilePdsFormImage');
 
 
 Route::post('company_pds', 'CompanyUploadsController@pds');

@@ -16,7 +16,7 @@ class User extends Authenticatable
    * @var array
    */
   protected $fillable = [
-    'name', 'email', 'password', 'phone', 'doj', 'dob', 'company_designation_id', 'company_state_branch_id', 'pf_no', 'uan_no', 'esi_no', 'active', 'salary', 'image_path', 'employee_code', 'asm_area', 'asm_name', 'uid_no', 'company_state_id', 'address', 'unique_id', 'appointment_letter', 'contract_expiry', 'resume_path', 'photo_path', 'residential_proof_path', 'education_proof_path', 'pan_card_path', 'adhaar_card_path', 'esi_card_path', 'cancelled_cheque_path', 'salary_slip_path', 'birth_certificate_path', 'passport_path', 'driving_license_path', 'school_leaving_certificate_path', 'mark_sheet_path', 'experience_certificate_path', 'prev_emp_app_letter_path', 'form_2_path', 'form_11_path', 'graduity_form_path', 'app_letter_path'
+    'name', 'email', 'password', 'phone', 'doj', 'dob', 'company_designation_id', 'company_state_branch_id', 'pf_no', 'uan_no', 'esi_no', 'active', 'salary', 'image_path', 'employee_code', 'asm_area', 'asm_name', 'uid_no', 'company_state_id', 'address', 'unique_id', 'appointment_letter', 'contract_expiry', 'resume_path', 'photo_path', 'residential_proof_path', 'education_proof_path', 'pan_card_path', 'adhaar_card_path', 'esi_card_path', 'cancelled_cheque_path', 'salary_slip_path', 'birth_certificate_path', 'passport_path', 'driving_license_path', 'school_leaving_certificate_path', 'mark_sheet_path', 'experience_certificate_path', 'prev_emp_app_letter_path', 'form_2_path', 'form_11_path', 'graduity_form_path', 'app_letter_path', 'pds_path'
   ];
 
   /**
