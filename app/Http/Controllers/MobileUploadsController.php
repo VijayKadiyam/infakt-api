@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\UserAppointmentLetter;
 use Illuminate\Support\Facades\Storage;
 
 class MobileUploadsController extends Controller
@@ -444,6 +445,32 @@ class MobileUploadsController extends Controller
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->pds_form_path = $path;
     $user->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function mobileAppointmentLetterSign(Request $request)
+  {
+    $request->validate([
+      'letter_id'  =>  'required'
+    ]);
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'appointment_letters/' . $request->letter_id . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $appointmentLetters = UserAppointmentLetter::find($request->letter_id)->first();
+    $appointmentLetters->signed  = 1;
+    $appointmentLetters->sign_path = $path;
+    $appointmentLetters->update();
 
     return response()->json([
       'data'  => [
