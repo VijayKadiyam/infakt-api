@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\UserAppointmentLetter;
+use App\UserExperienceLetter;
 use Illuminate\Support\Facades\Storage;
 
 class MobileUploadsController extends Controller
@@ -467,10 +468,36 @@ class MobileUploadsController extends Controller
 
     Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
 
-    $appointmentLetters = UserAppointmentLetter::find($request->letter_id);
-    $appointmentLetters->signed  = 1;
-    $appointmentLetters->sign_path = $path;
-    $appointmentLetters->update();
+    $appointmentLetter = UserAppointmentLetter::find($request->letter_id);
+    $appointmentLetter->signed  = 1;
+    $appointmentLetter->sign_path = $path;
+    $appointmentLetter->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function mobileExperienceLetterSign(Request $request)
+  {
+    $request->validate([
+      'letter_id'  =>  'required'
+    ]);
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'experience_letters/' . $request->letter_id . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $experienceLetter = UserExperienceLetter::find($request->letter_id);
+    $experienceLetter->signed  = 1;
+    $experienceLetter->sign_path = $path;
+    $experienceLetter->update();
 
     return response()->json([
       'data'  => [
