@@ -140,6 +140,11 @@ Route::post('mobile_pds_form_image', 'MobileUploadsController@mobilePdsFormImage
 Route::post('mobile_appointment_letter_sign', 'MobileUploadsController@mobileAppointmentLetterSign');
 Route::post('mobile_experience_letter_sign', 'MobileUploadsController@mobileExperienceLetterSign');
 Route::post('mobile_renewal_letter_sign', 'MobileUploadsController@mobileRenewalLetterSign');
+Route::post('mobile_warning_letter_sign', 'MobileUploadsController@mobileWarningLetterSign');
+Route::post('mobile_promotion_letter_sign', 'MobileUploadsController@mobilePromotionLetterSign');
+Route::post('mobile_increemental_letter_sign', 'MobileUploadsController@mobileIncreementalLetterSign');
+Route::post('mobile_termination_letter_sign', 'MobileUploadsController@mobileTerminationLetterSign');
+Route::post('mobile_full_finalletter_sign', 'MobileUploadsController@mobileFullFinalLetterSign');
 
 
 Route::post('company_pds', 'CompanyUploadsController@pds');

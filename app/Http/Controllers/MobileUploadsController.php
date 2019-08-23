@@ -7,6 +7,11 @@ use App\User;
 use App\UserAppointmentLetter;
 use App\UserExperienceLetter;
 use App\UserRenewalLetter;
+use App\UserWarningLetter;
+use App\UserPromotionLetter;
+use App\UserIncreementalLetter;
+use App\UserTerminationLetter;
+use App\UserFullFinalLetter;
 use Illuminate\Support\Facades\Storage;
 
 class MobileUploadsController extends Controller
@@ -525,6 +530,136 @@ class MobileUploadsController extends Controller
     $renewalLetter->signed  = 1;
     $renewalLetter->sign_path = $path;
     $renewalLetter->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function mobileWarningLetterSign(Request $request)
+  {
+    $request->validate([
+      'letter_id'  =>  'required'
+    ]);
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'warning_letters/' . $request->letter_id . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $warningLetter = UserWarningLetter::find($request->letter_id);
+    $warningLetter->signed  = 1;
+    $warningLetter->sign_path = $path;
+    $warningLetter->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function mobilePromotionLetterSign(Request $request)
+  {
+    $request->validate([
+      'letter_id'  =>  'required'
+    ]);
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'promotion_letters/' . $request->letter_id . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $promotionLetter = UserPromotionLetter::find($request->letter_id);
+    $promotionLetter->signed  = 1;
+    $promotionLetter->sign_path = $path;
+    $promotionLetter->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function mobileIncreementalLetterSign(Request $request)
+  {
+    $request->validate([
+      'letter_id'  =>  'required'
+    ]);
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'increemental_letters/' . $request->letter_id . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $increementalLetter = UserIncreementalLetter::find($request->letter_id);
+    $increementalLetter->signed  = 1;
+    $increementalLetter->sign_path = $path;
+    $increementalLetter->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function mobileTerminationLetterSign(Request $request)
+  {
+    $request->validate([
+      'letter_id'  =>  'required'
+    ]);
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'termination_letters/' . $request->letter_id . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $terminationLetter = UserTerminationLetter::find($request->letter_id);
+    $terminationLetter->signed  = 1;
+    $terminationLetter->sign_path = $path;
+    $terminationLetter->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function mobileFullFinalLetterSign(Request $request)
+  {
+    $request->validate([
+      'letter_id'  =>  'required'
+    ]);
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'full_final_letters/' . $request->letter_id . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $fullFinalLetter = UserFullFinalLetter::find($request->letter_id);
+    $fullFinalLetter->signed  = 1;
+    $fullFinalLetter->sign_path = $path;
+    $fullFinalLetter->update();
 
     return response()->json([
       'data'  => [
