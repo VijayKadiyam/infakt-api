@@ -19,7 +19,7 @@ class Company extends Model
   public function users()
   {
     return $this->belongsToMany(User::class)
-      ->with('roles', 'companies', 'company_designation', 'company_state', 'company_state_branch', 'supervisors', 'user_attendances');
+      ->with('roles', 'companies', 'company_designation', 'company_state', 'company_state_branch', 'supervisors', 'user_attendances', 'user_appointment_letters');
   }
 
   /*
