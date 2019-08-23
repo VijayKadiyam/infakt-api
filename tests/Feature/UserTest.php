@@ -215,7 +215,8 @@ class UserTest extends TestCase
             'form_2_path',
             'form_11_path',
             'graduity_form_path',
-            'app_letter_path'
+            'app_letter_path',
+            'pds_form_path'
           ],
           'success'
         ]);
@@ -286,7 +287,8 @@ class UserTest extends TestCase
             'form_2_path',
             'form_11_path',
             'graduity_form_path',
-            'app_letter_path'
+            'app_letter_path',
+            'pds_form_path'
           ],
           'success'
         ]);
@@ -363,7 +365,8 @@ class UserTest extends TestCase
             'form_2_path',
             'form_11_path',
             'graduity_form_path',
-            'app_letter_path'
+            'app_letter_path',
+            'pds_form_path'
           ],
           'success'
         ]);

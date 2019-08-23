@@ -123,6 +123,9 @@ class UserAppointmentLetterTest extends TestCase
             'sign_path',
             'created_at',
             'updated_at',
+            'start_date',
+            'end_date',
+            'stc_issue_date',
           ]
       ]);
   }

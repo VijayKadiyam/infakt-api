@@ -119,6 +119,7 @@ class CompanyUserTest extends TestCase
             'form_11_path',
             'graduity_form_path',
             'app_letter_path',
+            'pds_form_path',
             'companies',
           ]
         ]);;;
