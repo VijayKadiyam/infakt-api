@@ -144,7 +144,7 @@ Route::post('mobile_warning_letter_sign', 'MobileUploadsController@mobileWarning
 Route::post('mobile_promotion_letter_sign', 'MobileUploadsController@mobilePromotionLetterSign');
 Route::post('mobile_increemental_letter_sign', 'MobileUploadsController@mobileIncreementalLetterSign');
 Route::post('mobile_termination_letter_sign', 'MobileUploadsController@mobileTerminationLetterSign');
-Route::post('mobile_full_finalletter_sign', 'MobileUploadsController@mobileFullFinalLetterSign');
+Route::post('mobile_full_final_letter_sign', 'MobileUploadsController@mobileFullFinalLetterSign');
 
 
 Route::post('company_pds', 'CompanyUploadsController@pds');
