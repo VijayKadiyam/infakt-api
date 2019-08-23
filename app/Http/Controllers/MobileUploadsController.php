@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\UserAppointmentLetter;
 use App\UserExperienceLetter;
+use App\UserRenewalLetter;
 use Illuminate\Support\Facades\Storage;
 
 class MobileUploadsController extends Controller
@@ -498,6 +499,32 @@ class MobileUploadsController extends Controller
     $experienceLetter->signed  = 1;
     $experienceLetter->sign_path = $path;
     $experienceLetter->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function mobileRenewalLetterSign(Request $request)
+  {
+    $request->validate([
+      'letter_id'  =>  'required'
+    ]);
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'renewal_letters/' . $request->letter_id . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $renewalLetter = UserRenewalLetter::find($request->letter_id);
+    $renewalLetter->signed  = 1;
+    $renewalLetter->sign_path = $path;
+    $renewalLetter->update();
 
     return response()->json([
       'data'  => [

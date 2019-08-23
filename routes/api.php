@@ -139,6 +139,7 @@ Route::post('mobile_app_letter_image', 'MobileUploadsController@mobileAppLetterI
 Route::post('mobile_pds_form_image', 'MobileUploadsController@mobilePdsFormImage');
 Route::post('mobile_appointment_letter_sign', 'MobileUploadsController@mobileAppointmentLetterSign');
 Route::post('mobile_experience_letter_sign', 'MobileUploadsController@mobileExperienceLetterSign');
+Route::post('mobile_renewal_letter_sign', 'MobileUploadsController@mobileRenewalLetterSign');
 
 
 Route::post('company_pds', 'CompanyUploadsController@pds');
