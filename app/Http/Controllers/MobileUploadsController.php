@@ -467,7 +467,7 @@ class MobileUploadsController extends Controller
 
     Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
 
-    $appointmentLetters = UserAppointmentLetter::find($request->letter_id)->first();
+    $appointmentLetters = UserAppointmentLetter::find($request->letter_id);
     $appointmentLetters->signed  = 1;
     $appointmentLetters->sign_path = $path;
     $appointmentLetters->update();
