@@ -115,6 +115,11 @@ Route::resource('users/{user}/user_increemental_letters', 'UserIncreementalLette
 Route::resource('users/{user}/user_termination_letters', 'UserTerminationLettersController');
 Route::resource('users/{user}/user_full_final_letters', 'UserFullFinalLettersController');
 
+Route::resource('users/{user}/user_work_experiences', 'UserWorkExperiencesController');
+Route::resource('users/{user}/user_educations', 'UserEducationsController');
+Route::resource('users/{user}/user_family_details', 'UserFamilyDetailsController');
+Route::resource('users/{user}/user_references', 'UserReferencesController');
+
 Route::post('user_profile_image', 'UserUploadsController@profileImage');
 
 Route::post('mobile_photo_image', 'MobileUploadsController@mobilePhotoImage');
