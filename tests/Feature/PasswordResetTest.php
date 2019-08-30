@@ -124,7 +124,8 @@ class PasswordResetTest extends TestCase
             'bank_acc_no',
             'bank_ifsc_code',
             'bank_branch_name',
-            'data_submitted'
+            'data_submitted',
+            'is_fresher'
           ]
         ]);
   }

@@ -104,6 +104,7 @@ class MeTest extends TestCase
             'bank_ifsc_code',
             'bank_branch_name',
             'data_submitted',
+            'is_fresher',
             'roles',
             'companies'
           ],

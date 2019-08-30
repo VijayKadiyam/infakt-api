@@ -151,6 +151,7 @@ class CompanyUserTest extends TestCase
             'bank_ifsc_code',
             'bank_branch_name',
             'data_submitted',
+            'is_fresher',
             'companies',
           ]
         ]);;;
