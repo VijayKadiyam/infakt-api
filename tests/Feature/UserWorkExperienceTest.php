@@ -152,7 +152,8 @@ class UserWorkExperienceTest extends TestCase
             'esic_no',
             'created_at',
             'updated_at',
-          ]
+          ],
+          'success'
       ]);
   }
 

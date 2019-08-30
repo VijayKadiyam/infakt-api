@@ -64,7 +64,8 @@ class UserWorkExperiencesController extends Controller
     $userWorkExperience->update($request->all());
       
     return response()->json([
-      'data'  =>  $userWorkExperience
+      'data'  =>  $userWorkExperience,
+      'success' =>  true
     ], 200);
   }
 }
