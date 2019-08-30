@@ -14,7 +14,7 @@ class UpdateUsers14Table extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->integer('is_fresher')->default(0);
+            $table->boolean('is_fresher')->default(false);
         });
     }
 

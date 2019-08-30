@@ -38,7 +38,8 @@ class UserWorkExperiencesController extends Controller
     $user->user_work_experiences()->save($userWorkExperience);
 
     return response()->json([
-      'data'    =>  $userWorkExperience
+      'data'    =>  $userWorkExperience,
+      'success' =>  true
     ], 201); 
   }
 

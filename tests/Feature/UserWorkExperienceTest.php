@@ -89,7 +89,8 @@ class UserWorkExperienceTest extends TestCase
             'updated_at',
             'created_at',
             'id',
-          ]
+          ],
+          'success'
         ]);
   }
 
