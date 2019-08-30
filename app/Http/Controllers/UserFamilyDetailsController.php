@@ -38,14 +38,16 @@ class UserFamilyDetailsController extends Controller
     $user->user_family_details()->save($userFamilyDetail);
 
     return response()->json([
-      'data'    =>  $userFamilyDetail
+      'data'    =>  $userFamilyDetail,
+      'success' =>  true
     ], 201); 
   }
 
   public function show(User $user, UserFamilyDetail $userFamilyDetail)
   {
     return response()->json([
-      'data'   =>  $userFamilyDetail
+      'data'   =>  $userFamilyDetail,
+      'success' =>  true
     ], 200);   
   }
 
@@ -63,7 +65,8 @@ class UserFamilyDetailsController extends Controller
     $userFamilyDetail->update($request->all());
       
     return response()->json([
-      'data'  =>  $userFamilyDetail
+      'data'  =>  $userFamilyDetail,
+      'success' =>  true
     ], 200);
   }
 }

@@ -81,7 +81,8 @@ class UserEducationTest extends TestCase
             'updated_at',
             'created_at',
             'id',
-          ]
+          ],
+          'success'
         ]);
   }
 
@@ -139,7 +140,8 @@ class UserEducationTest extends TestCase
             'percent',
             'created_at',
             'updated_at',
-          ]
+          ],
+          'success'
       ]);
   }
 

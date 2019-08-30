@@ -36,7 +36,8 @@ class UserEducationsController extends Controller
     $user->user_educations()->save($userEducation);
 
     return response()->json([
-      'data'    =>  $userEducation
+      'data'    =>  $userEducation,
+      'success' =>  true
     ], 201); 
   }
 
@@ -59,7 +60,8 @@ class UserEducationsController extends Controller
     $userEducation->update($request->all());
       
     return response()->json([
-      'data'  =>  $userEducation
+      'data'  =>  $userEducation,
+      'success' =>  true
     ], 200);
   }
 

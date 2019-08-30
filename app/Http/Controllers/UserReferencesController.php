@@ -36,7 +36,8 @@ class UserReferencesController extends Controller
     $user->user_references()->save($userReference);
 
     return response()->json([
-      'data'    =>  $userReference
+      'data'    =>  $userReference,
+      'success' =>  true
     ], 201); 
   }
 
@@ -59,7 +60,8 @@ class UserReferencesController extends Controller
     $userReference->update($request->all());
       
     return response()->json([
-      'data'  =>  $userReference
+      'data'  =>  $userReference,
+      'success' =>  true
     ], 200);
   }
 }

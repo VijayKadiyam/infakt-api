@@ -89,7 +89,8 @@ class UserFamilyDetailTest extends TestCase
             'updated_at',
             'created_at',
             'id',
-          ]
+          ],
+          'success'
         ]);
   }
 
@@ -151,7 +152,8 @@ class UserFamilyDetailTest extends TestCase
             'contact_number',
             'created_at',
             'updated_at',
-          ]
+          ],
+          'success'
       ]);
   }
 }
