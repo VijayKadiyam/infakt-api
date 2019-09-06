@@ -668,5 +668,105 @@ class MobileUploadsController extends Controller
       'success' =>  true
     ]);
   }
+
+  public function mobilePdsFormSign(Request $request)
+  {
+    $request->validate([
+      'userid'  =>  'required'
+    ]);
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'pds_forms/' . $request->userid . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $user = User::find($request->userid);
+    $user->pds_form_sign_path = $path;
+    $user->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function mobileForm2Sign(Request $request)
+  {
+    $request->validate([
+      'userid'  =>  'required'
+    ]);
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'form_2/' . $request->userid . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $user = User::find($request->userid);
+    $user->form_2_sign_path = $path;
+    $user->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function mobileForm11Sign(Request $request)
+  {
+    $request->validate([
+      'userid'  =>  'required'
+    ]);
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'form_11/' . $request->userid . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $user = User::find($request->userid);
+    $user->form_11_sign_path = $path;
+    $user->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function mobileGraduityFormSign(Request $request)
+  {
+    $request->validate([
+      'userid'  =>  'required'
+    ]);
+    $image = $request->image;
+    $name = $request->name;
+
+    $realImage = base64_decode($image);
+    $path = 'graduity_forms/' . $request->userid . '/' . $name;
+
+    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+
+    $user = User::find($request->userid);
+    $user->graduity_form_sign_path = $path;
+    $user->update();
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $path
+      ],
+      'success' =>  true
+    ]);
+  }
 }
 

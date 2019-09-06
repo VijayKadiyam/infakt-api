@@ -157,9 +157,14 @@ class SupervisorUserTest extends TestCase
             'bank_branch_name',
             'data_submitted',
             'is_fresher',
-          'supervisors',
+            'pds_form_sign_path',
+            'form_2_sign_path',
+            'form_11_sign_path',
+            'graduity_form_sign_path',
+            'supervisors',
 
         ]
       ]);
   }
 }
+  

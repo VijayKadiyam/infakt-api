@@ -150,6 +150,10 @@ Route::post('mobile_promotion_letter_sign', 'MobileUploadsController@mobilePromo
 Route::post('mobile_increemental_letter_sign', 'MobileUploadsController@mobileIncreementalLetterSign');
 Route::post('mobile_termination_letter_sign', 'MobileUploadsController@mobileTerminationLetterSign');
 Route::post('mobile_full_final_letter_sign', 'MobileUploadsController@mobileFullFinalLetterSign');
+Route::post('mobile_pds_form_sign', 'MobileUploadsController@mobilePdsFormSign');
+Route::post('mobile_form_2_sign', 'MobileUploadsController@mobileForm2Sign');
+Route::post('mobile_form_11_sign', 'MobileUploadsController@mobileForm11Sign');
+Route::post('mobile_graduity_form_sign', 'MobileUploadsController@mobileGraduityFormSign');
 
 
 Route::post('company_pds', 'CompanyUploadsController@pds');
@@ -171,3 +175,10 @@ Route::post('company_online_claim', 'CompanyUploadsController@online_claim');
 Route::post('company_kyc_update', 'CompanyUploadsController@kyc_update');
 Route::post('company_kyc_update', 'CompanyUploadsController@kyc_update');
 Route::post('company_graduity_form_a', 'CompanyUploadsController@graduity_form_a');
+
+Route::get('pds-forms/{id}', 'FormsController@pdsForm');
+Route::get('form-2/{id}', 'FormsController@form2');
+Route::get('form-11/{id}', 'FormsController@form11');
+Route::get('graduity-forms/{id}', 'FormsController@graduityForm');
+
+Route::get('welcome-email', 'EmailsController@welcomeEmail');
