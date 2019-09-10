@@ -31,6 +31,12 @@ class UserAttendancesController extends Controller
                           ->where('user_id', '=', $request->user()->id)->latest()->get();
     }
 
+    if($request->month && $request->option == 'all') {
+      $userAttendances = UserAttendance::with('user_attendance_breaks')
+                          ->whereMonth('date', '=', $request->month)
+                          ->latest()->get();
+    }
+
     if($request->searchDate) {
       $date = $request->searchDate;
       $userAttendances = request()->company->users()->with(['user_attendances' => function($q) use($date) {
