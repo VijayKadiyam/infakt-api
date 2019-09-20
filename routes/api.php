@@ -182,3 +182,4 @@ Route::get('form-11/{id}', 'FormsController@form11');
 Route::get('graduity-forms/{id}', 'FormsController@graduityForm');
 
 Route::get('welcome-email', 'EmailsController@welcomeEmail');
+Route::get('appointment-letter-email', 'EmailsController@appointmentLetterEmail');

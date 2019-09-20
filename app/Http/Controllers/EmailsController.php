@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Mail;
 use App\User;
+use App\UserAppointmentLetter;
 
 use App\Mail\WelcomeEmail;
+use App\Mail\AppointmentLetterEmail;
 
 class EmailsController extends Controller
 {
@@ -22,5 +24,18 @@ class EmailsController extends Controller
     $client->request('GET', $endpoint);
 
     Mail::to($user->email)->send(new WelcomeEmail($user));
+  }
+
+  public function appointmentLetterEmail(Request $request)
+  {
+    $letter_id =  $request->letter_id;
+    $letter = UserAppointmentLetter::where('id', '=', $letter_id)->first();
+
+    $user_id = $request->userid;
+    $user = User::with('user_work_experiences', 'user_educations', 'user_family_details', 'user_references', 'roles', 'companies', 'company_designation', 'company_state_branch', 'supervisors')
+      ->where('id', '=', $user_id)
+      ->first();
+
+    Mail::to('kvjkumr@gmail.com')->send(new AppointmentLetterEmail($user, $letter));
   }
 }
