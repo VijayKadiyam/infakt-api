@@ -30,6 +30,8 @@ class WelcomeEmail extends Mailable
      */
     public function build()
     {
-        return $this->view('mails.welcome');
+      return $this->view('mails.welcome')
+        ->from(env('MAIL_USERNAME'), env('MAIL_NAME'))
+        ->subject('Welcome to Pousse Management Services Pvt. Ltd.');
     }
 }

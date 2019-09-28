@@ -12,6 +12,12 @@ use App\Mail\AppointmentLetterEmail;
 
 class EmailsController extends Controller
 {
+  public function sendSMS($phone, $designation, $email)
+  {
+    $endpoint = "http://mobicomm.dove-sms.com//submitsms.jsp?user=PousseM&key=fc53bf6154XX&mobile=+91". $phone ."&message=Welcome to PMS family! %0AWe congratulate you on your selection as " . $designation .". %0A %0APlease Click  on the link https://play.google.com/store/apps/details?id=org.pms.dastavej and install the app for sending KYC and Statutory documents for us to issue appointment letter. %0A %0AWe have also mailed same link on your mail id. Your user name will be " . $email . " and password is 123456&senderid=POUSSE&accusage=1";
+    $client = new \GuzzleHttp\Client();
+    $client->request('GET', $endpoint);
+  }
   public function welcomeEmail(Request $request)
   {
     $user_id = $request->userid;
@@ -19,11 +25,11 @@ class EmailsController extends Controller
       ->where('id', '=', $user_id)
       ->first();
 
-    $endpoint = "http://mobicomm.dove-sms.com//submitsms.jsp?user=PousseM&key=fc53bf6154XX&mobile=+91". $user->phone ."&message=Welcome to PMS family! We congratulate you on your selection as " . $user->company_designation['name'] .". Please CLICK THE LINK FOR sending KYC and Statutory documents for us to issue appointment letter. We have also mailed same link on your mail id. Your user name will be " . $user->email . " and password is 123456&senderid=POUSSE&accusage=1";
-    $client = new \GuzzleHttp\Client();
-    $client->request('GET', $endpoint);
+    $this->sendSMS('9579862371', $user->company_designation['name'], $user->email);
 
-    Mail::to($user->email)->send(new WelcomeEmail($user));
+    Mail::to($user->email)
+      ->cc('letters@pousse.in')
+      ->send(new WelcomeEmail($user));
   }
 
   public function appointmentLetterEmail(Request $request)
@@ -36,6 +42,8 @@ class EmailsController extends Controller
       ->where('id', '=', $user_id)
       ->first();
 
-    Mail::to('kvjkumr@gmail.com')->send(new AppointmentLetterEmail($user, $letter));
+    Mail::to($user->email)
+      ->cc('letters@pousse.in')
+      ->send(new AppointmentLetterEmail($user, $letter));
   }
 }

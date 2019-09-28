@@ -35,9 +35,9 @@ class AppointmentLetterEmail extends Mailable
       $data['user'] = $this->user;
       $data['letter'] = $this->letter;
 
-      $pdf = PDF::loadView('mails.appointment-letter', $data);
+      $pdf = PDF::loadView('letters.al', $data);
 
-      return $this->view('mails.appointment-letter')
+      return $this->view('mails.al')
         ->from(env('MAIL_USERNAME'), env('MAIL_NAME'))
         ->subject($this->user->employee_code . ' | Appointment Letter | PMS')
         ->attachData($pdf->output(), "appointment-letter.pdf");

@@ -33,5 +33,3 @@ Thanking you in advance for your prompt action.
 For Poussé Management Services Pvt. Ltd !!!
 <br><br>
 <img src="https://pmsallcdn.s3.ap-south-1.amazonaws.com/documentation/authorized-signatory.png" height="100px; width: 200px;">
-<br>
-Authorized Signatory
