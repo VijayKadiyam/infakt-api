@@ -59,6 +59,10 @@ class UsersController extends Controller
 
     $user  = $request->all();
     $user['password'] = bcrypt('123456');
+    $user['password_backup'] = bcrypt('123456');
+    // $password = mt_rand(100000, 999999);
+    // $user['password'] = $password;
+    // $user['password_backup'] = $password;
 
     $user = new User($user);
     $user->save();
