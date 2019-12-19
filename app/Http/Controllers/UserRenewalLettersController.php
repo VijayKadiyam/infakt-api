@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\UserRenewalLetter;
 use App\User;
 
+
 class UserRenewalLettersController extends Controller
 {
   public function __construct()

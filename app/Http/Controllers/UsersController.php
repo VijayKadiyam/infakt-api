@@ -80,7 +80,7 @@ class UsersController extends Controller
   public function show($id)
   {
     $user = User::where('id' , '=', $id)
-      ->with('roles', 'companies', 'company_designation', 'company_state_branch', 'supervisors')->first();
+      ->with('roles', 'companies', 'company_designation', 'company_state_branch', 'supervisors', 'notifications')->first();
 
     return response()->json([
       'data'  =>  $user,

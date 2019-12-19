@@ -102,6 +102,7 @@ class UserTest extends TestCase
             'pf_no',
             'uan_no',
             'esi_no',
+            'password_backup',
             'updated_at',
             'created_at',
             'id',

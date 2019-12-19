@@ -14,6 +14,8 @@ use App\UserTerminationLetter;
 use App\UserFullFinalLetter;
 use Illuminate\Support\Facades\Storage;
 
+use App\Http\Controllers\EmailsController;
+
 class MobileUploadsController extends Controller
 {
   public function __construct()
@@ -479,6 +481,14 @@ class MobileUploadsController extends Controller
     $appointmentLetter->sign_path = $path;
     $appointmentLetter->update();
 
+    $request = new Request([
+      'letter_id' =>  $appointmentLetter->id,
+      'userid'    =>  $appointmentLetter->user_id,
+    ]); ;
+
+    $emailController = new EmailsController();
+    $emailController->appointmentLetterEmail($request);
+
     return response()->json([
       'data'  => [
         'image_path'  =>  $path
@@ -504,6 +514,14 @@ class MobileUploadsController extends Controller
     $experienceLetter->signed  = 1;
     $experienceLetter->sign_path = $path;
     $experienceLetter->update();
+
+    $request = new Request([
+      'letter_id' =>  $experienceLetter->id,
+      'userid'    =>  $experienceLetter->user_id,
+    ]); ;
+
+    $emailController = new EmailsController();
+    $emailController->experienceLetterEmail($request);
 
     return response()->json([
       'data'  => [
@@ -531,6 +549,14 @@ class MobileUploadsController extends Controller
     $renewalLetter->sign_path = $path;
     $renewalLetter->update();
 
+    $request = new Request([
+      'letter_id' =>  $renewalLetter->id,
+      'userid'    =>  $renewalLetter->user_id,
+    ]); ;
+
+    $emailController = new EmailsController();
+    $emailController->renewalLetterEmail($request);
+
     return response()->json([
       'data'  => [
         'image_path'  =>  $path
@@ -556,6 +582,14 @@ class MobileUploadsController extends Controller
     $warningLetter->signed  = 1;
     $warningLetter->sign_path = $path;
     $warningLetter->update();
+
+    $request = new Request([
+      'letter_id' =>  $warningLetter->id,
+      'userid'    =>  $warningLetter->user_id,
+    ]); ;
+
+    $emailController = new EmailsController();
+    $emailController->warningLetterEmail($request);
 
     return response()->json([
       'data'  => [
@@ -583,6 +617,14 @@ class MobileUploadsController extends Controller
     $promotionLetter->sign_path = $path;
     $promotionLetter->update();
 
+    $request = new Request([
+      'letter_id' =>  $promotionLetter->id,
+      'userid'    =>  $promotionLetter->user_id,
+    ]); ;
+
+    $emailController = new EmailsController();
+    $emailController->promotionLetterEmail($request);
+
     return response()->json([
       'data'  => [
         'image_path'  =>  $path
@@ -608,6 +650,14 @@ class MobileUploadsController extends Controller
     $increementalLetter->signed  = 1;
     $increementalLetter->sign_path = $path;
     $increementalLetter->update();
+
+    $request = new Request([
+      'letter_id' =>  $increementalLetter->id,
+      'userid'    =>  $increementalLetter->user_id,
+    ]); ;
+
+    $emailController = new EmailsController();
+    $emailController->increementalLetterEmail($request);
 
     return response()->json([
       'data'  => [
@@ -635,6 +685,14 @@ class MobileUploadsController extends Controller
     $terminationLetter->sign_path = $path;
     $terminationLetter->update();
 
+    $request = new Request([
+      'letter_id' =>  $terminationLetter->id,
+      'userid'    =>  $terminationLetter->user_id,
+    ]); ;
+
+    $emailController = new EmailsController();
+    $emailController->terminationLetterEmail($request);
+
     return response()->json([
       'data'  => [
         'image_path'  =>  $path
@@ -660,6 +718,15 @@ class MobileUploadsController extends Controller
     $fullFinalLetter->signed  = 1;
     $fullFinalLetter->sign_path = $path;
     $fullFinalLetter->update();
+
+    $request = new Request([
+      'letter_id' =>  $fullFinalLetter->id,
+      'userid'    =>  $fullFinalLetter->user_id,
+    ]); ;
+
+    $emailController = new EmailsController();
+    $emailController->fullFinalLetterEmail($request);
+
 
     return response()->json([
       'data'  => [

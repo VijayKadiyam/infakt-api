@@ -120,6 +120,8 @@ Route::resource('users/{user}/user_educations', 'UserEducationsController');
 Route::resource('users/{user}/user_family_details', 'UserFamilyDetailsController');
 Route::resource('users/{user}/user_references', 'UserReferencesController');
 
+Route::resource('users/{user}/notifications', 'NotificationsController');
+
 Route::post('user_profile_image', 'UserUploadsController@profileImage');
 
 Route::post('mobile_photo_image', 'MobileUploadsController@mobilePhotoImage');
@@ -183,3 +185,11 @@ Route::get('graduity-forms/{id}', 'FormsController@graduityForm');
 
 Route::get('welcome-email', 'EmailsController@welcomeEmail');
 Route::get('appointment-letter-email', 'EmailsController@appointmentLetterEmail');
+Route::get('renewal-letter-email', 'EmailsController@renewalLetterEmail');
+Route::get('experience-letter-email', 'EmailsController@experienceLetterEmail');
+Route::get('warning-letter-email', 'EmailsController@warningLetterEmail');
+Route::get('promotion-letter-email', 'EmailsController@promotionLetterEmail');
+Route::get('increemental-letter-email', 'EmailsController@increementalLetterEmail');
+Route::get('termination-letter-email', 'EmailsController@terminationLetterEmail');
+Route::get('full-final-letter-email', 'EmailsController@fullFinalLetterEmail');
+
