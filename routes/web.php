@@ -60,29 +60,29 @@ Route::get('monthly', function(Request $request) {
     // West Bengal
     $attendances = [];
     $attendances[] = UserAttendance::where('user_id', '=', 123)
-      ->whereMonth('date', '=', 12)
+      ->whereMonth('date', '=', 1)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
     $attendances[] = UserAttendance::where('user_id', '=', 126)
-      ->whereMonth('date', '=', 12)
+      ->whereMonth('date', '=', 1)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
     $attendances[] = UserAttendance::where('user_id', '=', 127)
-      ->whereMonth('date', '=', 12)
+      ->whereMonth('date', '=', 1)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 128)
-      ->whereMonth('date', '=', 12)
+      ->whereMonth('date', '=', 1)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 201)
-      ->whereMonth('date', '=', 12)
+      ->whereMonth('date', '=', 1)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
@@ -286,7 +286,7 @@ Route::get('monthly', function(Request $request) {
     // Gujarat
     $attendances = [];
     $attendances[] = UserAttendance::where('user_id', '=', 234)
-      ->whereMonth('date', '=', 12)
+      ->whereMonth('date', '=', 1)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
@@ -301,14 +301,14 @@ Route::get('monthly', function(Request $request) {
     //   ->orderBy('date', 'ASC')
     //   ->get();
 
-    $attendances[] = UserAttendance::where('user_id', '=', 237)
-      ->whereMonth('date', '=', 12)
-      ->with('user')
-      ->orderBy('date', 'ASC')
-      ->get();
+    // $attendances[] = UserAttendance::where('user_id', '=', 237)
+    //   ->whereMonth('date', '=', 12)
+    //   ->with('user')
+    //   ->orderBy('date', 'ASC')
+    //   ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 187)
-      ->whereMonth('date', '=', 12)
+      ->whereMonth('date', '=', 1)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();

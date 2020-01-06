@@ -1,0 +1,7 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=~/public_html/
+    - /bin/cp -R ~/repositories/ems-api/ $DEPLOYPATH
+    - sh ~/public_html/ems-api/deploy.sh 2>&1
+    

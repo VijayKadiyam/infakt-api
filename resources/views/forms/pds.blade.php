@@ -315,6 +315,7 @@
       <b>Date:</b>
     </div>
     <div style="float: left; width: 50%">
+      {{ env('AWS_LINK') }}
       <img src="{{ env('AWS_LINK') }}{{ $user->pds_form_sign_path }}" style="width: 100px; height: 100px;">
       <br>
       <b>Applicant’s Signature and Name</b>
