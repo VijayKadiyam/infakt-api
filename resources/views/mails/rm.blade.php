@@ -654,17 +654,17 @@
         <li class="bar nr_4 blue" style="height: 70px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount4 }})% </span></li> -->
 
         <li class="bar nr_1 blue" 
-          style="height: 90px;"
+          style="height: 75px;"
         ><div class="top"></div><div class="bottom"></div><span>({{ $pcount1 }})%</span></li>
-        <li class="bar nr_2 blue" style="height: 50px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount2 }})%</span></li>
+        <li class="bar nr_2 blue" style="height: 55px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount2 }})%</span></li>
         <li class="bar nr_3 blue" style="height: 20px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount3 }})%</span></li>
-        <li class="bar nr_4 blue" style="height: 80px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount4 }})% </span></li>
+        <li class="bar nr_4 blue" style="height: 75px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount4 }})% </span></li>
       </ul> 
     </div>
     
     <!-- graph label -->
-    <div class="label"><span>Graph: </span>PJP Adhered Report for the Month of December 2019</div>
-    <!-- <div class="label"><span>Graph: </span>PJP Report for the Month of December 2019</div> -->
+    <div class="label"><span>Graph: </span>PJP Adhered Report for the Month of January 2020</div>
+    <!-- <div class="label"><span>Graph: </span>PJP Report for the Month of January 2020</div> -->
   </div>
 
   <br>
@@ -707,8 +707,8 @@
     </div>
     
     <!-- graph label -->
-    <div class="label"><span>Graph: </span>Cumulative Report for the Month of December 2019</div>
-    <!-- <div class="label"><span>Graph: </span>PJP Report for the Month of December 2019</div> -->
+    <div class="label"><span>Graph: </span>Cumulative Report for the Month of January 2020</div>
+    <!-- <div class="label"><span>Graph: </span>PJP Report for the Month of January 2020</div> -->
   </div>
 
   <br>

@@ -64,11 +64,12 @@ Route::get('monthly', function(Request $request) {
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
-    $attendances[] = UserAttendance::where('user_id', '=', 126)
-      ->whereMonth('date', '=', 1)
-      ->with('user')
-      ->orderBy('date', 'ASC')
-      ->get();
+
+    // $attendances[] = UserAttendance::where('user_id', '=', 126)
+    //   ->whereMonth('date', '=', 1)
+    //   ->with('user')
+    //   ->orderBy('date', 'ASC')
+    //   ->get();
     $attendances[] = UserAttendance::where('user_id', '=', 127)
       ->whereMonth('date', '=', 1)
       ->with('user')
@@ -307,11 +308,11 @@ Route::get('monthly', function(Request $request) {
     //   ->orderBy('date', 'ASC')
     //   ->get();
 
-    $attendances[] = UserAttendance::where('user_id', '=', 187)
-      ->whereMonth('date', '=', 1)
-      ->with('user')
-      ->orderBy('date', 'ASC')
-      ->get();
+    // $attendances[] = UserAttendance::where('user_id', '=', 187)
+    //   ->whereMonth('date', '=', 1)
+    //   ->with('user')
+    //   ->orderBy('date', 'ASC')
+    //   ->get();
 
     for($a = 0; $a < sizeof($attendances); $a++)
     {
