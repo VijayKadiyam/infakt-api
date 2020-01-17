@@ -52,7 +52,7 @@ class CrudeUsersController extends Controller
           $data = [
             'name'            =>  $user->name,
             'email'           =>  $user->email,
-            'phone'           =>  $user->phone,
+            'phone'           =>  $user->phone == '' ? 0 : $user->phone,
             'password'        =>  bcrypt('123456'),
             'password_backup' =>  bcrypt('123456'),
             'active'          =>  1
