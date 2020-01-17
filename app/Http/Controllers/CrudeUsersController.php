@@ -25,6 +25,8 @@ class CrudeUsersController extends Controller
 
   public function uploadUser(Request $request)
   {
+    set_time_limit(0);
+    
     if ($request->hasFile('userData')) {
       $file = $request->file('userData');
 
