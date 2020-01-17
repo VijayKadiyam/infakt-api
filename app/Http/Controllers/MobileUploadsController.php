@@ -31,7 +31,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'users/' . request()->user()->id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->photo_path = $path;
@@ -53,7 +53,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'users/' . request()->user()->id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->residential_proof_path = $path;
@@ -75,7 +75,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'users/' . request()->user()->id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->education_proof_path = $path;
@@ -97,7 +97,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'users/' . request()->user()->id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->pan_card_path = $path;
@@ -119,7 +119,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'users/' . request()->user()->id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->adhaar_card_path = $path;
@@ -141,7 +141,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'users/' . request()->user()->id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->esi_card_path = $path;
@@ -163,7 +163,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'users/' . request()->user()->id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->cancelled_cheque_path = $path;
@@ -185,7 +185,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'users/' . request()->user()->id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->salary_slip_path = $path;
@@ -207,7 +207,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'users/' . request()->user()->id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->birth_certificate_path = $path;
@@ -229,7 +229,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'users/' . request()->user()->id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->passport_path = $path;
@@ -251,7 +251,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'users/' . request()->user()->id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->driving_license_path = $path;
@@ -273,7 +273,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'users/' . request()->user()->id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->school_leaving_certificate_path = $path;
@@ -295,7 +295,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'users/' . request()->user()->id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->mark_sheet_path = $path;
@@ -317,7 +317,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'users/' . request()->user()->id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->experience_certificate_path = $path;
@@ -339,7 +339,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'users/' . request()->user()->id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->prev_emp_app_letter_path = $path;
@@ -361,7 +361,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'users/' . request()->user()->id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->form_2_path = $path;
@@ -383,7 +383,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'users/' . request()->user()->id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->form_11_path = $path;
@@ -405,7 +405,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'users/' . request()->user()->id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->graduity_form_path = $path;
@@ -427,7 +427,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'users/' . request()->user()->id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->app_letter_path = $path;
@@ -449,7 +449,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'users/' . request()->user()->id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->pds_form_path = $path;
@@ -474,7 +474,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'appointment_letters/' . $request->letter_id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $appointmentLetter = UserAppointmentLetter::find($request->letter_id);
     $appointmentLetter->signed  = 1;
@@ -508,7 +508,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'experience_letters/' . $request->letter_id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $experienceLetter = UserExperienceLetter::find($request->letter_id);
     $experienceLetter->signed  = 1;
@@ -542,7 +542,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'renewal_letters/' . $request->letter_id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $renewalLetter = UserRenewalLetter::find($request->letter_id);
     $renewalLetter->signed  = 1;
@@ -576,7 +576,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'warning_letters/' . $request->letter_id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $warningLetter = UserWarningLetter::find($request->letter_id);
     $warningLetter->signed  = 1;
@@ -610,7 +610,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'promotion_letters/' . $request->letter_id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $promotionLetter = UserPromotionLetter::find($request->letter_id);
     $promotionLetter->signed  = 1;
@@ -644,7 +644,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'increemental_letters/' . $request->letter_id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $increementalLetter = UserIncreementalLetter::find($request->letter_id);
     $increementalLetter->signed  = 1;
@@ -678,7 +678,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'termination_letters/' . $request->letter_id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $terminationLetter = UserTerminationLetter::find($request->letter_id);
     $terminationLetter->signed  = 1;
@@ -712,7 +712,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'full_final_letters/' . $request->letter_id . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $fullFinalLetter = UserFullFinalLetter::find($request->letter_id);
     $fullFinalLetter->signed  = 1;
@@ -747,7 +747,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'pds_forms/' . $request->userid . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::find($request->userid);
     $user->pds_form_sign_path = $path;
@@ -772,7 +772,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'form_2/' . $request->userid . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::find($request->userid);
     $user->form_2_sign_path = $path;
@@ -797,7 +797,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'form_11/' . $request->userid . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::find($request->userid);
     $user->form_11_sign_path = $path;
@@ -822,7 +822,7 @@ class MobileUploadsController extends Controller
     $realImage = base64_decode($image);
     $path = 'graduity_forms/' . $request->userid . '/' . $name;
 
-    Storage::disk('s3')->put('documentation/' . $path, $realImage, 'public');
+    Storage::disk('local')->put('documentation/' . $path, $realImage, 'public');
 
     $user = User::find($request->userid);
     $user->graduity_form_sign_path = $path;

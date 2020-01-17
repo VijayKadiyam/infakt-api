@@ -26,7 +26,18 @@ class UsersController extends Controller
       $users = $request->company->users()->with('roles')
         ->whereHas('roles',  function($q) {
           $q->where('name', '!=', 'Admin');
-        })->latest()->get();
+        })
+        ->latest()->get();
+    else if($request->searchEmp) {
+      $users = $request->company->users()->with('roles')
+        ->whereHas('roles',  function($q) {
+          $q->where('name', '!=', 'Admin');
+        })
+        ->where('name', 'LIKE', '%' . $request->searchEmp . '%')
+        ->orWhere('email', 'LIKE', '%' . $request->searchEmp . '%')
+        ->orWhere('phone', 'LIKE', '%' . $request->searchEmp . '%')
+        ->latest()->get();
+    }
     else 
       if($request->role_id) {
         $role = Role::find($request->role_id);

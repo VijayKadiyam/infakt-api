@@ -130,6 +130,25 @@ class UserTest extends TestCase
   }
 
   /** @test */
+  public function list_of_users_of_search()
+  {
+    $this->disableEH();
+    $user = factory(\App\User::class)->create();
+    $user->assignRole(3);
+    $user->assignCompany($this->company->id);
+
+    $this->json('get', '/api/users?searchEmp=' . $user->name, [], $this->headers)
+      ->assertStatus(200)
+      ->assertJsonStructure([
+          'data' => []
+        ]);
+    $this->assertCount(1, User::whereHas('roles',  function($q) {
+                                $q->where('name', '!=', 'Admin');
+                                $q->where('name', '!=', 'Super Admin');
+                              })->get());
+  }
+
+  /** @test */
   function show_single_user_details()
   {
     $this->json('get', "/api/users/1", [], $this->headers)

@@ -193,3 +193,7 @@ Route::get('increemental-letter-email', 'EmailsController@increementalLetterEmai
 Route::get('termination-letter-email', 'EmailsController@terminationLetterEmail');
 Route::get('full-final-letter-email', 'EmailsController@fullFinalLetterEmail');
 
+Route::get('truncate_users', 'CrudeUsersController@truncate');
+Route::get('crude_users', 'CrudeUsersController@index');
+Route::post('upload_user', 'CrudeUsersController@uploadUser');
+Route::get('process_user', 'CrudeUsersController@processUser');

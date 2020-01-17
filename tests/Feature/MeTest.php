@@ -111,7 +111,8 @@ class MeTest extends TestCase
             'graduity_form_sign_path',
             'password_backup',
             'roles',
-            'companies'
+            'companies',
+            'notifications'
           ],
           'success'
         ]);

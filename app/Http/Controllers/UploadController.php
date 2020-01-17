@@ -45,7 +45,7 @@ class UploadController extends Controller
     $realImage = base64_decode($image);
     $path = "profileImages/" . request()->user()->id . '/' . $name;
 
-    Storage::disk('s3')->put($path, $realImage, 'public');
+    Storage::disk('local')->put($path, $realImage, 'public');
 
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->image_path = $path;
@@ -67,7 +67,7 @@ class UploadController extends Controller
     $realImage = base64_decode($image);
     $path = "signatureImages/" . request()->user()->id . '/' . $name;
 
-    Storage::disk('s3')->put($path, $realImage, 'public');
+    Storage::disk('local')->put($path, $realImage, 'public');
 
     $user = User::where('id', '=', request()->user()->id)->first();
     $user->terms_accepted = '1';
@@ -89,7 +89,7 @@ class UploadController extends Controller
     $realImage = base64_decode($image);
     $path = "billImages/" . $id . '/' . $name;
 
-    Storage::disk('s3')->put($path, $realImage, 'public');
+    Storage::disk('local')->put($path, $realImage, 'public');
 
     $planTravellingDetail = PlanTravellingDetail::where('id', '=', $id)->first();
     $planTravellingDetail->image_path = $path;
@@ -111,7 +111,7 @@ class UploadController extends Controller
     $realImage = base64_decode($image);
     $path = "retailerImages/" . $id . '/' . $name;
 
-    Storage::disk('s3')->put($path, $realImage, 'public');
+    Storage::disk('local')->put($path, $realImage, 'public');
 
     $retailer = Retailer::where('id', '=', $id)->first();
     $retailer->image_path = $path;
