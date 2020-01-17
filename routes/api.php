@@ -36,6 +36,7 @@ Route::resource('holidays', 'HolidaysController');
 Route::resource('permissions', 'PermissionsController');
 Route::resource('permission_role', 'PermissionRoleController');
 
+Route::get('users/count', 'UsersController@countUsers');
 Route::resource('users', 'UsersController');
 Route::patch('users/{user}/uniqueID', 'UsersController@checkOrUpdateUniqueID');
 

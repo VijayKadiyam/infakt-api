@@ -139,4 +139,16 @@ class UsersController extends Controller
       'success' =>  $user->unique_id == $request->unique_id ? true : false
     ], 200);
   }
+
+  public function countUsers(Request $request)
+  {
+    $count = $request->company->users()
+      ->whereHas('roles', function($q) { 
+        $q->where('name', '=', 'Employee');
+      })->count();
+
+    return response()->json([
+      'data'  =>  $count
+    ], 200);
+  }
 }
