@@ -72,6 +72,7 @@ class MobileUploadsController extends Controller
     $image = $request->image;
     $name = $request->name;
 
+
     $realImage = base64_decode($image);
     $path = 'users/' . request()->user()->id . '/' . $name;
 
