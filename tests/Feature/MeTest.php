@@ -110,6 +110,7 @@ class MeTest extends TestCase
             'form_11_sign_path',
             'graduity_form_sign_path',
             'password_backup',
+            'gender',
             'roles',
             'companies',
             'notifications'
