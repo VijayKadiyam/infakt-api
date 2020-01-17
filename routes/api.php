@@ -193,7 +193,17 @@ Route::get('increemental-letter-email', 'EmailsController@increementalLetterEmai
 Route::get('termination-letter-email', 'EmailsController@terminationLetterEmail');
 Route::get('full-final-letter-email', 'EmailsController@fullFinalLetterEmail');
 
-Route::get('truncate_users', 'CrudeUsersController@truncate');
 Route::get('crude_users', 'CrudeUsersController@index');
 Route::post('upload_user', 'CrudeUsersController@uploadUser');
 Route::get('process_user', 'CrudeUsersController@processUser');
+Route::get('truncate_users', 'CrudeUsersController@truncate');
+
+Route::get('crude_designations', 'CrudeDesignationsController@index');
+Route::post('upload_designation', 'CrudeDesignationsController@uploadDesignation');
+Route::get('process_designation', 'CrudeDesignationsController@processDesignation');
+Route::get('truncate_designations', 'CrudeDesignationsController@truncate');
+
+Route::get('crude_states', 'CrudeStatesController@index');
+Route::post('upload_state', 'CrudeStatesController@uploadState');
+Route::get('process_state', 'CrudeStatesController@processState');
+Route::get('truncate_states', 'CrudeStatesController@truncate');
