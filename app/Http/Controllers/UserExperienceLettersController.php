@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\UserExperienceLetter;
 use App\User;
+use PDF;
 
 class UserExperienceLettersController extends Controller
 {
   public function __construct()
   {
-    $this->middleware(['auth:api', 'company']);
+    $this->middleware(['auth:api', 'company'])
+      ->except('download');
   }
   public function index(Request $request, User $user)
   {
@@ -54,5 +56,15 @@ class UserExperienceLettersController extends Controller
     return response()->json([
       'data'  =>  $userExperienceLetter
     ], 200);
+  }
+
+  public function download(User $user, UserExperienceLetter $userExperienceLetter)
+  {
+    $data['user'] = $user;
+    $data['letter'] = $userExperienceLetter;
+
+    $pdf = PDF::loadView('letters.el', $data);
+
+    return $pdf->download($user->name . '-experience-letter.pdf');
   }
 }

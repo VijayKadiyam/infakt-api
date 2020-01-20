@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\UserAppointmentLetter;
 use App\User;
+use PDF;
 
 class UserAppointmentLettersController extends Controller
 {
   public function __construct()
   {
-    $this->middleware(['auth:api', 'company']);
+    $this->middleware(['auth:api', 'company'])
+      ->except('download');
   }
 
   public function index(Request $request, User $user)
@@ -55,5 +57,15 @@ class UserAppointmentLettersController extends Controller
     return response()->json([
       'data'  =>  $userAppointmentLetter
     ], 200);
+  }
+
+  public function download(User $user, UserAppointmentLetter $userAppointmentLetter)
+  {
+    $data['user'] = $user;
+    $data['letter'] = $userAppointmentLetter;
+
+    $pdf = PDF::loadView('letters.al', $data);
+
+    return $pdf->download($user->name . '-appointment-letter.pdf');
   }
 }

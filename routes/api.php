@@ -108,9 +108,12 @@ Route::get('geocode', 'GeocodesController@index');
 Route::post('sendEmail', 'SendEmailController@index');
 
 Route::resource('users/{user}/user_appointment_letters', 'UserAppointmentLettersController');
+Route::get('users/{user}/user_appointment_letters/{user_appointment_letter}/download', 'UserAppointmentLettersController@download');
 Route::resource('users/{user}/user_experience_letters', 'UserExperienceLettersController');
+Route::get('users/{user}/user_experience_letters/{user_experience_letter}/download', 'UserExperienceLettersController@download');
 Route::resource('users/{user}/user_warning_letters', 'UserWarningLettersController');
 Route::resource('users/{user}/user_promotion_letters', 'UserPromotionLettersController');
+Route::get('users/{user}/user_promotion_letters/{user_promotion_letter}/download', 'UserPromotionLettersController@download');
 Route::resource('users/{user}/user_renewal_letters', 'UserRenewalLettersController');
 Route::resource('users/{user}/user_increemental_letters', 'UserIncreementalLettersController');
 Route::resource('users/{user}/user_termination_letters', 'UserTerminationLettersController');

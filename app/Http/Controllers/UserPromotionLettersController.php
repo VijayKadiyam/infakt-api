@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\UserPromotionLetter;
 use App\User;
+use PDF;
 
 class UserPromotionLettersController extends Controller
 {
   public function __construct()
   {
-    $this->middleware(['auth:api', 'company']);
+    $this->middleware(['auth:api', 'company'])
+      ->except('download');
   }
 
   public function index(Request $request, User $user)
@@ -55,5 +57,15 @@ class UserPromotionLettersController extends Controller
     return response()->json([
       'data'  =>  $userPromotionLetter
     ], 200);
+  }
+
+  public function download(User $user, UserPromotionLetter $userPromotionLetter)
+  {
+    $data['user'] = $user;
+    $data['letter'] = $userPromotionLetter;
+
+    $pdf = PDF::loadView('letters.pl', $data);
+
+    return $pdf->download($user->name . '-promotion-letter.pdf');
   }
 }
