@@ -163,6 +163,10 @@ class SupervisorUserTest extends TestCase
             'graduity_form_sign_path',
             'password_backup',
             'gender',
+            'pds_form_checked',
+            'form_2_checked', 
+            'form_11_checked', 
+            'graduity_form_checked',
             'supervisors',
 
         ]

@@ -131,7 +131,11 @@ class PasswordResetTest extends TestCase
             'form_11_sign_path',
             'graduity_form_sign_path',
             'password_backup',
-            'gender'
+            'gender',
+            'pds_form_checked',
+            'form_2_checked', 
+            'form_11_checked', 
+            'graduity_form_checked',
           ]
         ]);
   }
