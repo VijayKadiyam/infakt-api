@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Version;
 
 class MeController extends Controller
 {
@@ -23,8 +24,11 @@ class MeController extends Controller
     $user->companies = $user->companies;
     $user->notifications = $user->notifications;
 
+    $version = Version::latest()->first();
+
     return response()->json([
       'data'    =>  $user->toArray(),
+      'version' =>  $version,
       'success' =>  true
     ], 200);
   }

@@ -13,6 +13,9 @@ class VersionsController extends Controller
     if($request->search == 'latest') {
       $version = Version::latest()->first();
     }
+    else
+      $version = Version::latest()->take(20)->get();
+
     return response()->json([
       'data'  =>  $version
     ]);
