@@ -28,6 +28,7 @@ Route::post('login', 'Auth\LoginController@login');
 Route::post('/logout','Auth\LoginController@logout');
 Route::get('/logout','Auth\LoginController@logout');
 
+Route::resource('versions', 'VersionsController');
 Route::resource('roles', 'RolesController');
 Route::resource('role_user', 'RoleUserController');
 
