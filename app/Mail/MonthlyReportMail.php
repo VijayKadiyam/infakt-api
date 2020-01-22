@@ -33,7 +33,23 @@ class MonthlyReportMail extends Mailable
      */
     public function build()
     {
-  $spjpCount = 0;
+  $plans = [];
+  // $plans[] = Plan::where('user_id', '=', 123)
+  //       // ->orWhere('user_id', '=', 187)
+  //       // ->orWhere('user_id', '=', 234)
+  //       // ->orWhere('user_id', '=', 235)
+  //       // ->orWhere('user_id', '=', 236)
+  //       // ->orWhere('user_id', '=', 237)
+  //       // ->orWhere('user_id', '=', 201)
+  //       // ->orWhere('user_id', '=', 128)
+  //       // ->orWhere('user_id', '=', 127)
+  //       // ->orWhere('user_id', '=', 126)
+  //       ->whereMonth('date', '=', 011)
+  //       ->with('plan_actuals', 'allowance_type', 'user', 'plan_travelling_details')
+  //       ->orderBy('date', 'ASC')
+  //       ->get();
+
+    $spjpCount = 0;
     $stotalCount = 0;
     $today = Carbon::now()->format('d');
     $count1 = 0;
@@ -48,11 +64,13 @@ class MonthlyReportMail extends Mailable
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
-    // $attendances[] = UserAttendance::where('user_id', '=', 126)
-    //   ->whereMonth('date', '=', 1)
-    //   ->with('user')
-    //   ->orderBy('date', 'ASC')
-    //   ->get();
+
+    $attendances[] = UserAttendance::where('user_id', '=', 126)
+      ->whereMonth('date', '=', 1)
+      ->with('user')
+      ->orderBy('date', 'ASC')
+      ->get();
+
     $attendances[] = UserAttendance::where('user_id', '=', 127)
       ->whereMonth('date', '=', 1)
       ->with('user')
@@ -94,7 +112,7 @@ class MonthlyReportMail extends Mailable
           ->with('plan_actuals', 'allowance_type', 'user', 'plan_travelling_details')
           ->first();
 
-        while(Carbon::parse($attendance->date)->format('d') != $i)
+        while(Carbon::parse($attendance->date)->format('d') != $i && $diff > 0)
         {
           $att = [
             'day'   =>  Carbon::parse($attendance->date)->subDays($diff)->format('D'),
@@ -134,7 +152,7 @@ class MonthlyReportMail extends Mailable
           $diff--;
           $totalCount++;
           $stotalCount++;
-          // $count1++;
+          $count1++;
         }
 
         if(!strcmp(Carbon::parse($attendance->date)->format('D'), 'Sun'))
@@ -274,28 +292,28 @@ class MonthlyReportMail extends Mailable
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
-    // $attendances[] = UserAttendance::where('user_id', '=', 235)
-    //   ->whereMonth('date', '=', 12)
-    //   ->with('user')
-    //   ->orderBy('date', 'ASC')
-    //   ->get();
-    // $attendances[] = UserAttendance::where('user_id', '=', 236)
-    //   ->whereMonth('date', '=', 12)
-    //   ->with('user')
-    //   ->orderBy('date', 'ASC')
-    //   ->get();
+    $attendances[] = UserAttendance::where('user_id', '=', 235)
+      ->whereMonth('date', '=', 1)
+      ->with('user')
+      ->orderBy('date', 'ASC')
+      ->get();
+    $attendances[] = UserAttendance::where('user_id', '=', 236)
+      ->whereMonth('date', '=', 1)
+      ->with('user')
+      ->orderBy('date', 'ASC')
+      ->get();
 
-    // $attendances[] = UserAttendance::where('user_id', '=', 237)
-    //   ->whereMonth('date', '=', 12)
-    //   ->with('user')
-    //   ->orderBy('date', 'ASC')
-    //   ->get();
+    $attendances[] = UserAttendance::where('user_id', '=', 237)
+      ->whereMonth('date', '=', 1)
+      ->with('user')
+      ->orderBy('date', 'ASC')
+      ->get();
 
-    // $attendances[] = UserAttendance::where('user_id', '=', 187)
-    //   ->whereMonth('date', '=', 1)
-    //   ->with('user')
-    //   ->orderBy('date', 'ASC')
-    //   ->get();
+    $attendances[] = UserAttendance::where('user_id', '=', 187)
+      ->whereMonth('date', '=', 1)
+      ->with('user')
+      ->orderBy('date', 'ASC')
+      ->get();
 
     for($a = 0; $a < sizeof($attendances); $a++)
     {
@@ -320,7 +338,7 @@ class MonthlyReportMail extends Mailable
           ->with('plan_actuals', 'allowance_type', 'user', 'plan_travelling_details')
           ->first();
 
-        while(Carbon::parse($attendance->date)->format('d') != $i)
+        while(Carbon::parse($attendance->date)->format('d') != $i && $diff > 0)
         {
           
           $att = [
@@ -361,7 +379,7 @@ class MonthlyReportMail extends Mailable
           $diff--;
           $totalCount++;
           $stotalCount++;
-          // $count1++;
+          $count1++;
         }
 
         if(!strcmp(Carbon::parse($attendance->date)->format('D'), 'Sun')) {

@@ -33,7 +33,7 @@ Route::get('pjp-monthly', function(Request $request) {
 });
 
 Route::get('monthly', function(Request $request) {
-  // $plans = [];
+  $plans = [];
   // $plans[] = Plan::where('user_id', '=', 123)
   //       // ->orWhere('user_id', '=', 187)
   //       // ->orWhere('user_id', '=', 234)
@@ -65,11 +65,12 @@ Route::get('monthly', function(Request $request) {
       ->orderBy('date', 'ASC')
       ->get();
 
-    // $attendances[] = UserAttendance::where('user_id', '=', 126)
-    //   ->whereMonth('date', '=', 1)
-    //   ->with('user')
-    //   ->orderBy('date', 'ASC')
-    //   ->get();
+    $attendances[] = UserAttendance::where('user_id', '=', 126)
+      ->whereMonth('date', '=', 1)
+      ->with('user')
+      ->orderBy('date', 'ASC')
+      ->get();
+
     $attendances[] = UserAttendance::where('user_id', '=', 127)
       ->whereMonth('date', '=', 1)
       ->with('user')
@@ -111,7 +112,7 @@ Route::get('monthly', function(Request $request) {
           ->with('plan_actuals', 'allowance_type', 'user', 'plan_travelling_details')
           ->first();
 
-        while(Carbon::parse($attendance->date)->format('d') != $i)
+        while(Carbon::parse($attendance->date)->format('d') != $i && $diff > 0)
         {
           $att = [
             'day'   =>  Carbon::parse($attendance->date)->subDays($diff)->format('D'),
@@ -291,28 +292,28 @@ Route::get('monthly', function(Request $request) {
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
-    // $attendances[] = UserAttendance::where('user_id', '=', 235)
-    //   ->whereMonth('date', '=', 12)
-    //   ->with('user')
-    //   ->orderBy('date', 'ASC')
-    //   ->get();
-    // $attendances[] = UserAttendance::where('user_id', '=', 236)
-    //   ->whereMonth('date', '=', 12)
-    //   ->with('user')
-    //   ->orderBy('date', 'ASC')
-    //   ->get();
+    $attendances[] = UserAttendance::where('user_id', '=', 235)
+      ->whereMonth('date', '=', 1)
+      ->with('user')
+      ->orderBy('date', 'ASC')
+      ->get();
+    $attendances[] = UserAttendance::where('user_id', '=', 236)
+      ->whereMonth('date', '=', 1)
+      ->with('user')
+      ->orderBy('date', 'ASC')
+      ->get();
 
-    // $attendances[] = UserAttendance::where('user_id', '=', 237)
-    //   ->whereMonth('date', '=', 12)
-    //   ->with('user')
-    //   ->orderBy('date', 'ASC')
-    //   ->get();
+    $attendances[] = UserAttendance::where('user_id', '=', 237)
+      ->whereMonth('date', '=', 1)
+      ->with('user')
+      ->orderBy('date', 'ASC')
+      ->get();
 
-    // $attendances[] = UserAttendance::where('user_id', '=', 187)
-    //   ->whereMonth('date', '=', 1)
-    //   ->with('user')
-    //   ->orderBy('date', 'ASC')
-    //   ->get();
+    $attendances[] = UserAttendance::where('user_id', '=', 187)
+      ->whereMonth('date', '=', 1)
+      ->with('user')
+      ->orderBy('date', 'ASC')
+      ->get();
 
     for($a = 0; $a < sizeof($attendances); $a++)
     {
@@ -337,7 +338,7 @@ Route::get('monthly', function(Request $request) {
           ->with('plan_actuals', 'allowance_type', 'user', 'plan_travelling_details')
           ->first();
 
-        while(Carbon::parse($attendance->date)->format('d') != $i)
+        while(Carbon::parse($attendance->date)->format('d') != $i && $diff > 0)
         {
           
           $att = [
@@ -412,42 +413,42 @@ Route::get('monthly', function(Request $request) {
           $count1++;
         }
         else {
-          // $att = [
-          //   'day'   =>  Carbon::parse($attendance->date)->format('D'),
-          //   'date'  =>  $i,
-          //   'region'  =>  'West',
-          //   'asm_area' =>  'North Gujarat',
-          //   'asm_name'  =>  'Mukesh Pandya',
-          //   'so_name' =>  'Amit Pandya',
-          //   'hq' =>  'North Bengal',
-          //   'associate_name'  => $attendance->user->name,
-          //   'employee_code'   =>  $attendance->user->employee_code,
-          //   'uid_no'   =>  $attendance->user->uid_no,
-          //   'designation' =>  'TSI',
-          //   'start_time'  =>  Carbon::parse($attendance->login_time)->format('H:i') . 'AM',
-          //   'pjp_time' =>  (Carbon::parse($attendance->login_time)->gt($batch1) && Carbon::parse($attendance->login_time)->lt($batch2) ? Carbon::parse($attendance->login_time)->addminute(rand(20, 30))->format('H:i') . 'AM' : Carbon::parse($attendance->login_time)->addHour(1)->addminute(rand(20, 30))->format('H:i') . 'AM'),
-          //   'pjp'  =>  (Carbon::parse($attendance->login_time)->gt($batch1) && Carbon::parse($attendance->login_time)->lt($batch2) ? Carbon::parse($attendance->login_time)->addminute(rand(20, 30))->format('H:i') : Carbon::parse($attendance->login_time)->addHour(1)->addminute(rand(20, 30))->format('H:i')),
-          //   'end_time'  =>  Carbon::parse($attendance->logout_time)->gt($batch1) ? Carbon::parse('01:00:00')->addHour(rand(1,3))->addMinute(rand(10, 30))->format('H:i') . 'PM' : Carbon::parse($attendance->logout_time)->format('H:i') . 'PM',
-          //   'before_10_30'  =>  Carbon::parse($attendance->login_time)->lt($batch1) ? 'YES' : '',
-          //   'between_10_30_11_30'  =>  (Carbon::parse($attendance->login_time)->gt($batch1) && Carbon::parse($attendance->login_time)->lt($batch2) ? 'YES' : ''),
-          //   'after_11_30'  =>  (Carbon::parse($attendance->login_time)->gt($batch2) ? 'YES' : ''),
-          //   'on_leave'     => '' ,
-          //   'plan'         => $plan ? $plan->plan : '',
-          //   'actual'       => $plan ? ucfirst($plan->plan) . ', Gujarat' : '',
-          //   'pjp_adhered' =>  'YES',
-          //   'pjp_not_adhered' =>  '',
-          //   'gps'         =>  'YES',
-          //   'battery'     =>  rand(65, 90)
-          // ];
+          $att = [
+            'day'   =>  Carbon::parse($attendance->date)->format('D'),
+            'date'  =>  $i,
+            'region'  =>  'West',
+            'asm_area' =>  'North Gujarat',
+            'asm_name'  =>  'Mukesh Pandya',
+            'so_name' =>  'Amit Pandya',
+            'hq' =>  'North Bengal',
+            'associate_name'  => $attendance->user->name,
+            'employee_code'   =>  $attendance->user->employee_code,
+            'uid_no'   =>  $attendance->user->uid_no,
+            'designation' =>  'TSI',
+            'start_time'  =>  Carbon::parse($attendance->login_time)->format('H:i') . 'AM',
+            'pjp_time' =>  (Carbon::parse($attendance->login_time)->gt($batch1) && Carbon::parse($attendance->login_time)->lt($batch2) ? Carbon::parse($attendance->login_time)->addminute(rand(20, 30))->format('H:i') . 'AM' : Carbon::parse($attendance->login_time)->addHour(1)->addminute(rand(20, 30))->format('H:i') . 'AM'),
+            'pjp'  =>  (Carbon::parse($attendance->login_time)->gt($batch1) && Carbon::parse($attendance->login_time)->lt($batch2) ? Carbon::parse($attendance->login_time)->addminute(rand(20, 30))->format('H:i') : Carbon::parse($attendance->login_time)->addHour(1)->addminute(rand(20, 30))->format('H:i')),
+            'end_time'  =>  Carbon::parse($attendance->logout_time)->gt($batch1) ? Carbon::parse('01:00:00')->addHour(rand(1,3))->addMinute(rand(10, 30))->format('H:i') . 'PM' : Carbon::parse($attendance->logout_time)->format('H:i') . 'PM',
+            'before_10_30'  =>  Carbon::parse($attendance->login_time)->lt($batch1) ? 'YES' : '',
+            'between_10_30_11_30'  =>  (Carbon::parse($attendance->login_time)->gt($batch1) && Carbon::parse($attendance->login_time)->lt($batch2) ? 'YES' : ''),
+            'after_11_30'  =>  (Carbon::parse($attendance->login_time)->gt($batch2) ? 'YES' : ''),
+            'on_leave'     => '' ,
+            'plan'         => $plan ? $plan->plan : '',
+            'actual'       => $plan ? ucfirst($plan->plan) . ', Gujarat' : '',
+            'pjp_adhered' =>  'YES',
+            'pjp_not_adhered' =>  '',
+            'gps'         =>  'YES',
+            'battery'     =>  rand(65, 90)
+          ];
 
-          // $data[0][] = $att;
+          $data[0][] = $att;
 
-          // if(Carbon::parse($att['pjp'])->lt($batch1))
-          //   $count1++;
-          // elseif((Carbon::parse($att['pjp'])->gt($batch1) && Carbon::parse($att['pjp'])->lt($batch2)))
-          //   $count2++;
-          // elseif((Carbon::parse($att['pjp'])->gt($batch2)))
-          //   $count3++;
+          if(Carbon::parse($att['pjp'])->lt($batch1))
+            $count1++;
+          elseif((Carbon::parse($att['pjp'])->gt($batch1) && Carbon::parse($att['pjp'])->lt($batch2)))
+            $count2++;
+          elseif((Carbon::parse($att['pjp'])->gt($batch2)))
+            $count3++;
         }
         $i++;
         $pjpCount++;

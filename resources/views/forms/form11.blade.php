@@ -75,7 +75,7 @@
       <tr>
         <td>4</td>
         <td colspan="5">Gender: ( male / Female /Transgender )</td>
-        <td colspan="5">Male</td>
+        <td colspan="5">{{ $user->gender }}</td>
       </tr>
       <tr>
         <td>5</td>

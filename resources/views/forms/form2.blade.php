@@ -37,7 +37,7 @@
   <br><br>
   <b>2. Date of Birth :</b> {{ $user->dob }} <b>3. Account No.</b> 
   <br><br>
-  <b>4. <span class="required">*</span>Sex : MALE/FEMALE:</b> MALE <b>5. Marital Status :</b> {{ $user->marital_status }}
+  <b>4. <span class="required">*</span>Sex : MALE/FEMALE:</b> {{ $user->gender }} <b>5. Marital Status :</b> {{ $user->marital_status }}
   <br><br>
   <b>6. Address Permanent / Temporary :</b> {{ $user->pre_room_no }}, {{ $user->pre_building }}, {{ $user->pre_building }}, {{ $user->pre_area }}, {{ $user->pre_road }}, {{ $user->pre_city }}, {{ $user->pre_state }}, {{ $user->pincode }}
   <br><br>

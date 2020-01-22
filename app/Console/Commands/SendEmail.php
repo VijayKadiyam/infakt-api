@@ -45,9 +45,9 @@ class SendEmail extends Command
       // Mail::to('kvjkumr@gmail.com')->send(new MonthlyPJPReport());
       // Mail::to('kirit.sayani@pousse.in')->send(new MonthlyPJPReport());
       // Mail::to('kiran.suryawanshi@pousse.in')->send(new MonthlyPJPReport());
-      Mail::to('kvjkumr@gmail.com')->send(new MonthlyReportMail());
-      Mail::to('kirit.sayani@pousse.in')->send(new MonthlyReportMail());
-      Mail::to('kiran.suryawanshi@pousse.in')->send(new MonthlyReportMail());
+      // Mail::to('kvjkumr@gmail.com')->send(new MonthlyReportMail());
+      // Mail::to('kirit.sayani@pousse.in')->send(new MonthlyReportMail());
+      // Mail::to('kiran.suryawanshi@pousse.in')->send(new MonthlyReportMail());
       Mail::to('umesh.ramnani@mdlz.com')->send(new MonthlyReportMail());
     }
 }

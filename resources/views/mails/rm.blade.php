@@ -654,11 +654,11 @@
         <li class="bar nr_4 blue" style="height: 70px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount4 }})% </span></li> -->
 
         <li class="bar nr_1 blue" 
-          style="height: 75px;"
+          style="height: 120px;"
         ><div class="top"></div><div class="bottom"></div><span>({{ $pcount1 }})%</span></li>
-        <li class="bar nr_2 blue" style="height: 55px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount2 }})%</span></li>
+        <li class="bar nr_2 blue" style="height: 65px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount2 }})%</span></li>
         <li class="bar nr_3 blue" style="height: 20px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount3 }})%</span></li>
-        <li class="bar nr_4 blue" style="height: 75px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount4 }})% </span></li>
+        <li class="bar nr_4 blue" style="height: 10px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount4 }})% </span></li>
       </ul> 
     </div>
     
