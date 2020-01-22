@@ -145,4 +145,10 @@ class UserReferenceTest extends TestCase
       ]);
   }
 
+  /** @test */
+  function delete_single_reference()
+  {
+    $this->disableEH();
+    $this->json('delete', "/api/users/" . $this->user->id . "/user_references/1", [], $this->headers);
+  }
 }

@@ -65,4 +65,10 @@ class UserEducationsController extends Controller
     ], 200);
   }
 
+  public function destroy($userId, $id)
+  {
+    $userEducation = UserEducation::find($id);
+    $userEducation->delete();
+  }
+
 }

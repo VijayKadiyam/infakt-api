@@ -69,4 +69,10 @@ class UserFamilyDetailsController extends Controller
       'success' =>  true
     ], 200);
   }
+
+  public function destroy($userId, $id)
+  {
+    $userFamilyDetail = UserFamilyDetail::find($id);
+    $userFamilyDetail->delete();
+  }
 }

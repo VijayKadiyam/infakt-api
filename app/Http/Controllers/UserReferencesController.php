@@ -64,4 +64,10 @@ class UserReferencesController extends Controller
       'success' =>  true
     ], 200);
   }
+
+  public function destroy($userId, $id)
+  {
+    $userReference = UserReference::find($id);
+    $userReference->delete();
+  }
 }
