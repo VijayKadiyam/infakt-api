@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\Role;
+use \Carbon\Carbon;
 
 class UsersController extends Controller
 {
@@ -37,6 +38,31 @@ class UsersController extends Controller
         ->orWhere('email', 'LIKE', '%' . $request->searchEmp . '%')
         ->orWhere('phone', 'LIKE', '%' . $request->searchEmp . '%')
         ->latest()->get();
+    }
+    else if($request->report) {
+      $now = Carbon::now();
+      $role = Role::find($request->role_id);
+      $users = $request->company->users()
+        ->whereMonth('doj', '=', $now->format('m'))
+        ->whereHas('roles', function($q) use($role) { 
+          $q->where('name', '=', $role->name);
+        })->latest()->get();
+    }
+    else if($request->endreport) {
+      $now = Carbon::now();
+      $role = Role::find($request->role_id);
+      $users = $request->company->users()
+        ->whereHas('user_appointment_letters', function($q) use($role, $now) { 
+          $q->whereMonth('end_date', '=', $now->format('m'));
+        })
+        ->get();
+    }
+    else if($request->birthday) {
+      $now = Carbon::now();
+      $role = Role::find($request->role_id);
+      $users = $request->company->users()
+        ->where('dob', '=', $now->format('Y-m-d'))
+        ->get();
     }
     else 
       if($request->role_id) {

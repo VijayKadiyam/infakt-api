@@ -109,6 +109,7 @@ Route::post('sendEmail', 'SendEmailController@index');
 
 Route::resource('users/{user}/user_appointment_letters', 'UserAppointmentLettersController');
 Route::get('users/{user}/user_appointment_letters/{user_appointment_letter}/download', 'UserAppointmentLettersController@download');
+Route::get('user_appointment_letters', 'UserAppointmentLettersController@getAll');
 Route::resource('users/{user}/user_experience_letters', 'UserExperienceLettersController');
 Route::get('users/{user}/user_experience_letters/{user_experience_letter}/download', 'UserExperienceLettersController@download');
 Route::resource('users/{user}/user_warning_letters', 'UserWarningLettersController');
@@ -183,9 +184,13 @@ Route::post('company_kyc_update', 'CompanyUploadsController@kyc_update');
 Route::post('company_graduity_form_a', 'CompanyUploadsController@graduity_form_a');
 
 Route::get('pds-forms/{id}', 'FormsController@pdsForm');
+Route::get('pds-forms/{id}/download', 'FormsController@pdsFormDownload');
 Route::get('form-2/{id}', 'FormsController@form2');
+Route::get('form-2/{id}/download', 'FormsController@form2Download');
 Route::get('form-11/{id}', 'FormsController@form11');
+Route::get('form-11/{id}/download', 'FormsController@form11Download');
 Route::get('graduity-forms/{id}', 'FormsController@graduityForm');
+Route::get('graduity-forms/{id}/download', 'FormsController@graduityFormDownload');
 
 Route::get('welcome-email', 'EmailsController@welcomeEmail');
 Route::get('appointment-letter-email', 'EmailsController@appointmentLetterEmail');

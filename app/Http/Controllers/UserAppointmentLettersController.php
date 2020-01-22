@@ -15,6 +15,21 @@ class UserAppointmentLettersController extends Controller
       ->except('download');
   }
 
+  public function getAll(Request $request)
+  {
+    $users = $request->company->users;
+    $userAppointmentLetters = [];
+    foreach($users as $user) {
+      foreach($user->user_appointment_letters as $letter)
+      $userAppointmentLetters[] = $letter->toArray();
+    }
+
+    return response()->json([
+      'data'     =>  $userAppointmentLetters,
+      'success'   =>  true
+    ], 200);
+  }
+
   public function index(Request $request, User $user)
   {
     $userAppointmentLetter = $user->user_appointment_letters;
@@ -29,6 +44,9 @@ class UserAppointmentLettersController extends Controller
   {
     $request->validate([
       'letter'          =>  'required',
+      'start_date'      =>  'required',
+      'end_date'        =>  'required',
+      'stc_issue_date'  =>  'required',
     ]);
 
     $userAppointmentLetter = new UserAppointmentLetter($request->all());

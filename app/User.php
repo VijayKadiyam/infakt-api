@@ -269,7 +269,8 @@ class User extends Authenticatable
 
   public function user_appointment_letters()
   {
-    return $this->hasMany(UserAppointmentLetter::class);
+    return $this->hasMany(UserAppointmentLetter::class)
+      ->with('user');
   }
 
   public function user_experience_letters()
@@ -329,7 +330,8 @@ class User extends Authenticatable
 
   public function notifications()
   {
-    return $this->hasMany(Notification::class);
+    return $this->hasMany(Notification::class)
+      ->with('user');
   }
 }
 

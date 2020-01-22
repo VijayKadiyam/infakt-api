@@ -28,6 +28,9 @@ class UserAppointmentLetterTest extends TestCase
 
     $this->payload = [ 
       'letter'          =>  'Letter 2',
+      'start_date'      =>  'Start Date 2',
+      'end_date'        =>  'End Date 2',
+      'stc_issue_date'  =>  'Stc Issue Date 2',
     ];
   }
 
@@ -46,6 +49,9 @@ class UserAppointmentLetterTest extends TestCase
       ->assertExactJson([
           "errors"  =>  [
             "letter"          =>  ["The letter field is required."],
+            "start_date"      =>  ["The start date field is required."],
+            "end_date"        =>  ["The end date field is required."],
+            "stc_issue_date"  =>  ["The stc issue date field is required."],
           ],
           "message" =>  "The given data was invalid."
         ]);
@@ -65,6 +71,9 @@ class UserAppointmentLetterTest extends TestCase
       ->assertJsonStructureExact([
           'data'   => [
             'letter',
+            'start_date',
+             'end_date', 
+             'stc_issue_date',
             'user_id',
             'updated_at',
             'created_at',
@@ -87,6 +96,22 @@ class UserAppointmentLetterTest extends TestCase
         ]);
     $this->assertCount(1, UserAppointmentLetter::all());
   }
+
+  /** @test */
+  function list_of_letters_of_all_users()
+  {
+    $this->disableEH();
+    $this->json('GET', '/api/user_appointment_letters',[], $this->headers)
+      ->assertStatus(200)
+      ->assertJsonStructure([
+          'data' => [
+            0 =>  [
+              'letter',
+            ] 
+          ]
+        ]);
+  }
+
 
   /** @test */
   function show_single_letter()

@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\User;
+use App\UserAppointmentLetter;
 
 class UserTest extends TestCase
 {
@@ -138,6 +139,75 @@ class UserTest extends TestCase
     $user->assignCompany($this->company->id);
 
     $this->json('get', '/api/users?searchEmp=' . $user->name, [], $this->headers)
+      ->assertStatus(200)
+      ->assertJsonStructure([
+          'data' => []
+        ]);
+    $this->assertCount(1, User::whereHas('roles',  function($q) {
+                                $q->where('name', '!=', 'Admin');
+                                $q->where('name', '!=', 'Super Admin');
+                              })->get());
+  }
+
+  /** @test */
+  public function list_of_users_of_report()
+  {
+    $this->disableEH();
+    $user = factory(\App\User::class)->create();
+    $user->assignRole(3);
+    $user->assignCompany($this->company->id);
+
+    $this->json('get', '/api/users?role_id=3&report=monthly', [], $this->headers)
+      ->assertStatus(200)
+      ->assertJsonStructure([
+          'data' => []
+        ]);
+    $this->assertCount(1, User::whereHas('roles',  function($q) {
+                                $q->where('name', '!=', 'Admin');
+                                $q->where('name', '!=', 'Super Admin');
+                              })->get());
+  }
+
+  /** @test */
+  public function list_of_users_of_endreport()
+  {
+    $this->disableEH();
+    $user = factory(\App\User::class)->create();
+    $user->assignRole(3);
+    $user->assignCompany($this->company->id);
+
+    factory(UserAppointmentLetter::class)->create([
+      'user_id'  =>  $this->user->id,
+      'end_date'  =>  '2020-01-10'
+    ]);
+
+    $this->json('get', '/api/users?role_id=3&endreport=monthly', [], $this->headers)
+      ->assertStatus(200)
+      ->assertJsonStructure([
+          'data' => []
+        ]);
+    $this->assertCount(1, User::whereHas('roles',  function($q) {
+                                $q->where('name', '!=', 'Admin');
+                                $q->where('name', '!=', 'Super Admin');
+                              })->get());
+  }
+
+  /** @test */
+  public function list_of_users_of_birthday()
+  {
+    $this->disableEH();
+    $user = factory(\App\User::class)->create([
+      'dob' =>  \Carbon\Carbon::now()->format("Y-m-d")
+    ]);
+    $user->assignRole(3);
+    $user->assignCompany($this->company->id);
+
+    factory(UserAppointmentLetter::class)->create([
+      'user_id'  =>  $this->user->id,
+      'end_date'  =>  '2020-01-10'
+    ]);
+
+    $this->json('get', '/api/users?role_id=3&birthday=today', [], $this->headers)
       ->assertStatus(200)
       ->assertJsonStructure([
           'data' => []
