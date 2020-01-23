@@ -217,3 +217,10 @@ Route::get('crude_states', 'CrudeStatesController@index');
 Route::post('upload_state', 'CrudeStatesController@uploadState');
 Route::get('process_state', 'CrudeStatesController@processState');
 Route::get('truncate_states', 'CrudeStatesController@truncate');
+
+Route::get('crude_salaries', 'CrudeSalariesController@index');
+Route::post('upload_salary', 'CrudeSalariesController@uploadSalary');
+Route::get('process_state', 'CrudeStatesController@processState');
+Route::get('truncate_states', 'CrudeStatesController@truncate');
+
+Route::resource('salaries', 'SalariesController');
