@@ -44,6 +44,7 @@ class UsersController extends Controller
       $role = Role::find($request->role_id);
       $users = $request->company->users()
         ->whereMonth('doj', '=', $now->format('m'))
+        ->whereYear('doj', '=', $now->format('Y'))
         ->whereHas('roles', function($q) use($role) { 
           $q->where('name', '=', $role->name);
         })->latest()->get();
