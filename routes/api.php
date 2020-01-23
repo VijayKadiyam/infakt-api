@@ -220,7 +220,8 @@ Route::get('truncate_states', 'CrudeStatesController@truncate');
 
 Route::get('crude_salaries', 'CrudeSalariesController@index');
 Route::post('upload_salary', 'CrudeSalariesController@uploadSalary');
-Route::get('process_state', 'CrudeStatesController@processState');
-Route::get('truncate_states', 'CrudeStatesController@truncate');
+Route::get('process_salary', 'CrudeSalariesController@processSalary');
+Route::get('truncate_salaries', 'CrudeSalariesController@truncate');
 
+Route::get('salaries/download', 'SalariesController@download');
 Route::resource('salaries', 'SalariesController');
