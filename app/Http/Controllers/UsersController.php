@@ -49,6 +49,15 @@ class UsersController extends Controller
           $q->where('name', '=', $role->name);
         })->latest()->get();
     }
+    else if($request->month && $request->year) {
+      $role = Role::find($request->role_id);
+      $users = $request->company->users()
+        ->whereMonth('doj', '=', $request->month)
+        ->whereYear('doj', '=', $request->year)
+        ->whereHas('roles', function($q) use($role) { 
+          $q->where('name', '=', $role->name);
+        })->latest()->get();
+    }
     else if($request->endreport) {
       $now = Carbon::now();
       $role = Role::find($request->role_id);

@@ -169,6 +169,25 @@ class UserTest extends TestCase
   }
 
   /** @test */
+  public function list_of_users_of_month_and_year()
+  {
+    $this->disableEH();
+    $user = factory(\App\User::class)->create();
+    $user->assignRole(3);
+    $user->assignCompany($this->company->id);
+
+    $this->json('get', '/api/users?role_id=3&month=01&year=2020', [], $this->headers)
+      ->assertStatus(200)
+      ->assertJsonStructure([
+          'data' => []
+        ]);
+    $this->assertCount(1, User::whereHas('roles',  function($q) {
+                                $q->where('name', '!=', 'Admin');
+                                $q->where('name', '!=', 'Super Admin');
+                              })->get());
+  }
+
+  /** @test */
   public function list_of_users_of_endreport()
   {
     $this->disableEH();
