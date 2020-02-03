@@ -60,31 +60,31 @@ Route::get('monthly', function(Request $request) {
     // West Bengal
     $attendances = [];
     $attendances[] = UserAttendance::where('user_id', '=', 123)
-      ->whereMonth('date', '=', 1)
+      ->whereMonth('date', '=', 2)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 126)
-      ->whereMonth('date', '=', 1)
+      ->whereMonth('date', '=', 2)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 127)
-      ->whereMonth('date', '=', 1)
+      ->whereMonth('date', '=', 2)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 128)
-      ->whereMonth('date', '=', 1)
+      ->whereMonth('date', '=', 2)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 201)
-      ->whereMonth('date', '=', 1)
+      ->whereMonth('date', '=', 2)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
@@ -257,60 +257,60 @@ Route::get('monthly', function(Request $request) {
         'gps'         =>  '',
         'battery'     =>  ''
       ];
-      $data[0][] = [
-        'day'   =>  '',
-        'date'  =>  '',
-        'region'  =>  '',
-        'asm_area' =>  '',
-        'asm_name'  =>  '',
-        'so_name' =>  '',
-        'hq' =>  '',
-        'associate_name'  => '',
-        'employee_code'   =>  '',
-        'uid_no'   =>  '',
-        'designation' =>  '',
-        'start_time'  =>  '',
-        'pjp_time'  =>  '',
-        'end_time'  =>  '',
-        'before_10_30'  =>  '',
-        'between_10_30_11_30'  =>  '',
-        'after_11_30'  =>  '',
-        'on_leave'     => '' ,
-        'plan'         => '',
-        'actual'       => '% PJP Adhered',
-        'pjp_adhered' =>  round(($pjpCount/$totalCount) * 100, 2),
-        'pjp_not_adhered' =>  round((($totalCount - $pjpCount) / $totalCount) * 100, 2),
-        'gps'         =>  '',
-        'battery'     =>  ''
-      ];
+      // $data[0][] = [
+      //   'day'   =>  '',
+      //   'date'  =>  '',
+      //   'region'  =>  '',
+      //   'asm_area' =>  '',
+      //   'asm_name'  =>  '',
+      //   'so_name' =>  '',
+      //   'hq' =>  '',
+      //   'associate_name'  => '',
+      //   'employee_code'   =>  '',
+      //   'uid_no'   =>  '',
+      //   'designation' =>  '',
+      //   'start_time'  =>  '',
+      //   'pjp_time'  =>  '',
+      //   'end_time'  =>  '',
+      //   'before_10_30'  =>  '',
+      //   'between_10_30_11_30'  =>  '',
+      //   'after_11_30'  =>  '',
+      //   'on_leave'     => '' ,
+      //   'plan'         => '',
+      //   'actual'       => '% PJP Adhered',
+      //   'pjp_adhered' =>  round(($pjpCount/$totalCount) * 100, 2),
+      //   'pjp_not_adhered' =>  round((($totalCount - $pjpCount) / $totalCount) * 100, 2),
+      //   'gps'         =>  '',
+      //   'battery'     =>  ''
+      // ];
     }
 
     // Gujarat
     $attendances = [];
     $attendances[] = UserAttendance::where('user_id', '=', 234)
-      ->whereMonth('date', '=', 1)
+      ->whereMonth('date', '=', 2)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
     $attendances[] = UserAttendance::where('user_id', '=', 235)
-      ->whereMonth('date', '=', 1)
+      ->whereMonth('date', '=', 2)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
     $attendances[] = UserAttendance::where('user_id', '=', 236)
-      ->whereMonth('date', '=', 1)
+      ->whereMonth('date', '=', 2)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 237)
-      ->whereMonth('date', '=', 1)
+      ->whereMonth('date', '=', 2)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 187)
-      ->whereMonth('date', '=', 1)
+      ->whereMonth('date', '=', 2)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
@@ -856,32 +856,32 @@ Route::get('sales', function(Request $request) {
         'gps'         =>  '',
         'battery'     =>  ''
       ];
-      $data[0][] = [
-        'day'   =>  '',
-        'date'  =>  '',
-        'region'  =>  '',
-        'asm_area' =>  '',
-        'asm_name'  =>  '',
-        'so_name' =>  '',
-        'hq' =>  '',
-        'associate_name'  => '',
-        'employee_code'   =>  '',
-        'uid_no'   =>  '',
-        'designation' =>  '',
-        'start_time'  =>  '',
-        'pjp_time'  =>  '',
-        'end_time'  =>  '',
-        'before_10_30'  =>  '',
-        'between_10_30_11_30'  =>  '',
-        'after_11_30'  =>  '',
-        'on_leave'     => '' ,
-        'plan'         => '',
-        'actual'       => '% PJP Adhered',
-        'pjp_adhered' =>  round(($pjpCount/$totalCount) * 100, 2),
-        'pjp_not_adhered' =>  round((($totalCount - $pjpCount) / $totalCount) * 100, 2),
-        'gps'         =>  '',
-        'battery'     =>  ''
-      ];
+      // $data[0][] = [
+      //   'day'   =>  '',
+      //   'date'  =>  '',
+      //   'region'  =>  '',
+      //   'asm_area' =>  '',
+      //   'asm_name'  =>  '',
+      //   'so_name' =>  '',
+      //   'hq' =>  '',
+      //   'associate_name'  => '',
+      //   'employee_code'   =>  '',
+      //   'uid_no'   =>  '',
+      //   'designation' =>  '',
+      //   'start_time'  =>  '',
+      //   'pjp_time'  =>  '',
+      //   'end_time'  =>  '',
+      //   'before_10_30'  =>  '',
+      //   'between_10_30_11_30'  =>  '',
+      //   'after_11_30'  =>  '',
+      //   'on_leave'     => '' ,
+      //   'plan'         => '',
+      //   'actual'       => '% PJP Adhered',
+      //   'pjp_adhered' =>  round(($pjpCount/$totalCount) * 100, 2),
+      //   'pjp_not_adhered' =>  round((($totalCount - $pjpCount) / $totalCount) * 100, 2),
+      //   'gps'         =>  '',
+      //   'battery'     =>  ''
+      // ];
     }
 
     $data[0][] = [

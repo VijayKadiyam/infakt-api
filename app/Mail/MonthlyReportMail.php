@@ -60,31 +60,31 @@ class MonthlyReportMail extends Mailable
     // West Bengal
     $attendances = [];
     $attendances[] = UserAttendance::where('user_id', '=', 123)
-      ->whereMonth('date', '=', 1)
+      ->whereMonth('date', '=', 2)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 126)
-      ->whereMonth('date', '=', 1)
+      ->whereMonth('date', '=', 2)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 127)
-      ->whereMonth('date', '=', 1)
+      ->whereMonth('date', '=', 2)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 128)
-      ->whereMonth('date', '=', 1)
+      ->whereMonth('date', '=', 2)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 201)
-      ->whereMonth('date', '=', 1)
+      ->whereMonth('date', '=', 2)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
@@ -257,60 +257,60 @@ class MonthlyReportMail extends Mailable
         'gps'         =>  '',
         'battery'     =>  ''
       ];
-      $data[0][] = [
-        'day'   =>  '',
-        'date'  =>  '',
-        'region'  =>  '',
-        'asm_area' =>  '',
-        'asm_name'  =>  '',
-        'so_name' =>  '',
-        'hq' =>  '',
-        'associate_name'  => '',
-        'employee_code'   =>  '',
-        'uid_no'   =>  '',
-        'designation' =>  '',
-        'start_time'  =>  '',
-        'pjp_time'  =>  '',
-        'end_time'  =>  '',
-        'before_10_30'  =>  '',
-        'between_10_30_11_30'  =>  '',
-        'after_11_30'  =>  '',
-        'on_leave'     => '' ,
-        'plan'         => '',
-        'actual'       => '% PJP Adhered',
-        'pjp_adhered' =>  round(($pjpCount/$totalCount) * 100, 2),
-        'pjp_not_adhered' =>  round((($totalCount - $pjpCount) / $totalCount) * 100, 2),
-        'gps'         =>  '',
-        'battery'     =>  ''
-      ];
+      // $data[0][] = [
+      //   'day'   =>  '',
+      //   'date'  =>  '',
+      //   'region'  =>  '',
+      //   'asm_area' =>  '',
+      //   'asm_name'  =>  '',
+      //   'so_name' =>  '',
+      //   'hq' =>  '',
+      //   'associate_name'  => '',
+      //   'employee_code'   =>  '',
+      //   'uid_no'   =>  '',
+      //   'designation' =>  '',
+      //   'start_time'  =>  '',
+      //   'pjp_time'  =>  '',
+      //   'end_time'  =>  '',
+      //   'before_10_30'  =>  '',
+      //   'between_10_30_11_30'  =>  '',
+      //   'after_11_30'  =>  '',
+      //   'on_leave'     => '' ,
+      //   'plan'         => '',
+      //   'actual'       => '% PJP Adhered',
+      //   'pjp_adhered' =>  round(($pjpCount/$totalCount) * 100, 2),
+      //   'pjp_not_adhered' =>  round((($totalCount - $pjpCount) / $totalCount) * 100, 2),
+      //   'gps'         =>  '',
+      //   'battery'     =>  ''
+      // ];
     }
 
     // Gujarat
     $attendances = [];
     $attendances[] = UserAttendance::where('user_id', '=', 234)
-      ->whereMonth('date', '=', 1)
+      ->whereMonth('date', '=', 2)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
     $attendances[] = UserAttendance::where('user_id', '=', 235)
-      ->whereMonth('date', '=', 1)
+      ->whereMonth('date', '=', 2)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
     $attendances[] = UserAttendance::where('user_id', '=', 236)
-      ->whereMonth('date', '=', 1)
+      ->whereMonth('date', '=', 2)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 237)
-      ->whereMonth('date', '=', 1)
+      ->whereMonth('date', '=', 2)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 187)
-      ->whereMonth('date', '=', 1)
+      ->whereMonth('date', '=', 2)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
@@ -539,32 +539,32 @@ class MonthlyReportMail extends Mailable
         'gps'         =>  '',
         'battery'     =>  ''
       ];
-      $data[0][] = [
-        'day'   =>  '',
-        'date'  =>  '',
-        'region'  =>  '',
-        'asm_area' =>  '',
-        'asm_name'  =>  '',
-        'so_name' =>  '',
-        'hq' =>  '',
-        'associate_name'  => '',
-        'employee_code'   =>  '',
-        'uid_no'   =>  '',
-        'designation' =>  '',
-        'start_time'  =>  '',
-        'pjp_time'  =>  '',
-        'end_time'  =>  '',
-        'before_10_30'  =>  '',
-        'between_10_30_11_30'  =>  '',
-        'after_11_30'  =>  '',
-        'on_leave'     => '' ,
-        'plan'         => '',
-        'actual'       => '% PJP Adhered',
-        'pjp_adhered' =>  $totalCount ? round(($pjpCount/$totalCount) * 100, 2) : '',
-        'pjp_not_adhered' =>  $totalCount ? round((($totalCount - $pjpCount) / $totalCount) * 100, 2) : '',
-        'gps'         =>  '',
-        'battery'     =>  ''
-      ];
+      // $data[0][] = [
+      //   'day'   =>  '',
+      //   'date'  =>  '',
+      //   'region'  =>  '',
+      //   'asm_area' =>  '',
+      //   'asm_name'  =>  '',
+      //   'so_name' =>  '',
+      //   'hq' =>  '',
+      //   'associate_name'  => '',
+      //   'employee_code'   =>  '',
+      //   'uid_no'   =>  '',
+      //   'designation' =>  '',
+      //   'start_time'  =>  '',
+      //   'pjp_time'  =>  '',
+      //   'end_time'  =>  '',
+      //   'before_10_30'  =>  '',
+      //   'between_10_30_11_30'  =>  '',
+      //   'after_11_30'  =>  '',
+      //   'on_leave'     => '' ,
+      //   'plan'         => '',
+      //   'actual'       => '% PJP Adhered',
+      //   'pjp_adhered' =>  $totalCount ? round(($pjpCount/$totalCount) * 100, 2) : '',
+      //   'pjp_not_adhered' =>  $totalCount ? round((($totalCount - $pjpCount) / $totalCount) * 100, 2) : '',
+      //   'gps'         =>  '',
+      //   'battery'     =>  ''
+      // ];
     }
 
     $data[0][] = [
@@ -922,7 +922,7 @@ class MonthlyReportMail extends Mailable
 
 
         return $this->view('mails.rm', compact('data','pcount1', 'pcount2', 'pcount3', 'pcount4'))
-          ->subject('Attendance Report for the Month of December 2019')
+          ->subject('Attendance Report for the Month of February 2019')
           ->from('hajiri@pousse.in', 'Pousse Management Services');
     }
 }
