@@ -99,9 +99,9 @@ class UsersController extends Controller
       'name'                    => ['required', 'string', 'max:255'],
       'email'                   => ['required', 'string', 'email', 'max:255', 'unique:users'],
       'phone'                   => ['required', 'unique:users'],
-      // 'doj'                     =>  'required',
-      // 'dob'                     =>  'required',
-      // 'company_designation_id'  =>  'required',
+      'doj'                     =>  'required',
+      'dob'                     =>  'required',
+      'company_designation_id'  =>  'required',
     ]);
 
     $user  = $request->all();

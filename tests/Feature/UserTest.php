@@ -55,9 +55,9 @@ class UserTest extends TestCase
               "name"                    =>  ["The name field is required."],
               "email"                   =>  ["The email field is required."],
               "phone"                   =>  ["The phone field is required."],
-              // "doj"                     =>  ["The doj field is required."],
-              // "dob"                     =>  ["The dob field is required."],
-              // "company_designation_id"  =>  ["The company designation id field is required."],
+              "doj"                     =>  ["The doj field is required."],
+              "dob"                     =>  ["The dob field is required."],
+              "company_designation_id"  =>  ["The company designation id field is required."],
             ],
             "message" =>  "The given data was invalid."
         ]);
