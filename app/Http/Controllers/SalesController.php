@@ -22,7 +22,7 @@ class SalesController extends Controller
   public function all()
   {
     $sales = Sale::with('retailer', 'sku')
-      ->whereMonth('created_at', '=', '02')
+      ->whereMonth('created_at', '=', 2)
       ->get();
 
     return response()->json([
