@@ -287,11 +287,11 @@ Route::get('monthly', function(Request $request) {
 
     // Gujarat
     $attendances = [];
-    $attendances[] = UserAttendance::where('user_id', '=', 234)
-      ->whereMonth('date', '=', 2)
-      ->with('user')
-      ->orderBy('date', 'ASC')
-      ->get();
+    // $attendances[] = UserAttendance::where('user_id', '=', 234)
+    //   ->whereMonth('date', '=', 2)
+    //   ->with('user')
+    //   ->orderBy('date', 'ASC')
+    //   ->get();
     $attendances[] = UserAttendance::where('user_id', '=', 235)
       ->whereMonth('date', '=', 2)
       ->with('user')

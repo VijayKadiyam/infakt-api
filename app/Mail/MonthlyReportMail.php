@@ -287,11 +287,11 @@ class MonthlyReportMail extends Mailable
 
     // Gujarat
     $attendances = [];
-    $attendances[] = UserAttendance::where('user_id', '=', 234)
-      ->whereMonth('date', '=', 2)
-      ->with('user')
-      ->orderBy('date', 'ASC')
-      ->get();
+    // $attendances[] = UserAttendance::where('user_id', '=', 234)
+    //   ->whereMonth('date', '=', 2)
+    //   ->with('user')
+    //   ->orderBy('date', 'ASC')
+    //   ->get();
     $attendances[] = UserAttendance::where('user_id', '=', 235)
       ->whereMonth('date', '=', 2)
       ->with('user')
@@ -922,7 +922,7 @@ class MonthlyReportMail extends Mailable
 
 
         return $this->view('mails.rm', compact('data','pcount1', 'pcount2', 'pcount3', 'pcount4'))
-          ->subject('Attendance Report for the Month of February 2019')
+          ->subject('Attendance Report for the Month of February 2020')
           ->from('hajiri@pousse.in', 'Pousse Management Services');
     }
 }
