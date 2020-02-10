@@ -299,4 +299,9 @@ class Company extends Model
   {
     return $this->hasMany(RetailerClassification::class);
   }
+
+  public function inquiries()
+  {
+    return $this->hasMany(Inquiry::class);
+  }
 }

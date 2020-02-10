@@ -119,6 +119,7 @@ class MeTest extends TestCase
             'companies',
             'notifications'
           ],
+          'version',
           'success'
         ]);
   }

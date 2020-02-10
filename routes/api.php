@@ -225,3 +225,5 @@ Route::get('truncate_salaries', 'CrudeSalariesController@truncate');
 
 Route::get('salaries/download', 'SalariesController@download');
 Route::resource('salaries', 'SalariesController');
+
+Route::resource('inquiries', 'InquiriesController');
