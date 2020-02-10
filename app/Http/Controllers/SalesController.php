@@ -21,9 +21,14 @@ class SalesController extends Controller
    */
   public function all()
   {
-    $sales = Sale::with('retailer', 'sku')
+    $sales = [];
+    for($i = 1; $i <= 31; $i++) {
+      $sales[] = Sale::with('retailer', 'sku')
       ->whereMonth('created_at', '=', 2)
+      ->whereDay('created_at', '=', $i)
       ->get();
+    }
+    
 
     return response()->json([
       'data'     =>  $sales
