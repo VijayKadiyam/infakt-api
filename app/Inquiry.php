@@ -14,4 +14,16 @@ class Inquiry extends Model
   {
     return $this->belongsTo(Company::class);
   }
+
+  public function inquiry_remarks()
+  {
+    return $this->hasMany(InquiryRemark::class)
+      ->with('inquiry', 'user');
+  }
+
+  public function inquiry_followups()
+  {
+    return $this->hasMany(InquiryFollowup::class)
+      ->with('inquiry', 'user');
+  }
 }

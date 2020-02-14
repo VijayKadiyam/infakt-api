@@ -304,4 +304,10 @@ class Company extends Model
   {
     return $this->hasMany(Inquiry::class);
   }
+
+  public function resumes()
+  {
+    return $this->hasMany(Resume::class)
+      ->with('user');
+  }
 }

@@ -117,7 +117,8 @@ class MeTest extends TestCase
             'graduity_form_checked',
             'roles',
             'companies',
-            'notifications'
+            'notifications',
+            'salaries'
           ],
           'version',
           'success'

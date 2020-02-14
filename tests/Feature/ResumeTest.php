@@ -6,9 +6,9 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use App\Inquiry;
+use App\Resume;
 
-class InquiryTest extends TestCase
+class ResumeTest extends TestCase
 {
   use DatabaseTransactions;
   
@@ -22,36 +22,35 @@ class InquiryTest extends TestCase
     $this->user->assignCompany($this->company->id);
     $this->headers['company-id'] = $this->company->id;
 
-    factory(Inquiry::class)->create([
-      'company_id'  =>  $this->company->id 
+    factory(Resume::class)->create([
+      'company_id'  =>  $this->company->id,
+      'user_id' =>  $this->user->id
     ]);
 
     $this->payload = [ 
-      'date'     =>  'Date 2',
-      'company_name'  =>  'Name 1',
-      'contact_person_1'  =>  'Person 1',
-      'mobile_1'          =>  'Mobile 1'
+      'user_id' =>  $this->user->id,
+      'name'    =>  'Name 1',
+      'mobile_1'  =>  'Mobile 2'
     ];
   }
 
   /** @test */
   function user_must_be_logged_in_before_accessing_the_controller()
   {
-    $this->json('post', '/api/inquiries')
+    $this->json('post', '/api/resumes')
       ->assertStatus(401); 
   }
 
   /** @test */
   function it_requires_following_details()
   {
-    $this->json('post', '/api/inquiries', [], $this->headers)
+    $this->json('post', '/api/resumes', [], $this->headers)
       ->assertStatus(422)
       ->assertExactJson([
           "errors"  =>  [
-            "date"          =>  ["The date field is required."],
-            "company_name"  =>  ["The company name field is required."],
-            "contact_person_1"  =>  ["The contact person 1 field is required."],
-            "mobile_1"      =>  ["The mobile 1 field is required."],
+            "user_id"   =>  ["The user id field is required."],
+            "name"      =>  ["The name field is required."],
+            "mobile_1"  =>  ["The mobile 1 field is required."],
           ],
           "message" =>  "The given data was invalid."
         ]);
@@ -60,18 +59,17 @@ class InquiryTest extends TestCase
   /** @test */
   function add_new_sku_type()
   {
-    $this->json('post', '/api/inquiries', $this->payload, $this->headers)
+    $this->json('post', '/api/resumes', $this->payload, $this->headers)
       ->assertStatus(201)
       ->assertJson([
           'data'   =>[
-            'date' => 'Date 2'
+            'user_id' =>  $this->user->id
           ]
         ])
       ->assertJsonStructureExact([
           'data'   => [
-            'date',
-            'company_name',
-            'contact_person_1',
+            'user_id',
+            'name',
             'mobile_1',
             'company_id',
             'updated_at',
@@ -85,31 +83,32 @@ class InquiryTest extends TestCase
   function list_of_inquirys()
   {
     $this->disableEH();
-    $this->json('GET', '/api/inquiries',[], $this->headers)
+    $this->json('GET', '/api/resumes',[], $this->headers)
       ->assertStatus(200)
       ->assertJsonStructure([
           'data' => [
             0=>[
-              'date'
+              'name'
             ] 
           ]
         ]);
-      $this->assertCount(1, Inquiry::all());
+      $this->assertCount(1, Resume::all());
   }
 
   /** @test */
   public function list_of_inquiries_of_search()
   {
-    $inquiry = factory(Inquiry::class)->create([
-      'company_id'  =>  $this->company->id
+    $resume = factory(Resume::class)->create([
+      'company_id'  =>  $this->company->id,
+      'user_id'     =>  $this->user->id
     ]);
 
-    $this->json('get', '/api/inquiries?search=' . $inquiry->company_name, [], $this->headers)
+    $this->json('get', '/api/resumes?search=' . $resume->name, [], $this->headers)
       ->assertStatus(200)
       ->assertJsonStructure([
           'data' => [
             0 =>  [
-              'company_name'
+              'name'
             ]
           ]
         ]);
@@ -118,11 +117,11 @@ class InquiryTest extends TestCase
   /** @test */
   function show_single_inquiry()
   {
-    $this->json('get', "/api/inquiries/1", [], $this->headers)
+    $this->json('get', "/api/resumes/1", [], $this->headers)
       ->assertStatus(200)
       ->assertJson([
           'data'  => [
-            'date'=> 'Date 1',
+            'name'=> 'Name 1',
           ]
         ]);
   }
@@ -131,21 +130,21 @@ class InquiryTest extends TestCase
   function update_single_inquiry()
   {
     $payload = [ 
-      'date'  =>  'GRAM 1'
+      'name'=> 'Name 1 Updated',
     ];
 
-    $this->json('patch', '/api/inquiries/1', $payload, $this->headers)
+    $this->json('patch', '/api/resumes/1', $payload, $this->headers)
       ->assertStatus(200)
       ->assertJson([
           'data'    => [
-            'date'  =>  'GRAM 1',
+            'name'=> 'Name 1 Updated',
           ]
        ])
       ->assertJsonStructureExact([
           'data'  => [
             'id',
             'company_id',
-            'date', 'company_name', 'industry', 'employee_size', 'turnover', 'head_office', 'address', 'website', 'contact_person_1', 'designation', 'landline', 'mobile_1', 'mobile_2', 'email_1', 'email_2', 'contact_person_2', 'contact_person_3', 'date_of_contact', 'status',
+            'user_id','name', 'gender', 'mobile_1', 'mobile_2', 'present_company_name', 'designation', 'work_experience', 'current_salary', 'location', 'lat', 'lng' ,
             'created_at',
             'updated_at'
           ]

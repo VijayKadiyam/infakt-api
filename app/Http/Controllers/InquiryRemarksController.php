@@ -4,19 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Inquiry;
+use App\InquiryRemark;
 
-class InquiriesController extends Controller
+class InquiryRemarksController extends Controller
 {
   public function __construct()
   {
     $this->middleware(['auth:api', 'company']);
   }
 
-  public function index(Request $request)
+  public function index(Request $request, Inquiry $inquiry)
   {
-    $inquiries = [];
+    $inquiry_remarks = [];
     if($request->search != null) {
-      $inquiries = request()->company->inquiries()
+      $inquiry_remarks = $inquiry->inquiry_remarks()
         ->where('company_name', 'LIKE', '%' . $request->search . '%')
         ->orWhere('email_1', 'LIKE', '%' . $request->search . '%')
         ->orWhere('email_2', 'LIKE', '%' . $request->search . '%')
@@ -28,43 +29,40 @@ class InquiriesController extends Controller
         ->latest()->get();
     }
     else
-      $inquiries = request()->company->inquiries;
+      $inquiry_remarks = $inquiry->inquiry_remarks;
 
     return response()->json([
-      'data'     =>  $inquiries
+      'data'     =>  $inquiry_remarks
     ], 200);
   }
 
-  public function store(Request $request)
+  public function store(Request $request, Inquiry $inquiry)
   {
     $request->validate([
-      'date'              =>  'required',
-      'company_name'      =>  'required',
-      'contact_person_1'  =>  'required',
-      'mobile_1'          =>  'required',
+      'user_id' =>  'required',
     ]);
 
-    $inquiry = new Inquiry($request->all());
-    $request->company->inquiries()->save($inquiry);
+    $remark = new InquiryRemark($request->all());
+    $inquiry->inquiry_remarks()->save($remark);
 
     return response()->json([
-      'data'    =>  $inquiry
+      'data'    =>  $remark
     ], 201); 
   }
 
-  public function show(Inquiry $inquiry)
+  public function show(Inquiry $inquiry, InquiryRemark $inquiryRemark)
   {
     return response()->json([
-      'data'   =>  $inquiry
+      'data'   =>  $inquiryRemark
     ], 200);   
   }
 
-  public function update(Request $request, Inquiry $inquiry)
+  public function update(Request $request, Inquiry $inquiry, InquiryRemark $inquiryRemark)
   {
-    $inquiry->update($request->all());
+    $inquiryRemark->update($request->all());
       
     return response()->json([
-      'data'  =>  $inquiry
+      'data'  =>  $inquiryRemark
     ], 200);
   }
 }

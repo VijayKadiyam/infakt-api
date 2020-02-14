@@ -227,3 +227,7 @@ Route::get('salaries/download', 'SalariesController@download');
 Route::resource('salaries', 'SalariesController');
 
 Route::resource('inquiries', 'InquiriesController');
+Route::resource('inquiries/{inquiry}/inquiry_remarks', 'InquiryRemarksController');
+Route::resource('inquiries/{inquiry}/inquiry_followups', 'InquiryFollowupsController');
+
+Route::resource('resumes', 'ResumesController');

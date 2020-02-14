@@ -338,5 +338,20 @@ class User extends Authenticatable
   {
     return $this->hasMany(Salary::class);
   }
+
+  public function inquiry_remarks()
+  {
+    return $this->hasMany(InquiryRemark::class);
+  }
+
+  public function inquiry_followups()
+  {
+    return $this->hasMany(InquiryFollowup::class);
+  }
+
+  public function resumes()
+  {
+    return $this->hasMany(Resume::class);
+  }
 }
 
