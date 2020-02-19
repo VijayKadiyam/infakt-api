@@ -59,7 +59,7 @@ class SkuTypeTest extends TestCase
       ->assertJson([
           'data'   =>[
             'name' => 'Promotional'
-          ]
+          ],
         ])
       ->assertJsonStructureExact([
           'data'   => [
@@ -68,7 +68,7 @@ class SkuTypeTest extends TestCase
             'updated_at',
             'created_at',
             'id'
-          ]
+          ],
         ]);
   }
 

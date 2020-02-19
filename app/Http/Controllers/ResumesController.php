@@ -44,7 +44,8 @@ class ResumesController extends Controller
     $request->company->resumes()->save($resume);
 
     return response()->json([
-      'data'    =>  $resume
+      'data'    =>  $resume,
+      'success' =>  true
     ], 201); 
   }
 

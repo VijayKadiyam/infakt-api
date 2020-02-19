@@ -64,7 +64,7 @@ class ResumeTest extends TestCase
       ->assertJson([
           'data'   =>[
             'user_id' =>  $this->user->id
-          ]
+          ],
         ])
       ->assertJsonStructureExact([
           'data'   => [
@@ -75,7 +75,8 @@ class ResumeTest extends TestCase
             'updated_at',
             'created_at',
             'id'
-          ]
+          ],
+          'success'
         ]);
   }
 

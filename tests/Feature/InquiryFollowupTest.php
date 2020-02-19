@@ -126,7 +126,8 @@ class InquiryFollowupTest extends TestCase
             'inquiry_id',
             'user_id', 'date', 'status', 'description', 
             'created_at',
-            'updated_at'
+            'updated_at',
+            'call_type'
           ]
       ]);
   }

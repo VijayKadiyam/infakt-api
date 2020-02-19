@@ -32,7 +32,8 @@ class InquiryFollowupsController extends Controller
     $inquiry->inquiry_followups()->save($remark);
 
     return response()->json([
-      'data'    =>  $remark
+      'data'    =>  $remark,
+      'success' =>  true
     ], 201); 
   }
 

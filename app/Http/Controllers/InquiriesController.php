@@ -29,9 +29,9 @@ class InquiriesController extends Controller
     }
     else
       $inquiries = request()->company->inquiries;
-
     return response()->json([
-      'data'     =>  $inquiries
+      'data'     => $inquiries,
+      'success' =>  true
     ], 200);
   }
 
@@ -48,14 +48,16 @@ class InquiriesController extends Controller
     $request->company->inquiries()->save($inquiry);
 
     return response()->json([
-      'data'    =>  $inquiry
+      'data'    =>  $inquiry,
+      'success' =>  true
     ], 201); 
   }
 
   public function show(Inquiry $inquiry)
   {
     return response()->json([
-      'data'   =>  $inquiry
+      'data'   =>  $inquiry,
+      'success' =>  true
     ], 200);   
   }
 

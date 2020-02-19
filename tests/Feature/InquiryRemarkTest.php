@@ -126,7 +126,10 @@ class InquiryRemarkTest extends TestCase
             'inquiry_id',
             'user_id', 'meeting_time', 'date', 'venue', 'note',
             'created_at',
-            'updated_at'
+            'updated_at',
+            'contact_person',
+            'mobile_no',
+            'email'
           ]
       ]);
   }

@@ -302,7 +302,8 @@ class Company extends Model
 
   public function inquiries()
   {
-    return $this->hasMany(Inquiry::class);
+    return $this->hasMany(Inquiry::class)
+      ->with('inquiry_remarks');
   }
 
   public function resumes()

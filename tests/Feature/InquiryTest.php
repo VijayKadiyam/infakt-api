@@ -77,7 +77,8 @@ class InquiryTest extends TestCase
             'updated_at',
             'created_at',
             'id'
-          ]
+          ],
+          'success'
         ]);
   }
 
@@ -91,8 +92,9 @@ class InquiryTest extends TestCase
           'data' => [
             0=>[
               'date'
-            ] 
-          ]
+            ]
+          ],
+          'success'
         ]);
       $this->assertCount(1, Inquiry::all());
   }
@@ -123,7 +125,8 @@ class InquiryTest extends TestCase
       ->assertJson([
           'data'  => [
             'date'=> 'Date 1',
-          ]
+          ],
+          'success'
         ]);
   }
 
