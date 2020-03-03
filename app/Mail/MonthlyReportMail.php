@@ -60,31 +60,31 @@ class MonthlyReportMail extends Mailable
     // West Bengal
     $attendances = [];
     $attendances[] = UserAttendance::where('user_id', '=', 123)
-      ->whereMonth('date', '=', 2)
+      ->whereMonth('date', '=', 3)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 126)
-      ->whereMonth('date', '=', 2)
+      ->whereMonth('date', '=', 3)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 127)
-      ->whereMonth('date', '=', 2)
+      ->whereMonth('date', '=', 3)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 128)
-      ->whereMonth('date', '=', 2)
+      ->whereMonth('date', '=', 3)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 201)
-      ->whereMonth('date', '=', 2)
+      ->whereMonth('date', '=', 3)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
@@ -288,29 +288,29 @@ class MonthlyReportMail extends Mailable
     // Gujarat
     $attendances = [];
     // $attendances[] = UserAttendance::where('user_id', '=', 234)
-    //   ->whereMonth('date', '=', 2)
+    //   ->whereMonth('date', '=', 3)
     //   ->with('user')
     //   ->orderBy('date', 'ASC')
     //   ->get();
     $attendances[] = UserAttendance::where('user_id', '=', 235)
-      ->whereMonth('date', '=', 2)
+      ->whereMonth('date', '=', 3)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
     $attendances[] = UserAttendance::where('user_id', '=', 236)
-      ->whereMonth('date', '=', 2)
+      ->whereMonth('date', '=', 3)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 237)
-      ->whereMonth('date', '=', 2)
+      ->whereMonth('date', '=', 3)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 187)
-      ->whereMonth('date', '=', 2)
+      ->whereMonth('date', '=', 3)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
@@ -922,7 +922,7 @@ class MonthlyReportMail extends Mailable
 
 
         return $this->view('mails.rm', compact('data','pcount1', 'pcount2', 'pcount3', 'pcount4'))
-          ->subject('Attendance Report for the Month of February 2020')
+          ->subject('Attendance Report for the Month of March 2020')
           ->from('hajiri@pousse.in', 'Pousse Management Services');
     }
 }

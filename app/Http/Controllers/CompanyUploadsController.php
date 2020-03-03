@@ -20,7 +20,7 @@ class CompanyUploadsController extends Controller
       $name = 'pds.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->pds_word_path = $imagePath;
@@ -31,7 +31,7 @@ class CompanyUploadsController extends Controller
       $name = 'pds.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->pds_pdf_path = $imagePath;
@@ -58,7 +58,7 @@ class CompanyUploadsController extends Controller
       $name = 'form_2.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->form_2_word_path = $imagePath;
@@ -69,7 +69,7 @@ class CompanyUploadsController extends Controller
       $name = 'form_2.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->form_2_pdf_path = $imagePath;
@@ -96,7 +96,7 @@ class CompanyUploadsController extends Controller
       $name = 'form_11.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->form_11_word_path = $imagePath;
@@ -107,7 +107,7 @@ class CompanyUploadsController extends Controller
       $name = 'form_11.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->form_11_pdf_path = $imagePath;
@@ -134,7 +134,7 @@ class CompanyUploadsController extends Controller
       $name = 'pf.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->pf_word_path = $imagePath;
@@ -145,7 +145,7 @@ class CompanyUploadsController extends Controller
       $name = 'pf.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->pf_pdf_path = $imagePath;
@@ -172,7 +172,7 @@ class CompanyUploadsController extends Controller
       $name = 'esic_benefit.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->esic_benefit_word_path = $imagePath;
@@ -183,7 +183,7 @@ class CompanyUploadsController extends Controller
       $name = 'esic_benefit.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->esic_benefit_pdf_path = $imagePath;
@@ -210,7 +210,7 @@ class CompanyUploadsController extends Controller
       $name = 'insurance_claim.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->insurance_claim_word_path = $imagePath;
@@ -221,7 +221,7 @@ class CompanyUploadsController extends Controller
       $name = 'insurance_claim.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->insurance_claim_pdf_path = $imagePath;
@@ -248,7 +248,7 @@ class CompanyUploadsController extends Controller
       $name = 'salary_slip.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->salary_slip_word_path = $imagePath;
@@ -259,7 +259,7 @@ class CompanyUploadsController extends Controller
       $name = 'salary_slip.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->salary_slip_pdf_path = $imagePath;
@@ -286,7 +286,7 @@ class CompanyUploadsController extends Controller
       $name = 'pms_policies.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->pms_policies_word_path = $imagePath;
@@ -297,7 +297,7 @@ class CompanyUploadsController extends Controller
       $name = 'pms_policies.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->pms_policies_pdf_path = $imagePath;
@@ -324,7 +324,7 @@ class CompanyUploadsController extends Controller
       $name = 'act_of_misconduct.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->act_of_misconduct_word_path = $imagePath;
@@ -335,7 +335,7 @@ class CompanyUploadsController extends Controller
       $name = 'act_of_misconduct.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->act_of_misconduct_pdf_path = $imagePath;
@@ -362,7 +362,7 @@ class CompanyUploadsController extends Controller
       $name = 'uan_activation.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->uan_activation_word_path = $imagePath;
@@ -373,7 +373,7 @@ class CompanyUploadsController extends Controller
       $name = 'uan_activation.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->uan_activation_pdf_path = $imagePath;
@@ -400,7 +400,7 @@ class CompanyUploadsController extends Controller
       $name = 'online_claim.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->online_claim_word_path = $imagePath;
@@ -411,7 +411,7 @@ class CompanyUploadsController extends Controller
       $name = 'online_claim.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->online_claim_pdf_path = $imagePath;
@@ -438,7 +438,7 @@ class CompanyUploadsController extends Controller
       $name = 'kyc_update.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->kyc_update_word_path = $imagePath;
@@ -449,7 +449,7 @@ class CompanyUploadsController extends Controller
       $name = 'kyc_update.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->kyc_update_pdf_path = $imagePath;
@@ -476,7 +476,7 @@ class CompanyUploadsController extends Controller
       $name = 'graduity_form.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->graduity_form_word_path = $imagePath;
@@ -487,7 +487,7 @@ class CompanyUploadsController extends Controller
       $name = 'graduity_form.';
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
-      Storage::disk('s3')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
+      Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');
 
       $company = Company::where('id', '=', request()->company_id)->first();
       $company->graduity_form_pdf_path = $imagePath;
