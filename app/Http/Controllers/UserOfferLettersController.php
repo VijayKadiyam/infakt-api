@@ -64,7 +64,7 @@ class UserOfferLettersController extends Controller
     $data['user'] = $user;
     $data['letter'] = $userOfferLetter;
 
-    $pdf = PDF::loadView('letters.ol', $data);
+    return $pdf = PDF::loadView('letters.ol', $data);
 
     // return $pdf->download($user->name . '-offer-letter.pdf');
   }
