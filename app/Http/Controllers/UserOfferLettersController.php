@@ -10,7 +10,8 @@ class UserOfferLettersController extends Controller
 {
   public function __construct()
   {
-    $this->middleware(['auth:api', 'company']);
+    $this->middleware(['auth:api', 'company'])
+      ->except('download');
   }
 
   public function index(Request $request, User $user)
