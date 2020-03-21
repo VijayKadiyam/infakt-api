@@ -108,6 +108,7 @@ Route::get('time', 'TimesController@index');
 Route::get('geocode', 'GeocodesController@index');
 Route::post('sendEmail', 'SendEmailController@index');
 
+Route::resource('users/{user}/user_offer_letters', 'UserOfferLettersController');
 Route::resource('users/{user}/user_appointment_letters', 'UserAppointmentLettersController');
 Route::get('users/{user}/user_appointment_letters/{user_appointment_letter}/download', 'UserAppointmentLettersController@download');
 Route::get('user_appointment_letters', 'UserAppointmentLettersController@getAll');
@@ -194,6 +195,7 @@ Route::get('graduity-forms/{id}', 'FormsController@graduityForm');
 Route::get('graduity-forms/{id}/download', 'FormsController@graduityFormDownload');
 
 Route::get('welcome-email', 'EmailsController@welcomeEmail');
+Route::get('offer-letter-email', 'EmailsController@offerLetterEmail');
 Route::get('appointment-letter-email', 'EmailsController@appointmentLetterEmail');
 Route::get('renewal-letter-email', 'EmailsController@renewalLetterEmail');
 Route::get('experience-letter-email', 'EmailsController@experienceLetterEmail');

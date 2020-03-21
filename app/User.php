@@ -267,6 +267,12 @@ class User extends Authenticatable
     return $this->hasMany(Mark::class);
   }
 
+  public function user_offer_letters()
+  {
+    return $this->hasMany(UserOfferLetter::class)
+      ->with('user');
+  }
+
   public function user_appointment_letters()
   {
     return $this->hasMany(UserAppointmentLetter::class)

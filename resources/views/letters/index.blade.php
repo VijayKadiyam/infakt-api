@@ -24,7 +24,7 @@
   <main>
     <br><br>
     @yield('letter')
-    <img src="https://pmsallcdn.s3.ap-south-1.amazonaws.com/documentation/authorized-signatory.png" style="width: 350px; height: 100px;">
+    <img src="http://api.dastavej.aaibuzz.com/storage/documentation/authorized-signatory.png" style="width: 350px; height: 100px;">
   </main>
 </body>
 </html>

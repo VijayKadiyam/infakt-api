@@ -7,7 +7,7 @@ Please refer the Experience Letter as attached below.
 @if($letter->signed == 1) 
   Your Signature:
   <br>
-  <img src="https://pmsallcdn.s3.ap-south-1.amazonaws.com/documentation/{{ $letter->sign_path }}" height="100px; width: 200px;">
+  <img src="http://api.dastavej.aaibuzz.com/storage/documentation/{{ $letter->sign_path }}" height="100px; width: 200px;">
 @else
   Please visit the mobile app and sign the Experience Letter.
 @endif

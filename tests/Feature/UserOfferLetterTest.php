@@ -6,10 +6,9 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use App\Inquiry;
-use App\InquiryFollowup;
+use App\UserOfferLetter;
 
-class InquiryFollowupTest extends TestCase
+class UserOfferLetterTest extends TestCase
 {
   use DatabaseTransactions;
   
@@ -23,112 +22,106 @@ class InquiryFollowupTest extends TestCase
     $this->user->assignCompany($this->company->id);
     $this->headers['company-id'] = $this->company->id;
 
-    $this->inquiry = factory(Inquiry::class)->create([
-      'company_id'  =>  $this->company->id 
-    ]);
-
-    factory(InquiryFollowup::class)->create([
-      'inquiry_id'  =>  $this->inquiry->id,
-      'user_id' =>  $this->user->id
+    factory(UserOfferLetter::class)->create([
+      'user_id'  =>  $this->user->id 
     ]);
 
     $this->payload = [ 
-      'user_id' =>  $this->user->id
+      'letter'          =>  'Letter 2',
     ];
   }
 
   /** @test */
   function user_must_be_logged_in_before_accessing_the_controller()
   {
-    $this->json('post', '/api/inquiries/' . $this->inquiry->id . '/inquiry_followups')
+    $this->json('post', '/api/users/' . $this->user->id . '/user_offer_letters')
       ->assertStatus(401); 
   }
 
   /** @test */
   function it_requires_following_details()
   {
-    $this->json('post', '/api/inquiries/' . $this->inquiry->id . '/inquiry_followups', [], $this->headers)
+    $this->json('post', '/api/users/' . $this->user->id . '/user_offer_letters', [], $this->headers)
       ->assertStatus(422)
       ->assertExactJson([
           "errors"  =>  [
-            "user_id"          =>  ["The user id field is required."],
+            "letter"          =>  ["The letter field is required."],
           ],
           "message" =>  "The given data was invalid."
         ]);
   }
 
   /** @test */
-  function add_new_sku_type()
+  function add_new_letter()
   {
-    $this->json('post', '/api/inquiries/' . $this->inquiry->id . '/inquiry_followups', $this->payload, $this->headers)
+    $this->disableEH();
+    $this->json('post', '/api/users/' . $this->user->id . '/user_offer_letters', $this->payload, $this->headers)
       ->assertStatus(201)
       ->assertJson([
           'data'   =>[
-            'user_id' => $this->user->id
+            'letter'        =>  'Letter 2'
           ]
         ])
       ->assertJsonStructureExact([
           'data'   => [
+            'letter',
             'user_id',
-            'inquiry_id',
             'updated_at',
             'created_at',
-            'id'
-          ],
-          'success'
+            'id',
+          ]
         ]);
   }
 
   /** @test */
-  function list_of_inquirys()
+  function list_of_letters()
   {
-    $this->disableEH();
-    $this->json('GET', '/api/inquiries/' . $this->inquiry->id . '/inquiry_followups',[], $this->headers)
+    $this->json('GET', '/api/users/' . $this->user->id . '/user_offer_letters',[], $this->headers)
       ->assertStatus(200)
       ->assertJsonStructure([
           'data' => [
-            0=>[
-              'user_id'
+            0 =>  [
+              'letter',
             ] 
           ]
         ]);
-      $this->assertCount(1, InquiryFollowup::all());
+    $this->assertCount(1, UserOfferLetter::all());
   }
-
   /** @test */
-  function show_single_inquiry()
+  function show_single_letter()
   {
-    $this->json('get', '/api/inquiries/' . $this->inquiry->id . '/inquiry_followups/1', [], $this->headers)
+    $this->json('get', "/api/users/" . $this->user->id . "/user_offer_letters/1", [], $this->headers)
       ->assertStatus(200)
       ->assertJson([
           'data'  => [
-            'user_id' => $this->user->id
+            'letter'        =>  'Letter 1',         
           ]
         ]);
   }
 
   /** @test */
-  function update_single_inquiry()
+  function update_single_letter()
   {
     $payload = [ 
-      'date'  =>  'GRAM 1'
+      'letter'        =>  'Letter 1 Updated',
     ];
 
-    $this->json('patch', '/api/inquiries/' . $this->inquiry->id . '/inquiry_followups/1', $payload, $this->headers)
+    $this->json('patch', '/api/users/' . $this->user->id . '/user_offer_letters/1', $payload, $this->headers)
       ->assertStatus(200)
       ->assertJson([
           'data'    => [
-            'date'  =>  'GRAM 1',
+            'letter'        =>  'Letter 1 Updated',
           ]
        ])
       ->assertJsonStructureExact([
           'data'  => [
             'id',
-            'inquiry_id',
-            'user_id', 'date', 'status', 'description', 
+            'user_id',
+            'letter',
+            'signed',
+            'sign_path',
             'created_at',
             'updated_at',
-            'call_type'
           ]
       ]);
   }

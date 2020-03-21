@@ -126,7 +126,7 @@ class InquiryTest extends TestCase
           'data'  => [
             'date'=> 'Date 1',
           ],
-          'success'
+          'success' =>  true
         ]);
   }
 

@@ -2,14 +2,14 @@ Hi, {{ $user->full_name }},
 <br><br>
 Greetings for the day.
 <br><br>
-Please refer the Promotion Letter as attached below.
+Please refer the Offer Letter as attached below.
 <br><br>
 @if($letter->signed == 1) 
   Your Signature:
-  br
+  <br>
   <img src="http://api.dastavej.aaibuzz.com/storage/documentation/{{ $letter->sign_path }}" height="100px; width: 200px;">
 @else
-  Please visit the mobile app and sign the Promotion Letter.
+  Please visit the mobile app and sign the Offer Letter.
 @endif
 <br><br><br>
 Regards,

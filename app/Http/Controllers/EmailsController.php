@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Mail;
 use App\User;
+use App\UserOfferLetter;
 use App\UserAppointmentLetter;
 use App\UserRenewalLetter;
 use App\UserExperienceLetter;
@@ -15,6 +16,7 @@ use App\UserTerminationLetter;
 use App\UserFullFinalLetter;
 
 use App\Mail\WelcomeEmail;
+use App\Mail\OfferLetterEmail;
 use App\Mail\AppointmentLetterEmail;
 use App\Mail\RenewalLetterEmail;
 use App\Mail\ExperienceLetterEmail;
@@ -47,6 +49,20 @@ class EmailsController extends Controller
       ->send(new WelcomeEmail($user));
   }
 
+  public function offerLetterEmail(Request $request)
+  {
+    $letter_id =  $request->letter_id;
+    $letter = UserOfferLetter::where('id', '=', $letter_id)->first();
+
+    $user_id = $request->userid;
+    $user = User::where('id', '=', $user_id)
+      ->first();
+
+    Mail::to($user->email)
+      ->cc('letters@pousse.in')
+      ->send(new OfferLetterEmail($user, $letter));
+  }
+
   public function appointmentLetterEmail(Request $request)
   {
     $letter_id =  $request->letter_id;
@@ -58,7 +74,7 @@ class EmailsController extends Controller
 
     Mail::to($user->email)
       ->cc('letters@pousse.in')
-      ->send(new AppointmentLetterEmail($user, $letter));
+      ->send(new OfferLetterEmail($user, $letter));
   }
 
   public function renewalLetterEmail(Request $request)
