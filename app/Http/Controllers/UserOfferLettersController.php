@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\UserOfferLetter;
 use App\User;
+use PDF;
 
 class UserOfferLettersController extends Controller
 {
