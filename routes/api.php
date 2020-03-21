@@ -109,6 +109,7 @@ Route::get('geocode', 'GeocodesController@index');
 Route::post('sendEmail', 'SendEmailController@index');
 
 Route::resource('users/{user}/user_offer_letters', 'UserOfferLettersController');
+Route::get('users/{user}/user_offer_letters/{user_offer_letter}/download', 'UserOfferLettersController@download');
 Route::resource('users/{user}/user_appointment_letters', 'UserAppointmentLettersController');
 Route::get('users/{user}/user_appointment_letters/{user_appointment_letter}/download', 'UserAppointmentLettersController@download');
 Route::get('user_appointment_letters', 'UserAppointmentLettersController@getAll');

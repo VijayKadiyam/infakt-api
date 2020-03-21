@@ -56,4 +56,14 @@ class UserOfferLettersController extends Controller
       'data'  =>  $userOfferLetter
     ], 200);
   }
+
+  public function download(User $user, UserOfferLetter $userOfferLetter)
+  {
+    $data['user'] = $user;
+    $data['letter'] = $userOfferLetter;
+
+    $pdf = PDF::loadView('letters.ol', $data);
+
+    return $pdf->download($user->name . '-offer-letter.pdf');
+  }
 }
