@@ -110,8 +110,10 @@ Route::post('sendEmail', 'SendEmailController@index');
 
 Route::resource('users/{user}/user_offer_letters', 'UserOfferLettersController');
 Route::get('users/{user}/user_offer_letters/{user_offer_letter}/download', 'UserOfferLettersController@download');
+Route::get('users/{user}/user_offer_letters/{user_offer_letter}/stream', 'UserOfferLettersController@stream');
 Route::resource('users/{user}/user_appointment_letters', 'UserAppointmentLettersController');
 Route::get('users/{user}/user_appointment_letters/{user_appointment_letter}/download', 'UserAppointmentLettersController@download');
+Route::get('users/{user}/user_appointment_letters/{user_appointment_letter}/stream', 'UserAppointmentLettersController@stream');
 Route::get('user_appointment_letters', 'UserAppointmentLettersController@getAll');
 Route::resource('users/{user}/user_experience_letters', 'UserExperienceLettersController');
 Route::get('users/{user}/user_experience_letters/{user_experience_letter}/download', 'UserExperienceLettersController@download');
