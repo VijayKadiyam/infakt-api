@@ -12,7 +12,7 @@ class UserOfferLettersController extends Controller
   public function __construct()
   {
     $this->middleware(['auth:api', 'company'])
-      ->except('download');
+      ->except(['download', 'stream']);
   }
 
   public function index(Request $request, User $user)
@@ -57,6 +57,16 @@ class UserOfferLettersController extends Controller
     return response()->json([
       'data'  =>  $userOfferLetter
     ], 200);
+  }
+
+  public function stream(User $user, UserOfferLetter $userOfferLetter)
+  {
+    $data['user'] = $user;
+    $data['letter'] = $userOfferLetter;
+
+    $pdf = PDF::loadView('letters.ol', $data);
+
+    return $pdf->stream();
   }
 
   public function download(User $user, UserOfferLetter $userOfferLetter)
