@@ -12,7 +12,7 @@ class UserAppointmentLettersController extends Controller
   public function __construct()
   {
     $this->middleware(['auth:api', 'company'])
-      ->except('download');
+      ->except(['download', 'stream']);
   }
 
   public function getAll(Request $request)
