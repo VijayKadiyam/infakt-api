@@ -77,6 +77,16 @@ class UserAppointmentLettersController extends Controller
     ], 200);
   }
 
+  public function stream(User $user, UserAppointmentLetter $userAppointmentLetter)
+  {
+    $data['user'] = $user;
+    $data['letter'] = $userAppointmentLetter;
+
+    $pdf = PDF::loadView('letters.al', $data);
+
+    return $pdf->stream();
+  }
+
   public function download(User $user, UserAppointmentLetter $userAppointmentLetter)
   {
     $data['user'] = $user;
