@@ -49,8 +49,8 @@ Route::get('monthly', function(Request $request) {
   //       ->orderBy('date', 'ASC')
   //       ->get();
 
-    $spjpCount = 0;
-    $stotalCount = 0;
+    $spjpCount = 1;
+    $stotalCount = 1;
     $today = Carbon::now()->format('d');
     $count1 = 0;
     $count2 = 0;
@@ -60,31 +60,31 @@ Route::get('monthly', function(Request $request) {
     // West Bengal
     $attendances = [];
     $attendances[] = UserAttendance::where('user_id', '=', 123)
-      ->whereMonth('date', '=', 3)
+      ->whereMonth('date', '=', 4)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 126)
-      ->whereMonth('date', '=', 3)
+      ->whereMonth('date', '=', 4)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 127)
-      ->whereMonth('date', '=', 3)
+      ->whereMonth('date', '=', 4)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 128)
-      ->whereMonth('date', '=', 3)
+      ->whereMonth('date', '=', 4)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 201)
-      ->whereMonth('date', '=', 3)
+      ->whereMonth('date', '=', 4)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
@@ -112,7 +112,7 @@ Route::get('monthly', function(Request $request) {
           ->with('plan_actuals', 'allowance_type', 'user', 'plan_travelling_details')
           ->first();
 
-        while(Carbon::parse($attendance->date)->format('d') != $i && $diff > 0)
+        while(Carbon::parse($attendance->date)->format('d') != $i && $diff > 0 && $plan)
         {
           $att = [
             'day'   =>  Carbon::parse($attendance->date)->subDays($diff)->format('D'),
@@ -288,29 +288,29 @@ Route::get('monthly', function(Request $request) {
     // Gujarat
     $attendances = [];
     // $attendances[] = UserAttendance::where('user_id', '=', 234)
-    //   ->whereMonth('date', '=', 3)
+    //   ->whereMonth('date', '=', 4)
     //   ->with('user')
     //   ->orderBy('date', 'ASC')
     //   ->get();
     $attendances[] = UserAttendance::where('user_id', '=', 235)
-      ->whereMonth('date', '=', 3)
+      ->whereMonth('date', '=', 4)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
     $attendances[] = UserAttendance::where('user_id', '=', 236)
-      ->whereMonth('date', '=', 3)
+      ->whereMonth('date', '=', 4)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 237)
-      ->whereMonth('date', '=', 3)
+      ->whereMonth('date', '=', 4)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 187)
-      ->whereMonth('date', '=', 3)
+      ->whereMonth('date', '=', 4)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
@@ -338,7 +338,7 @@ Route::get('monthly', function(Request $request) {
           ->with('plan_actuals', 'allowance_type', 'user', 'plan_travelling_details')
           ->first();
 
-        while(Carbon::parse($attendance->date)->format('d') != $i && $diff > 0)
+        while(Carbon::parse($attendance->date)->format('d') != $i && $diff > 0 && $plan)
         {
           
           $att = [
@@ -491,8 +491,8 @@ Route::get('monthly', function(Request $request) {
             'between_10_30_11_30'  =>  '',
             'after_11_30'  =>  '',
             'on_leave'     => strcmp(Carbon::now()->subDays($diff)->format('D'), 'Sun') ? 'YES' : ' ',
-            'plan'         => strcmp(Carbon::now()->subDays($diff)->format('D'), 'Sun') ? ($plan ? $plan->plan : '') : '',
-            'actual'       => strcmp(Carbon::now()->subDays($diff)->format('D'), 'Sun') ? ($plan ? ucfirst($plan->plan) . ', Gujarat' : '') : '',
+            'plan'         => strcmp(Carbon::now()->subDays($diff)->format('D'), 'Sun') ? (isset($plan) ? $plan->plan : '') : '',
+            'actual'       => strcmp(Carbon::now()->subDays($diff)->format('D'), 'Sun') ? (isset($plan) ? ucfirst($plan->plan) . ', Gujarat' : '') : '',
             'pjp_adhered' =>  '',
             'pjp_not_adhered' =>  strcmp(Carbon::now()->subDays($diff)->format('D'), 'Sun') ? 'NO' : ' ',
             'gps'         =>  strcmp(Carbon::now()->subDays($diff)->format('D'), 'Sun') ? 'YES' : '',
@@ -652,8 +652,8 @@ Route::get('monthly1', function(Request $request) {
 });
 
 Route::get('sales', function(Request $request) {
-  $spjpCount = 0;
-    $stotalCount = 0;
+  $spjpCount = 1;
+    $stotalCount = 1;
     $today = Carbon::now()->format('d');
     $count1 = 0;
     $count2 = 0;
