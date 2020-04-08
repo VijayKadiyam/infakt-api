@@ -82,6 +82,8 @@ class UserAppointmentLettersController extends Controller
     $data['user'] = $user;
     $data['letter'] = $userAppointmentLetter;
 
+    // return view('letters.al', $data);
+
     $pdf = PDF::loadView('letters.al', $data);
 
     return $pdf->stream();
@@ -91,7 +93,6 @@ class UserAppointmentLettersController extends Controller
   {
     $data['user'] = $user;
     $data['letter'] = $userAppointmentLetter;
-
     $pdf = PDF::loadView('letters.al', $data);
 
     return $pdf->download($user->name . '-appointment-letter.pdf');
