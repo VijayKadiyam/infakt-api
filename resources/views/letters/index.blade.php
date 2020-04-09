@@ -36,8 +36,8 @@
     border-right: 1px solid black;
     border-left: 1px solid black;
     border-collapse: collapse;
-    padding-top: -16px !important;
-    padding-bottom: -16px !important;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
   }
 
 }
