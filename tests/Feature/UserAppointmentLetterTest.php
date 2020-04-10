@@ -151,6 +151,7 @@ class UserAppointmentLetterTest extends TestCase
             'start_date',
             'end_date',
             'stc_issue_date',
+            'letter_path'
           ]
       ]);
   }

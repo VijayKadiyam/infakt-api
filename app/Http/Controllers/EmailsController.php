@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use Mail;
 use App\User;
 use App\UserOfferLetter;
@@ -74,13 +75,13 @@ class EmailsController extends Controller
 
     Mail::to($user->email)
       ->cc('letters@pousse.in')
-      ->send(new OfferLetterEmail($user, $letter));
+      ->send(new AppointmentLetterEmail($user, $letter));
   }
 
   public function renewalLetterEmail(Request $request)
   {
     $letter_id =  $request->letter_id;
-    $letter = UserAppointmentLetter::where('id', '=', $letter_id)->first();
+    $letter = UserRenewalLetter::where('id', '=', $letter_id)->first();
 
     $user_id = $request->userid;
     $user = User::where('id', '=', $user_id)

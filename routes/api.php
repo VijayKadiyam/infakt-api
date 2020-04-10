@@ -134,6 +134,8 @@ Route::resource('users/{user}/notifications', 'NotificationsController');
 
 Route::post('user_profile_image', 'UserUploadsController@profileImage');
 
+Route::post('appointment-letter-file', 'LetterUploadsController@appointmentLetterFile');
+
 Route::post('mobile_photo_image', 'MobileUploadsController@mobilePhotoImage');
 Route::post('mobile_residential_proof_image', 'MobileUploadsController@mobileResidentialProofImage');
 Route::post('mobile_education_proof_image', 'MobileUploadsController@mobileEducationProofImage');

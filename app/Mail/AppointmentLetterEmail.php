@@ -7,6 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use PDF;
+use Illuminate\Support\Facades\Storage;
 
 class AppointmentLetterEmail extends Mailable
 {
@@ -36,10 +37,22 @@ class AppointmentLetterEmail extends Mailable
       $data['letter'] = $this->letter;
 
       $pdf = PDF::loadView('letters.al', $data);
+      if($this->letter->letter_path) {
+        $file = Storage::disk('local')->get('documentation/' . $this->letter->letter_path); 
 
-      return $this->view('mails.al')
-        ->from(env('MAIL_USERNAME'), env('MAIL_NAME'))
-        ->subject($this->user->employee_code . ' | Appointment Letter | PMS')
-        ->attachData($pdf->output(), "appointment-letter.pdf");
+        return $this->view('mails.al')
+          ->from(env('MAIL_USERNAME'), env('MAIL_NAME'))
+          ->subject($this->user->employee_code . ' | Appointment Letter | PMS')
+          ->attachData($file, $this->letter->letter_path);
+      }
+      else {
+        $pdf = PDF::loadView('letters.ol', $data);
+
+        return $this->view('mails.al')
+          ->from(env('MAIL_USERNAME'), env('MAIL_NAME'))
+          ->subject($this->user->employee_code . ' | Appointment Letter | PMS')
+          ->attachData($pdf->output(), "appointment-letter.pdf");
+      }
+
     }
 }
