@@ -9,7 +9,7 @@ class TimesController extends Controller
   public function index()
   {
     // $endpoint = "http://worldtimeapi.org/api/timezone/Asia/Kolkata";
-    $endpoint = "http://worldclockapi.com/api/json/est/now";
+    $endpoint = "https://worldclockapi.com/api/json/est/now";
     $client = new \GuzzleHttp\Client();
 
     $response = $client->request('GET', $endpoint);
