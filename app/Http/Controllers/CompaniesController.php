@@ -21,7 +21,7 @@ class CompaniesController extends Controller
    */
   public function index()
   {
-    $companies = Company::with('users')->get(); 
+    $companies = Company::get(); 
 
     return response()->json([
       'data'     =>  $companies
