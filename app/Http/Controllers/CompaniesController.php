@@ -21,7 +21,13 @@ class CompaniesController extends Controller
    */
   public function index()
   {
-    $companies = Company::get(); 
+    $companies = Company::with([
+      'users'  => function($query) {
+        $query->whereHas('roles',  function($q) {
+            $q->where('name', '=', 'Admin');
+          });
+      }
+    ])->get();
 
     return response()->json([
       'data'     =>  $companies
