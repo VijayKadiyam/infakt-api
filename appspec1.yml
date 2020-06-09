@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /var/www/vhosts/dastavej/dastavej-api
+    destination: /var/www/vhosts/hajiri/hajiri-api
 hooks:
   BeforeInstall:
     - location: scripts/install_dependencies
@@ -12,7 +12,7 @@ hooks:
       timeout: 300
       runas: root
   AfterInstall:
-    - location: scripts/afterInstall
+    - location: scripts/afterInstallHajiri
       timeout: 300
       runas: root
   ApplicationStop:
