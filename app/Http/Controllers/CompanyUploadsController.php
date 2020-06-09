@@ -17,7 +17,7 @@ class CompanyUploadsController extends Controller
     $imagePath = '';
     if ($request->hasFile('word')) {
       $file = $request->file('word');
-      $name = 'pds.';
+      $name = $file->getClientOriginalName();
       $name = $name . $file->getClientOriginalExtension();;
       $imagePath = 'companies/' . $request->company_id . '/' . $name;
       Storage::disk('local')->put('documentation/' . $imagePath, file_get_contents($file), 'public');

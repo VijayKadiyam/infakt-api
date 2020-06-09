@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /var/www/html/ems/code
+    destination: /var/www/vhosts/dastavej/dastavej-api
 hooks:
   BeforeInstall:
     - location: scripts/install_dependencies

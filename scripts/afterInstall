@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /var/www/html/ems/code
+cd /var/www/vhosts/dastavej/dastavej-api
 
 php /usr/local/bin/composer install
 
