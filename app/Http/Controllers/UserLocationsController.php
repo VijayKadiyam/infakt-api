@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\UserLocation;
+use Carbon\Carbon;
 
 class UserLocationsController extends Controller
 {
@@ -38,6 +39,13 @@ class UserLocationsController extends Controller
     ], 200);
   }
 
+  public function sendSMS($phone, $name, $date, $time, $lat, $lng, $battery)
+  {
+    $endpoint = "http://mobicomm.dove-sms.com//submitsms.jsp?user=PousseM&key=fc53bf6154XX&mobile=+91$phone&message=Dear Sir/Madam,%0A%0AName: $name%0ADate: $date%0AI have starting work at $time%0ALocation:$lat-$lng%0ABattery Percent: $battery %&senderid=POUSSE&accusage=1";
+    $client = new \GuzzleHttp\Client();
+    $client->request('GET', $endpoint);
+  }
+
   /*
    * To store a new user location
    *
@@ -60,8 +68,22 @@ class UserLocationsController extends Controller
       $userLocation->address = json_decode($geocodesController->index($request)->getContent())->data;
     }
 
-    // return ($userLocation);
     $request->user()->user_locations()->save($userLocation);
+
+    if(sizeof($request->user()->supervisors) > 0) {
+      $phone = $request->user()->supervisors[0]->phone;
+      $name = $request->user()->name;
+      $date = Carbon::parse($userLocation->created_at)->format('d-m-Y');
+      $time = Carbon::parse($userLocation->created_at)->format('H:m:s');
+      $lat = $userLocation->content['coords']['latitude'];
+      $lng = $userLocation->content['coords']['longitude'];
+      $battery = $userLocation->content['battery']['level'];
+      $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery);
+    }
+
+    // return $userLocation;
+
+    // return Carbon::parse($userLocation->created_at)->format('d-m-Y H:m:s');
 
     return response()->json([
       'data'    =>  $userLocation,
