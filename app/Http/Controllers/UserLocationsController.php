@@ -72,16 +72,19 @@ class UserLocationsController extends Controller
 
     
 
-    // if(sizeof($request->user()->supervisors) > 0) {
-    //   $phone = $request->user()->supervisors[0]->phone;
-    //   $name = $request->user()->name;
-    //   $date = Carbon::parse($userLocation->created_at)->format('d-m-Y');
-    //   $time = Carbon::parse($userLocation->created_at)->format('H:m:s');
-    //   $lat = $userLocation->content['coords']['latitude'];
-    //   $lng = $userLocation->content['coords']['longitude'];
-    //   $battery = $userLocation->content['battery']['level'];
-    //   $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery);
-    // }
+    if(sizeof($request->user()->supervisors) > 0) {
+      $checkLocations = UserLocation::whereDate('created_at', '=', Carbon::parse($userLocation->created_at)->format('Y-m-d'))->get();
+      if(sizeof($checkLocations) == 1) {
+        $phone = $request->user()->supervisors[0]->phone;
+        $name = $request->user()->name;
+        $date = Carbon::parse($userLocation->created_at)->format('d-m-Y');
+        $time = Carbon::parse($userLocation->created_at)->format('H:m:s');
+        $lat = $userLocation->content['coords']['latitude'];
+        $lng = $userLocation->content['coords']['longitude'];
+        $battery = $userLocation->content['battery']['level'];
+        $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery);
+      }
+    }
 
     // return $userLocation;
 

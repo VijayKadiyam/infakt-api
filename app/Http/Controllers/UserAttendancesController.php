@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\UserAttendance;
+use App\UserLocation;
 
 class UserAttendancesController extends Controller
 {
@@ -80,6 +81,8 @@ class UserAttendancesController extends Controller
     $userAttendance = new UserAttendance($request->all());
     $request->user()->user_attendances()->save($userAttendance);
 
+
+
     return response()->json([
       'data'    =>  $userAttendance,
       'success' =>  true
@@ -116,6 +119,8 @@ class UserAttendancesController extends Controller
     ]);
 
     $userAttendance->update($request->all());
+
+    // $userLocation = UserLocation::whereDate('created_at', '=', Carbon::parse($date)->format('Y-m-d'))->first();
       
     return response()->json([
       'data'  =>  $userAttendance,
