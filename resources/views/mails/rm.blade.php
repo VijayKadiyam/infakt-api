@@ -775,8 +775,8 @@
           <td>{{ $data[$i][$j]['uid_no'] }}</td>
           <td>{{ $data[$i][$j]['designation'] }}</td>
           <td>{{ $data[$i][$j]['start_time'] }}</td>
-          <!-- <td> - </td> -->
-          <td>{{ $data[$i][$j]['pjp_time'] }}</td>
+          <td> - </td>
+          <!-- <td>{{ $data[$i][$j]['pjp_time'] }}</td> -->
           <td>{{ $data[$i][$j]['end_time'] }}</td>
           <td>{{ $data[$i][$j]['before_10_30'] }}</td>
           <td>{{ $data[$i][$j]['between_10_30_11_30'] }}</td>
