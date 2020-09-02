@@ -728,7 +728,7 @@
         <td class="yellow" rowspan="2">UID No</td>
         <td class="yellow" rowspan="2">Designation</td>
         <td class="yellow" rowspan="2">Day Start Time</td>
-        <td class="yellow" rowspan="2">PJP Adhered Time</td>
+        <!-- <td class="yellow" rowspan="2">PJP Adhered Time</td> -->
         <td class="yellow" rowspan="2">Day End Time</td>
         <td class="yellow" rowspan="2">REPORTED BEFORE 10.30AM</td>
         <td class="yellow" rowspan="2">REPORTED BETWEEN 10.31-11.30AM</td>
@@ -775,7 +775,7 @@
           <td>{{ $data[$i][$j]['uid_no'] }}</td>
           <td>{{ $data[$i][$j]['designation'] }}</td>
           <td>{{ $data[$i][$j]['start_time'] }}</td>
-          <td> - </td>
+          <!-- <td> - </td> -->
           <!-- <td>{{ $data[$i][$j]['pjp_time'] }}</td> -->
           <td>{{ $data[$i][$j]['end_time'] }}</td>
           <td>{{ $data[$i][$j]['before_10_30'] }}</td>
