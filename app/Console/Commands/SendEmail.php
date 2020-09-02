@@ -50,8 +50,6 @@ class SendEmail extends Command
       // Mail::to('mandar.gadkari@dabur.com')->send(new MonthlyReportMail());
       // Mail::to('lourdes.rodrigues@dabur.com')->send(new MonthlyReportMail());
       // Mail::to('vidisha.raina@dabur.com')->send(new MonthlyReportMail());
-
-      
       // Mail::to('kirit.sayani@pousse.in')
       //   ->cc('kiran.suryawanshi@pousse.in')
       //   ->cc('kvjkumr@gmail.com')
