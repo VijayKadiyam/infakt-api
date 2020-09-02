@@ -60,31 +60,31 @@ class MonthlyReportMail extends Mailable
     // West Bengal
     $attendances = [];
     $attendances[] = UserAttendance::where('user_id', '=', 375)
-      ->whereMonth('date', '=', 4)
+      ->whereMonth('date', '=', 9)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 376)
-      ->whereMonth('date', '=', 4)
+      ->whereMonth('date', '=', 9)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 377)
-      ->whereMonth('date', '=', 4)
+      ->whereMonth('date', '=', 9)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 379)
-      ->whereMonth('date', '=', 4)
+      ->whereMonth('date', '=', 9)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
 
     $attendances[] = UserAttendance::where('user_id', '=', 381)
-      ->whereMonth('date', '=', 4)
+      ->whereMonth('date', '=', 9)
       ->with('user')
       ->orderBy('date', 'ASC')
       ->get();
