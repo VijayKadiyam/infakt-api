@@ -49,8 +49,8 @@ class MonthlyReportMail extends Mailable
   //       ->orderBy('date', 'ASC')
   //       ->get();
 
-    $spjpCount = 1;
-    $stotalCount = 1;
+    $spjpCount = 0;
+    $stotalCount = 0;
     $today = Carbon::now()->format('d');
     $count1 = 0;
     $count2 = 0;
@@ -286,7 +286,7 @@ class MonthlyReportMail extends Mailable
     }
 
     // Gujarat
-    $attendances = [];
+    // $attendances = [];
     // $attendances[] = UserAttendance::where('user_id', '=', 234)
     //   ->whereMonth('date', '=', 4)
     //   ->with('user')
