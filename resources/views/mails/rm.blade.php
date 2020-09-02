@@ -734,17 +734,17 @@
         <td class="yellow" rowspan="2">REPORTED BETWEEN 10.31-11.30AM</td>
         <td class="yellow" rowspan="2">AFTER 11.30AM</td>
         <td class="yellow" rowspan="2">ON LEAVE</td>
-        <td class="yellow" colspan="2">T O W N</td>
-        <td class="yellow" colspan="2">PJP ADEHERED</td>
-        <td class="yellow" rowspan="2">IF NO, REASON</td>
+        <!-- <td class="yellow" colspan="2">T O W N</td>
+        <td class="yellow" colspan="2">PJP ADEHERED</td> -->
+        <!-- <td class="yellow" rowspan="2">IF NO, REASON</td> -->
         <td class="yellow" colspan="2">GPS</td>
         <td class="yellow" rowspan="2">BATTERY %</td>
       </tr>
       <tr>
-        <td class="yellow">P L A N</td>
+        <!-- <td class="yellow">P L A N</td>
         <td class="yellow">A C T U A L</td>
         <td class="yellow">Yes</td>
-        <td class="yellow">No</td>
+        <td class="yellow">No</td> -->
         <td class="yellow">Yes</td>
         <td class="yellow">No</td>
       </tr>
@@ -783,12 +783,12 @@
           <td>{{ $data[$i][$j]['after_11_30'] }}</td>
           <td>{{ $data[$i][$j]['on_leave'] }}</td>
           <!-- <td>{{ $data[$i][$j]['plan'] }}</td> -->
-          <td>{{ $data[$i][$j]['plan'] == "" && $data[$i][$j]['start_time'] != "" ? 'baburhat' : $data[$i][$j]['plan'] }}</td>
+          <!-- <td>{{ $data[$i][$j]['plan'] == "" && $data[$i][$j]['start_time'] != "" ? 'baburhat' : $data[$i][$j]['plan'] }}</td> -->
           <!-- <td>{{ $data[$i][$j]['actual'] }}</td> -->
-          <td>{{ $data[$i][$j]['actual'] == "" && $data[$i][$j]['start_time'] != "" ? 'Baburhat, Mumbai' : $data[$i][$j]['actual'] }}</td>
-          <td>{{ $data[$i][$j]['pjp_adhered'] }}</td>
+          <!-- <td>{{ $data[$i][$j]['actual'] == "" && $data[$i][$j]['start_time'] != "" ? 'Baburhat, Mumbai' : $data[$i][$j]['actual'] }}</td> -->
+          <!-- <td>{{ $data[$i][$j]['pjp_adhered'] }}</td>
           <td>{{ $data[$i][$j]['pjp_not_adhered'] }}</td>
-          <td>{{ $data[$i][$j]['pjp_not_adhered'] == 'NO' ? ($data[$i][$j]['actual'] == 'Total' || $data[$i][$j]['actual'] == 'Total PJP' || $data[$i][$j]['actual'] == '% PJP Adhered' ? '' : 'On Leave') : '' }}</td>
+          <td>{{ $data[$i][$j]['pjp_not_adhered'] == 'NO' ? ($data[$i][$j]['actual'] == 'Total' || $data[$i][$j]['actual'] == 'Total PJP' || $data[$i][$j]['actual'] == '% PJP Adhered' ? '' : 'On Leave') : '' }}</td> -->
           <td>{{ $data[$i][$j]['gps'] }}</td>
           <td></td>
           <td>{{ $data[$i][$j]['battery'] }}</td>
