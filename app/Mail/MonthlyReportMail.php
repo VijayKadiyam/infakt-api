@@ -208,7 +208,7 @@ class MonthlyReportMail extends Mailable
             'associate_name'  => $attendance->user->name,
             'employee_code'   =>  $attendance->user->employee_code,
             'uid_no'   =>  $attendance->user->uid_no,
-            'designation' =>  'TSI',
+            'designation' =>  'SSM',
             'start_time'  =>  Carbon::parse($attendance->login_time)->format('H:i') . (Carbon::parse($attendance->login_time)->gt($batch3) ? 'AM' : 'PM'),
             'pjp_time' =>  (Carbon::parse($attendance->login_time)->gt($batch1) && Carbon::parse($attendance->login_time)->lt($batch2) ? Carbon::parse($attendance->login_time)->addminute(rand(20, 30))->format('H:i') . 'AM' : Carbon::parse($attendance->login_time)->addHour(1)->addminute(rand(20, 30))->format('H:i') . 'AM'),
             'pjp'  =>  (Carbon::parse($attendance->login_time)->gt($batch1) && Carbon::parse($attendance->login_time)->lt($batch2) ? Carbon::parse($attendance->login_time)->addminute(rand(20, 30))->format('H:i') : Carbon::parse($attendance->login_time)->addHour(1)->addminute(rand(20, 30))->format('H:i')),

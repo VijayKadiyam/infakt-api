@@ -625,10 +625,10 @@
     
     <!-- x_axis labels -->
     <ul class="x_axis">
-      <li>% TSI reported between 9.30 to 10.30</li>
-      <li>% TSI reported between 10.31 to 11.30</li>
-      <li>% TSI reported after 11.30</li>
-      <li>% TSI on leave</li>
+      <li>% SSM reported between 9.30 to 10.30</li>
+      <li>% SSM reported between 10.31 to 11.30</li>
+      <li>% SSM reported after 11.30</li>
+      <li>% SSM on leave</li>
     </ul>
     
     <!-- graph -->
