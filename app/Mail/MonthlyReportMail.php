@@ -142,7 +142,7 @@ class MonthlyReportMail extends Mailable
             'pjp_not_adhered' =>  strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun') ? 'NO' : ' ',
             'gps'         =>  strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun') ? 'YES' : '',
             'battery'     =>  strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun') ? rand(65, 90) : '',
-            'coordinates' =>  $checkLocation ? $userLocation->content['coords']['latitude'] . '-' . $userLocation->content['coords']['longitude'] : ''
+            'coordinates' =>  $checkLocation ? $checkLocation->content['coords']['latitude'] . '-' . $checkLocation->content['coords']['longitude'] : ''
           ];
 
           if(!strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun'))
@@ -174,7 +174,7 @@ class MonthlyReportMail extends Mailable
             'associate_name'  => $attendance->user->name,
             'employee_code'   =>  $attendance->user->employee_code,
             'uid_no'   =>  $attendance->user->uid_no,
-            'designation' =>  'TSI',
+            'designation' =>  'SSM',
             'start_time'  =>  '',
             'pjp_time'  =>  '',
             'end_time'  =>  '',
@@ -187,8 +187,8 @@ class MonthlyReportMail extends Mailable
             'pjp_adhered' =>  '',
             'pjp_not_adhered' =>  strcmp(Carbon::parse($attendance->date)->format('D'), 'Sun') ? 'NO' : ' ',
             'gps'         =>  strcmp(Carbon::parse($attendance->date)->format('D'), 'Sun') ? 'YES' : '',
-            'battery'     =>  $userLocation->content['battery']['level'],
-            'coordinates' =>  $checkLocation ? $userLocation->content['coords']['latitude'] . '-' . $userLocation->content['coords']['longitude'] : ''
+            'battery'     =>  $checkLocation ? $checkLocation->content['battery']['level'] : '',
+            'coordinates' =>  $checkLocation ? $checkLocation->content['coords']['latitude'] . '-' . $checkLocation->content['coords']['longitude'] : ''
           ];
           $data[0][] = $att;
           $count1++;
