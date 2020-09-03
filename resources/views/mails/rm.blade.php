@@ -613,7 +613,7 @@
   <title></title>
 </head>
 <body>
-  <div align="center"><u><h2>Attendance Report for the Month of February 2020</h2></u></div>
+  <div align="center"><u><h2>Attendance Report for the Month of September 2020</h2></u></div>
 
   <!-- PJP css bar graph -->
   <div class="css_bar_graph">
@@ -663,8 +663,8 @@
     </div>
     
     <!-- graph label -->
-    <div class="label"><span>Graph: </span>PJP Adhered Report for the Month of February 2020</div>
-    <!-- <div class="label"><span>Graph: </span>PJP Report for the Month of February 2020</div> -->
+    <div class="label"><span>Graph: </span>PJP Adhered Report for the Month of September 2020</div>
+    <!-- <div class="label"><span>Graph: </span>PJP Report for the Month of September 2020</div> -->
   </div>
 
   <br>
@@ -707,8 +707,8 @@
     </div>
     
     <!-- graph label -->
-    <div class="label"><span>Graph: </span>Cumulative Report for the Month of February 2020</div>
-    <!-- <div class="label"><span>Graph: </span>PJP Report for the Month of February 2020</div> -->
+    <div class="label"><span>Graph: </span>Cumulative Report for the Month of September 2020</div>
+    <!-- <div class="label"><span>Graph: </span>PJP Report for the Month of September 2020</div> -->
   </div>
 
   <br>
