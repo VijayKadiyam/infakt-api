@@ -116,7 +116,8 @@ class MonthlyReportMail extends Mailable
 
         while(Carbon::parse($attendance->date)->format('d') != $i && $diff > 0 && $plan)
         {
-          $checkLocation = UserLocation::whereDate('created_at', '=', Carbon::parse($attendance->date)->format('Y-m-d'))->first();
+          $checkLocation = UserLocation::whereDate('created_at', '=', $attendance->date)
+            ->first();
           $att = [
             'day'   =>  Carbon::parse($attendance->date)->subDays($diff)->format('D'),
             'date'  =>  $i,
@@ -141,8 +142,8 @@ class MonthlyReportMail extends Mailable
             'pjp_adhered' =>  '',
             'pjp_not_adhered' =>  strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun') ? 'NO' : ' ',
             'gps'         =>  strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun') ? 'YES' : '',
-            'battery'     =>  strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun') ? rand(65, 90) : '',
-            'coordinates' =>  $checkLocation ? $checkLocation->content['coords']['latitude'] . '-' . $checkLocation->content['coords']['longitude'] : ''
+            'battery'     =>  strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun') ? rand(65, 90) : '-',
+            'coordinates' =>  $checkLocation ? $checkLocation->content['coords']['latitude'] . '-' . $checkLocation->content['coords']['longitude'] : '-'
           ];
 
           if(!strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun'))
@@ -187,8 +188,8 @@ class MonthlyReportMail extends Mailable
             'pjp_adhered' =>  '',
             'pjp_not_adhered' =>  strcmp(Carbon::parse($attendance->date)->format('D'), 'Sun') ? 'NO' : ' ',
             'gps'         =>  strcmp(Carbon::parse($attendance->date)->format('D'), 'Sun') ? 'YES' : '',
-            'battery'     =>  $checkLocation ? $checkLocation->content['battery']['level'] : '',
-            'coordinates' =>  $checkLocation ? $checkLocation->content['coords']['latitude'] . '-' . $checkLocation->content['coords']['longitude'] : ''
+            'battery'     =>  $checkLocation ? $checkLocation->content['battery']['level'] : '-',
+            'coordinates' =>  $checkLocation ? $checkLocation->content['coords']['latitude'] . '-' . $checkLocation->content['coords']['longitude'] : '-'
           ];
           $data[0][] = $att;
           $count1++;
