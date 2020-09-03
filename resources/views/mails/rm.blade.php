@@ -738,7 +738,8 @@
         <td class="yellow" colspan="2">PJP ADEHERED</td> -->
         <!-- <td class="yellow" rowspan="2">IF NO, REASON</td> -->
         <td class="yellow" colspan="2">GPS</td>
-        <td class="yellow" rowspan="2">BATTERY %</td>
+        <td class="yellow" rowspan="2">BATTERY</td>
+        <td class="yellow" rowspan="2">Coordinates</td>
       </tr>
       <tr>
         <!-- <td class="yellow">P L A N</td>
@@ -792,6 +793,7 @@
           <td>{{ $data[$i][$j]['gps'] }}</td>
           <td></td>
           <td>{{ $data[$i][$j]['battery'] }}</td>
+          <td>{{ $data[$i][$j]['coordinates'] }}</td>
         </tr>
         @endfor
       @endfor
