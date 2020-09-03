@@ -652,65 +652,11 @@
         <li class="bar nr_2 blue" style="height: 30px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount2 }})%</span></li>
         <li class="bar nr_3 blue" style="height: 1px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount3 }})%</span></li>
         <li class="bar nr_4 blue" style="height: 1px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount4 }})% </span></li>
-
-        <!-- <li class="bar nr_1 blue" 
-          style="height: 5px;"
-        ><div class="top"></div><div class="bottom"></div><span>({{ $pcount1 }})%</span></li>
-        <li class="bar nr_2 blue" style="height: 5px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount2 }})%</span></li>
-        <li class="bar nr_3 blue" style="height: 5px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount3 }})%</span></li>
-        <li class="bar nr_4 blue" style="height: 5px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount4 }})% </span></li> -->
       </ul> 
     </div>
-    
-    <!-- graph label -->
-    <div class="label"><span>Graph: </span>PJP Adhered Report for the Month of September 2020</div>
-    <!-- <div class="label"><span>Graph: </span>PJP Report for the Month of September 2020</div> -->
   </div>
 
   <br>
-  <br>
-
-  <!-- PJP css bar graph -->
-  <div class="css_bar_graph">
-    
-    <!-- y_axis labels -->
-    <ul class="y_axis">
-      <li>100%</li><li>80%</li><li>60%</li><li>40%</li><li>20%</li><li>0%</li>
-    </ul>
-    
-    <!-- x_axis labels -->
-    <ul class="x_axis">
-      <li>% of Days worked</li>
-      <li>% of days PJP adhered</li>
-      <li>% TSI’s GPS was ON</li>
-    </ul>
-    
-    <!-- graph -->
-    <div class="graph">
-      <!-- grid -->
-      <ul class="grid">
-        <li><!-- 100 --></li>
-        <li><!-- 80 --></li>
-        <li><!-- 60 --></li>
-        <li><!-- 40 --></li>
-        <li><!-- 20 --></li>
-        <li class="bottom"><!-- 0 --></li>
-      </ul>
-      
-      <!-- bars -->
-      <!-- 250px = 100% -->
-      <ul>
-        <li class="bar nr_1 blue" style="height: 250px;"><div class="top"></div><div class="bottom"></div><span>100%</span></li>
-        <li class="bar nr_2 blue" style="height: 250px;"><div class="top"></div><div class="bottom"></div><span>100%</span></li>
-        <li class="bar nr_3 blue" style="height: 250px;"><div class="top"></div><div class="bottom"></div><span>100%</span></li>
-      </ul> 
-    </div>
-    
-    <!-- graph label -->
-    <div class="label"><span>Graph: </span>Cumulative Report for the Month of September 2020</div>
-    <!-- <div class="label"><span>Graph: </span>PJP Report for the Month of September 2020</div> -->
-  </div>
-
   <br>
 
   <div align="center">
