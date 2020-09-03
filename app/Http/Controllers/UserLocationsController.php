@@ -39,9 +39,9 @@ class UserLocationsController extends Controller
     ], 200);
   }
 
-  public function sendSMS($phone, $name, $date, $time, $lat, $lng, $battery)
+  public function sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address)
   {
-    $endpoint = "http://mobicomm.dove-sms.com//submitsms.jsp?user=PousseM&key=fc53bf6154XX&mobile=+91$phone&message=Dear Sir/Madam,%0A%0AName: $name%0ADate: $date%0AI have starting work at $time%0ALocation:$lat-$lng%0ABattery Percent: $battery %&senderid=POUSSE&accusage=1";
+    $endpoint = "http://mobicomm.dove-sms.com//submitsms.jsp?user=PousseM&key=fc53bf6154XX&mobile=+91$phone&message=Dear Sir/Madam,%0A%0AName: $name%0ADate: $date%0AI have starting work at $time%0ALocation:$lat-$lng%0A$address%0ABattery Percent: $battery %&senderid=POUSSE&accusage=1";
     $client = new \GuzzleHttp\Client();
     $client->request('GET', $endpoint);
   }
@@ -65,7 +65,7 @@ class UserLocationsController extends Controller
     {
       $request->request->add(['lat' => $userLocation->content['coords']['latitude']]);
       $request->request->add(['lng' => $userLocation->content['coords']['longitude']]);
-      $userLocation->address = json_decode($geocodesController->index($request)->getContent())->data;
+      // $userLocation->address = json_decode($geocodesController->index($request)->getContent())->data;
     }
 
     $request->user()->user_locations()->save($userLocation);
@@ -75,6 +75,8 @@ class UserLocationsController extends Controller
     if(sizeof($request->user()->supervisors) > 0) {
       $checkLocations = UserLocation::whereDate('created_at', '=', Carbon::parse($userLocation->created_at)->format('Y-m-d'))->get();
       if(sizeof($checkLocations) == 1) {
+        $userLocation->address = json_decode($geocodesController->index($request)->getContent())->data;
+        $userLocation->update();
         $phone = $request->user()->supervisors[0]->phone;
         $name = $request->user()->name;
         $date = Carbon::parse($userLocation->created_at)->format('d-m-Y');
@@ -82,7 +84,8 @@ class UserLocationsController extends Controller
         $lat = $userLocation->content['coords']['latitude'];
         $lng = $userLocation->content['coords']['longitude'];
         $battery = $userLocation->content['battery']['level'];
-        $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery);
+        $address = $userLocation->address;
+        $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
       }
     }
 

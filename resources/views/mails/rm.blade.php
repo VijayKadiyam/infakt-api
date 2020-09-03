@@ -740,6 +740,7 @@
         <td class="yellow" colspan="2">GPS</td>
         <td class="yellow" rowspan="2">BATTERY</td>
         <td class="yellow" rowspan="2">Coordinates</td>
+        <td class="yellow" rowspan="2">Address</td>
       </tr>
       <tr>
         <!-- <td class="yellow">P L A N</td>
@@ -794,6 +795,7 @@
           <td></td>
           <td>{{ $data[$i][$j]['battery'] }}</td>
           <td>{{ $data[$i][$j]['coordinates'] }}</td>
+          <td>{{ $data[$i][$j]['address'] }}</td>
         </tr>
         @endfor
       @endfor

@@ -189,7 +189,8 @@ class MonthlyReportMail extends Mailable
             'pjp_not_adhered' =>  strcmp(Carbon::parse($attendance->date)->format('D'), 'Sun') ? 'NO' : ' ',
             'gps'         =>  strcmp(Carbon::parse($attendance->date)->format('D'), 'Sun') ? 'YES' : '',
             'battery'     =>  $checkLocation ? $checkLocation->content['battery']['level'] : '-',
-            'coordinates' =>  $checkLocation ? $checkLocation->content['coords']['latitude'] . '-' . $checkLocation->content['coords']['longitude'] : '-'
+            'coordinates' =>  $checkLocation ? $checkLocation->content['coords']['latitude'] . '-' . $checkLocation->content['coords']['longitude'] : '-',
+            'address'     =>   $checkLocation ? $checkLocation->address : '-',
           ];
           $data[0][] = $att;
           $count1++;
@@ -222,7 +223,8 @@ class MonthlyReportMail extends Mailable
             'pjp_not_adhered' =>  '',
             'gps'         =>  'YES',
             'battery'     =>  $checkLocation ? $checkLocation->content['battery']['level'] : '-',
-            'coordinates' =>  $checkLocation ? $checkLocation->content['coords']['latitude'] . '-' . $checkLocation->content['coords']['longitude'] : '-'
+            'coordinates' =>  $checkLocation ? $checkLocation->content['coords']['latitude'] . '-' . $checkLocation->content['coords']['longitude'] : '-',
+            'address'     =>   $checkLocation ? $checkLocation->address : '-',
           ];
 
           $data[0][] = $att;
