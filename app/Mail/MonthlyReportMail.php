@@ -243,33 +243,34 @@ class MonthlyReportMail extends Mailable
         $stotalCount++;
       }
 
-      // $data[0][] = [
-      //   'day'   =>  '',
-      //   'date'  =>  '',
-      //   'region'  =>  '',
-      //   'asm_area' =>  '',
-      //   'asm_name'  =>  '',
-      //   'so_name' =>  '',
-      //   'hq' =>  '',
-      //   'associate_name'  => '',
-      //   'employee_code'   =>  '',
-      //   'uid_no'   =>  '',
-      //   'designation' =>  '',
-      //   'start_time'  =>  '',
-      //   'pjp_time'  =>  '',
-      //   'end_time'  =>  '',
-      //   'before_10_30'  =>  '',
-      //   'between_10_30_11_30'  =>  '',
-      //   'after_11_30'  =>  '',
-      //   'on_leave'     => '' ,
-      //   'plan'         => '',
-      //   'actual'       => 'Total',
-      //   'pjp_adhered' =>  $pjpCount,
-      //   'pjp_not_adhered' =>  $totalCount - $pjpCount,
-      //   'gps'         =>  '',
-      //   'battery'     =>  '',
-      //   'coordinates' =>  '',
-      // ];
+      $data[0][] = [
+        'day'   =>  '',
+        'date'  =>  '',
+        'region'  =>  '',
+        'asm_area' =>  '',
+        'asm_name'  =>  '',
+        'so_name' =>  '',
+        'hq' =>  '',
+        'associate_name'  => '',
+        'employee_code'   =>  '',
+        'uid_no'   =>  '',
+        'designation' =>  '',
+        'start_time'  =>  '',
+        'pjp_time'  =>  '',
+        'end_time'  =>  '',
+        'before_10_30'  =>  '',
+        'between_10_30_11_30'  =>  '',
+        'after_11_30'  =>  '',
+        'on_leave'     => '' ,
+        'plan'         => '',
+        'actual'       => 'Total',
+        'pjp_adhered' =>  $pjpCount,
+        'pjp_not_adhered' =>  $totalCount - $pjpCount,
+        'gps'         =>  '',
+        'battery'     =>  '',
+        'coordinates' =>  '',
+        'address'     =>  ''
+      ];
     }
 
     // $data[0][] = [
