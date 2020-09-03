@@ -646,19 +646,19 @@
       <!-- bars -->
       <!-- 250px = 100% -->
       <ul>
-        <!-- <li class="bar nr_1 blue" 
+        <li class="bar nr_1 blue" 
           style="height: 140px;"
         ><div class="top"></div><div class="bottom"></div><span>({{ $pcount1 }})%</span></li>
         <li class="bar nr_2 blue" style="height: 30px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount2 }})%</span></li>
         <li class="bar nr_3 blue" style="height: 1px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount3 }})%</span></li>
-        <li class="bar nr_4 blue" style="height: 70px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount4 }})% </span></li> -->
+        <li class="bar nr_4 blue" style="height: 70px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount4 }})% </span></li>
 
-        <li class="bar nr_1 blue" 
+        <!-- <li class="bar nr_1 blue" 
           style="height: 5px;"
         ><div class="top"></div><div class="bottom"></div><span>({{ $pcount1 }})%</span></li>
         <li class="bar nr_2 blue" style="height: 5px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount2 }})%</span></li>
         <li class="bar nr_3 blue" style="height: 5px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount3 }})%</span></li>
-        <li class="bar nr_4 blue" style="height: 250px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount4 }})% </span></li>
+        <li class="bar nr_4 blue" style="height: 5px;"><div class="top"></div><div class="bottom"></div><span>({{ $pcount4 }})% </span></li> -->
       </ul> 
     </div>
     

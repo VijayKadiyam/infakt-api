@@ -11,6 +11,7 @@ use App\User;
 use App\Company;
 use App\UserAttendance;
 use \Carbon\Carbon;
+use App\UserLocation;
 
 class MonthlyReportMail extends Mailable
 {
@@ -107,25 +108,27 @@ class MonthlyReportMail extends Mailable
         $batch3 = Carbon::parse('06:00:00');
         $pjpTime = $loginTime->addHour(rand(1,3))->addMinute(rand(10, 30));
 
-        $plan = Plan::where('user_id', '=', $attendance->user_id)
-          ->whereDate('date', '=', $attendance->date)
-          ->with('plan_actuals', 'allowance_type', 'user', 'plan_travelling_details')
-          ->first();
+        // $plan = Plan::where('user_id', '=', $attendance->user_id)
+        //   ->whereDate('date', '=', $attendance->date)
+        //   ->with('plan_actuals', 'allowance_type', 'user', 'plan_travelling_details')
+        //   ->first();
+        $plan = null;
 
         while(Carbon::parse($attendance->date)->format('d') != $i && $diff > 0 && $plan)
         {
+          $checkLocation = UserLocation::whereDate('created_at', '=', Carbon::parse($attendance->date)->format('Y-m-d'))->first();
           $att = [
             'day'   =>  Carbon::parse($attendance->date)->subDays($diff)->format('D'),
             'date'  =>  $i,
-            'region'  =>  'East',
-            'asm_area' =>  'North Bengal',
-            'asm_name'  =>  'Kumardipta Ghosh',
-            'so_name' =>  'BHABESH ROY',
-            'hq' =>  'North Bengal',
+            'region'  =>  'West',
+            'asm_area' =>  'Thane',
+            'asm_name'  =>  $attendance->user->id == 381 ? 'Tushar Patil' : 'Ganesh Agarwal',
+            'so_name' =>  $attendance->user->id == 381 ? 'Tushar Patil' : 'Ganesh Agarwal',
+            'hq' =>  'Thane',
             'associate_name'  => $attendance->user->name,
             'employee_code'   =>  $attendance->user->employee_code,
             'uid_no'   =>  $attendance->user->uid_no,
-            'designation' =>  'TSI',
+            'designation' =>  'SSM',
             'start_time'  =>  '',
             'pjp_time'  =>  '',
             'end_time'  =>  '',
@@ -138,7 +141,8 @@ class MonthlyReportMail extends Mailable
             'pjp_adhered' =>  '',
             'pjp_not_adhered' =>  strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun') ? 'NO' : ' ',
             'gps'         =>  strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun') ? 'YES' : '',
-            'battery'     =>  strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun') ? rand(65, 90) : ''
+            'battery'     =>  strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun') ? rand(65, 90) : '',
+            'coordinates' =>  $checkLocation ? $userLocation->content['coords']['latitude'] . '-' . $userLocation->content['coords']['longitude'] : ''
           ];
 
           if(!strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun'))
@@ -157,14 +161,16 @@ class MonthlyReportMail extends Mailable
 
         if(!strcmp(Carbon::parse($attendance->date)->format('D'), 'Sun'))
         {
+          $checkLocation = UserLocation::whereDate('created_at', '=', Carbon::parse($attendance->date)->format('Y-m-d'))->first();
+
           $att = [
             'day'   =>  Carbon::parse($attendance->date)->format('D'),
             'date'  =>  $i,
-            'region'  =>  'East',
-            'asm_area' =>  'North Bengal',
-            'asm_name'  =>  'Kumardipta Ghosh',
-            'so_name' =>  'BHABESH ROY',
-            'hq' =>  'North Bengal',
+            'region'  =>  'West',
+            'asm_area' =>  'Thane',
+            'asm_name'  =>  $attendance->user->id == 381 ? 'Tushar Patil' : 'Ganesh Agarwal',
+            'so_name' =>  $attendance->user->id == 381 ? 'Tushar Patil' : 'Ganesh Agarwal',
+            'hq' =>  'Thane',
             'associate_name'  => $attendance->user->name,
             'employee_code'   =>  $attendance->user->employee_code,
             'uid_no'   =>  $attendance->user->uid_no,
@@ -181,7 +187,8 @@ class MonthlyReportMail extends Mailable
             'pjp_adhered' =>  '',
             'pjp_not_adhered' =>  strcmp(Carbon::parse($attendance->date)->format('D'), 'Sun') ? 'NO' : ' ',
             'gps'         =>  strcmp(Carbon::parse($attendance->date)->format('D'), 'Sun') ? 'YES' : '',
-            'battery'     =>  strcmp(Carbon::parse($attendance->date)->format('D'), 'Sun') ? rand(65, 90) : ''
+            'battery'     =>  $userLocation->content['battery']['level'],
+            'coordinates' =>  $checkLocation ? $userLocation->content['coords']['latitude'] . '-' . $userLocation->content['coords']['longitude'] : ''
           ];
           $data[0][] = $att;
           $count1++;
@@ -190,11 +197,11 @@ class MonthlyReportMail extends Mailable
           $att = [
             'day'   =>  Carbon::parse($attendance->date)->format('D'),
             'date'  =>  $i,
-            'region'  =>  'East',
-            'asm_area' =>  'North Bengal',
-            'asm_name'  =>  'Kumardipta Ghosh',
-            'so_name' =>  'BHABESH ROY',
-            'hq' =>  'North Bengal',
+            'region'  =>  'West',
+            'asm_area' =>  'Thane',
+            'asm_name'  =>  $attendance->user->id == 381 ? 'Tushar Patil' : 'Ganesh Agarwal',
+            'so_name' =>  $attendance->user->id == 381 ? 'Tushar Patil' : 'Ganesh Agarwal',
+            'hq' =>  'Thane',
             'associate_name'  => $attendance->user->name,
             'employee_code'   =>  $attendance->user->employee_code,
             'uid_no'   =>  $attendance->user->uid_no,
@@ -212,7 +219,8 @@ class MonthlyReportMail extends Mailable
             'pjp_adhered' =>  'YES',
             'pjp_not_adhered' =>  '',
             'gps'         =>  'YES',
-            'battery'     =>  rand(65, 90)
+            'battery'     =>  '',
+            'coordinates' =>  ''
           ];
 
           $data[0][] = $att;
