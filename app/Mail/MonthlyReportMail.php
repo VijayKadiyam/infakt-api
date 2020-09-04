@@ -162,7 +162,9 @@ class MonthlyReportMail extends Mailable
 
         if(!strcmp(Carbon::parse($attendance->date)->format('D'), 'Sun'))
         {
-          $checkLocation = UserLocation::whereDate('created_at', '=', $attendance->date)->first();
+          $checkLocation = UserLocation::whereDate('created_at', '=', $attendance->date)
+            ->where('user_id', '=', $attendance->user_id)
+            ->first();
 
           $att = [
             'day'   =>  Carbon::parse($attendance->date)->format('D'),
@@ -196,7 +198,9 @@ class MonthlyReportMail extends Mailable
           $count1++;
         }
         else {
-          $checkLocation = UserLocation::whereDate('created_at', '=', $attendance->date)->first();
+          $checkLocation = UserLocation::whereDate('created_at', '=', $attendance->date)
+            ->where('user_id', '=', $attendance->user_id)
+            ->first();
           $att = [
             'day'   =>  Carbon::parse($attendance->date)->format('D'),
             'date'  =>  $i,
