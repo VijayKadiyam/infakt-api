@@ -71,7 +71,7 @@ class UserLocationsController extends Controller
     $request->user()->user_locations()->save($userLocation);
 
     
-
+    return $request->user()->supervisors;
     if(sizeof($request->user()->supervisors) > 0) {
       $checkLocations = UserLocation::whereDate('created_at', '=', Carbon::parse($userLocation->created_at)->format('Y-m-d'))->get();
       // if(sizeof($checkLocations) == 1 && $request->user()->id == 375) {
