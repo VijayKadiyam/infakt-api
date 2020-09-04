@@ -76,8 +76,6 @@ class UserLocationsController extends Controller
       // if(sizeof($checkLocations) == 1 && $request->user()->id == 375) {
       if($request->user()->id == 375) {
         $address = json_decode($geocodesController->index($request)->getContent())->data;
-
-        return $address;
         $userLocation->address = $address;
         $userLocation->update();
         $phone = $request->user()->supervisors[0]->phone;
