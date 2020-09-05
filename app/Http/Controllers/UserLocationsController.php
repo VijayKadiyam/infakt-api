@@ -72,7 +72,9 @@ class UserLocationsController extends Controller
 
     
     if(sizeof($request->user()->supervisors) > 0) {
-      $checkLocations = UserLocation::whereDate('created_at', '=', Carbon::parse($userLocation->created_at)->format('Y-m-d'))->get();
+      $checkLocations = UserLocation::whereDate('created_at', '=', Carbon::parse($userLocation->created_at)->format('Y-m-d'))
+        ->where('user_id', '=', $request->user()->id)
+        ->get();
       if(sizeof($checkLocations) == 1) {
       // if($request->user()->id == 375) {
         $address = json_decode($geocodesController->index($request)->getContent())->data;
