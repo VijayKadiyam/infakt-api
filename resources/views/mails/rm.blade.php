@@ -741,7 +741,7 @@
           <td></td>
           <td>{{ $data[$i][$j]['battery'] }}</td>
           <td>{{ $data[$i][$j]['coordinates'] }}</td>
-          <td>{{ $j == 4 ? $data[$i][3]['address'] : $data[$i][$j]['address']}}</td>
+          <td>{{ $j }} {{ $j == 4 ? $data[$i][3]['address'] : $data[$i][$j]['address']}}</td>
         </tr>
         @endfor
       @endfor
