@@ -114,7 +114,8 @@ class MonthlyReportMail extends Mailable
         //   ->first();
         $plan = null;
 
-        while(Carbon::parse($attendance->date)->format('d') != $i && $diff > 0 && $plan)
+        // while(Carbon::parse($attendance->date)->format('d') != $i && $diff > 0 && $plan)
+        while(Carbon::parse($attendance->date)->format('d') != $i && $diff > 0)
         {
           $checkLocation = UserLocation::whereDate('created_at', '=', $attendance->date)
             ->first();
