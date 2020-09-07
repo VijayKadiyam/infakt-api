@@ -143,7 +143,8 @@ class MonthlyReportMail extends Mailable
             'gps'         =>  strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun') ? 'YES' : '',
             'battery'     =>  strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun') ? rand(65, 90) : '-',
             'coordinates' =>  '-',
-            'address'    => '-'
+            'address'    => '-',
+            'end_address' =>  '-'
           ];
 
           if(!strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun'))
@@ -283,7 +284,8 @@ class MonthlyReportMail extends Mailable
         'gps'         =>  '',
         'battery'     =>  '',
         'coordinates' =>  '',
-        'address'     =>  ''
+        'address'     =>  '',
+        'end_address' => '',
       ];
     }
 
