@@ -117,8 +117,6 @@ class MonthlyReportMail extends Mailable
         // while(Carbon::parse($attendance->date)->format('d') != $i && $diff > 0 && $plan)
         while(Carbon::parse($attendance->date)->format('d') != $i && $diff > 0)
         {
-          $checkLocation = UserLocation::whereDate('created_at', '=', $attendance->date)
-            ->first();
           $att = [
             'day'   =>  Carbon::parse($attendance->date)->subDays($diff)->format('D'),
             'date'  =>  $i,
@@ -144,7 +142,7 @@ class MonthlyReportMail extends Mailable
             'pjp_not_adhered' =>  strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun') ? 'NO' : ' ',
             'gps'         =>  strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun') ? 'YES' : '',
             'battery'     =>  strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun') ? rand(65, 90) : '-',
-            'coordinates' =>  $checkLocation ? $checkLocation->content['coords']['latitude'] . '-' . $checkLocation->content['coords']['longitude'] : '-',
+            'coordinates' =>  '-',
             'address'    => '-'
           ];
 
@@ -167,6 +165,10 @@ class MonthlyReportMail extends Mailable
           $checkLocation = UserLocation::whereDate('created_at', '=', $attendance->date)
             ->where('user_id', '=', $attendance->user_id)
             ->first();
+
+          $checkEndLocation = UserLocation::whereDate('created_at', '=', $attendance->date)
+            ->where('user_id', '=', $attendance->user_id)
+            ->latest()->first();
 
           $att = [
             'day'   =>  Carbon::parse($attendance->date)->format('D'),
@@ -195,6 +197,7 @@ class MonthlyReportMail extends Mailable
             'battery'     =>  $checkLocation ? $checkLocation->content['battery']['level'] : '-',
             'coordinates' =>  $checkLocation ? $checkLocation->content['coords']['latitude'] . '-' . $checkLocation->content['coords']['longitude'] : '-',
             'address'     =>   $checkLocation ? $checkLocation->address : '-',
+            'end_address'     =>   $checkLocation ? $checkEndLocation->address : '-',
           ];
           $data[0][] = $att;
           $count1++;
@@ -203,6 +206,10 @@ class MonthlyReportMail extends Mailable
           $checkLocation = UserLocation::whereDate('created_at', '=', $attendance->date)
             ->where('user_id', '=', $attendance->user_id)
             ->first();
+          $checkEndLocation = UserLocation::whereDate('created_at', '=', $attendance->date)
+            ->where('user_id', '=', $attendance->user_id)
+            ->latest()->first();
+
           $att = [
             'day'   =>  Carbon::parse($attendance->date)->format('D'),
             'date'  =>  $i,
@@ -231,6 +238,7 @@ class MonthlyReportMail extends Mailable
             'battery'     =>  $checkLocation ? $checkLocation->content['battery']['level'] : '-',
             'coordinates' =>  $checkLocation ? $checkLocation->content['coords']['latitude'] . '-' . $checkLocation->content['coords']['longitude'] : '-',
             'address'     =>   $checkLocation ? $checkLocation->address : '-',
+            'end_address'     =>   $checkLocation ? $checkEndLocation->address : '-',
           ];
 
           $data[0][] = $att;
