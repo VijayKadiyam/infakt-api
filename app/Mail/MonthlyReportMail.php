@@ -144,7 +144,8 @@ class MonthlyReportMail extends Mailable
             'pjp_not_adhered' =>  strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun') ? 'NO' : ' ',
             'gps'         =>  strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun') ? 'YES' : '',
             'battery'     =>  strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun') ? rand(65, 90) : '-',
-            'coordinates' =>  $checkLocation ? $checkLocation->content['coords']['latitude'] . '-' . $checkLocation->content['coords']['longitude'] : '-'
+            'coordinates' =>  $checkLocation ? $checkLocation->content['coords']['latitude'] . '-' . $checkLocation->content['coords']['longitude'] : '-',
+            'address'    => '-'
           ];
 
           if(!strcmp(Carbon::parse($attendance->date)->subDays($diff)->format('D'), 'Sun'))
