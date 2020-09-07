@@ -674,6 +674,7 @@
         <td class="yellow" rowspan="2">UID No</td>
         <td class="yellow" rowspan="2">Designation</td>
         <td class="yellow" rowspan="2">Day Start Time</td>
+        <td class="yellow" rowspan="2">Address</td>
         <!-- <td class="yellow" rowspan="2">PJP Adhered Time</td> -->
         <td class="yellow" rowspan="2">Day End Time</td>
         <td class="yellow" rowspan="2">REPORTED BEFORE 10.30AM</td>
@@ -686,7 +687,7 @@
         <td class="yellow" colspan="2">GPS</td>
         <td class="yellow" rowspan="2">BATTERY</td>
         <td class="yellow" rowspan="2">Coordinates</td>
-        <td class="yellow" rowspan="2">Address</td>
+        
       </tr>
       <tr>
         <!-- <td class="yellow">P L A N</td>
@@ -723,6 +724,8 @@
           <td>{{ $data[$i][$j]['uid_no'] }}</td>
           <td>{{ $data[$i][$j]['designation'] }}</td>
           <td>{{ $data[$i][$j]['start_time'] }}</td>
+          <td>{{ $data[$i][$j]['address'] }}</td>
+          <!-- <td>{{ $data[$i][$j]['date'] == 5 ? $data[$i][3 +  (6 * $i)]['address'] : $data[$i][$j]['address']}}</td> -->
           <!-- <td> - </td> -->
           <!-- <td>{{ $data[$i][$j]['pjp_time'] }}</td> -->
           <td>{{ $data[$i][$j]['end_time'] }}</td>
@@ -741,7 +744,7 @@
           <td></td>
           <td>{{ $data[$i][$j]['battery'] }}</td>
           <td>{{ $data[$i][$j]['coordinates'] }}</td>
-          <td>{{ $data[$i][$j]['date'] == 5 ? $data[$i][3 +  (6 * $i)]['address'] : $data[$i][$j]['address']}}</td>
+          
         </tr>
         @endfor
       @endfor
