@@ -40,7 +40,7 @@ class GetLocations extends Command
      */
     public function handle(Request $request)
     {
-      $userLocation = UserLocation::whereDate('created_at', '=', '2020-09-07')
+      $userLocation = UserLocation::whereDate('created_at', '=', '2020-09-08')
             ->where('user_id', '=', 375)
             ->latest()->first();
       if($userLocation) {
@@ -52,7 +52,7 @@ class GetLocations extends Command
         $userLocation->update();
       }
 
-      $userLocation = UserLocation::whereDate('created_at', '=', '2020-09-07')
+      $userLocation = UserLocation::whereDate('created_at', '=', '2020-09-08')
             ->where('user_id', '=', 376)
             ->latest()->first();
       if($userLocation) {
@@ -64,7 +64,7 @@ class GetLocations extends Command
         $userLocation->update();
       }
 
-      $userLocation = UserLocation::whereDate('created_at', '=', '2020-09-07')
+      $userLocation = UserLocation::whereDate('created_at', '=', '2020-09-08')
             ->where('user_id', '=', 377)
             ->latest()->first();
       if($userLocation) {
@@ -77,7 +77,7 @@ class GetLocations extends Command
       }
 
       
-      $userLocation = UserLocation::whereDate('created_at', '=', '2020-09-07')
+      $userLocation = UserLocation::whereDate('created_at', '=', '2020-09-08')
             ->where('user_id', '=', 379)
             ->latest()->first();
       if($userLocation) {
@@ -90,7 +90,7 @@ class GetLocations extends Command
       }
 
       
-      $userLocation = UserLocation::whereDate('created_at', '=', '2020-09-07')
+      $userLocation = UserLocation::whereDate('created_at', '=', '2020-09-08')
             ->where('user_id', '=', 381)
             ->latest()->first();
       if($userLocation) {
