@@ -43,52 +43,62 @@ class GetLocations extends Command
       $userLocation = UserLocation::whereDate('created_at', '=', '2020-09-07')
             ->where('user_id', '=', 375)
             ->latest()->first();
-      $request->request->add(['lat' => $userLocation->content['coords']['latitude']]);
-      $request->request->add(['lng' => $userLocation->content['coords']['longitude']]);
-      $geocodesController = new GeocodesController();
-      $address = json_decode($geocodesController->index($request)->getContent())->data;
-      $userLocation->address = $address;
-      $userLocation->update();
+      if($userLocation) {
+        $request->request->add(['lat' => $userLocation->content['coords']['latitude']]);
+        $request->request->add(['lng' => $userLocation->content['coords']['longitude']]);
+        $geocodesController = new GeocodesController();
+        $address = json_decode($geocodesController->index($request)->getContent())->data;
+        $userLocation->address = $address;
+        $userLocation->update();
+      }
 
       $userLocation = UserLocation::whereDate('created_at', '=', '2020-09-07')
             ->where('user_id', '=', 376)
             ->latest()->first();
-      $request->request->add(['lat' => $userLocation->content['coords']['latitude']]);
-      $request->request->add(['lng' => $userLocation->content['coords']['longitude']]);
-      $geocodesController = new GeocodesController();
-      $address = json_decode($geocodesController->index($request)->getContent())->data;
-      $userLocation->address = $address;
-      $userLocation->update();
+      if($userLocation) {
+        $request->request->add(['lat' => $userLocation->content['coords']['latitude']]);
+        $request->request->add(['lng' => $userLocation->content['coords']['longitude']]);
+        $geocodesController = new GeocodesController();
+        $address = json_decode($geocodesController->index($request)->getContent())->data;
+        $userLocation->address = $address;
+        $userLocation->update();
+      }
 
       $userLocation = UserLocation::whereDate('created_at', '=', '2020-09-07')
             ->where('user_id', '=', 377)
             ->latest()->first();
-      $request->request->add(['lat' => $userLocation->content['coords']['latitude']]);
-      $request->request->add(['lng' => $userLocation->content['coords']['longitude']]);
-      $geocodesController = new GeocodesController();
-      $address = json_decode($geocodesController->index($request)->getContent())->data;
-      $userLocation->address = $address;
-      $userLocation->update();
+      if($userLocation) {
+        $request->request->add(['lat' => $userLocation->content['coords']['latitude']]);
+        $request->request->add(['lng' => $userLocation->content['coords']['longitude']]);
+        $geocodesController = new GeocodesController();
+        $address = json_decode($geocodesController->index($request)->getContent())->data;
+        $userLocation->address = $address;
+        $userLocation->update();
+      }
 
-      $userLocation = UserLocation::whereDate('created_at', '=', '2020-09-07')
-            ->where('user_id', '=', 379)
-            ->latest()->first();
-      $request->request->add(['lat' => $userLocation->content['coords']['latitude']]);
-      $request->request->add(['lng' => $userLocation->content['coords']['longitude']]);
-      $geocodesController = new GeocodesController();
-      $address = json_decode($geocodesController->index($request)->getContent())->data;
-      $userLocation->address = $address;
-      $userLocation->update();
+      if($userLocation) {
+        $userLocation = UserLocation::whereDate('created_at', '=', '2020-09-07')
+              ->where('user_id', '=', 379)
+              ->latest()->first();
+        $request->request->add(['lat' => $userLocation->content['coords']['latitude']]);
+        $request->request->add(['lng' => $userLocation->content['coords']['longitude']]);
+        $geocodesController = new GeocodesController();
+        $address = json_decode($geocodesController->index($request)->getContent())->data;
+        $userLocation->address = $address;
+        $userLocation->update();
+      }
 
-      $userLocation = UserLocation::whereDate('created_at', '=', '2020-09-07')
-            ->where('user_id', '=', 381)
-            ->latest()->first();
-      $request->request->add(['lat' => $userLocation->content['coords']['latitude']]);
-      $request->request->add(['lng' => $userLocation->content['coords']['longitude']]);
-      $geocodesController = new GeocodesController();
-      $address = json_decode($geocodesController->index($request)->getContent())->data;
-      $userLocation->address = $address;
-      $userLocation->update();
+      if($userLocation) {
+        $userLocation = UserLocation::whereDate('created_at', '=', '2020-09-07')
+              ->where('user_id', '=', 381)
+              ->latest()->first();
+        $request->request->add(['lat' => $userLocation->content['coords']['latitude']]);
+        $request->request->add(['lng' => $userLocation->content['coords']['longitude']]);
+        $geocodesController = new GeocodesController();
+        $address = json_decode($geocodesController->index($request)->getContent())->data;
+        $userLocation->address = $address;
+        $userLocation->update();
+      }
 
     }
 }
