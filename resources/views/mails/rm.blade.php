@@ -744,7 +744,7 @@
           <td>{{ $data[$i][$j]['pjp_not_adhered'] == 'NO' ? ($data[$i][$j]['actual'] == 'Total' || $data[$i][$j]['actual'] == 'Total PJP' || $data[$i][$j]['actual'] == '% PJP Adhered' ? '' : 'On Leave') : '' }}</td> -->
           <td>{{ $data[$i][$j]['gps'] }}</td>
           <td></td>
-          <td>{{ $data[$i][$j]['battery'] }}</td>
+          <td>{{ ($data[$i][$j]['battery'] * 100) % }}</td>
           <!-- <td>{{ $data[$i][$j]['coordinates'] }}</td> -->
           
         </tr>
