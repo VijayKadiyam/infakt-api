@@ -701,7 +701,7 @@
       @for($i = 0; $i < sizeof($data); $i++)
         <hr>
         @for($j = 0; $j < sizeof($data[$i]); $j++)
-          @if($data[$i][$j]['date'] >= 9)
+          @if($data[$i][$j]['date'] >= 9 || $data[$i][$j]['date'] == '')
             <tr style="
               @if(!strcmp($data[$i][$j]['day'], 'Sun')) 
                 background-color: lightblue; 
