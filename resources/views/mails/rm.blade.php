@@ -701,53 +701,55 @@
       @for($i = 0; $i < sizeof($data); $i++)
         <hr>
         @for($j = 0; $j < sizeof($data[$i]); $j++)
-        <tr style="
-          @if(!strcmp($data[$i][$j]['day'], 'Sun')) 
-            background-color: lightblue; 
-          @elseif(!strcmp($data[$i][$j]['on_leave'], 'YES'))
-            background-color: lightcoral; 
-          @elseif(!strcmp($data[$i][$j]['actual'], 'Total'))
-            background-color: lightgrey; 
-          @elseif(!strcmp($data[$i][$j]['actual'], '% PJP Adhered'))
-            background-color: lightgrey; 
-          @elseif(!strcmp($data[$i][$j]['actual'], 'Total PJP'))
-            background-color: lightgrey; 
-          @endif">
-          <td>{{ $data[$i][$j]['day'] }}</td>
-          <td>{{ $data[$i][$j]['date'] }}</td>
-          <td>{{ $data[$i][$j]['region'] }}</td>
-          <td>{{ $data[$i][$j]['asm_area'] }}</td>
-          <td>{{ $data[$i][$j]['asm_name'] }}</td>
-          <td>{{ $data[$i][$j]['so_name'] }}</td>
-          <td>{{ $data[$i][$j]['hq'] }}</td>
-          <td>{{ $data[$i][$j]['associate_name'] }}</td>
-          <td>{{ $data[$i][$j]['employee_code'] }}</td>
-          <td>{{ $data[$i][$j]['uid_no'] }}</td>
-          <td>{{ $data[$i][$j]['designation'] }}</td>
-          <td>{{ $data[$i][$j]['start_time'] }}</td>
-          <td>{{ $data[$i][$j]['address'] }}</td>
-          <!-- <td>{{ $data[$i][$j]['date'] == 5 ? $data[$i][3 +  (6 * $i)]['address'] : $data[$i][$j]['address']}}</td> -->
-          <!-- <td> - </td> -->
-          <!-- <td>{{ $data[$i][$j]['pjp_time'] }}</td> -->
-          <td>{{ $data[$i][$j]['end_time'] }}</td>
-          <td>{{ $data[$i][$j]['end_address'] }}</td>
-          <td>{{ $data[$i][$j]['before_10_30'] }}</td>
-          <td>{{ $data[$i][$j]['between_10_30_11_30'] }}</td>
-          <td>{{ $data[$i][$j]['after_11_30'] }}</td>
-          <td>{{ $data[$i][$j]['on_leave'] }}</td>
-          <!-- <td>{{ $data[$i][$j]['plan'] }}</td> -->
-          <!-- <td>{{ $data[$i][$j]['plan'] == "" && $data[$i][$j]['start_time'] != "" ? 'baburhat' : $data[$i][$j]['plan'] }}</td> -->
-          <!-- <td>{{ $data[$i][$j]['actual'] }}</td> -->
-          <!-- <td>{{ $data[$i][$j]['actual'] == "" && $data[$i][$j]['start_time'] != "" ? 'Baburhat, Mumbai' : $data[$i][$j]['actual'] }}</td> -->
-          <!-- <td>{{ $data[$i][$j]['pjp_adhered'] }}</td>
-          <td>{{ $data[$i][$j]['pjp_not_adhered'] }}</td>
-          <td>{{ $data[$i][$j]['pjp_not_adhered'] == 'NO' ? ($data[$i][$j]['actual'] == 'Total' || $data[$i][$j]['actual'] == 'Total PJP' || $data[$i][$j]['actual'] == '% PJP Adhered' ? '' : 'On Leave') : '' }}</td> -->
-          <td>{{ $data[$i][$j]['gps'] }}</td>
-          <td></td>
-          <td>{{ $data[$i][$j]['battery'] }} %</td>
-          <!-- <td>{{ $data[$i][$j]['coordinates'] }}</td> -->
-          
-        </tr>
+          @if($data[$i][$j]['date'] >= 9)
+            <tr style="
+              @if(!strcmp($data[$i][$j]['day'], 'Sun')) 
+                background-color: lightblue; 
+              @elseif(!strcmp($data[$i][$j]['on_leave'], 'YES'))
+                background-color: lightcoral; 
+              @elseif(!strcmp($data[$i][$j]['actual'], 'Total'))
+                background-color: lightgrey; 
+              @elseif(!strcmp($data[$i][$j]['actual'], '% PJP Adhered'))
+                background-color: lightgrey; 
+              @elseif(!strcmp($data[$i][$j]['actual'], 'Total PJP'))
+                background-color: lightgrey; 
+              @endif">
+              <td>{{ $data[$i][$j]['day'] }}</td>
+              <td>{{ $data[$i][$j]['date'] }}</td>
+              <td>{{ $data[$i][$j]['region'] }}</td>
+              <td>{{ $data[$i][$j]['asm_area'] }}</td>
+              <td>{{ $data[$i][$j]['asm_name'] }}</td>
+              <td>{{ $data[$i][$j]['so_name'] }}</td>
+              <td>{{ $data[$i][$j]['hq'] }}</td>
+              <td>{{ $data[$i][$j]['associate_name'] }}</td>
+              <td>{{ $data[$i][$j]['employee_code'] }}</td>
+              <td>{{ $data[$i][$j]['uid_no'] }}</td>
+              <td>{{ $data[$i][$j]['designation'] }}</td>
+              <td>{{ $data[$i][$j]['start_time'] }}</td>
+              <td>{{ $data[$i][$j]['address'] }}</td>
+              <!-- <td>{{ $data[$i][$j]['date'] == 5 ? $data[$i][3 +  (6 * $i)]['address'] : $data[$i][$j]['address']}}</td> -->
+              <!-- <td> - </td> -->
+              <!-- <td>{{ $data[$i][$j]['pjp_time'] }}</td> -->
+              <td>{{ $data[$i][$j]['end_time'] }}</td>
+              <td>{{ $data[$i][$j]['end_address'] }}</td>
+              <td>{{ $data[$i][$j]['before_10_30'] }}</td>
+              <td>{{ $data[$i][$j]['between_10_30_11_30'] }}</td>
+              <td>{{ $data[$i][$j]['after_11_30'] }}</td>
+              <td>{{ $data[$i][$j]['on_leave'] }}</td>
+              <!-- <td>{{ $data[$i][$j]['plan'] }}</td> -->
+              <!-- <td>{{ $data[$i][$j]['plan'] == "" && $data[$i][$j]['start_time'] != "" ? 'baburhat' : $data[$i][$j]['plan'] }}</td> -->
+              <!-- <td>{{ $data[$i][$j]['actual'] }}</td> -->
+              <!-- <td>{{ $data[$i][$j]['actual'] == "" && $data[$i][$j]['start_time'] != "" ? 'Baburhat, Mumbai' : $data[$i][$j]['actual'] }}</td> -->
+              <!-- <td>{{ $data[$i][$j]['pjp_adhered'] }}</td>
+              <td>{{ $data[$i][$j]['pjp_not_adhered'] }}</td>
+              <td>{{ $data[$i][$j]['pjp_not_adhered'] == 'NO' ? ($data[$i][$j]['actual'] == 'Total' || $data[$i][$j]['actual'] == 'Total PJP' || $data[$i][$j]['actual'] == '% PJP Adhered' ? '' : 'On Leave') : '' }}</td> -->
+              <td>{{ $data[$i][$j]['gps'] }}</td>
+              <td></td>
+              <td>{{ $data[$i][$j]['battery'] }} %</td>
+              <!-- <td>{{ $data[$i][$j]['coordinates'] }}</td> -->
+              
+            </tr>
+          @endif
         @endfor
       @endfor
     </table>  
