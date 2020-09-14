@@ -43,7 +43,7 @@ class GetLocations extends Command
 
       $userLocation = UserLocation::whereDate('created_at', '=', '2020-09-14')
             ->where('user_id', '=', 375)
-            ->first();
+            ->latest()->first();
       if($userLocation) {
         $lat = $userLocation->content['coords']['latitude'];
         $lng = $userLocation->content['coords']['longitude'];
@@ -55,7 +55,7 @@ class GetLocations extends Command
 
       $userLocation = UserLocation::whereDate('created_at', '=', '2020-09-14')
             ->where('user_id', '=', 376)
-            ->first();
+            ->latest()->first();
       if($userLocation) {
         $lat = $userLocation->content['coords']['latitude'];
         $lng = $userLocation->content['coords']['longitude'];
@@ -67,7 +67,7 @@ class GetLocations extends Command
 
       $userLocation = UserLocation::whereDate('created_at', '=', '2020-09-14')
             ->where('user_id', '=', 377)
-            ->first();
+            ->latest()->first();
       if($userLocation) {
         $lat = $userLocation->content['coords']['latitude'];
         $lng = $userLocation->content['coords']['longitude'];
@@ -80,7 +80,7 @@ class GetLocations extends Command
       
       $userLocation = UserLocation::whereDate('created_at', '=', '2020-09-14')
             ->where('user_id', '=', 379)
-            ->first();
+            ->latest()->first();
       if($userLocation) {
         $lat = $userLocation->content['coords']['latitude'];
         $lng = $userLocation->content['coords']['longitude'];
@@ -93,7 +93,7 @@ class GetLocations extends Command
       
       $userLocation = UserLocation::whereDate('created_at', '=', '2020-09-14')
             ->where('user_id', '=', 381)
-            ->first();
+            ->latest()->first();
       if($userLocation) {
         $lat = $userLocation->content['coords']['latitude'];
         $lng = $userLocation->content['coords']['longitude'];
