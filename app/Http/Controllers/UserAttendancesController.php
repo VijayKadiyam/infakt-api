@@ -140,8 +140,8 @@ class UserAttendancesController extends Controller
         $address = json_decode($geocodesController->index($request)->getContent())->data;
         $checkLocation->address = $address;
         $checkLocation->update();
-        $phone = $request->user()->supervisors[0]->phone;
-        $name = $request->user()->name;
+        $phone = $user->supervisors[0]->phone;
+        $name = $user->name;
         $date = Carbon::parse($checkLocation->created_at)->format('d-m-Y');
         $time = Carbon::parse($checkLocation->created_at)->format('H:m:s');
         $lat = $checkLocation->content['coords']['latitude'];
