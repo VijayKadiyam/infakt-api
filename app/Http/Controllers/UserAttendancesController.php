@@ -125,24 +125,24 @@ class UserAttendancesController extends Controller
     $user = User::find($userAttendance->user_id);
 
     if(sizeof($user->supervisors) > 0) {
-      $checkLocations = UserLocation::whereDate('created_at', '=', Carbon::parse($userAttendance->created_at)->format('Y-m-d'))
+      $checkLocation = UserLocation::whereDate('created_at', '=', Carbon::parse($userAttendance->created_at)->format('Y-m-d'))
         ->where('user_id', '=', $request->user()->id)
-        ->latest()->get();
-      if(sizeof($checkLocations) == 1) {
+        ->latest()->first();
+      // if(sizeof($checkLocations) > 0) {
       // if($request->user()->id == 375) {
         $address = json_decode($geocodesController->index($request)->getContent())->data;
-        $userLocation->address = $address;
-        $userLocation->update();
+        $checkLocation->address = $address;
+        $checkLocation->update();
         $phone = $request->user()->supervisors[0]->phone;
         $name = $request->user()->name;
-        $date = Carbon::parse($userLocation->created_at)->format('d-m-Y');
-        $time = Carbon::parse($userLocation->created_at)->format('H:m:s');
-        $lat = $userLocation->content['coords']['latitude'];
-        $lng = $userLocation->content['coords']['longitude'];
-        $battery = $userLocation->content['battery']['level'];
-        $address = $userLocation->address;
+        $date = Carbon::parse($checkLocation->created_at)->format('d-m-Y');
+        $time = Carbon::parse($checkLocation->created_at)->format('H:m:s');
+        $lat = $checkLocation->content['coords']['latitude'];
+        $lng = $checkLocation->content['coords']['longitude'];
+        $battery = $checkLocation->content['battery']['level'];
+        $address = $checkLocation->address;
         $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
-      }
+      // }
     }
 
     // $userLocation = UserLocation::whereDate('created_at', '=', Carbon::parse($date)->format('Y-m-d'))->first();
