@@ -130,7 +130,7 @@ class UserAttendancesController extends Controller
         ->where('user_id', '=', $request->user()->id)
         ->latest()->first();
       
-      if($checkLocation) {
+      // if($checkLocation) {
       // if($request->user()->id == 375) {
         if($checkLocation->content['coords']['latitude'])
         {
@@ -149,7 +149,7 @@ class UserAttendancesController extends Controller
         $battery = $checkLocation->content['battery']['level'];
         $address = $checkLocation->address;
         $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
-      }
+      // }
     }
 
     // $userLocation = UserLocation::whereDate('created_at', '=', Carbon::parse($date)->format('Y-m-d'))->first();
