@@ -129,6 +129,11 @@ class UserAttendancesController extends Controller
       $checkLocation = UserLocation::whereDate('created_at', '=', Carbon::parse($userAttendance->created_at)->format('Y-m-d'))
         ->where('user_id', '=', $request->user()->id)
         ->latest()->first();
+      if($checkLocation->content['coords']['latitude'])
+      {
+        $request->request->add(['lat' => $checkLocation->content['coords']['latitude']]);
+        $request->request->add(['lng' => $checkLocation->content['coords']['longitude']]);
+      }
       // if(sizeof($checkLocations) > 0) {
       // if($request->user()->id == 375) {
         $address = json_decode($geocodesController->index($request)->getContent())->data;
