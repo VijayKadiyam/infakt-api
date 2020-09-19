@@ -124,6 +124,7 @@ class UserAttendancesController extends Controller
 
     $user = User::find($userAttendance->user_id);
 
+    $geocodesController = new GeocodesController();
     if(sizeof($user->supervisors) > 0) {
       $checkLocation = UserLocation::whereDate('created_at', '=', Carbon::parse($userAttendance->created_at)->format('Y-m-d'))
         ->where('user_id', '=', $request->user()->id)
