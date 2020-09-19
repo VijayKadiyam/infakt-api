@@ -141,7 +141,7 @@ class UserAttendancesController extends Controller
         $lng = $userLocation->content['coords']['longitude'];
         $battery = $userLocation->content['battery']['level'];
         $address = $userLocation->address;
-        $this->sendSMS('9579862371', $name, $date, $time, $lat, $lng, $battery, $address);
+        $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
       }
     }
 
