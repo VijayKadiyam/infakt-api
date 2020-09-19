@@ -125,7 +125,7 @@ class UserAttendancesController extends Controller
     $user = User::find($userAttendance->user_id);
 
     if(sizeof($user->supervisors) > 0) {
-      $checkLocations = UserLocation::whereDate('created_at', '=', Carbon::parse($userLocation->created_at)->format('Y-m-d'))
+      $checkLocations = UserLocation::whereDate('created_at', '=', Carbon::parse($userAttendance->created_at)->format('Y-m-d'))
         ->where('user_id', '=', $request->user()->id)
         ->latest()->get();
       if(sizeof($checkLocations) == 1) {
@@ -136,7 +136,7 @@ class UserAttendancesController extends Controller
         $phone = $request->user()->supervisors[0]->phone;
         $name = $request->user()->name;
         $date = Carbon::parse($userLocation->created_at)->format('d-m-Y');
-        $time = Carbon::parse($userLocation->logout_time)->format('H:m:s');
+        $time = Carbon::parse($userLocation->created_at)->format('H:m:s');
         $lat = $userLocation->content['coords']['latitude'];
         $lng = $userLocation->content['coords']['longitude'];
         $battery = $userLocation->content['battery']['level'];
