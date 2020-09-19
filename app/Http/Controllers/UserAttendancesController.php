@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\UserAttendance;
 use App\UserLocation;
+use App\User;
+use Carbon\Carbon;
 
 class UserAttendancesController extends Controller
 {
@@ -120,11 +122,41 @@ class UserAttendancesController extends Controller
 
     $userAttendance->update($request->all());
 
+    $user = User::find($userAttendance->user_id);
+
+    if(sizeof($user->supervisors) > 0) {
+      $checkLocations = UserLocation::whereDate('created_at', '=', Carbon::parse($userLocation->created_at)->format('Y-m-d'))
+        ->where('user_id', '=', $request->user()->id)
+        ->latest()->get();
+      if(sizeof($checkLocations) == 1) {
+      // if($request->user()->id == 375) {
+        $address = json_decode($geocodesController->index($request)->getContent())->data;
+        $userLocation->address = $address;
+        $userLocation->update();
+        $phone = $request->user()->supervisors[0]->phone;
+        $name = $request->user()->name;
+        $date = Carbon::parse($userLocation->created_at)->format('d-m-Y');
+        $time = Carbon::parse($userLocation->created_at)->format('H:m:s');
+        $lat = $userLocation->content['coords']['latitude'];
+        $lng = $userLocation->content['coords']['longitude'];
+        $battery = $userLocation->content['battery']['level'];
+        $address = $userLocation->address;
+        $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
+      }
+    }
+
     // $userLocation = UserLocation::whereDate('created_at', '=', Carbon::parse($date)->format('Y-m-d'))->first();
       
     return response()->json([
       'data'  =>  $userAttendance,
       'success' =>  true
     ], 200);
+  }
+
+  public function sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address)
+  {
+    $endpoint = "http://mobicomm.dove-sms.com//submitsms.jsp?user=PousseM&key=fc53bf6154XX&mobile=+91$phone&message=Dear Sir/Madam,%0A%0AName: $name%0ADate: $date%0ALogout Time: $time%0ALocation:$lat-$lng%0A$address%0ABattery Percent: $battery %&senderid=POUSSE&accusage=1";
+    $client = new \GuzzleHttp\Client();
+    $client->request('GET', $endpoint);
   }
 }
