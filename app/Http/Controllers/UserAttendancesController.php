@@ -136,7 +136,7 @@ class UserAttendancesController extends Controller
         $phone = $request->user()->supervisors[0]->phone;
         $name = $request->user()->name;
         $date = Carbon::parse($userLocation->created_at)->format('d-m-Y');
-        $time = Carbon::parse($userLocation->created_at)->format('H:m:s');
+        $time = Carbon::parse($userLocation->logout_time)->format('H:m:s');
         $lat = $userLocation->content['coords']['latitude'];
         $lng = $userLocation->content['coords']['longitude'];
         $battery = $userLocation->content['battery']['level'];
