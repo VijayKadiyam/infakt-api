@@ -83,7 +83,38 @@ class UserAttendancesController extends Controller
     $userAttendance = new UserAttendance($request->all());
     $request->user()->user_attendances()->save($userAttendance);
 
+    // $user = User::find($request->user()->id);
 
+    // $geocodesController = new GeocodesController();
+    // if(sizeof($user->supervisors) > 0) {
+    //   $checkLocation = UserLocation::whereDate('created_at', '=', Carbon::parse($userAttendance->created_at)->format('Y-m-d'))
+    //     ->where('user_id', '=', $user->id)
+    //     ->latest()->first();
+      
+    //   if($checkLocation) {
+    //   // if($request->user()->id == 375) {
+    //     if($checkLocation->content['coords']['latitude'])
+    //     {
+    //       $request->request->add(['lat' => $checkLocation->content['coords']['latitude']]);
+    //       $request->request->add(['lng' => $checkLocation->content['coords']['longitude']]);
+    //     }
+    //     $address = json_decode($geocodesController->index($request)->getContent())->data;
+    //     $checkLocation->address = $address;
+    //     $checkLocation->update();
+    //     // $phone = $user->supervisors[0]->phone;
+    //     $name = $user->name;
+    //     $date = Carbon::parse($checkLocation->created_at)->format('d-m-Y');
+    //     $time = $userAttendance->login_time;
+    //     $lat = $checkLocation->content['coords']['latitude'];
+    //     $lng = $checkLocation->content['coords']['longitude'];
+    //     $battery = $checkLocation->content['battery']['level'];
+    //     $address = $checkLocation->address;
+        
+    //     $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
+    //     $this->sendSMS('9820704909', $name, $date, $time, $lat, $lng, $battery, $address);
+    //     $this->sendSMS('9579862371', $name, $date, $time, $lat, $lng, $battery, $address);
+    //   }
+    // }
 
     return response()->json([
       'data'    =>  $userAttendance,
