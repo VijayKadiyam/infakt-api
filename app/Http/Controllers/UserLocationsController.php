@@ -41,7 +41,7 @@ class UserLocationsController extends Controller
 
   public function sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address)
   {
-    $endpoint = "http://mobicomm.dove-sms.com//submitsms.jsp?user=PousseM&key=fc53bf6154XX&mobile=+91$phone&message=Dear Sir/Madam,%0A%0AName: $name%0ADate: $date%0AI have starting work at $time%0ALocation:$lat-$lng%0A$address%0ABattery Percent: $battery %&senderid=POUSSE&accusage=1";
+    $endpoint = "http://mobicomm.dove-sms.com//submitsms.jsp?user=PousseM&key=fc53bf6154XX&mobile=+91$phone&message=$name%0A$date%0AStarting work at $time%0ALocation: $address%0ABTRY: $battery %&senderid=POUSSE&accusage=1";
     $client = new \GuzzleHttp\Client();
     $client->request('GET', $endpoint);
   }
@@ -86,7 +86,7 @@ class UserLocationsController extends Controller
         $time = Carbon::parse($userLocation->created_at)->format('H:i:s');
         $lat = $userLocation->content['coords']['latitude'];
         $lng = $userLocation->content['coords']['longitude'];
-        $battery = $userLocation->content['battery']['level'];
+        $battery = $userLocation->content['battery']['level'] * 100;
         $address = $userLocation->address;
         
         $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);

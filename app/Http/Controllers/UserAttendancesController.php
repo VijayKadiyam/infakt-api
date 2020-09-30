@@ -177,7 +177,7 @@ class UserAttendancesController extends Controller
         $time = $userAttendance->logout_time;
         $lat = $checkLocation->content['coords']['latitude'];
         $lng = $checkLocation->content['coords']['longitude'];
-        $battery = $checkLocation->content['battery']['level'];
+        $battery = $checkLocation->content['battery']['level'] * 100;
         $address = $checkLocation->address;
         
         $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
@@ -196,7 +196,7 @@ class UserAttendancesController extends Controller
 
   public function sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address)
   {
-    $endpoint = "http://mobicomm.dove-sms.com//submitsms.jsp?user=PousseM&key=fc53bf6154XX&mobile=+91$phone&message=Dear Sir/Madam,%0A%0AName: $name%0ADate: $date%0ALogout Time: $time%0ALocation:$lat-$lng%0A$address%0ABattery Percent: $battery %&senderid=POUSSE&accusage=1";
+    $endpoint = "http://mobicomm.dove-sms.com//submitsms.jsp?user=PousseM&key=fc53bf6154XX&mobile=+91$phone&message=$name%0A$date%0ALogout Time: $time%0ALocation: $address%0ABTRY: $battery %&senderid=POUSSE&accusage=1";
     $client = new \GuzzleHttp\Client();
     $client->request('GET', $endpoint);
   }
