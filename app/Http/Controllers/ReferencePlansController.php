@@ -23,7 +23,8 @@ class ReferencePlansController extends Controller
     $reference_plans = request()->company->reference_plans;
 
     return response()->json([
-      'data'     =>  $reference_plans
+      'data'     =>  $reference_plans,
+      'success'   =>  true,
     ], 200);
   }
 
