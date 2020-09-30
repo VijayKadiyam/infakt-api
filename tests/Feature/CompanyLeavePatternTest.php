@@ -113,7 +113,8 @@ class CompanyLeavePatternTest extends TestCase
             'df_1_email_body',
             'df_2_email_subject',
             'df_2_email_body',
-            'leave_patterns'
+            'attendance', 'leave', 'expenses', 'orders', 'recruiters',
+            'leave_patterns',
           ]
         ]);;;
   }

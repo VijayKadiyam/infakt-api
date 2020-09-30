@@ -172,7 +172,8 @@ class CompanyTest extends TestCase
             'df_1_email_subject',
             'df_1_email_body',
             'df_2_email_subject',
-            'df_2_email_body'
+            'df_2_email_body',
+            'attendance', 'leave', 'expenses', 'orders', 'recruiters'
           ]
       ]);
   }
