@@ -22,13 +22,15 @@ class SalesController extends Controller
    */
   public function all()
   {
-    $sales = [];
-    // for($i = 1; $i <= 31; $i++) {
-      $sales = Sale::with('retailer', 'sku')
-      ->whereMonth('created_at', '=', 9)
-      // ->whereDay('created_at', '=', $i)
-      ->latest()->get();
-    // }
+    $sales = Sale::with('retailer', 'sku', 'user')
+      ->get();
+    // $sales = [];
+    // // for($i = 1; $i <= 31; $i++) {
+    //   $sales = Sale::with('retailer', 'sku')
+    //   ->whereMonth('created_at', '=', 9)
+    //   // ->whereDay('created_at', '=', $i)
+    //   ->latest()->get();
+    // // }
     
 
     return response()->json([

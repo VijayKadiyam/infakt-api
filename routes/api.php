@@ -84,6 +84,7 @@ Route::post('upload_retailer/{id}', 'UploadController@uploadRetailer');
 
 Route::resource('products', 'ProductsController');
 Route::resource('products/{product}/skus', 'SkusController');
+Route::get('skus', 'SkusController@getAll');
 Route::resource('sku_types', 'SkuTypesController');
 Route::resource('offer_types', 'OfferTypesController');
 Route::resource('offers', 'OffersController');

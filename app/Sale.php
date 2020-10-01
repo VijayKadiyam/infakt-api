@@ -30,4 +30,9 @@ class Sale extends Model
     return $this->belongsTo(Retailer::class)
       ->with('retailer_category', 'retailer_classification');
   }
+
+  public function user()
+  {
+    return $this->belongsTo(User::class);
+  }
 }

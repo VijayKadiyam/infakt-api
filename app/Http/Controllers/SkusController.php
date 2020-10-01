@@ -13,6 +13,24 @@ class SkusController extends Controller
     $this->middleware(['auth:api', 'company']);
   }
 
+  public function getAll()
+  {
+    $products = request()->company()->products;
+
+    $skus = [];
+    foreach($products as $product) {
+      $productSkus = $product->skus;
+      foreach($productSkus as $productSku) {
+        $skus[] = $productSku;
+      }
+    }
+
+    return response()->json([
+      'data'     =>  $skus,
+      'success'   =>  true
+    ], 200);
+  }
+
   /*
    * To get all skus
      *
