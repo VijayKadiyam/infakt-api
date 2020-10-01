@@ -15,7 +15,7 @@ class SkusController extends Controller
 
   public function getAll()
   {
-    $products = request()->company()->products;
+    $products = request()->company->products;
 
     $skus = [];
     foreach($products as $product) {
