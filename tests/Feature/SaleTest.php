@@ -191,6 +191,7 @@ class SaleTest extends TestCase
             'created_at',
             'updated_at',
             'sku_id',
+            'user_id',
           ],
           'success'
       ]);
