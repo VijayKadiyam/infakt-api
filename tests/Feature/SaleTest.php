@@ -112,12 +112,14 @@ class SaleTest extends TestCase
         ])
       ->assertJsonStructureExact([
           'data'   => [
+            'id',
             'qty',
             'retailer_id',
-            'sku_id',
-            'updated_at',
             'created_at',
-            'id'
+            'updated_at',
+            'sku_id',
+            'user_id',
+            'company_id'
           ],
           'success'
         ]);
@@ -192,6 +194,7 @@ class SaleTest extends TestCase
             'updated_at',
             'sku_id',
             'user_id',
+            'company_id'
           ],
           'success'
       ]);
