@@ -28,7 +28,7 @@ class Sale extends Model
   public function retailer()
   {
     return $this->belongsTo(Retailer::class)
-      ->with('retailer_category', 'retailer_classification');
+      ->with('retailer_category', 'retailer_classification', 'reference_plan');
   }
 
   public function user()

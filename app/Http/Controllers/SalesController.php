@@ -20,9 +20,14 @@ class SalesController extends Controller
    *
    *@
    */
-  public function all()
+  public function all(Request $request)
   {
-    $sales = Sale::with('retailer', 'sku', 'user')
+    $sales = Sale::with('retailer', 'sku', 'user');
+    if($request->userId) {
+      $sales = $sales->where('user_id', '=', $user_id);
+    }
+    $sales = $sales
+      ->latest()
       ->get();
     // $sales = [];
     // // for($i = 1; $i <= 31; $i++) {
@@ -34,7 +39,8 @@ class SalesController extends Controller
     
 
     return response()->json([
-      'data'     =>  $sales
+      'data'     =>  $sales,
+      'success'  => true
     ], 200);
   }
 
