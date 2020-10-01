@@ -184,7 +184,7 @@ class UserAttendancesController extends Controller
         $this->sendSMS('9820704909', $name, $date, $time, $lat, $lng, $battery, $address);
         $this->sendSMS('9579862371', $name, $date, $time, $lat, $lng, $battery, $address);
       } else {
-        if($userAttendance->logout_lat)
+        if($userAttendance->logout_time && $userAttendance->logout_lat)
         {
           $request->request->add(['lat' => $userAttendance->logout_lat]);
           $request->request->add(['lng' => $userAttendance->logout_lng]);
@@ -197,7 +197,7 @@ class UserAttendancesController extends Controller
           $lat = $userAttendance->logout_lat;
           $lng = $userAttendance->logout_lng;
           $battery = '-';
-          $address = $checkLocation->address;
+          $address = $address;
           
           $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
         }
