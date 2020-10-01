@@ -7,6 +7,9 @@ use APp\Stock;
 use App\Sale;
 use App\Sku;
 use Carbon\Carbon;
+use App\User;
+use Mail;
+use App\Mail\SingleEmployeeSalesEmail;
 
 class SalesController extends Controller
 {
@@ -123,6 +126,13 @@ class SalesController extends Controller
 
   public function singleEmployeeSalesEmail(Request $request)
   {
-    
+    $user = User::find($request->userId);
+    $sales = Sale::whereDate('created_at', '=', Carbon::today())
+      ->with('retailer', 'sku', 'user')
+      ->get();
+    $date = Carbon::now()->format('d-m-Y');
+
+    Mail::to('kvjkumr@gmail.com')->send(new SingleEmployeeSalesEmail($sales, $user, $date));
+    return $user->sales;
   }
 }

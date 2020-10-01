@@ -359,5 +359,11 @@ class User extends Authenticatable
   {
     return $this->hasMany(Resume::class);
   }
+
+  public function sales()
+  {
+    return $this->hasMany(Sale::class)
+      ->with('retailer', 'sku', 'user');
+  }
 }
 
