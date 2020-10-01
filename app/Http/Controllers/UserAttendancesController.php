@@ -183,6 +183,24 @@ class UserAttendancesController extends Controller
         $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
         $this->sendSMS('9820704909', $name, $date, $time, $lat, $lng, $battery, $address);
         $this->sendSMS('9579862371', $name, $date, $time, $lat, $lng, $battery, $address);
+      } else {
+        if($userAttendance->logout_lat)
+        {
+          $request->request->add(['lat' => $userAttendance->logout_lat]);
+          $request->request->add(['lng' => $userAttendance->logout_lng]);
+
+          $address = json_decode($geocodesController->index($request)->getContent())->data;
+          $phone = $user->supervisors[0]->phone;
+          $name = $user->name;
+          $date = $userAttendance->date;
+          $time = $userAttendance->logout_time;
+          $lat = $userAttendance->logout_lat;
+          $lng = $userAttendance->logout_lng;
+          $battery = '-';
+          $address = $checkLocation->address;
+          
+          $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
+        }
       }
     }
 

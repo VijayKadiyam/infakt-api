@@ -120,4 +120,9 @@ class SalesController extends Controller
       'success' =>  true
     ], 200);
   }
+
+  public function singleEmployeeSalesEmail(Request $request)
+  {
+    
+  }
 }

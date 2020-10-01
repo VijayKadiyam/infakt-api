@@ -91,6 +91,7 @@ Route::resource('offers', 'OffersController');
 Route::resource('skus/{skus}/stocks', 'StocksController');
 Route::resource('skus/{sku}/sales', 'SalesController');
 Route::get('sales', 'SalesController@all');
+Route::get('sales/single-employee-sales-email', 'SalesController@singleEmployeeSalesEmail');
 // Route::resource('stocks/{stock}/sales', 'SalesController');
 
 Route::resource('reference_plans', 'ReferencePlansController');
