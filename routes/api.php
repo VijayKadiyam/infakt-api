@@ -96,6 +96,7 @@ Route::get('sales/single-employee-sales-email', 'SalesController@singleEmployeeS
 
 Route::resource('reference_plans', 'ReferencePlansController');
 Route::resource('reference_plans/{reference_plan}/retailers', 'RetailersController');
+Route::resource('user_reference_plans', 'UserReferencePlansController');
 Route::get('un_approved_retailers', 'RetailersController@unApprovedRetailers');
 Route::get('approve_retailer/{id}', 'RetailersController@singleApproveRetailer');
 Route::post('approve_retailer', 'RetailersController@approveRetailer');
