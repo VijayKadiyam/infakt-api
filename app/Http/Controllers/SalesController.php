@@ -30,6 +30,12 @@ class SalesController extends Controller
     if($request->userId) {
       $sales = $sales->where('user_id', '=', $user_id);
     }
+    if($request->type == 'daily') {
+      $sales = $sales->whereDate('created_at', '=', Carbon::today());
+    }
+    if($request->type == 'monthly') {
+      $sales = $sales->whereMonth('created_at', '=', Carbon::today());
+    }
     $sales = $sales
       ->latest()
       ->get();
