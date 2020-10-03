@@ -34,7 +34,7 @@ class SalesController extends Controller
       $sales = $sales->whereDate('created_at', '=', Carbon::today());
     }
     if($request->type == 'monthly') {
-      $sales = $sales->whereMonth('created_at', '=', Carbon::today());
+      $sales = $sales->whereMonth('created_at', Carbon::now()->month);
     }
     $sales = $sales
       ->latest()
