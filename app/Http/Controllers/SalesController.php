@@ -25,7 +25,8 @@ class SalesController extends Controller
    */
   public function all(Request $request)
   {
-    $sales = Sale::with('retailer', 'sku', 'user');
+    $sales = Sale::with('retailer', 'sku', 'user')
+      ->where('company_id', '=', request()->company->id);
     if($request->userId) {
       $sales = $sales->where('user_id', '=', $user_id);
     }
