@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\ReferencePlan;
+use App\UserReferencePlan;
+use App\User;
 
 class ReferencePlansController extends Controller
 {
@@ -18,9 +20,27 @@ class ReferencePlansController extends Controller
      *
    *@
    */
-  public function index()
+  public function index(Request $request)
   {
-    $reference_plans = request()->company->reference_plans;
+    $reference_plans = [];
+
+    if($request->userId && $request->weekNo && $request->day) {
+      $user = User::find($request->userId);
+      $whichWeek = 1;
+      if($user->beat_type_id != null) {
+        if($user->beat_type_id != 1) {
+          $whichWeek = $request->weekNo / $user->beat_type_id;
+        }
+      }
+      $user_reference_plans = UserReferencePlan::where('user_id', '=', $user->id)
+        ->where('day', '=', $request->day)
+        ->where('which_week', '=', $whichWeek)
+        ->get();
+      foreach($user_reference_plans as $user_reference_plan) {
+        $reference_plans[] = $user_reference_plan->reference_plan;
+      }
+    } else 
+      $reference_plans = request()->company->reference_plans;
 
     return response()->json([
       'data'     =>  $reference_plans,

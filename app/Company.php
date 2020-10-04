@@ -314,6 +314,7 @@ class Company extends Model
 
   public function user_reference_plans()
   {
-    return $this->hasMany(UserReferencePlan::class);
+    return $this->hasMany(UserReferencePlan::class)
+      ->with('reference_plan', 'user');
   }
 }

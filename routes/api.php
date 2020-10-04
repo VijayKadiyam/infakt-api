@@ -83,6 +83,8 @@ Route::post('upload_bill/{id}', 'UploadController@uploadBill');
 Route::post('upload_retailer/{id}', 'UploadController@uploadRetailer');
 
 Route::resource('products', 'ProductsController');
+Route::get('productSkusStocks', 'ProductsController@productSkusStocks');
+Route::get('sendOrderSMS', 'ProductsController@sendOrderSMS');
 Route::resource('products/{product}/skus', 'SkusController');
 Route::get('skus', 'SkusController@getAll');
 Route::resource('sku_types', 'SkuTypesController');
@@ -217,6 +219,10 @@ Route::get('crude_users', 'CrudeUsersController@index');
 Route::post('upload_user', 'CrudeUsersController@uploadUser');
 Route::get('process_user', 'CrudeUsersController@processUser');
 Route::get('truncate_users', 'CrudeUsersController@truncate');
+Route::get('crude_shops', 'CrudeShopsController@index');
+Route::post('upload_shop', 'CrudeShopsController@uploadShop');
+Route::get('process_shop', 'CrudeShopsController@processShop');
+Route::get('truncate_shop', 'CrudeUsersController@truncate');
 
 Route::get('crude_designations', 'CrudeDesignationsController@index');
 Route::post('upload_designation', 'CrudeDesignationsController@uploadDesignation');

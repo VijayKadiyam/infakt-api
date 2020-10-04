@@ -139,7 +139,11 @@ class SalesController extends Controller
       ->get();
     $date = Carbon::now()->format('d-m-Y');
 
-    Mail::to('kvjkumr@gmail.com')->send(new SingleEmployeeSalesEmail($sales, $user, $date));
+
+    $supervisors = $user->supervisors;
+    if(sizeof($supervisors) > 0) {
+      Mail::to($supervisors[0]->email)->send(new SingleEmployeeSalesEmail($sales, $user, $date));
+    }
     return $user->sales;
   }
 }

@@ -162,6 +162,7 @@ class CompanyUserTest extends TestCase
             'form_2_checked', 
             'form_11_checked', 
             'graduity_form_checked',
+            'beat_type_id',
             'companies',
           ]
         ]);;;
