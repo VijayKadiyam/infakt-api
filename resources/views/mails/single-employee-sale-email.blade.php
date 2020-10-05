@@ -42,7 +42,7 @@
       </tr>
       @foreach($sales as $sale)
         <tr>
-          <td>Sr. No.</td>
+          <td>{{ $loop->index }}</td>
           <td>{{ $user->name }}</td>
           <td>{{ $user->employee_code }}</td>
           <td>{{ $sale->date }}</td>

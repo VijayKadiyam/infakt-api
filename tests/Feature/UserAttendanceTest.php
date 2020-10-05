@@ -269,6 +269,7 @@ class UserAttendanceTest extends TestCase
             'logout_lng',
             'created_at',
             'updated_at',
+            'battery',
           ],
           'success'
       ]);

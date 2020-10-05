@@ -119,7 +119,8 @@ class SaleTest extends TestCase
             'updated_at',
             'sku_id',
             'user_id',
-            'company_id'
+            'company_id',
+            'value'
           ],
           'success'
         ]);
@@ -194,7 +195,8 @@ class SaleTest extends TestCase
             'updated_at',
             'sku_id',
             'user_id',
-            'company_id'
+            'company_id',
+            'value'
           ],
           'success'
       ]);

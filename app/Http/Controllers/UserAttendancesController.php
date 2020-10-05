@@ -83,23 +83,26 @@ class UserAttendancesController extends Controller
     $userAttendance = new UserAttendance($request->all());
     $request->user()->user_attendances()->save($userAttendance);
 
-    if($userAttendance->login_time && $userAttendance->login_lat)
-    {
-      $request->request->add(['lat' => $userAttendance->login_lat]);
-      $request->request->add(['lng' => $userAttendance->login_lng]);
+    $user = User::find($userAttendance->user_id);
+    $geocodesController = new GeocodesController();
+    if(sizeof($user->supervisors) > 0)
+      if($userAttendance->login_time && $userAttendance->login_lat)
+      {
+        $request->request->add(['lat' => $userAttendance->login_lat]);
+        $request->request->add(['lng' => $userAttendance->login_lng]);
 
-      $address = json_decode($geocodesController->index($request)->getContent())->data;
-      $phone = $user->supervisors[0]->phone;
-      $name = $user->name;
-      $date = $userAttendance->date;
-      $time = $userAttendance->login_time;
-      $lat = $userAttendance->login_lat;
-      $lng = $userAttendance->login_lng;
-      $battery = '-';
-      $address = $address;
-      
-      $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
-    }
+        $address = json_decode($geocodesController->index($request)->getContent())->data;
+        $phone = $user->supervisors[0]->phone;
+        $name = $user->name;
+        $date = $userAttendance->date;
+        $time = $userAttendance->login_time;
+        $lat = $userAttendance->login_lat;
+        $lng = $userAttendance->login_lng;
+        $battery = '-';
+        $address = $address;
+        
+        $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
+      }
 
     // $user = User::find($request->user()->id);
 
@@ -202,23 +205,24 @@ class UserAttendancesController extends Controller
         $this->sendSMS('9820704909', $name, $date, $time, $lat, $lng, $battery, $address);
         $this->sendSMS('9579862371', $name, $date, $time, $lat, $lng, $battery, $address);
       } else {
-        if($userAttendance->logout_time && $userAttendance->logout_lat)
-        {
-          $request->request->add(['lat' => $userAttendance->logout_lat]);
-          $request->request->add(['lng' => $userAttendance->logout_lng]);
+        if(sizeof($user->supervisors) > 0)
+          if($userAttendance->logout_time && $userAttendance->logout_lat)
+          {
+            $request->request->add(['lat' => $userAttendance->logout_lat]);
+            $request->request->add(['lng' => $userAttendance->logout_lng]);
 
-          $address = json_decode($geocodesController->index($request)->getContent())->data;
-          $phone = $user->supervisors[0]->phone;
-          $name = $user->name;
-          $date = $userAttendance->date;
-          $time = $userAttendance->logout_time;
-          $lat = $userAttendance->logout_lat;
-          $lng = $userAttendance->logout_lng;
-          $battery = '-';
-          $address = $address;
-          
-          $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
-        }
+            $address = json_decode($geocodesController->index($request)->getContent())->data;
+            $phone = $user->supervisors[0]->phone;
+            $name = $user->name;
+            $date = $userAttendance->date;
+            $time = $userAttendance->logout_time;
+            $lat = $userAttendance->logout_lat;
+            $lng = $userAttendance->logout_lng;
+            $battery = $userAttendance->battery;
+            $address = $address;
+            
+            $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
+          }
       }
     }
 
