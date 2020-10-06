@@ -17,7 +17,8 @@ class Stock extends Model
    */
   public function sku()
   {
-    return $this->belongsTo(Sku::class);
+    return $this->belongsTo(Sku::class)
+      ->with('product');
   }
 
   /*

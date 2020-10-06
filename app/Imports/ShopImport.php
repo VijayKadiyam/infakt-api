@@ -21,6 +21,7 @@ class ShopImport implements ToModel, WithHeadingRow
       'email'               =>  $row['Email'],
       'shop_type'           =>  $row['ShopType'],
       'beat'                =>  $row['Beat'],
+      'day'                 =>  $row['Day'],
       'week_number'         =>  $row['WeekNumber'],
       'outlet_wisdom_code'  =>  $row['OutletWisdomCode'],
     ];

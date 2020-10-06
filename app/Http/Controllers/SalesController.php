@@ -28,13 +28,19 @@ class SalesController extends Controller
     $sales = Sale::with('retailer', 'sku', 'user')
       ->where('company_id', '=', request()->company->id);
     if($request->userId) {
-      $sales = $sales->where('user_id', '=', $user_id);
+      $sales = $sales->where('user_id', '=', $request->userId);
     }
     if($request->type == 'daily') {
       $sales = $sales->whereDate('created_at', '=', Carbon::today());
     }
     if($request->type == 'monthly') {
       $sales = $sales->whereMonth('created_at', Carbon::now()->month);
+    }
+    if($request->date != '') {
+      $sales = $sales->whereDate('created_at', '=', Carbon::parse($request->date));
+    }
+    if($request->skuId != '') {
+      $sales = $sales->where('sku_id', '=', $request->skuId);
     }
     $sales = $sales
       ->latest()

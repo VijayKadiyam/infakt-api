@@ -10,6 +10,7 @@ use App\RetailerClassification;
 use App\Retailer;
 use App\ReferencePlan;
 use App\User;
+use App\UserReferencePlan;
 
 class CrudeShopsController extends Controller
 {
@@ -83,8 +84,54 @@ class CrudeShopsController extends Controller
         $referencePlan->retailers()->save($retailer);
       }
 
-      // $user = User::where('email', '=', $crude_shop->email) 
-      //   ->first();
+      $user = User::where('email', '=', $crude_shop->email) 
+        ->first();
+      $day;
+      switch($crude_shop->day) {
+        case 'SUNDAY':
+          $day = 7;
+          break;
+        case 'MONDAY':
+          $day = 1;
+          break;
+        case 'TUESDAY':
+          $day = 2;
+          break;
+        case 'WEDNESDAY':
+          $day = 3;
+          break;
+        case 'THURSDAY':
+          $day = 4;
+          break;
+        case 'FRIDAY':
+          $day = 5;
+          break;
+        case 'SATURDAY':
+          $day = 6;
+          break;
+        case 'DEFAULT':
+          $day = 1;
+      }
+      if($user) {
+        $userReferencePlan = UserReferencePlan::where('user_id', '=', $user->id)
+          ->where('reference_plan_id', '=', $referencePlan->id)
+          ->where('day', '=', $day)
+          ->where('which_week', '=', $crude_shop->week_number)
+          ->first();
+
+        if(!$userReferencePlan) {
+          $data = [
+            'user_id'           =>  $user->id,
+            'reference_plan_id' =>  $referencePlan->id,
+            'day'               =>  $day,
+            'which_week'        =>  $crude_shop->week_number
+          ];
+
+          $userReferencePlan = new UserReferencePlan($data);
+          request()->company->user_reference_plans()->save($userReferencePlan);
+        }
+      }
+
     }
 
     

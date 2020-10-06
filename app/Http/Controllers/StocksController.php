@@ -13,6 +13,16 @@ class StocksController extends Controller
     $this->middleware(['auth:api', 'company']);
   }
 
+  public function all()
+  {
+    $stocks = Stock::with('sku', 'unit')
+      ->latest()->get();
+
+    return response()->json([
+      'data'     =>  $stocks
+    ], 200);
+  }
+
   /*
    * To get all stocks of a sku
      *

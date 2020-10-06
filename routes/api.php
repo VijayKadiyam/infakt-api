@@ -91,6 +91,7 @@ Route::resource('sku_types', 'SkuTypesController');
 Route::resource('offer_types', 'OfferTypesController');
 Route::resource('offers', 'OffersController');
 Route::resource('skus/{skus}/stocks', 'StocksController');
+Route::get('stocks', 'StocksController@all');
 Route::resource('skus/{sku}/sales', 'SalesController');
 Route::get('sales', 'SalesController@all');
 Route::get('sales/single-employee-sales-email', 'SalesController@singleEmployeeSalesEmail');
@@ -219,10 +220,16 @@ Route::get('crude_users', 'CrudeUsersController@index');
 Route::post('upload_user', 'CrudeUsersController@uploadUser');
 Route::get('process_user', 'CrudeUsersController@processUser');
 Route::get('truncate_users', 'CrudeUsersController@truncate');
+
 Route::get('crude_shops', 'CrudeShopsController@index');
 Route::post('upload_shop', 'CrudeShopsController@uploadShop');
 Route::get('process_shop', 'CrudeShopsController@processShop');
-Route::get('truncate_shop', 'CrudeUsersController@truncate');
+Route::get('truncate_shop', 'CrudeShopsController@truncate');
+
+Route::get('crude_products', 'CrudeProductController@index');
+Route::post('upload_product', 'CrudeProductController@uploadShop');
+Route::get('process_product', 'CrudeProductController@processShop');
+Route::get('truncate_product', 'CrudeProductController@truncate');
 
 Route::get('crude_designations', 'CrudeDesignationsController@index');
 Route::post('upload_designation', 'CrudeDesignationsController@uploadDesignation');
