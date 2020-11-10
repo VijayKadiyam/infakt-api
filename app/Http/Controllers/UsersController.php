@@ -14,6 +14,16 @@ class UsersController extends Controller
     $this->middleware(['auth:api', 'company']);
   }
 
+  public function masters(Request $request)
+  {
+    $rolesController = new RolesController();
+    $rolesResponse = $rolesController->index($request);
+
+    return response()->json([
+      'roles'  =>  $rolesResponse->getData()->data,
+    ], 200);
+  }
+
   /*
    * To get all the users
    *
@@ -21,12 +31,18 @@ class UsersController extends Controller
    */
   public function index(Request $request)
   {
+    $count = 0;
     $role = 3;
     $users = [];
-    if($request->search == 'all')
-      $users = $request->company->users()->with('roles')
+    if(request()->page && request()->rowsPerPage) {
+      $users = request()->company->users();
+      $count = $users->count();
+      $users = $users->paginate(request()->rowsPerPage)->toArray();
+      $users = $users['data'];
+    } else if($request->search == 'all')
+      $users = $request->company->users()
         ->whereHas('roles',  function($q) {
-          $q->where('name', '!=', 'Admin');
+          // $q->where('name', '!=', 'Admin');
         })
         ->latest()->get();
     else if($request->searchEmp) {
@@ -84,8 +100,9 @@ class UsersController extends Controller
       }
 
     return response()->json([
-          'data'  =>  $users
-      ], 200);
+      'data'  =>  $users,
+      'count' =>   $count
+    ], 200);
   }
 
   /*
@@ -99,9 +116,10 @@ class UsersController extends Controller
       'name'                    => ['required', 'string', 'max:255'],
       'email'                   => ['required', 'string', 'email', 'max:255', 'unique:users'],
       'phone'                   => ['required', 'unique:users'],
-      'doj'                     =>  'required',
-      'dob'                     =>  'required',
-      'company_designation_id'  =>  'required',
+      // 'doj'                     =>  'required',
+      // 'dob'                     =>  'required',
+      // 'company_designation_id'  =>  'required',
+      'role_id'                 =>  'required',
     ]);
 
     $user  = $request->all();
@@ -113,6 +131,11 @@ class UsersController extends Controller
 
     $user = new User($user);
     $user->save();
+
+    $user->assignRole($request->role_id);
+    $user->roles = $user->roles;
+    $user->assignCompany($request->company_id);
+    $user->companies = $user->companies;
 
     return response()->json([
       'data'     =>  $user
@@ -152,6 +175,13 @@ class UsersController extends Controller
     ]);
 
     $user->update($request->all());
+
+    if($request->role_id)
+      $user->assignRole($request->role_id);
+
+    $user->roles = $user->roles;
+    $user->sites = $user->sites;
+
     
     return response()->json([
       'data'  =>  $user,

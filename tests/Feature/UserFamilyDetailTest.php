@@ -157,10 +157,10 @@ class UserFamilyDetailTest extends TestCase
       ]);
   }
 
-  /** @test */
-  function delete_single_detail()
-  {
-    $this->disableEH();
-    $this->json('delete', "/api/users/" . $this->user->id . "/user_family_details/1", [], $this->headers);
-  }
+  // /** @test */
+  // function delete_single_detail()
+  // {
+  //   $this->disableEH();
+  //   $this->json('delete', "/api/users/" . $this->user->id . "/user_family_details/1", [], $this->headers);
+  // }
 }

@@ -20,10 +20,20 @@ class CompanyDesignationsController extends Controller
    */
   public function index(Company $company)
   {
-    $companyDesignations = $company->company_designations;
+    $count = 0;
+    if(request()->page && request()->rowsPerPage) {
+      $company_designations = request()->company->company_designations();
+      $count = $company_designations->count();
+      $company_designations = $company_designations->paginate(request()->rowsPerPage)->toArray();
+      $company_designations = $company_designations['data'];
+    } else {
+      $company_designations = request()->site->company_designations; 
+      $count = $company_designations->count();
+    }
 
     return response()->json([
-      'data'     =>  $companyDesignations
+      'data'     =>  $company_designations,
+      'count'    =>   $count
     ], 200);
   }
 

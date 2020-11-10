@@ -145,11 +145,11 @@ class UserEducationTest extends TestCase
       ]);
   }
 
-  /** @test */
-  function delete_single_education()
-  {
-    $this->disableEH();
-    $this->json('delete', "/api/users/" . $this->user->id . "/user_educations/1", [], $this->headers);
-  }
+  // /** @test */
+  // function delete_single_education()
+  // {
+  //   $this->disableEH();
+  //   $this->json('delete', "/api/users/" . $this->user->id . "/user_educations/1", [], $this->headers);
+  // }
 
 }

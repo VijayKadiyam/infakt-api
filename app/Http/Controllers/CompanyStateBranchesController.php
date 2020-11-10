@@ -20,10 +20,20 @@ class CompanyStateBranchesController extends Controller
    */
   public function index(CompanyState $companyState)
   {
-    $companyStateBranches = $companyState->company_state_branches;
+    $count = 0;
+    if(request()->page && request()->rowsPerPage) {
+      $company_state_branches = $companyState->company_state_branches();
+      $count = $company_state_branches->count();
+      $company_state_branches = $company_state_branches->paginate(request()->rowsPerPage)->toArray();
+      $company_state_branches = $company_state_branches['data'];
+    } else {
+      $company_state_branches = request()->site->company_state_branches; 
+      $count = $company_state_branches->count();
+    }
 
     return response()->json([
-      'data'     =>  $companyStateBranches
+      'data'     =>  $company_state_branches,
+      'count'    =>   $count
     ], 200);
   }
 

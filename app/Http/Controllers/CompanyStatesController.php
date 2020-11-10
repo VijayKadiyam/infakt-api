@@ -19,10 +19,20 @@ class CompanyStatesController extends Controller
    */
   public function index()
   {
-    $companyStates = request()->company->company_states;
+    $count = 0;
+    if(request()->page && request()->rowsPerPage) {
+      $company_states = request()->company->company_states();
+      $count = $company_states->count();
+      $company_states = $company_states->paginate(request()->rowsPerPage)->toArray();
+      $company_states = $company_states['data'];
+    } else {
+      $company_states = request()->site->company_states; 
+      $count = $company_states->count();
+    }
 
     return response()->json([
-      'data'     =>  $companyStates
+      'data'     =>  $company_states,
+      'count'    =>   $count
     ], 200);
   }
 
