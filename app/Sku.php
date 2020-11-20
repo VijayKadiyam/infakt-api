@@ -20,6 +20,11 @@ class Sku extends Model
     return $this->belongsTo(Product::class);
   }
 
+  public function company()
+  {
+    return $this->belongsTo(Company::class);
+  }
+
   /*
    * A sku has many stocks
    *

@@ -19,10 +19,20 @@ class OfferTypesController extends Controller
    */
   public function index()
   {
-    $offer_types = request()->company->offer_types;
+    $count = 0;
+    if(request()->page && request()->rowsPerPage) {
+      $offer_types = request()->company->offer_types();
+      $count = $offer_types->count();
+      $offer_types = $offer_types->paginate(request()->rowsPerPage)->toArray();
+      $offer_types = $offer_types['data'];
+    } else {
+      $offer_types = request()->company->offer_types; 
+      $count = $offer_types->count();
+    }
 
     return response()->json([
-      'data'     =>  $offer_types
+      'data'     =>  $offer_types,
+      'count'    =>   $count
     ], 200);
   }
 

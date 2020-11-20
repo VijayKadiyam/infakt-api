@@ -19,8 +19,16 @@ class UsersController extends Controller
     $rolesController = new RolesController();
     $rolesResponse = $rolesController->index($request);
 
+    $companyDesignationsController = new CompanyDesignationsController();
+    $companyDesignationsResponse = $companyDesignationsController->index($request->company);
+
+    $companyStatesController = new CompanyStatesController();
+    $companyStatesResponse = $companyStatesController->index($request->company);
+
     return response()->json([
-      'roles'  =>  $rolesResponse->getData()->data,
+      'roles'                 =>  $rolesResponse->getData()->data,
+      'company_designations'  =>  $companyDesignationsResponse->getData()->data,
+      'company_states'        =>  $companyStatesResponse->getData()->data,
     ], 200);
   }
 

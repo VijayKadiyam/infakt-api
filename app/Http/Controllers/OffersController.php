@@ -12,6 +12,16 @@ class OffersController extends Controller
     $this->middleware(['auth:api', 'company']);
   }
 
+  public function masters(Request $request)
+  {
+    $offerTypesController = new OfferTypesController();
+    $offerTypesResponse = $offerTypesController->index($request);
+
+    return response()->json([
+      'offer_types'=>  $offerTypesResponse->getData()->data,
+    ], 200);
+  }
+
   /*
    * To get all offers
      *
@@ -19,10 +29,20 @@ class OffersController extends Controller
    */
   public function index()
   {
-    $offers = request()->company->offers;
+    $count = 0;
+    if(request()->page && request()->rowsPerPage) {
+      $offers = request()->company->offers();
+      $count = $offers->count();
+      $offers = $offers->paginate(request()->rowsPerPage)->toArray();
+      $offers = $offers['data'];
+    } else {
+      $offers = request()->company->offers; 
+      $count = $offers->count();
+    }
 
     return response()->json([
-      'data'     =>  $offers
+      'data'     =>  $offers,
+      'count'    =>   $count
     ], 200);
   }
 

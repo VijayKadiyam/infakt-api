@@ -19,10 +19,20 @@ class SkuTypesController extends Controller
    */
   public function index()
   {
-    $sku_types = request()->company->sku_types;
+    $count = 0;
+    if(request()->page && request()->rowsPerPage) {
+      $sku_types = request()->company->sku_types();
+      $count = $sku_types->count();
+      $sku_types = $sku_types->paginate(request()->rowsPerPage)->toArray();
+      $sku_types = $sku_types['data'];
+    } else {
+      $sku_types = request()->company->sku_types; 
+      $count = $sku_types->count();
+    }
 
     return response()->json([
-      'data'     =>  $sku_types
+      'data'     =>  $sku_types,
+      'count'    =>   $count
     ], 200);
   }
 

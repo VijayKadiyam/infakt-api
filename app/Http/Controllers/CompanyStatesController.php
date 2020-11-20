@@ -26,7 +26,7 @@ class CompanyStatesController extends Controller
       $company_states = $company_states->paginate(request()->rowsPerPage)->toArray();
       $company_states = $company_states['data'];
     } else {
-      $company_states = request()->site->company_states; 
+      $company_states = request()->company->company_states; 
       $count = $company_states->count();
     }
 

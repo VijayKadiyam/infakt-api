@@ -22,5 +22,6 @@ class RoleSeeder extends Seeder
     Role::create(['name' => 'AREA HEAD']);
     Role::create(['name' => 'REGIONAL HEAD']);
     Role::create(['name' => 'NATIONAL HEAD']);
+    Role::create(['name' => 'DISTRIBUTOR']);
   }
 }

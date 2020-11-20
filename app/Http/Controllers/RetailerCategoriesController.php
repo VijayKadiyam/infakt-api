@@ -19,10 +19,20 @@ class RetailerCategoriesController extends Controller
    */
   public function index()
   {
-    $retailer_categories = request()->company->retailer_categories;
+    $count = 0;
+    if(request()->page && request()->rowsPerPage) {
+      $retailer_categories = request()->company->retailer_categories();
+      $count = $retailer_categories->count();
+      $retailer_categories = $retailer_categories->paginate(request()->rowsPerPage)->toArray();
+      $retailer_categories = $retailer_categories['data'];
+    } else {
+      $retailer_categories = request()->site->retailer_categories; 
+      $count = $retailer_categories->count();
+    }
 
     return response()->json([
-      'data'     =>  $retailer_categories
+      'data'     =>  $retailer_categories,
+      'count'    =>   $count
     ], 200);
   }
 

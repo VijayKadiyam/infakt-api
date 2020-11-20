@@ -19,10 +19,20 @@ class UnitsController extends Controller
    */
   public function index()
   {
-    $units = request()->company->units;
+    $count = 0;
+    if(request()->page && request()->rowsPerPage) {
+      $units = request()->company->units();
+      $count = $units->count();
+      $units = $units->paginate(request()->rowsPerPage)->toArray();
+      $units = $units['data'];
+    } else {
+      $units = request()->company->units; 
+      $count = $units->count();
+    }
 
     return response()->json([
-      'data'     =>  $units
+      'data'     =>  $units,
+      'count'    =>   $count
     ], 200);
   }
 

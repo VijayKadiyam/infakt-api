@@ -27,7 +27,7 @@ class CompanyDesignationsController extends Controller
       $company_designations = $company_designations->paginate(request()->rowsPerPage)->toArray();
       $company_designations = $company_designations['data'];
     } else {
-      $company_designations = request()->site->company_designations; 
+      $company_designations = request()->company->company_designations; 
       $count = $company_designations->count();
     }
 
