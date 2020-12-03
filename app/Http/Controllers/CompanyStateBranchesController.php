@@ -27,7 +27,7 @@ class CompanyStateBranchesController extends Controller
       $company_state_branches = $company_state_branches->paginate(request()->rowsPerPage)->toArray();
       $company_state_branches = $company_state_branches['data'];
     } else {
-      $company_state_branches = request()->site->company_state_branches; 
+      $company_state_branches = $companyState->company_state_branches; 
       $count = $company_state_branches->count();
     }
 

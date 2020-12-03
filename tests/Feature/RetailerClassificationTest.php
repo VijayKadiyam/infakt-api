@@ -76,6 +76,7 @@ class RetailerClassificationTest extends TestCase
   /** @test */
   function list_of_classifications()
   {
+    $this->disableEH();
     $this->json('GET', '/api/retailer_classifications',[], $this->headers)
       ->assertStatus(200)
       ->assertJsonStructure([

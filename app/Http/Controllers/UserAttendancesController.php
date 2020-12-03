@@ -15,6 +15,16 @@ class UserAttendancesController extends Controller
     $this->middleware(['auth:api', 'company']);
   }
 
+  public function masters(Request $request)
+  {
+    $sessionTypes = ['PRESENT', 'MEETING', 'MARKET CLOSED'];
+
+    return response()->json([
+      'session_types' =>  $sessionTypes,
+    ], 200);
+  }
+
+
   /*
    * To get all user attendances
      *

@@ -23,7 +23,7 @@ class ReferencePlansController extends Controller
   public function index(Request $request)
   {
     $reference_plans = [];
-
+    $count = 0;
     if($request->userId && $request->weekNo && $request->day) {
       $user = User::find($request->userId);
       $whichWeek = 1;
@@ -42,9 +42,12 @@ class ReferencePlansController extends Controller
     } else 
       $reference_plans = request()->company->reference_plans;
 
+    $count = sizeof($reference_plans);
+
     return response()->json([
       'data'     =>  $reference_plans,
       'success'   =>  true,
+      'count'     =>  $count
     ], 200);
   }
 

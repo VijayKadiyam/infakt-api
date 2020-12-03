@@ -62,6 +62,7 @@ Route::resource('company_leave_pattern', 'CompanyLeavePatternController');
 Route::resource('company_leaves', 'CompanyLeavesController');
 Route::resource('leave_types', 'LeaveTypesController');
 
+Route::get('user_attendances/masters', 'UserAttendancesController@masters');
 Route::resource('user_attendances', 'UserAttendancesController');
 Route::resource('user_attendances/{user_attendance}/user_attendance_breaks', 'UserAttendanceBreaksController');
 Route::resource('user_applications', 'UserApplicationsController');
@@ -87,8 +88,8 @@ Route::resource('products', 'ProductsController');
 Route::get('productSkusStocks', 'ProductsController@productSkusStocks');
 Route::get('sendOrderSMS', 'ProductsController@sendOrderSMS');
 Route::resource('products/{product}/skus', 'SkusController');
-// Route::get('skus', 'SkusController@getAll');
-Route::resource('skus', 'SkusController');
+Route::get('skus', 'SkusController@getAll');
+// Route::resource('skus', 'SkusController');
 Route::resource('sku_types', 'SkuTypesController');
 Route::resource('offer_types', 'OfferTypesController');
 Route::get('offers/masters', 'OffersController@masters');
@@ -101,7 +102,9 @@ Route::get('sales/single-employee-sales-email', 'SalesController@singleEmployeeS
 // Route::resource('stocks/{stock}/sales', 'SalesController');
 
 Route::resource('reference_plans', 'ReferencePlansController');
+Route::get('/retailers/masters', 'RetailersController@masters');
 Route::resource('reference_plans/{reference_plan}/retailers', 'RetailersController');
+Route::get('user_reference_plans/masters', 'UserReferencePlansController@masters');
 Route::resource('user_reference_plans', 'UserReferencePlansController');
 Route::get('un_approved_retailers', 'RetailersController@unApprovedRetailers');
 Route::get('approve_retailer/{id}', 'RetailersController@singleApproveRetailer');

@@ -13,13 +13,69 @@ class UserReferencePlansController extends Controller
     $this->middleware(['auth:api', 'company']);
   }
 
+  public function masters(Request $request)
+  {
+    $request->request->add(['search' => 'all']);
+    $usersController = new UsersController();
+    $usersResponse = $usersController->index($request);
+
+    $referencePlanController = new ReferencePlansController();
+    $referencePlanResponse = $referencePlanController->index($request);
+
+    $days = [
+      [ 'id'    =>  1,
+        'value' => 'Monday'
+      ], 
+      [ 'id'    =>  2,
+        'value' => 'Tuesday'
+      ], 
+      [ 'id'    =>  3,
+        'value' => 'Wednesday'
+      ],
+      [ 'id'    =>  4,
+        'value' => 'Thursday'
+      ], 
+      [ 'id'    =>  5,
+        'value' => 'Friday'
+      ], 
+      [ 'id'    =>  6,
+        'value' => 'Saturday'
+      ]
+    ];
+
+    $weeks = [1, 2, 3, 4];
+
+    return response()->json([
+      'users'           =>  $usersResponse->getData()->data,
+      'reference_plans' =>  $referencePlanResponse->getData()->data,
+      'days'            =>  $days,
+      'weeks'           =>  $weeks
+    ], 200);
+  }
+
   public function index()
   {
-    $user_reference_plans = request()->company->user_reference_plans;
+    // $user_reference_plans = request()->company->user_reference_plans;
+
+    // return response()->json([
+    //   'data'     =>  $user_reference_plans,
+    //   'success'   =>  true,
+    // ], 200);
+
+    $count = 0;
+    if(request()->page && request()->rowsPerPage) {
+      $user_reference_plans = request()->company->user_reference_plans();
+      $count = $user_reference_plans->count();
+      $user_reference_plans = $user_reference_plans->paginate(request()->rowsPerPage)->toArray();
+      $user_reference_plans = $user_reference_plans['data'];
+    } else {
+      $user_reference_plans = request()->company->user_reference_plans; 
+      $count = $user_reference_plans->count();
+    }
 
     return response()->json([
       'data'     =>  $user_reference_plans,
-      'success'   =>  true,
+      'count'    =>   $count
     ], 200);
   }
 

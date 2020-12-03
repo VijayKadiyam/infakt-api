@@ -15,19 +15,35 @@ class SkusController extends Controller
 
   public function getAll()
   {
-    $products = request()->company->products;
+    // $products = request()->company->products;
 
-    $skus = [];
-    foreach($products as $product) {
-      $productSkus = $product->skus;
-      foreach($productSkus as $productSku) {
-        $skus[] = $productSku;
-      }
+    // $skus = [];
+    // foreach($products as $product) {
+    //   $productSkus = $product->skus;
+    //   foreach($productSkus as $productSku) {
+    //     $skus[] = $productSku;
+    //   }
+    // }
+
+    // return response()->json([
+    //   'data'     =>  $skus,
+    //   'success'   =>  true
+    // ], 200);
+
+    $count = 0;
+    if(request()->page && request()->rowsPerPage) {
+      $skus = request()->company->skus();
+      $count = $skus->count();
+      $skus = $skus->paginate(request()->rowsPerPage)->toArray();
+      $skus = $skus['data'];
+    } else {
+      $skus = request()->company->skus; 
+      $count = $skus->count();
     }
 
     return response()->json([
       'data'     =>  $skus,
-      'success'   =>  true
+      'count'    =>   $count
     ], 200);
   }
 
@@ -38,11 +54,20 @@ class SkusController extends Controller
    */
   public function index(Product $product)
   {
-    $skus = $product->skus;
+    $count = 0;
+    if(request()->page && request()->rowsPerPage) {
+      $skus = request()->company->skus();
+      $count = $skus->count();
+      $skus = $skus->paginate(request()->rowsPerPage)->toArray();
+      $skus = $skus['data'];
+    } else {
+      $skus = request()->company->skus; 
+      $count = $skus->count();
+    }
 
     return response()->json([
       'data'     =>  $skus,
-      'success'   =>  true
+      'count'    =>   $count
     ], 200);
   }
 
@@ -54,7 +79,8 @@ class SkusController extends Controller
   public function store(Request $request, Product $product)
   {
     $request->validate([
-      'name'    =>  'required'
+      'name'        =>  'required',
+      'company_id'  =>  'required'
     ]);
 
     $sku = new Sku($request->all());

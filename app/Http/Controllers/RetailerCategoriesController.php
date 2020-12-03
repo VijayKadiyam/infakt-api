@@ -26,7 +26,7 @@ class RetailerCategoriesController extends Controller
       $retailer_categories = $retailer_categories->paginate(request()->rowsPerPage)->toArray();
       $retailer_categories = $retailer_categories['data'];
     } else {
-      $retailer_categories = request()->site->retailer_categories; 
+      $retailer_categories = request()->company->retailer_categories; 
       $count = $retailer_categories->count();
     }
 

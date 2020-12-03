@@ -13,6 +13,20 @@ class RetailersController extends Controller
     $this->middleware(['auth:api', 'company']);
   }
 
+  public function masters(Request $request)
+  {
+    $retailerClassificationsController = new RetailerClassificationsController();
+    $retailerClassificationsResponse = $retailerClassificationsController->index($request);
+
+    $retailerCategoriesController = new RetailerCategoriesController();
+    $retailerCategoriesResponse = $retailerCategoriesController->index($request);
+
+    return response()->json([
+      'retailer_classifications'  =>  $retailerClassificationsResponse->getData()->data,
+      'retailer_categories'      =>  $retailerCategoriesResponse->getData()->data,
+    ], 200);
+  }
+
   /*
    * To get all retailers
      *

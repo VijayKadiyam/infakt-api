@@ -34,7 +34,8 @@ class UserTest extends TestCase
       'company_state_branch_id' => 1,
       'pf_no'                   =>  '1234567654',
       'uan_no'                  =>  '1234565432',
-      'esi_no'                  =>  '234565'
+      'esi_no'                  =>  '234565',
+      'role_id'                 =>  3
     ];
   }
 
@@ -55,9 +56,10 @@ class UserTest extends TestCase
               "name"                    =>  ["The name field is required."],
               "email"                   =>  ["The email field is required."],
               "phone"                   =>  ["The phone field is required."],
-              "doj"                     =>  ["The doj field is required."],
-              "dob"                     =>  ["The dob field is required."],
-              "company_designation_id"  =>  ["The company designation id field is required."],
+              // "doj"                     =>  ["The doj field is required."],
+              // "dob"                     =>  ["The dob field is required."],
+              // "company_designation_id"  =>  ["The company designation id field is required."],
+              "role_id"  =>  ["The role id field is required."],
             ],
             "message" =>  "The given data was invalid."
         ]);
@@ -107,6 +109,8 @@ class UserTest extends TestCase
             'updated_at',
             'created_at',
             'id',
+            'roles',
+            'companies'
           ]
         ]);
   }
@@ -368,7 +372,9 @@ class UserTest extends TestCase
             'form_2_checked', 
             'form_11_checked', 
             'graduity_form_checked',
-            'beat_type_id'
+            'beat_type_id',
+            'roles',
+            'sites'
           ],
           'success'
         ]);
@@ -483,7 +489,7 @@ class UserTest extends TestCase
             'form_2_checked', 
             'form_11_checked', 
             'graduity_form_checked',
-            'beat_type_id'
+            'beat_type_id',
           ],
           'success'
         ]);
@@ -604,7 +610,7 @@ class UserTest extends TestCase
             'form_2_checked', 
             'form_11_checked', 
             'graduity_form_checked',
-            'beat_type_id'
+            'beat_type_id',
           ],
           'success'
         ]);

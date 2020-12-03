@@ -33,7 +33,8 @@ class SkuTest extends TestCase
     ]);
 
     $this->payload = [ 
-      'name'     =>  'Dove'
+      'name'     =>  'Dove',
+      'company_id'  =>  $this->company->id
     ];
   }
 
@@ -51,7 +52,8 @@ class SkuTest extends TestCase
       ->assertStatus(422)
       ->assertExactJson([
           "errors"  =>  [
-            "name"    =>  ["The name field is required."]
+            "name"        =>  ["The name field is required."],
+            "company_id"  =>  ["The company id field is required."]
           ],
           "message" =>  "The given data was invalid."
         ]);
@@ -70,6 +72,7 @@ class SkuTest extends TestCase
       ->assertJsonStructureExact([
           'data'   => [
             'name',
+            'company_id',
             'product_id',
             'updated_at',
             'created_at',
@@ -126,6 +129,7 @@ class SkuTest extends TestCase
             'created_at',
             'updated_at',
             'product_id',
+            'company_id',
           ]
       ]);
   }

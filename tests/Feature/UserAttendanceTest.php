@@ -270,6 +270,10 @@ class UserAttendanceTest extends TestCase
             'created_at',
             'updated_at',
             'battery',
+            'session_type',
+            'remarks',
+            'login_address',
+            'logout_address'
           ],
           'success'
       ]);

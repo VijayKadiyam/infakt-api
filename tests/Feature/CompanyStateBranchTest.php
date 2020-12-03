@@ -80,6 +80,7 @@ class CompanyStateBranchTest extends TestCase
   /** @test */
   function list_of_company_state_branches()
   {
+    $this->disableEH();
     $this->json('GET', "/api/company_states/" . $this->companyState->id . "/company_state_branches",[], $this->headers)
       ->assertStatus(200)
       ->assertJsonStructure([
