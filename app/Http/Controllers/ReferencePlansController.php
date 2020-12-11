@@ -26,17 +26,34 @@ class ReferencePlansController extends Controller
     $count = 0;
     if($request->userId && $request->weekNo && $request->day) {
       $user = User::find($request->userId);
-      $whichWeek = 1;
-      if($user->beat_type_id != null) {
-        if($user->beat_type_id != 1) {
-          $whichWeek = $request->weekNo / $user->beat_type_id;
-        }
-      }
+      $whichWeek = $request->weekNo / 12;
+      if($user->beat_type_id == 1)
+        $whichWeek = 1;
+      else if($user->beat_type_id == 2 && $whichWeek == 3)
+        $whichWeek = 1;
+      else if($user->beat_type_id == 2 && $whichWeek == 4)
+        $whichWeek = 2;
+      // $whichWeek = 1;
+      // if($user->beat_type_id != null) {
+      //   if($user->beat_type_id != 1) {
+      //     $whichWeek = $request->weekNo / $user->beat_type_id;
+      //   }
+      // }
       $user_reference_plans = UserReferencePlan::where('user_id', '=', $user->id)
         ->where('day', '=', $request->day)
         ->where('which_week', '=', $whichWeek)
         ->get();
       foreach($user_reference_plans as $user_reference_plan) {
+        $user_reference_plan->reference_plan['total_outlets'] = 10;
+        $user_reference_plan->reference_plan['billed_outlets'] = 6;
+        $user_reference_plan->reference_plan['unbilled_outlets'] = 4;
+        $user_reference_plan->reference_plan['mtd'] = 1000;
+        $user_reference_plan->reference_plan['l3m'] = 985;
+        foreach ($user_reference_plan->reference_plan->retailers as $retailer) {
+          $retailer['mtd'] = 100;
+          $retailer['l3m']  = 99;
+          $retailer['is_done'] = 'Y';
+        }
         $reference_plans[] = $user_reference_plan->reference_plan;
       }
     } else 
@@ -47,7 +64,7 @@ class ReferencePlansController extends Controller
     return response()->json([
       'data'     =>  $reference_plans,
       'success'   =>  true,
-      'count'     =>  $count
+      'count'     =>  $count,
     ], 200);
   }
 

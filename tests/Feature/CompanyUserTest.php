@@ -163,6 +163,7 @@ class CompanyUserTest extends TestCase
             'form_11_checked', 
             'graduity_form_checked',
             'beat_type_id',
+            'so_id', 'asm_id', 'rms_id', 'nsm_id', 'distributor_id',
             'companies',
           ]
         ]);;;

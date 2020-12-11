@@ -13,6 +13,16 @@ class SkusController extends Controller
     $this->middleware(['auth:api', 'company']);
   }
 
+  public function masters(Request $request)
+  {
+    $offersController = new OffersController();
+    $offersResponse = $offersController->index($request);
+
+    return response()->json([
+      'offers'                 =>  $offersResponse->getData()->data,
+    ], 200);
+  }
+
   public function getAll()
   {
     // $products = request()->company->products;
@@ -65,9 +75,16 @@ class SkusController extends Controller
       $count = $skus->count();
     }
 
+    foreach ($skus as $sku) {
+      $sku['price'] = $sku['id'] * 100;
+      $sku['offer_price'] = $sku['offer_id'] != null ? $sku['price'] - ($sku['price'] * $sku['offer']['offer'] / 100) : null;
+      $sku['qty'] = $sku['id'] * 2;
+    }
+
     return response()->json([
       'data'     =>  $skus,
-      'count'    =>   $count
+      'count'    =>   $count,
+      'success' =>  true,
     ], 200);
   }
 

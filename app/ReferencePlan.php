@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ReferencePlan extends Model
 {
   protected $fillable = [
-    'name'
+    'name', 'town'
   ];
 
   /*
@@ -28,6 +28,7 @@ class ReferencePlan extends Model
   public function retailers()
   {
     return $this->hasMany(Retailer::class)
-      ->with('sales', 'retailer_category', 'retailer_classification');
+      ->with('retailer_category', 'retailer_classification');
+      // ->with('sales', 'retailer_category', 'retailer_classification');
   }
 }

@@ -15,7 +15,7 @@ class StocksController extends Controller
 
   public function all()
   {
-    $stocks = Stock::with('sku', 'unit')
+    $stocks = Stock::with('sku', 'unit', 'distributor', 'offer')
       ->latest()->get();
 
     return response()->json([

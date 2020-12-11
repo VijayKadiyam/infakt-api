@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Stock extends Model
 {
   protected $fillable = [
-    'qty', 'sku_type_id', 'offer_id', 'price', 'invoice_no', 'unit_id'
+    'qty', 'sku_type_id', 'offer_id', 'price', 'invoice_no', 'unit_id', 'total', 'distributor_id', 'date'
   ];
 
   /*
@@ -60,5 +60,10 @@ class Stock extends Model
   public function unit()
   {
     return $this->belongsTo(Unit::class);
+  }
+
+  public function distributor()
+  {
+    return $this->belongsTo(User::class);
   }
 }

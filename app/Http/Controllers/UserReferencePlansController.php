@@ -24,22 +24,25 @@ class UserReferencePlansController extends Controller
 
     $days = [
       [ 'id'    =>  1,
-        'value' => 'Monday'
+        'value' => 'MONDAY'
       ], 
       [ 'id'    =>  2,
-        'value' => 'Tuesday'
+        'value' => 'TUESDAY'
       ], 
       [ 'id'    =>  3,
-        'value' => 'Wednesday'
+        'value' => 'WEDNESDAY'
       ],
       [ 'id'    =>  4,
-        'value' => 'Thursday'
+        'value' => 'THURSDAY'
       ], 
       [ 'id'    =>  5,
-        'value' => 'Friday'
+        'value' => 'FRIDAY'
       ], 
       [ 'id'    =>  6,
-        'value' => 'Saturday'
+        'value' => 'SATURDAY'
+      ],
+      [ 'id'    =>  7,
+        'value' => 'SUNDAY'
       ]
     ];
 

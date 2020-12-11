@@ -166,7 +166,10 @@ class StockTest extends TestCase
             'created_at',
             'updated_at',
             'invoice_no',
-            'unit_id'
+            'unit_id',
+            'total',
+            'distributor_id',
+            'date'
           ]
       ]);
   }

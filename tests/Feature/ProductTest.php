@@ -85,7 +85,7 @@ class ProductTest extends TestCase
             ] 
           ]
         ]);
-      $this->assertCount(1, Product::all());
+      $this->assertCount(2, Product::all());
   }
 
   /** @test */

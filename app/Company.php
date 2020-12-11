@@ -194,7 +194,7 @@ class Company extends Model
   public function skus()
   {
     return $this->hasMany(Sku::class)
-      ->with('stocks');
+      ->with('offer');
   }
 
   /*
@@ -316,5 +316,12 @@ class Company extends Model
   {
     return $this->hasMany(UserReferencePlan::class)
       ->with('reference_plan', 'user');
+  }
+
+  public function orders_list()
+  {
+    return $this->hasMany(Order::class)
+      ->with('user', 'distributor', 'retailer', 'order_details')
+      ->latest();
   }
 }

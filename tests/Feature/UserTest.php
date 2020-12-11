@@ -128,7 +128,7 @@ class UserTest extends TestCase
       ->assertJsonStructure([
           'data' => []
         ]);
-    $this->assertCount(1, User::whereHas('roles',  function($q) {
+    $this->assertCount(3, User::whereHas('roles',  function($q) {
                                 $q->where('name', '!=', 'Admin');
                                 $q->where('name', '!=', 'Super Admin');
                               })->get());
@@ -147,7 +147,7 @@ class UserTest extends TestCase
       ->assertJsonStructure([
           'data' => []
         ]);
-    $this->assertCount(1, User::whereHas('roles',  function($q) {
+    $this->assertCount(3, User::whereHas('roles',  function($q) {
                                 $q->where('name', '!=', 'Admin');
                                 $q->where('name', '!=', 'Super Admin');
                               })->get());
@@ -166,7 +166,7 @@ class UserTest extends TestCase
       ->assertJsonStructure([
           'data' => []
         ]);
-    $this->assertCount(1, User::whereHas('roles',  function($q) {
+    $this->assertCount(3, User::whereHas('roles',  function($q) {
                                 $q->where('name', '!=', 'Admin');
                                 $q->where('name', '!=', 'Super Admin');
                               })->get());
@@ -185,7 +185,7 @@ class UserTest extends TestCase
       ->assertJsonStructure([
           'data' => []
         ]);
-    $this->assertCount(1, User::whereHas('roles',  function($q) {
+    $this->assertCount(3, User::whereHas('roles',  function($q) {
                                 $q->where('name', '!=', 'Admin');
                                 $q->where('name', '!=', 'Super Admin');
                               })->get());
@@ -209,7 +209,7 @@ class UserTest extends TestCase
       ->assertJsonStructure([
           'data' => []
         ]);
-    $this->assertCount(1, User::whereHas('roles',  function($q) {
+    $this->assertCount(3, User::whereHas('roles',  function($q) {
                                 $q->where('name', '!=', 'Admin');
                                 $q->where('name', '!=', 'Super Admin');
                               })->get());
@@ -235,7 +235,7 @@ class UserTest extends TestCase
       ->assertJsonStructure([
           'data' => []
         ]);
-    $this->assertCount(1, User::whereHas('roles',  function($q) {
+    $this->assertCount(3, User::whereHas('roles',  function($q) {
                                 $q->where('name', '!=', 'Admin');
                                 $q->where('name', '!=', 'Super Admin');
                               })->get());
@@ -373,6 +373,7 @@ class UserTest extends TestCase
             'form_11_checked', 
             'graduity_form_checked',
             'beat_type_id',
+            'so_id', 'asm_id', 'rms_id', 'nsm_id', 'distributor_id',
             'roles',
             'sites'
           ],
@@ -490,6 +491,7 @@ class UserTest extends TestCase
             'form_11_checked', 
             'graduity_form_checked',
             'beat_type_id',
+            'so_id', 'asm_id', 'rms_id', 'nsm_id', 'distributor_id'
           ],
           'success'
         ]);
@@ -611,6 +613,7 @@ class UserTest extends TestCase
             'form_11_checked', 
             'graduity_form_checked',
             'beat_type_id',
+            'so_id', 'asm_id', 'rms_id', 'nsm_id', 'distributor_id'
           ],
           'success'
         ]);

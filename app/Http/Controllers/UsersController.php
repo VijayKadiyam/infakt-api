@@ -25,10 +25,51 @@ class UsersController extends Controller
     $companyStatesController = new CompanyStatesController();
     $companyStatesResponse = $companyStatesController->index($request->company);
 
+    $beatTypes = [
+      0 =>  [
+        'text'  =>  'WEEKLY',
+        'value' =>  1,
+      ],
+      1 =>  [
+        'text'  =>  'FORTNIGHTLY',
+        'value' =>  2,
+      ],
+      2 =>  [
+        'text'  =>  'MONTHLY',
+        'value' =>  4
+      ]
+    ];
+
+    $salesOfficersController = new UsersController();
+    $request->request->add(['role_id' => 6]);
+    $salesOfficersResponse = $salesOfficersController->index($request);
+
+    $areaManagersController = new UsersController();
+    $request->request->add(['role_id' => 7]);
+    $areaManagersResponse = $areaManagersController->index($request);
+
+    $regionalManagersController = new UsersController();
+    $request->request->add(['role_id' => 8]);
+    $regionalManagersResponse = $regionalManagersController->index($request);
+
+    $nationalManagersController = new UsersController();
+    $request->request->add(['role_id' => 9]);
+    $nationalManagersResponse = $nationalManagersController->index($request);
+
+    $distributorsController = new UsersController();
+    $request->request->add(['role_id' => 10]);
+    $distributorsResponse = $distributorsController->index($request);
+
     return response()->json([
       'roles'                 =>  $rolesResponse->getData()->data,
       'company_designations'  =>  $companyDesignationsResponse->getData()->data,
       'company_states'        =>  $companyStatesResponse->getData()->data,
+      'beat_types'            =>  $beatTypes,
+      'sales_officers'        =>  $salesOfficersResponse->getData()->data,
+      'area_managers'         =>  $areaManagersResponse->getData()->data,
+      'regional_managers'     =>  $regionalManagersResponse->getData()->data,
+      'national_managers'     =>  $nationalManagersResponse->getData()->data,
+      'distributors'          =>  $distributorsResponse->getData()->data,
     ], 200);
   }
 

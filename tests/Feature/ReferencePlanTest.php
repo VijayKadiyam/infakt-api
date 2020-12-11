@@ -121,7 +121,8 @@ class ReferencePlanTest extends TestCase
             'company_id',
             'name',
             'created_at',
-            'updated_at'
+            'updated_at',
+            'town'
           ]
       ]);
   }

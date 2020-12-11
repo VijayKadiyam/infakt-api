@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Sku extends Model
 {
   protected $fillable = [
-    'name', 'sku_type_id', 'company_id'
+    'name', 'sku_type_id', 'company_id', 'offer_id'
   ];
 
   /*
@@ -44,5 +44,11 @@ class Sku extends Model
   public function sales()
   {
     return $this->hasMany(Sale::class);
+  }
+
+  public function offer()
+  {
+    return $this->belongsTo(Offer::class)
+      ->with('offer_type');
   }
 }

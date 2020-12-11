@@ -29,4 +29,9 @@ class Offer extends Model
   {
     return $this->belongsTo(OfferType::class);
   }
+
+  public function skus()
+  {
+    return $this->hasMany(Sku::class);
+  }
 }

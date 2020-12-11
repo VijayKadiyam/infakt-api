@@ -48,6 +48,7 @@ class LoginController extends Controller
       $user->companies = $user->companies;
       $user->notifications = $user->notifications;
       $user->salaries = $user->salaries;
+      $user->distributor = $user->distributor;
       return response()->json([
           'data'    =>  $user->toArray(),
           'message' =>  "User is Logged in Successfully",

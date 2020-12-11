@@ -88,6 +88,7 @@ Route::resource('products', 'ProductsController');
 Route::get('productSkusStocks', 'ProductsController@productSkusStocks');
 Route::get('sendOrderSMS', 'ProductsController@sendOrderSMS');
 Route::resource('products/{product}/skus', 'SkusController');
+Route::get('skus/masters', 'SkusController@masters');
 Route::get('skus', 'SkusController@getAll');
 // Route::resource('skus', 'SkusController');
 Route::resource('sku_types', 'SkuTypesController');
@@ -222,6 +223,16 @@ Route::get('increemental-letter-email', 'EmailsController@increementalLetterEmai
 Route::get('termination-letter-email', 'EmailsController@terminationLetterEmail');
 Route::get('full-final-letter-email', 'EmailsController@fullFinalLetterEmail');
 
+Route::get('crude_masters', 'CrudeMastersController@index');
+Route::post('upload_master', 'CrudeMastersController@uploadMaster');
+Route::get('process_master', 'CrudeMastersController@processMaster');
+Route::get('truncate_masters', 'CrudeMastersController@truncate');
+
+Route::get('crude_skus', 'CrudeSkusController@index');
+Route::post('upload_sku', 'CrudeSkusController@uploadSku');
+Route::get('process_sku', 'CrudeSkusController@processSku');
+Route::get('truncate_skus', 'CrudeSkusController@truncate');
+
 Route::get('crude_users', 'CrudeUsersController@index');
 Route::post('upload_user', 'CrudeUsersController@uploadUser');
 Route::get('process_user', 'CrudeUsersController@processUser');
@@ -260,3 +271,16 @@ Route::resource('inquiries/{inquiry}/inquiry_remarks', 'InquiryRemarksController
 Route::resource('inquiries/{inquiry}/inquiry_followups', 'InquiryFollowupsController');
 
 Route::resource('resumes', 'ResumesController');
+
+Route::resource('orders', 'OrdersController');
+Route::resource('sales_orders', 'SalesOrdersController');
+
+Route::get('daySummary', 'AnalyticsController@daySummary');
+Route::get('kpiReport', 'AnalyticsController@kpiReport');
+Route::get('targetVsAchieved', 'AnalyticsController@targetVsAchieved');
+Route::get('salesTrend', 'AnalyticsController@salesTrend');
+Route::get('billedOutlet', 'AnalyticsController@billedOutlet');
+Route::get('invoiceDetail', 'AnalyticsController@invoiceDetail');
+Route::get('attendanceCalendar', 'AnalyticsController@attendanceCalendar');
+
+Route::post('upload_retailer_image', 'UploadsController@uploadRetailerImage');
