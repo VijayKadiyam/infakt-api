@@ -67,12 +67,12 @@ class AnalyticsController extends Controller
       'orders_taken'      =>  $ordersTaken, 
       'total_order_value' =>  $totalOrderValue,
       'coverage'          =>  [
-        'percent' =>  round(($ordersTaken * 100) / $totalOutlets),
+        'percent' =>  $totalOutlets != 0 ? round(($ordersTaken * 100) / $totalOutlets) : 0,
         'value'   =>  $ordersTaken,
         'total'   =>  $totalOutlets
       ],
       'productivity'  =>  [
-        'percent' =>  round(($ordersTaken * 100) / $ordersTaken),
+        'percent' =>  $ordersTaken != 0 ?round(($ordersTaken * 100) / $ordersTaken) : 0,
         'value'   =>  $ordersTaken,
         'total'   =>  $ordersTaken
       ]
@@ -124,7 +124,7 @@ class AnalyticsController extends Controller
     $data = [
       'target'    =>  $target,
       'achieved'  =>  $achieved,
-      'percent'   =>  round($achieved * 100 / $target),
+      'percent'   =>  $target != 0 ? round($achieved * 100 / $target) : 0,
       'days'      =>  $days,
     ];
 
@@ -162,7 +162,7 @@ class AnalyticsController extends Controller
     $data = [
       'target'    =>  $target,
       'achieved'  =>  $achieved,
-      'percent'   =>  round($achieved * 100 / $target),
+      'percent'   =>  $target != 0 ? round($achieved * 100 / $target) : 0,
       'outlets'   =>  $outlets
     ];
 
