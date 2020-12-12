@@ -324,4 +324,10 @@ class Company extends Model
       ->with('user', 'distributor', 'retailer', 'order_details')
       ->latest();
   }
+
+  public function notices()
+  {
+    return $this->hasMany(Notice::class)
+      ->latest();
+  }
 }

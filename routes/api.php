@@ -271,6 +271,7 @@ Route::resource('inquiries/{inquiry}/inquiry_remarks', 'InquiryRemarksController
 Route::resource('inquiries/{inquiry}/inquiry_followups', 'InquiryFollowupsController');
 
 Route::resource('resumes', 'ResumesController');
+Route::resource('notices', 'NoticesController');
 
 Route::resource('orders', 'OrdersController');
 Route::resource('sales_orders', 'SalesOrdersController');
@@ -284,3 +285,4 @@ Route::get('invoiceDetail', 'AnalyticsController@invoiceDetail');
 Route::get('attendanceCalendar', 'AnalyticsController@attendanceCalendar');
 
 Route::post('upload_retailer_image', 'UploadsController@uploadRetailerImage');
+Route::post('upload_notice_image', 'UploadsController@uploadNoticeImage');

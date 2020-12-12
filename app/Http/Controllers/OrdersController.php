@@ -22,7 +22,7 @@ class OrdersController extends Controller
         ->whereDate('created_at', $request->date)
         ->get();
     }
-    if(request()->page && request()->rowsPerPage) {
+    else if(request()->page && request()->rowsPerPage) {
       $orders = request()->company->orders_list();
       $count = $orders->count();
       $orders = $orders->paginate(request()->rowsPerPage)->toArray();
