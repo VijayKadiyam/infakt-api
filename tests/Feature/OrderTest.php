@@ -240,6 +240,8 @@ class OrderTest extends TestCase
             'total',
             'created_at',
             'updated_at',
+            'is_order_taken',
+            'reason_for_no_order',
             'order_details'
           ],
           'success'

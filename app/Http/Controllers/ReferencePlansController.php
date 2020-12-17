@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\ReferencePlan;
 use App\UserReferencePlan;
 use App\User;
+use App\Order;
+use Carbon\Carbon;
 
 class ReferencePlansController extends Controller
 {
@@ -43,17 +45,42 @@ class ReferencePlansController extends Controller
         ->where('day', '=', $request->day)
         ->where('which_week', '=', $whichWeek)
         ->get();
+
+      $totalOrderValue = 0;
       foreach($user_reference_plans as $user_reference_plan) {
-        $user_reference_plan->reference_plan['total_outlets'] = 10;
-        $user_reference_plan->reference_plan['billed_outlets'] = 6;
-        $user_reference_plan->reference_plan['unbilled_outlets'] = 4;
-        $user_reference_plan->reference_plan['mtd'] = 1000;
-        $user_reference_plan->reference_plan['l3m'] = 985;
+        $referencePlanNames[] = $user_reference_plan->reference_plan->name;
+        $totalOutlets = sizeof($user_reference_plan->reference_plan->retailers);
+        $rfmtd = 0;
+        $rfl3m = 0;
+        $ordersTaken = 0;
         foreach ($user_reference_plan->reference_plan->retailers as $retailer) {
-          $retailer['mtd'] = 100;
-          $retailer['l3m']  = 99;
-          $retailer['is_done'] = 'Y';
+          $orders = Order::where('retailer_id', '=', $retailer->id)
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->with('order_details')
+            ->get();
+          if(sizeof($orders) > 0)  {
+            $ordersTaken++;
+            foreach ($orders as $order) {
+              $rfmtd += $order->total;
+              $totalOrderValue += $order->total;
+            }
+            $retailer['mtd'] = $rfmtd;
+            $retailer['l3m']  = $rfmtd;;
+            $retailer['is_done'] = 'Y';
+          } else {
+            $retailer['mtd'] = 0;
+            $retailer['l3m']  = $rfmtd;;
+            $retailer['is_done'] = 'N';
+          }
+
         }
+
+        $user_reference_plan->reference_plan['total_outlets'] = $totalOutlets;
+        $user_reference_plan->reference_plan['billed_outlets'] = $ordersTaken;
+        $user_reference_plan->reference_plan['unbilled_outlets'] = $totalOutlets - $ordersTaken;
+        $user_reference_plan->reference_plan['mtd'] = $totalOrderValue;
+        $user_reference_plan->reference_plan['l3m'] = $rfmtd;
+
         $reference_plans[] = $user_reference_plan->reference_plan;
       }
     } else 

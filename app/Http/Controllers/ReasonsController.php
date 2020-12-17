@@ -19,10 +19,21 @@ class ReasonsController extends Controller
    */
   public function index()
   {
-    $reasons = request()->company->reasons;
+    $count = 0;
+    if(request()->page && request()->rowsPerPage) {
+      $reasons = request()->company->reasons();
+      $count = $reasons->count();
+      $reasons = $reasons->paginate(request()->rowsPerPage)->toArray();
+      $reasons = $reasons['data'];
+    } else {
+      $reasons = request()->company->reasons; 
+      $count = $reasons->count();
+    }
 
     return response()->json([
-      'data'     =>  $reasons
+      'data'     =>   $reasons,
+      'count'    =>   $count,
+      'success'  =>   true
     ], 200);
   }
 
