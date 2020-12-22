@@ -277,6 +277,9 @@ class AnalyticsController extends Controller
 
     // Outlet wise total in this month
     foreach ($referencePlans as $referencePlan) {
+      return response()->json([
+        'data'  =>  $referencePlan
+      ]);
       foreach ($referencePlan->retailers as $retailer) {
         $retailerTotal = 0;
         $retailerLastTotal = 0;
