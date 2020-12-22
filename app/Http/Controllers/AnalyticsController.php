@@ -9,6 +9,8 @@ use App\Order;
 use Carbon\Carbon;
 use App\ReferencePlan;
 use App\UserAttendance;
+use App\Target;
+use App\Sale;
 
 class AnalyticsController extends Controller
 {
@@ -102,7 +104,15 @@ class AnalyticsController extends Controller
       ->whereMonth('created_at', $request->month)
       ->get();
 
-    $target = 0;
+    // Get target
+    $current = Carbon::now();
+    $currentMonth = $current->month;
+    $currentYear = $current->year;
+    $target = Target::where('user_id', '=', $request->userId)
+      ->where('month', '=', $currentMonth)
+      ->where('year', '=', $currentYear)
+      ->first();
+    $target = $target ? $target->target : 0;
     $achieved = 0;
     $days = [];
 
@@ -128,7 +138,6 @@ class AnalyticsController extends Controller
           'achieved' => $ordersOfADateTotal,
         ];
     }
-    $target = 2 * $achieved;
 
     $data = [
       'target'    =>  $target,
@@ -156,7 +165,15 @@ class AnalyticsController extends Controller
       ->whereMonth('created_at', $request->month)
       ->get();
 
-    $target = 0;
+    // Get target
+    $current = Carbon::now();
+    $currentMonth = $current->month;
+    $currentYear = $current->year;
+    $target = Target::where('user_id', '=', $request->userId)
+      ->where('month', '=', $currentMonth)
+      ->where('year', '=', $currentYear)
+      ->first();
+    $target = $target ? $target->target : 0;
     $achieved = 0;
     $outlets = [];
 
@@ -201,7 +218,6 @@ class AnalyticsController extends Controller
     foreach ($ordersOfMonth as $order) {
       $achieved += $order->total;
     }
-    $target = 2 * $achieved;
 
     $data = [
       'target'    =>  $target,
@@ -234,8 +250,14 @@ class AnalyticsController extends Controller
       ->whereMonth('created_at', $request->month != 1 ? $request->month - 1 : 1)
       ->get();
 
+    // Total orders of last 2 month
+    $ordersOfLast2Month = Order::where('user_id', '=', $request->userId)
+      ->whereMonth('created_at', $request->month != 2 ? $request->month - 2 : 1)
+      ->get();
+
     $achieved = 0;
     $achievedLast = 0;
+    $achievedLast2 = 0;
     $outlets = [];
 
     $beatIds = explode(',', $request->beatIds);
@@ -290,6 +312,10 @@ class AnalyticsController extends Controller
     foreach ($ordersOfLastMonth as $order) {
       $achievedLast += $order->total;
     }
+    // Total achieved in last 2 month
+    foreach ($ordersOfLast2Month as $order) {
+      $achievedLast2 += $order->total;
+    }
 
     $data = [
       'last_month'    =>  $achievedLast,
@@ -297,33 +323,19 @@ class AnalyticsController extends Controller
       'outlets'       =>  $outlets,
       'months'        =>  [
         [
-          'month' =>  $request->month != 1 ? strval($request->month - 1) : '1',
-          'value' =>  $achieved,
+          'month' =>  $request->month != 2 ? date("F", mktime(0, 0, 0, $request->month - 2, 10)) : 'January',
+          'value' =>  $achievedLast2,
         ],
         [
-          'month' =>  strval($request->month),
+          'month' =>  $request->month != 1 ? date("F", mktime(0, 0, 0, $request->month - 1, 10)) : 'January',
           'value' =>  $achievedLast,
+        ],
+        [
+          'month' =>  date("F", mktime(0, 0, 0, $request->month, 10)),
+          'value' =>  $achieved,
         ],
       ]
     ];
-
-    // $data = [
-    //   'last_month'    =>  2000,
-    //   'current_month' =>  3000,
-    //   'outlets' =>  [
-    //     0 =>  [
-    //       'outlet'  =>  'OUTLET 1',
-    //       'last_month'    =>  200,
-    //       'current_month' =>  100,
-    //     ],
-    //   ],
-    //   'months'  =>  [
-    //     [
-    //       'month' =>  'January',
-    //       'value' =>  1000,
-    //     ],
-    //   ]
-    // ];
 
     return response()->json([
       'data'    =>  $data,
@@ -349,8 +361,23 @@ class AnalyticsController extends Controller
       ->whereMonth('created_at', $request->month != 1 ? $request->month - 1 : 1)
       ->get();
 
+    // Total orders of last 2 month
+    $ordersOfLast2Month = Order::where('user_id', '=', $request->userId)
+      ->whereMonth('created_at', $request->month != 2 ? $request->month - 2 : 1)
+      ->get();
+
+    // Get target
+    $current = Carbon::now();
+    $currentMonth = $current->month;
+    $currentYear = $current->year;
+    $target = Target::where('user_id', '=', $request->userId)
+      ->where('month', '=', $currentMonth)
+      ->where('year', '=', $currentYear)
+      ->first();
+    $target = $target ? $target->target : 0;
     $achieved = 0;
     $achievedLast = 0;
+    $achievedLast2 = 0;
     $outlets = [];
 
     $beatIds = explode(',', $request->beatIds);
@@ -401,58 +428,28 @@ class AnalyticsController extends Controller
     foreach ($ordersOfLastMonth as $order) {
       $achievedLast += $order->total;
     }
-    $target = 2 * $achieved;
+    // Total achieved in last 2 month
+    foreach ($ordersOfLast2Month as $order) {
+      $achievedLast2 += $order->total;
+    }
 
     $data = [
       'outlets'   =>  $outlets,
       'months'        =>  [
         [
-          'month' =>  $request->month != 1 ? strval($request->month - 1) : '1',
-          'value' =>  $achieved,
+          'month' =>  $request->month != 2 ? date("F", mktime(0, 0, 0, $request->month - 2, 10)) : 'January',
+          'value' =>  $achievedLast2,
         ],
         [
-          'month' =>  strval($request->month),
+          'month' =>  $request->month != 1 ? date("F", mktime(0, 0, 0, $request->month - 1, 10)) : 'January',
           'value' =>  $achievedLast,
+        ],
+        [
+          'month' =>  date("F", mktime(0, 0, 0, $request->month, 10)),
+          'value' =>  $achieved,
         ],
       ]
     ];
-
-    // $data = [
-    //   'outlets' =>  [
-    //     0 =>  [
-    //       'outlet'    =>  'OUTLET 1',
-    //       'no_of_inv' =>  2,
-    //       'value'     =>  100,
-    //     ],
-    //     1 =>  [
-    //       'outlet'    =>  'OUTLET 2',
-    //       'no_of_inv' =>  3,
-    //       'value'   =>  101,
-    //     ],
-    //   ],
-    //   'months'  =>  [
-    //     [
-    //       'month' =>  'January',
-    //       'value' =>  1000,
-    //     ],
-    //     [
-    //       'month' =>  'February',
-    //       'value' =>  2000,
-    //     ],
-    //     [
-    //       'month' =>  'March',
-    //       'value' =>  3000,
-    //     ],
-    //     [
-    //       'month' =>  'April',
-    //       'value' =>  4000,
-    //     ],
-    //     [
-    //       'month' =>  'May',
-    //       'value' =>  5000,
-    //     ],
-    //   ]
-    // ];
 
     return response()->json([
       'data'    =>  $data,
@@ -466,17 +463,39 @@ class AnalyticsController extends Controller
       'userId'  =>  'required',
       'month'   =>  'required',
     ]);
+    $sales = [];
+    $orders = Order::where('user_id', '=', $request->userId)
+      ->whereMonth('created_at', $request->month)
+      ->get();
+    foreach ($orders as $order) {
+      $salesOfAnOrder = Sale::with('retailer')
+        ->where('order_id', '=', $order->id)
+        ->get();
+      foreach ($salesOfAnOrder as $sale) {
+        $sales[] = [
+          'invoice_no'  =>  $sale->invoice_no,
+          'outlet_name' =>  $sale->retailer->name,
+          'invoice_date'=>  Carbon::parse($sale->created_at)->format('d-m-Y'),
+          'value'       =>  $sale->total_bill_value
+        ];
+      }
+    }
 
     $data = [
-      'invoices' =>  [
-        [
-          'invoice_no'  =>  1,
-          'outlet_name' =>  'Outlet 1',
-          'invoice_date'=>  '01-11-2020',
-          'value'       =>  100,
-        ],
-      ],
+      'invoices' =>  $sales,
     ];
+
+
+    // $data = [
+    //   'invoices' =>  [
+    //     [
+    //       'invoice_no'  =>  1,
+    //       'outlet_name' =>  'Outlet 1',
+    //       'invoice_date'=>  '01-11-2020',
+    //       'value'       =>  100,
+    //     ],
+    //   ],
+    // ];
 
     return response()->json([
       'data'    =>  $data,
@@ -491,10 +510,28 @@ class AnalyticsController extends Controller
       'month'   =>  'required',
     ]);
 
-    $daysInMonth = Carbon::createFromDate($request->month)->daysInMonth;
+    $startDay = 1;
+
+    $current = Carbon::now();
+    $currentDay = $current->day;
+    $currentMonth = $current->month;
+    $currentYear = $current->year;
+
+    $user = User::find($request->userId);
+    $doj = null;
+    if($user->doj != null) {
+      $doj = Carbon::parse($user->doj);
+      $dojDay = $doj->day;
+      $dojMonth = $doj->month;
+      $dojYear = $doj->year;
+      if($currentYear == $dojYear && $currentMonth == $dojMonth) {
+        $startDay = $dojDay;
+      }
+    }
+
     // Attendances of a month
     $userAttendances = [];
-    for ($i=1; $i <= $daysInMonth; $i++) { 
+    for ($i=$dojDay; $i <= $currentDay; $i++) { 
       $date = 2020 . '-' . $request->month . '-' . sprintf("%02d", $i);
 
       $userAttendance = UserAttendance::where('date', '=', $date)
@@ -515,6 +552,7 @@ class AnalyticsController extends Controller
     $lessThan5hrs = 0;
     $greaterThan5hrs = 0;
     $attendances = [];
+
     foreach ($userAttendances as $userAttendance) {
       if($userAttendance['login_time'] != null) {
         $startTime = Carbon::parse($userAttendance->login_time);
@@ -523,12 +561,22 @@ class AnalyticsController extends Controller
         $totalWorkingHrs += $totalDuration;
         $totalDays++;
         $present++;
-        if($totalDuration < 5){
+        if($totalDuration <= 5){
           $lessThan5hrs++;
           $attendances[] = [
             'date'    =>  $userAttendance->date,
             'status'  =>  '<5 Hrs',
-            'color'   =>  '#0000FF',
+            'color'   =>  '#392897',
+          ];
+          $attendances[] = [
+            'date'    =>  $userAttendance->date,
+            'status'  =>  'IN ' . $userAttendance->login_time,
+            'color'   =>  '#D67676',
+          ];
+          $attendances[] = [
+            'date'    =>  $userAttendance->date,
+            'status'  =>  'O ' . $userAttendance->logout_time,
+            'color'   =>  '#86A9DC',
           ];
         }
         else {
@@ -536,7 +584,17 @@ class AnalyticsController extends Controller
           $attendances[] = [
             'date'    =>  $userAttendance->date,
             'status'  =>  '>=5 Hrs',
-            'color'   =>  '#00FF00',
+            'color'   =>  '#108108',
+          ];
+          $attendances[] = [
+            'date'    =>  $userAttendance->date,
+            'status'  =>  'IN ' . $userAttendance->login_time,
+            'color'   =>  '#D67676',
+          ];
+          $attendances[] = [
+            'date'    =>  $userAttendance->date,
+            'status'  =>  'O ' . $userAttendance->logout_time,
+            'color'   =>  '#86A9DC',
           ];
         }
       } else {
@@ -544,7 +602,7 @@ class AnalyticsController extends Controller
         $attendances[] = [
           'date'    =>  $userAttendance['date'],
           'status'  =>  'Absent',
-          'color'   =>  '#FF0000',
+          'color'   =>  '#991111',
         ];
       }
     }

@@ -55,7 +55,8 @@ class ReferencePlansController extends Controller
         $ordersTaken = 0;
         foreach ($user_reference_plan->reference_plan->retailers as $retailer) {
           $orders = Order::where('retailer_id', '=', $retailer->id)
-            ->whereMonth('created_at', Carbon::now()->month)
+            ->whereDate('created_at', Carbon::now())
+            // ->whereMonth('created_at', Carbon::now()->month)
             ->with('order_details')
             ->get();
           if(sizeof($orders) > 0)  {

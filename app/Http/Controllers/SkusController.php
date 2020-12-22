@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Sku;
 use App\Product;
+use App\Stock;
+use App\User;
+use App\Order;
+use Carbon\Carbon;
 
 class SkusController extends Controller
 {
@@ -62,7 +66,7 @@ class SkusController extends Controller
      *
    *@
    */
-  public function index(Product $product)
+  public function index(Request $request, Product $product)
   {
     $count = 0;
     if(request()->page && request()->rowsPerPage) {
@@ -75,10 +79,42 @@ class SkusController extends Controller
       $count = $skus->count();
     }
 
+    $user = User::find($request->userId);
+    $stocks = Stock::where('distributor_id', '=', $user->distributor_id)
+      ->whereYear('created_at', Carbon::now())
+      ->latest()
+      ->get();
+
+    $orders = Order::where('distributor_id', '=', $user->distributor_id)
+      ->whereYear('created_at', Carbon::now())
+      ->latest()
+      ->get();
+
     foreach ($skus as $sku) {
-      $sku['price'] = $sku['id'] * 100;
-      $sku['offer_price'] = $sku['offer_id'] != null ? $sku['price'] - ($sku['price'] * $sku['offer']['offer'] / 100) : null;
-      $sku['qty'] = $sku['id'] * 2;
+      $skuStocks = [];
+      foreach ($stocks as $stock) {
+        if($sku->id == $stock['sku_id']) 
+          $skuStocks[] = $stock;
+      }
+      $sku['price'] = sizeof($skuStocks) > 0 ? $skuStocks[0]['price'] : 0;
+      $sku['offer_price'] = null;
+      if(sizeof($skuStocks) > 0) {
+        $sku['price'] = $skuStocks[0]['price'];
+        $sku['offer_price'] = $sku['offer_id'] != null ? $sku['price'] - ($sku['price'] * $sku['offer']['offer'] / 100) : null;
+      }
+      $totalQty = 0;
+      foreach ($skuStocks as $stock) {
+        $totalQty += $stock->qty;
+      }
+      $consumedQty = 0;
+      foreach ($orders as $order) {
+        foreach ($order->order_details as $detail) {
+          if($detail->sku_id == $sku->id) 
+            $consumedQty = $detail->qty;
+        }
+      }
+      
+      $sku['qty'] = ($totalQty - $consumedQty) > 0 ? ($totalQty - $consumedQty) : 0;
     }
 
     return response()->json([

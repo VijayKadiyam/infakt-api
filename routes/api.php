@@ -144,6 +144,9 @@ Route::resource('users/{user}/user_family_details', 'UserFamilyDetailsController
 Route::resource('users/{user}/user_references', 'UserReferencesController');
 
 Route::resource('users/{user}/notifications', 'NotificationsController');
+Route::get('targets/masters', 'TargetsController@masters');
+Route::get('targets', 'TargetsController@search');
+Route::resource('users/{user}/targets', 'TargetsController');
 
 Route::post('user_profile_image', 'UserUploadsController@profileImage');
 
@@ -228,6 +231,11 @@ Route::post('upload_master', 'CrudeMastersController@uploadMaster');
 Route::get('process_master', 'CrudeMastersController@processMaster');
 Route::get('truncate_masters', 'CrudeMastersController@truncate');
 
+Route::get('crude_sales', 'CrudeSalesController@index');
+Route::post('upload_sale', 'CrudeSalesController@uploadSale');
+Route::get('process_sale', 'CrudeSalesController@processSale');
+Route::get('truncate_sales', 'CrudeSalesController@truncate');
+
 Route::get('crude_skus', 'CrudeSkusController@index');
 Route::post('upload_sku', 'CrudeSkusController@uploadSku');
 Route::get('process_sku', 'CrudeSkusController@processSku');
@@ -284,5 +292,14 @@ Route::get('billedOutlet', 'AnalyticsController@billedOutlet');
 Route::get('invoiceDetail', 'AnalyticsController@invoiceDetail');
 Route::get('attendanceCalendar', 'AnalyticsController@attendanceCalendar');
 
+Route::get('graphs/masters', 'GraphsController@masters');
+Route::get('getCounts', 'GraphsController@getCounts');
+
 Route::post('upload_retailer_image', 'UploadsController@uploadRetailerImage');
 Route::post('upload_notice_image', 'UploadsController@uploadNoticeImage');
+Route::post('upload_user_image', 'UploadsController@uploadUserImage');
+
+Route::get('send_otp', 'SendSmsController@index');
+
+Route::get('ssmDashboard', 'DashboardsController@ssmDashboard');
+Route::get('soDashboard', 'DashboardsController@soDashboard');

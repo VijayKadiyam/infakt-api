@@ -27,7 +27,8 @@ class Order extends Model
 
   public function retailer()
   {
-    return $this->belongsTo(Retailer::class);
+    return $this->belongsTo(Retailer::class)
+      ->with('reference_plan', 'retailer_category', 'retailer_classification');
   }
 
   public function order_details()

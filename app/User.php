@@ -375,5 +375,21 @@ class User extends Authenticatable
   {
     return $this->belongsTo(User::class);
   }
+
+  public function targets()
+  {
+    return $this->hasMany(Target::class)
+      ->with('user');
+  }
+
+  public function so()
+  {
+    return $this->belongsTo(User::class);
+  }
+
+  public function sos()
+  {
+    return $this->hasMany(User::class);
+  }
 }
 

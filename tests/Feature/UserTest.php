@@ -375,8 +375,12 @@ class UserTest extends TestCase
             'beat_type_id',
             'so_id', 'asm_id', 'rms_id', 'nsm_id', 'distributor_id',
             'roles',
-            'sites'
+            'companies',
+            'notifications',
+            'salaries',
+            'distributor'
           ],
+          'message',
           'success'
         ]);
   }

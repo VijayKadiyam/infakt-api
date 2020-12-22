@@ -17,7 +17,7 @@ class UserAttendancesController extends Controller
 
   public function masters(Request $request)
   {
-    $sessionTypes = ['PRESENT', 'MEETING', 'MARKET CLOSED'];
+    $sessionTypes = ['PRESENT', 'MEETING', 'MARKET CLOSED', 'LEAVE', 'WEEKLY OFF', 'HALF DAY'];
 
     return response()->json([
       'session_types' =>  $sessionTypes,
@@ -32,39 +32,49 @@ class UserAttendancesController extends Controller
    */
   public function index(Request $request)
   {
-    $userAttendances = request()->user()->user_attendances;
+    $userAttendances = request()->company->user_attendances();
 
-    if($request->date) {
-      $userAttendances = $userAttendances->where('date', '=', $request->date)->first();
+    if($request->date && $request->month == null && $request->year == null && $request->userId == null) {
+      $userAttendances = $userAttendances->where('date', '=', $request->date);
     }
+    if($request->month) {
+      $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
+    }
+    if($request->year) {
+      $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
+    }
+    if($request->userId) {
+      $userAttendances = $userAttendances->where('user_id', '=', $request->userId);
+    }
+    $userAttendances = $userAttendances->get();
 
-    if($request->month && $request->userid) {
-      $userAttendances = UserAttendance::with('user_attendance_breaks')
-                          ->whereMonth('date', '=', $request->month)
-                          ->where('user_id', '=', $request->userid)
-                          ->latest()->get();
-    }
-    else if($request->month) {
-      $userAttendances = UserAttendance::with('user_attendance_breaks')
-                          ->whereMonth('date', '=', $request->month)
-                          ->where('user_id', '=', $request->user()->id)->latest()->get();
-    }
+    // else if($request->month && $request->userid) {
+    //   $userAttendances = UserAttendance::with('user_attendance_breaks')
+    //                       ->whereMonth('date', '=', $request->month)
+    //                       ->where('user_id', '=', $request->userid)
+    //                       ->latest()->get();
+    // }
+    // else if($request->month) {
+    //   $userAttendances = UserAttendance::with('user_attendance_breaks')
+    //                       ->whereMonth('date', '=', $request->month)
+    //                       ->where('user_id', '=', $request->user()->id)->latest()->get();
+    // }
 
-    if($request->searchDate) {
-      $date = $request->searchDate;
-      $userAttendances = request()->company->users()->with(['user_attendances' => function($q) use($date) {
-          $q->where('date', '=', $date);
-        }])->get();
-    }
+    // if($request->searchDate) {
+    //   $date = $request->searchDate;
+    //   $userAttendances = request()->company->users()->with(['user_attendances' => function($q) use($date) {
+    //       $q->where('date', '=', $date);
+    //     }])->get();
+    // }
 
 
-    if($request->fromDate & $request->toDate) {
-      $fromDate = date($request->fromDate);
-      $toDate = date($request->toDate);
-      $userAttendances = request()->company->users()->with(['user_attendances' => function($q) use($fromDate, $toDate) {
-          $q->whereBetween('date', [$fromDate, $toDate]);
-        }])->get();
-    }
+    // if($request->fromDate & $request->toDate) {
+    //   $fromDate = date($request->fromDate);
+    //   $toDate = date($request->toDate);
+    //   $userAttendances = request()->company->users()->with(['user_attendances' => function($q) use($fromDate, $toDate) {
+    //       $q->whereBetween('date', [$fromDate, $toDate]);
+    //     }])->get();
+    // }
 
 
     return response()->json([
@@ -91,6 +101,7 @@ class UserAttendancesController extends Controller
     ]); 
 
     $userAttendance = new UserAttendance($request->all());
+    $userAttendance->company_id = request()->company->id;
     $request->user()->user_attendances()->save($userAttendance);
 
     $user = User::find($userAttendance->user_id);

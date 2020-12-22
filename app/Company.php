@@ -330,4 +330,16 @@ class Company extends Model
     return $this->hasMany(Notice::class)
       ->latest();
   }
+
+  public function targets()
+  {
+    return $this->hasMany(Target::class)
+      ->with('user');
+  }
+
+  public function user_attendances()
+  {
+    return $this->hasMany(UserAttendance::class)
+      ->with('user');
+  }
 }

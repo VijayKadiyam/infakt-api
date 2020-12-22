@@ -120,7 +120,9 @@ class SaleTest extends TestCase
             'sku_id',
             'user_id',
             'company_id',
-            'value'
+            'value',
+            'order_id', 'quantity', 'unit_price', 'bill_value', 'sku_type', 'offer', 'offer_type', 'offer_amount', 'total_bill_value',
+            'invoice_no'
           ],
           'success'
         ]);
@@ -196,7 +198,9 @@ class SaleTest extends TestCase
             'sku_id',
             'user_id',
             'company_id',
-            'value'
+            'value',
+            'order_id', 'quantity', 'unit_price', 'bill_value', 'sku_type', 'offer', 'offer_type', 'offer_amount', 'total_bill_value',
+            'invoice_no'
           ],
           'success'
       ]);

@@ -229,11 +229,14 @@ class UsersController extends Controller
       $user->assignRole($request->role_id);
 
     $user->roles = $user->roles;
-    $user->sites = $user->sites;
-
+    $user->companies = $user->companies;
+    $user->notifications = $user->notifications;
+    $user->salaries = $user->salaries;
+    $user->distributor = $user->distributor;
     
     return response()->json([
       'data'  =>  $user,
+      'message' =>  "User is Logged in Successfully",
       'success' =>  true
     ], 200);
   }
