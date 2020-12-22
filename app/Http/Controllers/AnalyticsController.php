@@ -393,7 +393,8 @@ class AnalyticsController extends Controller
       $beat = ReferencePlan::where('id', '=', $beatId)
         ->with('retailers')
         ->first();
-      $referencePlans[] = $beat;
+      if($beat)
+        $referencePlans[] = $beat;
     }
 
     // Outlet wise total in a month
