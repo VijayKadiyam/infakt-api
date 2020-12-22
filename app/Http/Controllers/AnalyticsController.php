@@ -271,9 +271,9 @@ class AnalyticsController extends Controller
       $referencePlans[] = $beat;
     }
 
-    return response()->json([
-      'data'  =>  $referencePlans
-    ]);
+    // return response()->json([
+    //   'data'  =>  $referencePlans
+    // ]);
 
     // Outlet wise total in this month
     foreach ($referencePlans as $referencePlan) {
