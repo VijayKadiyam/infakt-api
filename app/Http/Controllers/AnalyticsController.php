@@ -268,7 +268,8 @@ class AnalyticsController extends Controller
       $beat = ReferencePlan::where('id', '=', $beatId)
         ->with('retailers')
         ->first();
-      $referencePlans[] = $beat;
+      if($beat)
+        $referencePlans[] = $beat;
     }
 
     // return response()->json([
@@ -277,9 +278,6 @@ class AnalyticsController extends Controller
 
     // Outlet wise total in this month
     foreach ($referencePlans as $referencePlan) {
-      return response()->json([
-        'data'  =>  $referencePlan
-      ]);
       foreach ($referencePlan->retailers as $retailer) {
         $retailerTotal = 0;
         $retailerLastTotal = 0;
