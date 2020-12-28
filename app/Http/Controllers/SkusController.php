@@ -110,7 +110,7 @@ class SkusController extends Controller
       foreach ($orders as $order) {
         foreach ($order->order_details as $detail) {
           if($detail->sku_id == $sku->id) 
-            $consumedQty = $detail->qty;
+            $consumedQty += $detail->qty;
         }
       }
       
