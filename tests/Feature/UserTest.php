@@ -374,6 +374,7 @@ class UserTest extends TestCase
             'graduity_form_checked',
             'beat_type_id',
             'so_id', 'asm_id', 'rms_id', 'nsm_id', 'distributor_id',
+            'region',
             'roles',
             'companies',
             'notifications',
@@ -495,7 +496,8 @@ class UserTest extends TestCase
             'form_11_checked', 
             'graduity_form_checked',
             'beat_type_id',
-            'so_id', 'asm_id', 'rms_id', 'nsm_id', 'distributor_id'
+            'so_id', 'asm_id', 'rms_id', 'nsm_id', 'distributor_id',
+            'region'
           ],
           'success'
         ]);
@@ -617,7 +619,8 @@ class UserTest extends TestCase
             'form_11_checked', 
             'graduity_form_checked',
             'beat_type_id',
-            'so_id', 'asm_id', 'rms_id', 'nsm_id', 'distributor_id'
+            'so_id', 'asm_id', 'rms_id', 'nsm_id', 'distributor_id',
+            'region'
           ],
           'success'
         ]);

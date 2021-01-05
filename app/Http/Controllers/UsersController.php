@@ -60,6 +60,14 @@ class UsersController extends Controller
     $request->request->add(['role_id' => 10]);
     $distributorsResponse = $distributorsController->index($request);
 
+    $regions = [
+      'NORTH',
+      'EAST',
+      'WEST',
+      'SOUTH',
+      'CENTRAL'
+    ];
+
     return response()->json([
       'roles'                 =>  $rolesResponse->getData()->data,
       'company_designations'  =>  $companyDesignationsResponse->getData()->data,
@@ -70,6 +78,7 @@ class UsersController extends Controller
       'regional_managers'     =>  $regionalManagersResponse->getData()->data,
       'national_managers'     =>  $nationalManagersResponse->getData()->data,
       'distributors'          =>  $distributorsResponse->getData()->data,
+      'regions'               =>  $regions,
     ], 200);
   }
 

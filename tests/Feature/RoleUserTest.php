@@ -162,7 +162,8 @@ class RoleUserTest extends TestCase
             'graduity_form_checked',
             'beat_type_id',
             'so_id', 'asm_id', 'rms_id', 'nsm_id', 'distributor_id',
-          'roles'
+            'region',
+            'roles'
         ]
       ]);
   }

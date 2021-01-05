@@ -40,6 +40,8 @@ class GraphsController extends Controller
 
     $counts = $this->getCounts($request);
 
+    $regionWiseSales = $this->getRegionWiseSales($request);
+
     $salePerformances = $this->getSalePerformances($request);
     
     $topSkus = $this->getTopSkus($request);
@@ -52,6 +54,7 @@ class GraphsController extends Controller
       'months'  =>  $months,
       'years'   =>  $years,
       'counts'  =>  $counts,
+      'regionWiseSales'   =>  $regionWiseSales,
       'salePerformances'  =>  $salePerformances,
       'topSkus'           =>  $topSkus,
       'topPerformers'     =>  $topPerformers,
@@ -88,6 +91,184 @@ class GraphsController extends Controller
     ];
 
     return $counts;
+  }
+
+  public function getRegionWiseSales(Request $request)
+  {
+    $regionWiseSales = [];
+
+    $targets = $request->company->targets()
+      ->where('month', '=', $request->month)
+      ->where('year', '=', $request->year)
+      ->get();
+
+    $orders = request()->company->orders_list()
+      ->whereMonth('created_at', $request->month)
+      ->whereYear('created_at', $request->year)
+      ->get();
+
+    // Get all skus
+    $allSkus = [];
+    $skus = request()->company->skus;
+    foreach ($skus as $sku) {
+      $allSkus[] = [
+        'id'    =>  $sku->id,
+        'name'  =>  $sku->name,
+      ];
+    }
+
+    $regionWiseSales['allSkus'] = $allSkus;
+
+    // North
+    $users = request()->company->users()
+      ->where('region', '=', 'NORTH')
+      ->get();
+
+    $regionWiseSales['north'] = $this->getSingleRegionUsersData($targets, $orders, $users, $skus);
+
+    // East
+    $users = request()->company->users()
+      ->where('region', '=', 'EAST')
+      ->get();
+
+    $regionWiseSales['east'] = $this->getSingleRegionUsersData($targets, $orders, $users, $skus);
+
+    // West
+    $users = request()->company->users()
+      ->where('region', '=', 'WEST')
+      ->get();
+
+    $regionWiseSales['west'] = $this->getSingleRegionUsersData($targets, $orders, $users, $skus);
+
+    // South
+    $users = request()->company->users()
+      ->where('region', '=', 'SOUTH')
+      ->get();
+
+    $regionWiseSales['south'] = $this->getSingleRegionUsersData($targets, $orders, $users, $skus);
+
+    // Central
+    $users = request()->company->users()
+      ->where('region', '=', 'Central')
+      ->get();
+
+    $regionWiseSales['central'] = $this->getSingleRegionUsersData($targets, $orders, $users, $skus);
+
+    return $regionWiseSales;
+  }
+
+  public function getSingleRegionUsersData($targets, $orders, $users, $skus)
+  {
+    $singleRegionSales = [];
+    // $regionWiseSales['north']['users'] = $users;
+    $singleRegionSales['data'] = [];
+
+    $Target = 0;
+    $Achievement = 0;
+    $PlanCalls = 0;
+    $ActualCalls = 0;
+    $ProductiveCalls = 0;
+
+    foreach ($users as $user) {
+      // To calculate the target
+      foreach ($targets as $target) {
+        if($target->user_id == $user->id) 
+          $Target += $target->target;
+      }
+      $UserTarget = 0;
+      $UserAchievement = 0;
+      $UserPlanCalls = 0;
+      $UserActualCalls = 0;
+      $UserProductiveCalls = 0;
+      $UserSkus = [];
+      $reference_plan = null;
+
+      foreach ($orders as $order) {
+        if($order->user_id == $user->id) {
+          // To get Actual and productive calls
+          $Achievement += $order->total;
+          $UserAchievement += $order->total;
+          if($order->total != 0) {
+            $ProductiveCalls++;
+          }
+          $ActualCalls++;
+          $UserActualCalls++;
+          // To get Plan calls
+          foreach ($order->retailer->reference_plan->retailers as $retailer) {
+            $PlanCalls++;
+            $UserPlanCalls++;
+          }
+          // Get SKU Wise total sales of a user
+          foreach ($skus as $sku) {
+            $checkIfSkuThere = 0;
+            foreach ($order->order_details as $order_detail) {
+              if($order_detail->sku_id == $sku->id) {
+                $checkIfSkuThere = 1;
+                $checkIfAdded = 0;
+                foreach ($UserSkus as $UserSku) {
+                  if($UserSku['id'] == $order_detail->sku_id) {
+                    $checkIfAdded = 1;
+                    $UserSku['count'] += $order_detail->qty;
+                  }
+                }
+                if($checkIfAdded == 0) {
+                  $UserSkus[] = [
+                    'id'    =>  $sku->id,
+                    'name'  =>  $sku->name, 
+                    'count' =>  $order_detail->qty,
+                  ];
+                }
+              }
+            }
+            if($checkIfSkuThere == 0) {
+              $checkIfAdded = 0;
+              foreach ($UserSkus as $UserSku) {
+                if($UserSku['id'] == $sku->id) {
+                  $checkIfAdded = 1;
+                }
+              }
+              if($checkIfAdded == 0) {
+                $UserSkus[] = [
+                  'id'    =>  $sku->id,
+                  'name'  =>  $sku->name, 
+                  'count' =>  0,
+                ];
+              }
+            } 
+          }
+        }
+        $reference_plan = $order->retailer->reference_plan;
+      }
+      // To get the complete data
+      $singleRegionSales['data'][] = [
+        'rsm'  =>  optional($user->rms)->name,
+        'asm'  =>  optional($user->asm)->name,
+        'area' =>  $reference_plan != null ? $reference_plan->town : '',
+        'so'   =>  optional($user->so)->name,
+        'ssm'  =>  $user->name,
+        'so_hq'=>  optional($user->so)->address,
+        'ssm_market'  =>  $reference_plan != null ? $reference_plan->name : '',
+        'distributor' =>  optional($user->distributor)->name,
+        'town'        =>  $reference_plan != null ? $reference_plan->town : '',
+        'target'      =>  $UserTarget,
+        'achievement' =>  $UserAchievement,
+        'percent_achieved'  =>  $UserTarget == 0 ? 0 : round($UserAchievement * 100 / $UserTarget),
+        'plan_calls'        =>  $UserPlanCalls,
+        'actual_calls'      =>  $UserActualCalls,
+        'productive_calls'  =>  $UserProductiveCalls,
+        'percent_calls'     =>  $UserActualCalls == 0 ? 0 : round($UserProductiveCalls * 100 / $UserActualCalls),
+        'skus'              =>  $UserSkus,
+      ];
+    }
+    $singleRegionSales['target'] = $Target;
+    $singleRegionSales['achievement'] = $Achievement;
+    $singleRegionSales['percent_achieved'] = $Target == 0 ? 0 : round($Achievement * 100 / $Target);
+    $singleRegionSales['plan_calls'] = $PlanCalls;
+    $singleRegionSales['actual_calls'] = $ActualCalls;
+    $singleRegionSales['productive_calls'] = $ProductiveCalls;
+    $singleRegionSales['percent_calls'] = $ActualCalls == 0 ? 0 : round($ProductiveCalls * 100 / $ActualCalls);
+
+    return $singleRegionSales;
   }
 
   public function getSalePerformances(Request $request)

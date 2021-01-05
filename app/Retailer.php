@@ -37,7 +37,8 @@ class Retailer extends Model
    */
   public function reference_plan()
   {
-    return $this->belongsTo(ReferencePlan::class);
+    return $this->belongsTo(ReferencePlan::class)
+      ->with('retailers');
   }
 
   /*
