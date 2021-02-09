@@ -144,7 +144,7 @@ class DamageStockTest extends TestCase
   /** @test */
   function list_of_damage_stocks_by_date()
   {
-    $this->disableEH();
+    // $this->disableEH();
     $this->json('GET', '/api/damage_stocks/?search='.'2021-02-09',[], $this->headers)
       ->assertStatus(200)
       ->assertJsonStructure([
