@@ -21,21 +21,22 @@ class AssetTest extends TestCase
         ]);
 
         $this->retailer = factory(\App\Retailer::class)->create();
-        dd();
+        // dd($this->retailer->id);
 
-        // $this->user->assignCompany($this->company->id);
+        $this->user->assignCompany($this->company->id);
         $this->headers['company-id'] = $this->company->id;
 
         factory(\App\Asset::class)->create([
-        'company_id'  =>  $this->company->id 
+        'company_id'   =>  $this->company->id,
+        'retailer_id'  => $this->retailer->id 
         ]);
 
         $this->payload = [ 
         'company_id'             =>   $this->company->id,
         'retailer_id'            =>   $this->retailer->id,
         'asset_name'             =>   'Asset1',
-        'status'                 =>   'Status',
-        'description'            =>   'Description'
+        'status'                 =>   'Status1',
+        'description'            =>   'Description1'
         ];
     }
     /**
@@ -44,20 +45,110 @@ class AssetTest extends TestCase
      * @return void
      */
     /** @test */
-//   function list_of_asset()
-//   {
-//     $this->disableEH();
-//     $this->json('GET', '/api/assets',[], $this->headers)
-//       ->assertStatus(200)
-//       ->assertJsonStructure([
-//           'data' => [
-//             0=>[
-//               'asset_name',
-//               'status',
-//               'description'
-//             ] 
-//           ]
-//         ]);
-//       $this->assertCount(1, Asset::all());
-//   }
+  function list_of_asset()
+  {
+    $this->disableEH();
+    $this->json('GET', '/api/assets',[], $this->headers)
+      ->assertStatus(200)
+      ->assertJsonStructure([
+          'data' => [
+            0=>[
+              'asset_name',
+              'status',
+              'description'
+            ] 
+          ]
+        ]);
+      $this->assertCount(1, Asset::all());
+  }
+
+  /** @test */
+  function add_new_asset()
+  {
+    $this->disableEH();
+    $this->json('post', '/api/assets', $this->payload, $this->headers)
+      ->assertStatus(201)
+      ->assertJson([
+          'data'   =>[
+            'retailer_id'        => $this->retailer->id,
+            'asset_name'         => 'Asset1',
+            'status'             => 'Status1',
+            'description'        => 'Description1'
+          ]
+        ])
+      ->assertJsonStructureExact([
+          'data'   => [
+            'company_id',
+            'retailer_id',
+            'asset_name',
+            'status',
+            'description',
+            'updated_at',
+            'created_at',
+            'id'
+          ],
+          'success'
+        ]);
+  }
+
+  /** @test */
+  function show_single_asset()
+  {
+    $this->disableEH();
+    $this->json('get', "/api/assets/1", [], $this->headers)
+      ->assertStatus(200)
+      ->assertJson([
+          'data'  => [
+            'retailer_id'        => $this->retailer->id,
+            'asset_name'         => 'Asset1',
+            'status'             => 'Status1',
+            'description'        => 'Description1'
+          ]
+        ]);
+  }
+
+  /** @test */
+  function update_single_asset()
+  {
+    $this->disableEH();
+    $payload = [ 
+        'retailer_id'        => $this->retailer->id,
+        'asset_name'         => 'Asset2',
+        'status'             => 'Status2',
+        'description'        => 'Description2'
+    ];
+
+    $this->json('patch', '/api/assets/1', $payload, $this->headers)
+      ->assertStatus(200)
+      ->assertJson([
+          'data'    => [
+            'retailer_id'        => $this->retailer->id,
+            'asset_name'         => 'Asset2',
+            'status'             => 'Status2',
+            'description'        => 'Description2'
+          ]
+       ])
+      ->assertJsonStructureExact([
+          'data'  => [
+            'id',
+            'company_id',
+            'retailer_id',
+            'asset_name',
+            'status',
+            'description',
+            'created_at',
+            'updated_at'
+          ],
+          'success'
+      ]);
+  }
+
+  /** @test */
+  function delete_single_asset()
+  {
+    //   $this.disableEH();
+    $this->json('delete', '/api/assets/1', [], $this->headers)
+      ->assertStatus(200);     
+    $this->assertCount(0, Asset::all());
+  }
 }
