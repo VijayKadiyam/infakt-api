@@ -303,3 +303,9 @@ Route::get('send_otp', 'SendSmsController@index');
 
 Route::get('ssmDashboard', 'DashboardsController@ssmDashboard');
 Route::get('soDashboard', 'DashboardsController@soDashboard');
+
+// Damage Stocks
+Route::resource('damage_stocks', 'DamageStocksController');
+
+// Assets
+Route::resource('assets', 'AssetsController');

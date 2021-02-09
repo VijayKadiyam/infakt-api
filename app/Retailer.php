@@ -60,6 +60,16 @@ class Retailer extends Model
   {
     return $this->belongsTo(RetailerClassification::class);
   }
+  
+  /*
+   *  A retailer blongs to assets
+   *
+   *@
+   */
+  public function assets()
+  {
+    return $this->hasMany(Asset::class);
+  }
 
 
 }
