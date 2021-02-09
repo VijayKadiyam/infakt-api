@@ -16,7 +16,7 @@ class DamageStocksController extends Controller
     {
       if($request->search) {
       $damageStock = request()->company->damage_stocks()->where('created_at', 'LIKE', '%' . $request->search . '%')
-        ->get();
+      ->get();
       }
       else{
         $damageStock = request()->company->damage_stocks;
