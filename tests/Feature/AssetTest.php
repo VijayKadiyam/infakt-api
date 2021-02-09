@@ -149,6 +149,6 @@ class AssetTest extends TestCase
     //   $this.disableEH();
     $this->json('delete', '/api/assets/1', [], $this->headers)
       ->assertStatus(200);     
-    $this->assertCount(0, Asset::all());
+    $this->assertCount(0, Asset::all()); 
   }
 }

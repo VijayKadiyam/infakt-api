@@ -152,7 +152,7 @@ class DamageStockTest extends TestCase
             0=>[
               'qty',
               'mrp',
-              'manufacturing_date'
+              'manufacturing_date' 
             ] 
           ]
         ]);

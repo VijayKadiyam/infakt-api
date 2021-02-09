@@ -67,6 +67,6 @@ class DamageStocksController extends Controller
 
     public function destroy(DamageStock $damageStock)
     {
-      $damageStock->delete();
+      $damageStock->delete(); 
     }
 }
