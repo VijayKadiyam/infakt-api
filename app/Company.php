@@ -342,4 +342,23 @@ class Company extends Model
     return $this->hasMany(UserAttendance::class)
       ->with('user');
   }
+
+  /*
+   * A company has many retailer classifications
+   *
+   *@
+   */
+  public function damage_stocks()
+  {
+    return $this->hasMany(DamageStock::class);
+  }
+  /*
+   * A company has many retailer classifications
+   *
+   *@
+   */
+  public function assets()
+  {
+    return $this->hasMany(Asset::class);
+  }
 }
