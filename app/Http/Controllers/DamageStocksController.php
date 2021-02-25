@@ -77,7 +77,6 @@ class DamageStocksController extends Controller
           'success' =>  true
         ], 200);
     }
-
     public function destroy(DamageStock $damageStock)
     {
       $damageStock->delete(); 

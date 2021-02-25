@@ -312,4 +312,3 @@ Route::resource('damage_stocks', 'DamageStocksController');
 // Assets
 Route::get('assets/masters', 'AssetsController@masters');
 Route::resource('assets', 'AssetsController');
-

@@ -176,5 +176,4 @@ class SkusController extends Controller
       'data'  =>  $skus
     ], 200);
   }
-
 }
