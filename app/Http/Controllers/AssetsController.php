@@ -16,6 +16,17 @@ class AssetsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function masters(Request $request)
+    {
+        $referencePlansController = new ReferencePlansController();
+        $referencePlansResponse = $referencePlansController->index($request);
+
+        return response()->json([
+            'reference_plans'  =>  $referencePlansResponse->getData()->data,
+          ], 200);
+    }
+
     public function index()
     {
         $asset = request()->company->assets;

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Asset extends Model
 {
     protected $fillable = [
-        'company_id', 'retailer_id', 'asset_name', 'status', 'description'
+        'company_id', 'retailer_id', 'asset_name', 'status', 'description', 'reference_plan_id'
       ];
 
     public function company()
@@ -18,5 +18,10 @@ class Asset extends Model
     public function retailer()
     {
         return $this->belongsTo(Retailer::class);
+    }
+
+    public function reference_plans()
+    {
+        return $this->belongsTo(ReferencePlan::class);
     }
 }

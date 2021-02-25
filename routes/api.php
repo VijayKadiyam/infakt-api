@@ -309,4 +309,5 @@ Route::get('soDashboard', 'DashboardsController@soDashboard');
 Route::resource('damage_stocks', 'DamageStocksController');
 
 // Assets
+Route::get('assets/masters', 'AssetsController@masters');
 Route::resource('assets', 'AssetsController');
