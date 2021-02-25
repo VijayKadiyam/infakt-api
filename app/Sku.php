@@ -57,4 +57,5 @@ class Sku extends Model
     return $this->hasMany(DamageStock::class)
       ->with('sku_id');
   }
+  
 }

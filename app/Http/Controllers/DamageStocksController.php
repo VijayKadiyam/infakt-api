@@ -82,4 +82,5 @@ class DamageStocksController extends Controller
     {
       $damageStock->delete(); 
     }
+    
 }
