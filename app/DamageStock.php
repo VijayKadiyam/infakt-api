@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class DamageStock extends Model
 {
     protected $fillable = [
-        'comapny_id', 'qty', 'mrp', 'manufacturing_date'
-        ];
+      'comapny_id', 'qty', 'mrp', 'manufacturing_date', 'sku_id',
+    ];
 
     public function company()
     {
@@ -18,5 +18,10 @@ class DamageStock extends Model
     public function retailer()
     {
         return $this->belongsTo(Retailer::class);
+    }
+
+    public function sku()
+    {
+      return $this->belongsTo(Sku::class);
     }
 }

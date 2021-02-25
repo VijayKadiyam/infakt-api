@@ -343,20 +343,12 @@ class Company extends Model
       ->with('user');
   }
 
-  /*
-   * A company has many retailer classifications
-   *
-   *@
-   */
   public function damage_stocks()
   {
-    return $this->hasMany(DamageStock::class);
+    return $this->hasMany(DamageStock::class)
+      ->with('sku');
   }
-  /*
-   * A company has many retailer classifications
-   *
-   *@
-   */
+
   public function assets()
   {
     return $this->hasMany(Asset::class)

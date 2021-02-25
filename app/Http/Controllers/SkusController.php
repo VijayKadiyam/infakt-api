@@ -80,42 +80,45 @@ class SkusController extends Controller
     }
 
     $user = User::find($request->userId);
-    $stocks = Stock::where('distributor_id', '=', $user->distributor_id)
-      ->whereYear('created_at', Carbon::now())
-      ->latest()
-      ->get();
+    if($user) {
+      $stocks = Stock::where('distributor_id', '=', $user->distributor_id)
+        ->whereYear('created_at', Carbon::now())
+        ->latest()
+        ->get();
 
-    $orders = Order::where('distributor_id', '=', $user->distributor_id)
-      ->whereYear('created_at', Carbon::now())
-      ->latest()
-      ->get();
+      $orders = Order::where('distributor_id', '=', $user->distributor_id)
+        ->whereYear('created_at', Carbon::now())
+        ->latest()
+        ->get();
 
-    foreach ($skus as $sku) {
-      $skuStocks = [];
-      foreach ($stocks as $stock) {
-        if($sku->id == $stock['sku_id']) 
-          $skuStocks[] = $stock;
-      }
-      $sku['price'] = sizeof($skuStocks) > 0 ? $skuStocks[0]['price'] : 0;
-      $sku['offer_price'] = null;
-      if(sizeof($skuStocks) > 0) {
-        $sku['price'] = $skuStocks[0]['price'];
-        $sku['offer_price'] = $sku['offer_id'] != null ? $sku['price'] - ($sku['price'] * $sku['offer']['offer'] / 100) : null;
-      }
-      $totalQty = 0;
-      foreach ($skuStocks as $stock) {
-        $totalQty += $stock->qty;
-      }
-      $consumedQty = 0;
-      foreach ($orders as $order) {
-        foreach ($order->order_details as $detail) {
-          if($detail->sku_id == $sku->id) 
-            $consumedQty += $detail->qty;
+      foreach ($skus as $sku) {
+        $skuStocks = [];
+        foreach ($stocks as $stock) {
+          if($sku->id == $stock['sku_id']) 
+            $skuStocks[] = $stock;
         }
+        $sku['price'] = sizeof($skuStocks) > 0 ? $skuStocks[0]['price'] : 0;
+        $sku['offer_price'] = null;
+        if(sizeof($skuStocks) > 0) {
+          $sku['price'] = $skuStocks[0]['price'];
+          $sku['offer_price'] = $sku['offer_id'] != null ? $sku['price'] - ($sku['price'] * $sku['offer']['offer'] / 100) : null;
+        }
+        $totalQty = 0;
+        foreach ($skuStocks as $stock) {
+          $totalQty += $stock->qty;
+        }
+        $consumedQty = 0;
+        foreach ($orders as $order) {
+          foreach ($order->order_details as $detail) {
+            if($detail->sku_id == $sku->id) 
+              $consumedQty += $detail->qty;
+          }
+        }
+        
+        $sku['qty'] = ($totalQty - $consumedQty) > 0 ? ($totalQty - $consumedQty) : 0;
       }
-      
-      $sku['qty'] = ($totalQty - $consumedQty) > 0 ? ($totalQty - $consumedQty) : 0;
     }
+    
 
     return response()->json([
       'data'     =>  $skus,
