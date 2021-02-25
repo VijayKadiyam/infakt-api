@@ -177,5 +177,4 @@ class SkusController extends Controller
     ], 200);
   }
 
-
 }
