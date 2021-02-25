@@ -138,4 +138,12 @@ class RetailersController extends Controller
       'data'   =>  $retailer
     ], 200);  
   }
+
+  public function list_of_retailer()
+  {
+    $retailer = Retailer::all();
+    return response()->json([
+      'data'   =>  $retailer
+    ], 200);  
+  }
 }

@@ -104,6 +104,7 @@ Route::get('sales/single-employee-sales-email', 'SalesController@singleEmployeeS
 
 Route::resource('reference_plans', 'ReferencePlansController');
 Route::get('/retailers/masters', 'RetailersController@masters');
+Route::get('/retailers', 'RetailersController@list_of_retailer');
 Route::resource('reference_plans/{reference_plan}/retailers', 'RetailersController');
 Route::get('user_reference_plans/masters', 'UserReferencePlansController@masters');
 Route::resource('user_reference_plans', 'UserReferencePlansController');

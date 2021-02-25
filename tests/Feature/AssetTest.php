@@ -65,7 +65,7 @@ class AssetTest extends TestCase
   /** @test */
   function add_new_asset()
   {
-    $this->disableEH();
+    // $this->disableEH();
     $this->json('post', '/api/assets', $this->payload, $this->headers)
       ->assertStatus(201)
       ->assertJson([
