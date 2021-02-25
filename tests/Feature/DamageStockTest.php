@@ -141,4 +141,22 @@ class DamageStockTest extends TestCase
       ->assertStatus(200);     
     $this->assertCount(0, DamageStock::all());
   }
+
+  /** @test */
+  function list_of_damage_stocks_by_date()
+  {
+    // $this->disableEH();
+    $this->json('GET', '/api/damage_stocks/?search='.'2021-02-09',[], $this->headers)
+      ->assertStatus(200)
+      ->assertJsonStructure([
+          'data' => [
+            0=>[
+              'qty',
+              'mrp',
+              'manufacturing_date'
+            ] 
+          ]
+        ]);
+      $this->assertCount(1, DamageStock::all());
+  }
 }
