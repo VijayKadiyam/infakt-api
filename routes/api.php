@@ -306,6 +306,7 @@ Route::get('ssmDashboard', 'DashboardsController@ssmDashboard');
 Route::get('soDashboard', 'DashboardsController@soDashboard');
 
 // Damage Stocks
+Route::get('damage_stocks/masters', 'DamageStocksController@masters');
 Route::resource('damage_stocks', 'DamageStocksController');
 
 // Assets

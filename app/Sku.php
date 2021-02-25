@@ -51,4 +51,10 @@ class Sku extends Model
     return $this->belongsTo(Offer::class)
       ->with('offer_type');
   }
+
+  public function damageStock()
+  {
+    return $this->hasMany(DamageStock::class)
+      ->with('sku_id');
+  }
 }
