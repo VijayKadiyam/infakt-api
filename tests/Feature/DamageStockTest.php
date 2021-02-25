@@ -27,10 +27,11 @@ class DamageStockTest extends TestCase
         ]);
 
         $this->payload = [ 
-        'company_id'            => $this->company->id,
-        'qty'                    =>   1.0,
-        'mrp'                    =>   100.0,
-        'manufacturing_date'     =>  'Date 1',
+        'company_id'             => $this->company->id,
+        'qty'                    => 1.0,
+        'mrp'                    => 100.0,
+        'manufacturing_date'     => 'Date 1',
+        'sku_id'                 => 1,
         ];
     }
     /**
@@ -50,7 +51,8 @@ class DamageStockTest extends TestCase
             0=>[
               'qty',
               'mrp',
-              'manufacturing_date'
+              'manufacturing_date',
+              'sku_id',
             ] 
           ]
         ]);
@@ -67,7 +69,8 @@ class DamageStockTest extends TestCase
           'data'   =>[
             'qty'                   => 1.0,
             'mrp'                   => 100.0,
-            'manufacturing_date'    => 'Date 1'
+            'manufacturing_date'    => 'Date 1',
+            'sku_id'                => 1,
           ]
         ])
       ->assertJsonStructureExact([
@@ -75,8 +78,9 @@ class DamageStockTest extends TestCase
             'qty',
             'mrp',
             'manufacturing_date',
+            'sku_id',
             'company_id',
-            'updated_at',
+            'updated_at' ,
             'created_at',
             'id'
           ],
@@ -94,7 +98,8 @@ class DamageStockTest extends TestCase
           'data'  => [
             'qty'                => 1.0,
             'mrp'                => 100.0,
-            'manufacturing_date' => 'Date 1'
+            'manufacturing_date' => 'Date 1',
+            'sku_id'             => 1,
           ]
         ]);
   }
@@ -107,6 +112,7 @@ class DamageStockTest extends TestCase
         'qty'                    =>   11.0,
         'mrp'                    =>   101.0,
         'manufacturing_date'     =>  'Date 2',
+        'sku_id'                 =>   2,
     ];
 
     $this->json('patch', '/api/damage_stocks/1', $payload, $this->headers)
@@ -116,6 +122,7 @@ class DamageStockTest extends TestCase
             'qty'                    =>   11.0,
             'mrp'                    =>   101.0,
             'manufacturing_date'     =>  'Date 2',
+            'sku_id'                 =>   2,
           ]
        ])
       ->assertJsonStructureExact([
@@ -134,6 +141,29 @@ class DamageStockTest extends TestCase
   }
 
   /** @test */
+  function list_of_damage_stocks_by_date()
+  {
+    $this->disableEH();
+    $this->json('GET', '/api/damage_stocks/?search='.'2021-02-25',[], $this->headers)
+      ->assertStatus(200)
+      ->assertJsonStructure([
+          'data' => [
+            0=>[
+              'qty',
+              'mrp',
+              'manufacturing_date',
+              'sku_id',
+              'company_id',
+              'updated_at' ,
+              'created_at',
+              'id'            
+            ] 
+          ]
+        ]);
+      $this->assertCount(1, DamageStock::all());
+  }
+
+  /** @test */
   function delete_single_damage_stock()
   {
     //   $this.disableEH();
@@ -142,21 +172,5 @@ class DamageStockTest extends TestCase
     $this->assertCount(0, DamageStock::all());
   }
 
-  /** @test */
-  function list_of_damage_stocks_by_date()
-  {
-    // $this->disableEH();
-    $this->json('GET', '/api/damage_stocks/?search='.'2021-02-09',[], $this->headers)
-      ->assertStatus(200)
-      ->assertJsonStructure([
-          'data' => [
-            0=>[
-              'qty',
-              'mrp',
-              'manufacturing_date'
-            ] 
-          ]
-        ]);
-      $this->assertCount(1, DamageStock::all());
-  }
+  
 }

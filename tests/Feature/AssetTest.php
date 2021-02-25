@@ -36,7 +36,8 @@ class AssetTest extends TestCase
         'retailer_id'            =>   $this->retailer->id,
         'asset_name'             =>   'Asset1',
         'status'                 =>   'Status1',
-        'description'            =>   'Description1'
+        'description'            =>   'Description1',
+        'reference_plan_id'      =>   1
         ];
     }
     /**
@@ -55,7 +56,9 @@ class AssetTest extends TestCase
             0=>[
               'asset_name',
               'status',
-              'description'
+              'description',
+              'retailer_id',
+              'reference_plan_id'
             ] 
           ]
         ]);
@@ -65,7 +68,7 @@ class AssetTest extends TestCase
   /** @test */
   function add_new_asset()
   {
-    $this->disableEH();
+    // $this->disableEH();
     $this->json('post', '/api/assets', $this->payload, $this->headers)
       ->assertStatus(201)
       ->assertJson([
@@ -73,7 +76,8 @@ class AssetTest extends TestCase
             'retailer_id'        => $this->retailer->id,
             'asset_name'         => 'Asset1',
             'status'             => 'Status1',
-            'description'        => 'Description1'
+            'description'        => 'Description1',
+            'reference_plan_id'  => 1
           ]
         ])
       ->assertJsonStructureExact([
@@ -83,6 +87,7 @@ class AssetTest extends TestCase
             'asset_name',
             'status',
             'description',
+            'reference_plan_id',
             'updated_at',
             'created_at',
             'id'
@@ -102,7 +107,8 @@ class AssetTest extends TestCase
             'retailer_id'        => $this->retailer->id,
             'asset_name'         => 'Asset1',
             'status'             => 'Status1',
-            'description'        => 'Description1'
+            'description'        => 'Description1',
+            'reference_plan_id'  => 1
           ]
         ]);
   }
@@ -115,7 +121,8 @@ class AssetTest extends TestCase
         'retailer_id'        => $this->retailer->id,
         'asset_name'         => 'Asset2',
         'status'             => 'Status2',
-        'description'        => 'Description2'
+        'description'        => 'Description2',
+        'reference_plan_id'  => 2
     ];
 
     $this->json('patch', '/api/assets/1', $payload, $this->headers)
@@ -125,7 +132,8 @@ class AssetTest extends TestCase
             'retailer_id'        => $this->retailer->id,
             'asset_name'         => 'Asset2',
             'status'             => 'Status2',
-            'description'        => 'Description2'
+            'description'        => 'Description2',
+            'reference_plan_id'  => 2
           ]
        ])
       ->assertJsonStructureExact([
@@ -137,7 +145,8 @@ class AssetTest extends TestCase
             'status',
             'description',
             'created_at',
-            'updated_at'
+            'updated_at',
+            'reference_plan_id',
           ],
           'success'
       ]);
@@ -149,6 +158,6 @@ class AssetTest extends TestCase
     //   $this.disableEH();
     $this->json('delete', '/api/assets/1', [], $this->headers)
       ->assertStatus(200);     
-    $this->assertCount(0, Asset::all());
+    $this->assertCount(0, Asset::all()); 
   }
 }

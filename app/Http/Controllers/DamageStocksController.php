@@ -31,7 +31,8 @@ class DamageStocksController extends Controller
     public function store(Request $request)
     {
       $request->validate([
-          'qty'    =>  'required',
+          'sku_id'    =>  'required',
+          'qty'       =>  'required',
 
         ]);
     
@@ -54,7 +55,8 @@ class DamageStocksController extends Controller
     public function update(Request $request, DamageStock $damageStock)
     {
       $request->validate([
-          'qty'  =>  'required',
+          'sku_id'  =>  'required',
+          'qty'     =>  'required',
         ]);
     
         $damageStock->update($request->all());
@@ -67,6 +69,6 @@ class DamageStocksController extends Controller
 
     public function destroy(DamageStock $damageStock)
     {
-      $damageStock->delete();
+      $damageStock->delete(); 
     }
 }

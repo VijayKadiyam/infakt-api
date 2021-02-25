@@ -46,7 +46,6 @@ class OfferTypesController extends Controller
     $request->validate([
       'name'    =>  'required'
     ]);
-
     $offerType = new OfferType($request->all());
     $request->company->offer_types()->save($offerType);
 

@@ -92,70 +92,65 @@ class UsersController extends Controller
     $count = 0;
     $role = 3;
     $users = [];
-    if(request()->page && request()->rowsPerPage) {
+    if (request()->page && request()->rowsPerPage) {
       $users = request()->company->users();
       $count = $users->count();
       $users = $users->paginate(request()->rowsPerPage)->toArray();
       $users = $users['data'];
-    } else if($request->search == 'all')
+    } else if ($request->search == 'all')
       $users = $request->company->users()
-        ->whereHas('roles',  function($q) {
+        ->whereHas('roles',  function ($q) {
           // $q->where('name', '!=', 'Admin');
         })
         ->latest()->get();
-    else if($request->searchEmp) {
+    else if ($request->searchEmp) {
       $users = $request->company->users()->with('roles')
-        ->whereHas('roles',  function($q) {
+        ->whereHas('roles',  function ($q) {
           $q->where('name', '!=', 'Admin');
         })
         ->where('name', 'LIKE', '%' . $request->searchEmp . '%')
         ->orWhere('email', 'LIKE', '%' . $request->searchEmp . '%')
         ->orWhere('phone', 'LIKE', '%' . $request->searchEmp . '%')
         ->latest()->get();
-    }
-    else if($request->report) {
+    } else if ($request->report) {
       $now = Carbon::now();
       $role = Role::find($request->role_id);
       $users = $request->company->users()
         ->whereMonth('doj', '=', $now->format('m'))
         ->whereYear('doj', '=', $now->format('Y'))
-        ->whereHas('roles', function($q) use($role) { 
+        ->whereHas('roles', function ($q) use ($role) {
           $q->where('name', '=', $role->name);
         })->latest()->get();
-    }
-    else if($request->month && $request->year) {
+    } else if ($request->month && $request->year) {
       $role = Role::find($request->role_id);
       $users = $request->company->users()
         ->whereMonth('doj', '=', $request->month)
         ->whereYear('doj', '=', $request->year)
-        ->whereHas('roles', function($q) use($role) { 
+        ->whereHas('roles', function ($q) use ($role) {
           $q->where('name', '=', $role->name);
         })->latest()->get();
-    }
-    else if($request->endreport) {
+    } else if ($request->endreport) {
       $now = Carbon::now();
       $role = Role::find($request->role_id);
       $users = $request->company->users()
-        ->whereHas('user_appointment_letters', function($q) use($role, $now) { 
+        ->whereHas('user_appointment_letters', function ($q) use ($role, $now) {
           $q->whereMonth('end_date', '=', $now->format('m'));
         })
         ->get();
-    }
-    else if($request->birthday) {
+    } else if ($request->birthday) {
       $now = Carbon::now();
       $role = Role::find($request->role_id);
       $users = $request->company->users()
         ->where('dob', '=', $now->format('Y-m-d'))
         ->get();
+    } else 
+      if ($request->role_id) {
+      $role = Role::find($request->role_id);
+      $users = $request->company->users()
+        ->whereHas('roles', function ($q) use ($role) {
+          $q->where('name', '=', $role->name);
+        })->latest()->get();
     }
-    else 
-      if($request->role_id) {
-        $role = Role::find($request->role_id);
-        $users = $request->company->users()
-          ->whereHas('roles', function($q) use($role) { 
-            $q->where('name', '=', $role->name);
-          })->latest()->get();
-      }
 
     return response()->json([
       'data'  =>  $users,
@@ -197,7 +192,7 @@ class UsersController extends Controller
 
     return response()->json([
       'data'     =>  $user
-    ], 201); 
+    ], 201);
   }
 
   /*
@@ -207,13 +202,13 @@ class UsersController extends Controller
    */
   public function show($id)
   {
-    $user = User::where('id' , '=', $id)
+    $user = User::where('id', '=', $id)
       ->with('roles', 'companies', 'company_designation', 'company_state_branch', 'supervisors', 'notifications', 'salaries')->first();
 
     return response()->json([
       'data'  =>  $user,
       'success' =>  true
-    ], 200); 
+    ], 200);
   }
 
   /*
@@ -234,7 +229,7 @@ class UsersController extends Controller
 
     $user->update($request->all());
 
-    if($request->role_id)
+    if ($request->role_id)
       $user->assignRole($request->role_id);
 
     $user->roles = $user->roles;
@@ -242,7 +237,7 @@ class UsersController extends Controller
     $user->notifications = $user->notifications;
     $user->salaries = $user->salaries;
     $user->distributor = $user->distributor;
-    
+
     return response()->json([
       'data'  =>  $user,
       'message' =>  "User is Logged in Successfully",
@@ -257,7 +252,7 @@ class UsersController extends Controller
    */
   public function checkOrUpdateUniqueID(Request $request, User $user)
   {
-    if($user->unique_id == null | $user->unique_id == '') {
+    if ($user->unique_id == null | $user->unique_id == '') {
       $user->update($request->all());
     }
 
@@ -270,7 +265,7 @@ class UsersController extends Controller
   public function countUsers(Request $request)
   {
     $count = $request->company->users()
-      ->whereHas('roles', function($q) { 
+      ->whereHas('roles', function ($q) {
         $q->where('name', '=', 'Employee');
       })->count();
 
