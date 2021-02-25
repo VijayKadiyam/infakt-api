@@ -126,7 +126,8 @@ class DamageStockTest extends TestCase
             'mrp',
             'manufacturing_date',
             'created_at',
-            'updated_at'
+            'updated_at',
+            'sku_id'
           ],
           'success'
       ]);

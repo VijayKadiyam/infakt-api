@@ -124,7 +124,7 @@ class AnalyticsController extends Controller
     // Datewise orders
     $daysInMonth = Carbon::createFromDate($request->month)->daysInMonth;
     for ($i=1; $i <= $daysInMonth; $i++) { 
-      $date = 2020 . '-' . $request->month . '-' . sprintf("%02d", $i);
+      $date = 2021 . '-' . $request->month . '-' . sprintf("%02d", $i);
       $ordersOfADateTotal = 0;
       foreach ($ordersOfMonth as $order) {
         $orderDate = Carbon::parse($order->created_at)->format('Y-m-d');
@@ -538,7 +538,7 @@ class AnalyticsController extends Controller
     // Attendances of a month
     $userAttendances = [];
     for ($i=$dojDay; $i <= $currentDay; $i++) { 
-      $date = 2020 . '-' . $request->month . '-' . sprintf("%02d", $i);
+      $date = 2021 . '-' . $request->month . '-' . sprintf("%02d", $i);
 
       $userAttendance = UserAttendance::where('date', '=', $date)
         ->first();
@@ -576,12 +576,14 @@ class AnalyticsController extends Controller
           ];
           $attendances[] = [
             'date'    =>  $userAttendance->date,
-            'status'  =>  'IN ' . $userAttendance->login_time,
+            // 'status'  =>  'IN ' . $userAttendance->login_time,
+            'status'  =>  $userAttendance->login_time,
             'color'   =>  '#D67676',
           ];
           $attendances[] = [
             'date'    =>  $userAttendance->date,
-            'status'  =>  'O ' . $userAttendance->logout_time,
+            // 'status'  =>  'O ' . $userAttendance->logout_time,
+            'status'  =>  $userAttendance->logout_time,
             'color'   =>  '#86A9DC',
           ];
         }
@@ -594,12 +596,14 @@ class AnalyticsController extends Controller
           ];
           $attendances[] = [
             'date'    =>  $userAttendance->date,
-            'status'  =>  'IN ' . $userAttendance->login_time,
+            // 'status'  =>  'IN ' . $userAttendance->login_time,
+            'status'  =>  $userAttendance->login_time,
             'color'   =>  '#D67676',
           ];
           $attendances[] = [
             'date'    =>  $userAttendance->date,
-            'status'  =>  'O ' . $userAttendance->logout_time,
+            // 'status'  =>  'O ' . $userAttendance->logout_time,
+            'status'  =>  $userAttendance->logout_time,
             'color'   =>  '#86A9DC',
           ];
         }
@@ -614,8 +618,8 @@ class AnalyticsController extends Controller
     }
 
     $data = [
-      'total_worked_hrs_day'  =>  "$totalWorkingHrs / $totalDays",
-      'avg_working_hrs'       =>  $totalWorkingHrs / $totalDays . ' Hrs',
+      'total_worked_hrs_day'  => $totalDays != 0 ? "$totalWorkingHrs / $totalDays" : '0',
+      'avg_working_hrs'       => $totalDays != 0 ? $totalWorkingHrs / $totalDays . ' Hrs' : '0 Hrs',
       'present'               =>  "$present Days",
       'absent'                =>  "$absent Days",
       'less_than_5_hrs'       =>  "$lessThan5hrs Days",
