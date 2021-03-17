@@ -36,4 +36,9 @@ class ReferencePlan extends Model
   {
     return $this->belongsToMany(ReferencePlan::class);
   }
+  
+  public function assets()
+  {
+    return $this->hasMany(Asset::class);
+  }
 }
