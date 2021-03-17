@@ -101,7 +101,14 @@ class SkusController extends Controller
         $sku['offer_price'] = null;
         if(sizeof($skuStocks) > 0) {
           $sku['price'] = $skuStocks[0]['price'];
-          $sku['offer_price'] = $sku['offer_id'] != null ? $sku['price'] - ($sku['price'] * $sku['offer']['offer'] / 100) : null;
+          if($sku['offer_id'] != null) {
+            if($sku['offer']['offer_type']['name'] == 'FLAT') {
+              $sku['offer_price'] = $sku['price'] - $sku['offer']['offer'];
+            }
+            if($sku['offer']['offer_type']['name'] == 'PERCENT') {
+              $sku['offer_price'] = $sku['price'] - ($sku['price'] * $sku['offer']['offer'] / 100);
+            }
+          }
         }
         $totalQty = 0;
         foreach ($skuStocks as $stock) {

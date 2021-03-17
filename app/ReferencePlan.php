@@ -31,4 +31,9 @@ class ReferencePlan extends Model
       ->with('retailer_category', 'retailer_classification');
       // ->with('sales', 'retailer_category', 'retailer_classification');
   }
+
+  public function distributors()
+  {
+    return $this->belongsToMany(ReferencePlan::class);
+  }
 }

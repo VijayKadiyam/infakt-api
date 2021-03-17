@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class DamageStock extends Model
 {
     protected $fillable = [
-      'comapny_id', 'qty', 'mrp', 'manufacturing_date', 'sku_id',
+      'comapny_id', 'qty', 'mrp', 'manufacturing_date', 'sku_id', 'reference_plan_id', 'retailer_id'
     ];
 
     public function company()

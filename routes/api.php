@@ -31,6 +31,8 @@ Route::get('/logout','Auth\LoginController@logout');
 Route::resource('versions', 'VersionsController');
 Route::resource('roles', 'RolesController');
 Route::resource('role_user', 'RoleUserController');
+Route::resource('distributor_user', 'DistributorUserController');
+Route::resource('distributor_reference_plan', 'DistributorReferencePlanController');
 
 Route::resource('leave_patterns', 'LeavePatternsController');
 Route::resource('holidays', 'HolidaysController');
@@ -96,6 +98,7 @@ Route::resource('offer_types', 'OfferTypesController');
 Route::get('offers/masters', 'OffersController@masters');
 Route::resource('offers', 'OffersController');
 Route::resource('skus/{skus}/stocks', 'StocksController');
+Route::get('stocks/masters', 'StocksController@masters');
 Route::get('stocks', 'StocksController@all');
 Route::resource('skus/{sku}/sales', 'SalesController');
 Route::get('sales', 'SalesController@all');

@@ -130,7 +130,9 @@ class SkuTest extends TestCase
             'updated_at',
             'product_id',
             'company_id',
-            'offer_id'
+            'offer_id',
+            'hsn_code',
+            'gst_percent'
           ]
       ]);
   }

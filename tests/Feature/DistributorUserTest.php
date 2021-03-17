@@ -7,43 +7,45 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class RoleUserTest extends TestCase
+class DistributorUserTest extends TestCase
 {
   use DatabaseTransactions;
 
   /** @test */
-  function user_requires_role_and_user()
+  function user_requires_distributor_and_user()
   {
-    $this->json('post', '/api/role_user', [], $this->headers)
+    $this->json('post', '/api/distributor_user', [], $this->headers)
       ->assertStatus(422)
       ->assertExactJson([
           "errors"     =>  [
-            "role_id"  =>  ["The role id field is required."],
-            "user_id"  =>  ["The user id field is required."]
+            "distributor_id"  =>  ["The distributor id field is required."],
+            "user_id"         =>  ["The user id field is required."]
           ],
           "message"    =>  "The given data was invalid."
         ]);
   }
 
   /** @test */
-  function assign_role()
+  function assign_distributor()
   {
     $userTwo  = factory(\App\User::class)->create();
-    $userTwo->assignRole(2);
-    $check    = $userTwo->hasRole(2);
+    $distributor = factory(\App\User::class)->create();
+    $userTwo->assignDistributor($distributor->id);
+    $check = $userTwo->hasDistributor($distributor->id);
     $this->assertTrue($check);
   }
 
   /** @test */
-  function assign_role_to_user()
+  function assign_distributor_to_user()
   {
     $this->disableEH();
     $userTwo       = factory(\App\User::class)->create();
+    $distributor = factory(\App\User::class)->create();
     $this->payload = [ 
-      'user_id'    => $userTwo->id,
-      'role_id'    => 2
+      'user_id'       => $userTwo->id,
+      'distributor_id'=> $distributor->id
     ];
-    $this->json('post', '/api/role_user', $this->payload)
+    $this->json('post', '/api/distributor_user?op=assign', $this->payload)
       ->assertStatus(201)
       ->assertJson([
           'data'  =>  [
@@ -60,9 +62,9 @@ class RoleUserTest extends TestCase
             'salary'                  =>  $userTwo->salary,
             'image_path'              =>  $userTwo->image_path,
             'terms_accepted'          =>  $userTwo->terms_accepted,
-            'roles'                   =>  [
+            'distributors'                   =>  [
               0 =>  [
-                'name'  =>  'ADMIN'
+                'name'  =>  $distributor->name,
               ]
             ]
           ]
@@ -119,53 +121,66 @@ class RoleUserTest extends TestCase
           'app_letter_path',
           'pds_form_path',
           'full_name',
-            'father_name',
-            'surname',
-            'mother_name',
-            'marital_status',
-            'pan_no',
-            'adhaar_no',
-            'pre_room_no',
-            'pre_building',
-            'pre_area',
-            'pre_road',
-            'pre_city',
-            'pre_state',
-            'pre_pincode',
-            'pre_mobile',
-            'pre_email',
-            'per_room_no',
-            'per_building',
-            'per_area',
-            'per_road',
-            'per_city',
-            'per_state',
-            'per_pincode',
-            'per_mobile',
-            'per_email',
-            'blood_group',
-            'bank_name',
-            'bank_acc_no',
-            'bank_ifsc_code',
-            'bank_branch_name',
-            'data_submitted',
-            'is_fresher',
-            'pds_form_sign_path',
-            'form_2_sign_path',
-            'form_11_sign_path',
-            'graduity_form_sign_path',
-            'password_backup',
-            'gender',
-            'pds_form_checked',
-            'form_2_checked', 
-            'form_11_checked', 
-            'graduity_form_checked',
-            'beat_type_id',
-            'so_id', 'asm_id', 'rms_id', 'nsm_id', 'distributor_id',
-            'region',
-            'state_code',
-            'roles'
+          'father_name',
+          'surname',
+          'mother_name',
+          'marital_status',
+          'pan_no',
+          'adhaar_no',
+          'pre_room_no',
+          'pre_building',
+          'pre_area',
+          'pre_road',
+          'pre_city',
+          'pre_state',
+          'pre_pincode',
+          'pre_mobile',
+          'pre_email',
+          'per_room_no',
+          'per_building',
+          'per_area',
+          'per_road',
+          'per_city',
+          'per_state',
+          'per_pincode',
+          'per_mobile',
+          'per_email',
+          'blood_group',
+          'bank_name',
+          'bank_acc_no',
+          'bank_ifsc_code',
+          'bank_branch_name',
+          'data_submitted',
+          'is_fresher',
+          'pds_form_sign_path',
+          'form_2_sign_path',
+          'form_11_sign_path',
+          'graduity_form_sign_path',
+          'password_backup',
+          'gender',
+          'pds_form_checked',
+          'form_2_checked', 
+          'form_11_checked', 
+          'graduity_form_checked',
+          'beat_type_id',
+          'so_id', 'asm_id', 'rms_id', 'nsm_id', 'distributor_id',
+          'region',
+          'state_code',
+          'distributors'
         ]
       ]);
+  }
+
+  /** @test */
+  function unassign_permission()
+  {
+    $userTwo  = factory(\App\User::class)->create();
+    $distributor = factory(\App\User::class)->create();
+    $userTwo->assignDistributor($distributor->id);
+    $check = $userTwo->hasDistributor($distributor->id);
+    $this->assertTrue($check);
+    $this->assertCount(1, $userTwo->distributors);
+    $userTwo->unassignDistributor($distributor->id);
+    $this->assertCount(0, $userTwo->distributors);
   }
 }

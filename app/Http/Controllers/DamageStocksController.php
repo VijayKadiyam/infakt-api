@@ -15,7 +15,8 @@ class DamageStocksController extends Controller
     public function index(Request $request)
     {
       if($request->search) {
-      $damageStock = request()->company->damage_stocks()->where('created_at', 'LIKE', '%' . $request->search . '%')
+      $damageStock = request()->company->damage_stocks()
+        ->where('created_at', 'LIKE', '%' . $request->search . '%')
         ->get();
       }
       else{

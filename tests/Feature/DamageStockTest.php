@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\DamageStock;
+use Carbon\Carbon;
 
 class DamageStockTest extends TestCase
 {
@@ -27,10 +28,10 @@ class DamageStockTest extends TestCase
         ]);
 
         $this->payload = [ 
-        'company_id'            => $this->company->id,
-        'qty'                    =>   1.0,
-        'mrp'                    =>   100.0,
-        'manufacturing_date'     =>  'Date 1',
+          'company_id'            => $this->company->id,
+          'qty'                    =>   1.0,
+          'mrp'                    =>   100.0,
+          'manufacturing_date'     =>  'Date 1',
         ];
     }
     /**
@@ -44,6 +45,25 @@ class DamageStockTest extends TestCase
   {
     $this->disableEH();
     $this->json('GET', '/api/damage_stocks',[], $this->headers)
+      ->assertStatus(200)
+      ->assertJsonStructure([
+          'data' => [
+            0=>[
+              'qty',
+              'mrp',
+              'manufacturing_date'
+            ] 
+          ]
+        ]);
+      $this->assertCount(1, DamageStock::all());
+  }
+
+  /** @test */
+  function list_of_damage_stocks_by_date()
+  {
+    // $this->disableEH();
+    $date = Carbon::now()->format('Y-m-d');
+    $this->json('GET', '/api/damage_stocks/?search='. $date,[], $this->headers)
       ->assertStatus(200)
       ->assertJsonStructure([
           'data' => [
@@ -127,7 +147,9 @@ class DamageStockTest extends TestCase
             'manufacturing_date',
             'created_at',
             'updated_at',
-            'sku_id'
+            'sku_id',
+            'reference_plan_id',
+            'retailer_id'
           ],
           'success'
       ]);
@@ -140,23 +162,5 @@ class DamageStockTest extends TestCase
     $this->json('delete', '/api/damage_stocks/1', [], $this->headers)
       ->assertStatus(200);     
     $this->assertCount(0, DamageStock::all());
-  }
-
-  /** @test */
-  function list_of_damage_stocks_by_date()
-  {
-    // $this->disableEH();
-    $this->json('GET', '/api/damage_stocks/?search='.'2021-02-09',[], $this->headers)
-      ->assertStatus(200)
-      ->assertJsonStructure([
-          'data' => [
-            0=>[
-              'qty',
-              'mrp',
-              'manufacturing_date'
-            ] 
-          ]
-        ]);
-      $this->assertCount(1, DamageStock::all());
   }
 }

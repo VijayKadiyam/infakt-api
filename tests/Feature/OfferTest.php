@@ -134,6 +134,7 @@ class OfferTest extends TestCase
             'offer',
             'created_at',
             'updated_at',
+            'item_name'
           ]
       ]);
   }

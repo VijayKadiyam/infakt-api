@@ -118,6 +118,7 @@ class MeTest extends TestCase
             'beat_type_id',
             'so_id', 'asm_id', 'rms_id', 'nsm_id', 'distributor_id',
             'region',
+            'state_code',
             'roles',
             'companies',
             'notifications',
