@@ -19,7 +19,7 @@ class DamageStocksController extends Controller
       $skusResponse = $skusController->index($request, $product);
 
       return response()->json([
-        'skus'                 =>  $skusResponse->getData()->data,
+        'skus'  =>  $skusResponse->getData()->data,
       ], 200);
     }
 

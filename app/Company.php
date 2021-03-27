@@ -354,4 +354,10 @@ class Company extends Model
     return $this->hasMany(Asset::class)
     ->with('retailer');
   }
+
+  public function asset_status()
+  {
+    return $this->hasMany(AssetStatus::class)
+    ->with('asset');
+  }
 }
