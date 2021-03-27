@@ -352,6 +352,6 @@ class Company extends Model
   public function assets()
   {
     return $this->hasMany(Asset::class)
-    ->with('retailer');
+    ->with('retailer', 'reference_plan');
   }
 }

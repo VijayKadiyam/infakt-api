@@ -20,7 +20,7 @@ class Asset extends Model
         return $this->belongsTo(Retailer::class);
     }
 
-    public function reference_plans()
+    public function reference_plan()
     {
         return $this->belongsTo(ReferencePlan::class);
     }

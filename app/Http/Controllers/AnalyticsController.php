@@ -471,20 +471,31 @@ class AnalyticsController extends Controller
     ]);
     $sales = [];
     $orders = Order::where('user_id', '=', $request->userId)
+      // ->where('status', '=', 1)
       ->whereMonth('created_at', $request->month)
+      ->latest()
       ->get();
     foreach ($orders as $order) {
-      $salesOfAnOrder = Sale::with('retailer')
-        ->where('order_id', '=', $order->id)
-        ->get();
-      foreach ($salesOfAnOrder as $sale) {
-        $sales[] = [
-          'invoice_no'  =>  $sale->invoice_no,
-          'outlet_name' =>  $sale->retailer->name,
-          'invoice_date'=>  Carbon::parse($sale->created_at)->format('d-m-Y'),
-          'value'       =>  $sale->total_bill_value
-        ];
-      }
+      $sales[] = [
+        'id'          =>  $order->id,
+        'invoice_no'  =>  strval($order->id),
+        // 'invoice_no'  =>  $order->invoice_no ?? '-',
+        'outlet_name' =>  $order->retailer->name,
+        'invoice_date'=>  Carbon::parse($order->created_at)->format('d-m-Y'),
+        'value'       =>  $order->total,
+        'status'      =>  $order->status,
+      ];
+      // $salesOfAnOrder = Sale::with('retailer')
+      //   ->where('order_id', '=', $order->id)
+      //   ->get();
+      // foreach ($salesOfAnOrder as $sale) {
+      //   $sales[] = [
+      //     'invoice_no'  =>  $sale->invoice_no,
+      //     'outlet_name' =>  $sale->retailer->name,
+      //     'invoice_date'=>  Carbon::parse($sale->created_at)->format('d-m-Y'),
+      //     'value'       =>  $sale->total_bill_value
+      //   ];
+      // }
     }
 
     $data = [
