@@ -4,12 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\DamageStock;
+use App\Product;
 
 class DamageStocksController extends Controller
 {
     public function __construct()
     {
       $this->middleware(['auth:api', 'company']);
+    }
+
+    public function masters(Request $request, Product $product)
+    {
+      $skusController = new SkusController();
+      $skusResponse = $skusController->index($request, $product);
+
+      return response()->json([
+        'skus'                 =>  $skusResponse->getData()->data,
+      ], 200);
     }
 
     public function index(Request $request)
@@ -67,7 +78,6 @@ class DamageStocksController extends Controller
           'success' =>  true
         ], 200);
     }
-
     public function destroy(DamageStock $damageStock)
     {
       $damageStock->delete(); 
