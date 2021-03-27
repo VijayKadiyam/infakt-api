@@ -24,4 +24,9 @@ class Asset extends Model
     {
         return $this->belongsTo(ReferencePlan::class);
     }
+
+    public function asset_status()
+    {
+        return $this->hasMany(AssetStatus::class);
+    }
 }
