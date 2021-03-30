@@ -17,6 +17,7 @@ class OrderDetail extends Model
 
   public function sku()
   {
-    return $this->belongsTo(Sku::class);
+    return $this->belongsTo(Sku::class)
+      ->with('offer');
   }
 }

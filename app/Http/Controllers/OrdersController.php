@@ -10,7 +10,8 @@ class OrdersController extends Controller
 {
   public function __construct()
   {
-    $this->middleware(['auth:api', 'company']);
+    $this->middleware(['auth:api', 'company'])
+      ->except(['generateInvoice']);
   }
 
   public function index(Request $request)
@@ -24,6 +25,13 @@ class OrdersController extends Controller
     }
     else if(request()->page && request()->rowsPerPage) {
       $orders = request()->company->orders_list();
+      $count = $orders->count();
+      $orders = $orders->paginate(request()->rowsPerPage)->toArray();
+      $orders = $orders['data'];
+    } 
+    else if(request()->page && request()->rowsPerPage && $request->distributorId) {
+      $orders = request()->company->orders_list()
+        ->where('distributor_id', '=', $request->distributorId);
       $count = $orders->count();
       $orders = $orders->paginate(request()->rowsPerPage)->toArray();
       $orders = $orders['data'];
@@ -124,5 +132,17 @@ class OrdersController extends Controller
     return response()->json([
       'data'  =>  $order
     ], 200);
+  }
+
+  public function generateInvoice(Request $request)
+  {
+    $orderId = $request->orderId;
+
+    $order = Order::where('id', '=', $orderId)
+      ->first();
+    $order->status = 1;
+    $order->update();
+
+    dd($order->toArray());
   }
 }

@@ -285,6 +285,7 @@ Route::resource('inquiries/{inquiry}/inquiry_followups', 'InquiryFollowupsContro
 Route::resource('resumes', 'ResumesController');
 Route::resource('notices', 'NoticesController');
 
+Route::get('orders/generate_invoice', 'OrdersController@generateInvoice');
 Route::resource('orders', 'OrdersController');
 Route::resource('sales_orders', 'SalesOrdersController');
 
