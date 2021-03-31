@@ -320,3 +320,10 @@ Route::resource('assets', 'AssetsController');
 // Asset Statuse
 Route::get('asset_statuses/masters', 'AssetStatusesController@masters');
 Route::resource('asset_statuses', 'AssetStatusesController');
+
+
+// Shelf Analysis 
+Route::get('shelf_analyses/masters', 'ShelfAnalysisController@masters');
+Route::post('upload_shelf_analysis_image', 'ShelfAnalysisController@uploadShelfAnalysisImage');
+Route::resource('shelf_analyses', 'ShelfAnalysisController');
+
