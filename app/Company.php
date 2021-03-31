@@ -365,4 +365,10 @@ class Company extends Model
   {
     return $this->hasMany(Manufacturer::class);
   }
+
+  public function shelf_analysis()
+  {
+    return $this->hasMany(ShelfAnalysis::class);
+  }
+  
 }
