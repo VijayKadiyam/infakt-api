@@ -360,4 +360,10 @@ class Company extends Model
     return $this->hasMany(AssetStatus::class)
     ->with('asset');
   }
+
+  
+  public function shelf_analysis()
+  {
+    return $this->hasMany(ShelfAnalysis::class);
+  }
 }
