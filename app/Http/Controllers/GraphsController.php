@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Order;
 use App\Target;
 use Carbon\Carbon;
+use App\Product;
 
 class GraphsController extends Controller
 {
@@ -50,6 +51,17 @@ class GraphsController extends Controller
 
     $topOutlets = $this->getTopOutlets($request);
 
+    $ssmsController = new UsersController();
+    $request->request->add(['role_id' => 5]);
+    $ssmsResponse = $ssmsController->index($request);
+
+    $referencePlansController = new ReferencePlansController();
+    $referencePlansResponse = $referencePlansController->index($request);
+
+    $skusController = new SkusController();
+    $product = Product::find(1);
+    $skusResponse = $skusController->index($request, $product);
+
     return response()->json([
       'months'  =>  $months,
       'years'   =>  $years,
@@ -59,6 +71,9 @@ class GraphsController extends Controller
       'topSkus'           =>  $topSkus,
       'topPerformers'     =>  $topPerformers,
       'topOutlets'        =>  $topOutlets,
+      'promoters'         =>  $ssmsResponse->getData()->data,
+      'reference_plans'   =>  $referencePlansResponse->getData()->data,
+      'skus'              =>  $skusResponse->getData()->data,
     ], 200);
   }
 

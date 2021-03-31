@@ -546,10 +546,40 @@ class AnalyticsController extends Controller
       }
     }
 
-    // Attendances of a month
+    // Attendances of current month
     $userAttendances = [];
     for ($i=$dojDay; $i <= $currentDay; $i++) { 
       $date = 2021 . '-' . $request->month . '-' . sprintf("%02d", $i);
+
+      $userAttendance = UserAttendance::where('date', '=', $date)
+        ->first();
+      if($userAttendance)
+        $userAttendances[] = $userAttendance;
+      else
+        $userAttendances[] = [
+          'date'        =>  $date,
+          'login_time'  =>  null
+        ];
+    }
+
+    // Attendances of current - 1 month
+    for ($i=1; $i <= $currentDay; $i++) { 
+      $date = 2021 . '-' . sprintf("%02d", $request->month - 1) . '-' . sprintf("%02d", $i);
+
+      $userAttendance = UserAttendance::where('date', '=', $date)
+        ->first();
+      if($userAttendance)
+        $userAttendances[] = $userAttendance;
+      else
+        $userAttendances[] = [
+          'date'        =>  $date,
+          'login_time'  =>  null
+        ];
+    }
+
+    // Attendances of current - 2 month
+    for ($i=1; $i <= $currentDay; $i++) { 
+      $date = 2021 . '-' . sprintf("%02d", $request->month - 2) . '-' . sprintf("%02d", $i);
 
       $userAttendance = UserAttendance::where('date', '=', $date)
         ->first();
@@ -578,7 +608,15 @@ class AnalyticsController extends Controller
         $totalWorkingHrs += $totalDuration;
         $totalDays++;
         $present++;
-        if($totalDuration <= 5){
+        if($userAttendance->session_type == 'LEAVE') {
+          $absent++;
+          $attendances[] = [
+            'date'    =>  $userAttendance['date'],
+            'status'  =>  'Leave',
+            'color'   =>  '#FFA500',
+          ];
+        }
+        else if($totalDuration <= 5){
           $lessThan5hrs++;
           $attendances[] = [
             'date'    =>  $userAttendance->date,

@@ -97,13 +97,13 @@ class UsersController extends Controller
       $count = $users->count();
       $users = $users->paginate(request()->rowsPerPage)->toArray();
       $users = $users['data'];
-    } else if ($request->search == 'all')
+    } else if ($request->search == 'all') {
       $users = $request->company->users()
         ->whereHas('roles',  function ($q) {
           // $q->where('name', '!=', 'Admin');
         })
         ->latest()->get();
-    else if ($request->searchEmp) {
+    } else if ($request->searchEmp) {
       $users = $request->company->users()->with('roles')
         ->whereHas('roles',  function ($q) {
           $q->where('name', '!=', 'Admin');
@@ -143,8 +143,7 @@ class UsersController extends Controller
       $users = $request->company->users()
         ->where('dob', '=', $now->format('Y-m-d'))
         ->get();
-    } else 
-      if ($request->role_id) {
+    } else if ($request->role_id) {
       $role = Role::find($request->role_id);
       $users = $request->company->users()
         ->whereHas('roles', function ($q) use ($role) {

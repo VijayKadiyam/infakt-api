@@ -147,6 +147,9 @@ class AssetTest extends TestCase
             'created_at',
             'updated_at',
             'reference_plan_id',
+            'unique_id',
+            'size',
+            'manufacturer_id',
           ],
           'success'
       ]);

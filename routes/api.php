@@ -48,6 +48,7 @@ Route::resource('companies', 'CompaniesController');
 Route::resource('company_user', 'CompanyUserController');
 Route::resource('company_states', 'CompanyStatesController');
 Route::resource('break_types', 'BreakTypesController');
+Route::resource('manufacturers', 'ManufacturersController');
 Route::resource('allowance_types', 'AllowanceTypesController');
 Route::resource('transport_modes', 'TransportModesController');
 Route::resource('travelling_ways', 'TravellingWaysController');

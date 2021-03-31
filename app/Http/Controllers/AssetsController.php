@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Asset;
+use Mail;
+use App\Mail\AssetMail;
+
 
 class AssetsController extends Controller
 {
@@ -40,15 +43,22 @@ class AssetsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'asset_name'    =>  'required',
-            ]);
+          'asset_name'    =>  'required',
+        ]);
       
         $asset = new Asset($request->all());
         $request->company->assets()->save($asset);
+
+        $asset->retailer = $asset->retailer;
+        $asset->reference_plan = $asset->reference_plan;
+        $asset->manufacturer = $asset->manufacturer;
+        $asset->asset_statuses = $asset->asset_statuses;
+        Mail::to('kvjkumr@gmail.com')
+          ->send(new AssetMail($asset));
       
         return response()->json([
-        'data'    =>  $asset,
-        'success' =>  true
+          'data'    =>  $asset,
+          'success' =>  true
         ], 201); 
     }
 
@@ -64,8 +74,17 @@ class AssetsController extends Controller
         $request->validate([
             'asset_name'  =>  'required',
         ]);
-      
+
         $asset->update($request->all());
+
+        // if($asset->status == 'NOT WORKING') {
+          $asset->retailer = $asset->retailer;
+          $asset->reference_plan = $asset->reference_plan;
+          $asset->manufacturer = $asset->manufacturer;
+          $asset->asset_statuses = $asset->asset_statuses;
+          Mail::to('kvjkumr@gmail.com')
+            ->send(new AssetMail($asset));
+        // }
         
         return response()->json([
         'data'  =>  $asset,
