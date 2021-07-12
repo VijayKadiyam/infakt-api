@@ -105,12 +105,26 @@ class UserAttendancesController extends Controller
     $request->user()->user_attendances()->save($userAttendance);
 
     $user = User::find($userAttendance->user_id);
+
+    $address = $userAttendance->login_address;
+    $phone = '9579862371';
+    $name = $user->name;
+    $date = $userAttendance->date;
+    $time = $userAttendance->login_time;
+    $lat = $userAttendance->login_lat;
+    $lng = $userAttendance->login_lng;
+    $battery = '-';
+    $address = $address;
+    
+    $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
+
+
     $geocodesController = new GeocodesController();
     if($user->so != null) {
       if($userAttendance->login_time && $userAttendance->login_lat)
       {
-        $request->request->add(['lat' => $userAttendance->login_lat]);
-        $request->request->add(['lng' => $userAttendance->login_lng]);
+        // $request->request->add(['lat' => $userAttendance->login_lat]);
+        // $request->request->add(['lng' => $userAttendance->login_lng]);
 
         // $address = json_decode($geocodesController->index($request)->getContent())->data;
         $address = $userAttendance->login_address;
