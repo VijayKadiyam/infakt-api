@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /var/www/vhosts/sales-register/sales-api
+cd /var/www/vhosts/mamaearth/me-api
 
 php /usr/local/bin/composer install
 
