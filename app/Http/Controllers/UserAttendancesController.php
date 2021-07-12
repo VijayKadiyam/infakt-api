@@ -112,7 +112,8 @@ class UserAttendancesController extends Controller
         $request->request->add(['lat' => $userAttendance->login_lat]);
         $request->request->add(['lng' => $userAttendance->login_lng]);
 
-        $address = json_decode($geocodesController->index($request)->getContent())->data;
+        // $address = json_decode($geocodesController->index($request)->getContent())->data;
+        $address = $userAttendance->login_address;
         $phone = $user->so->phone;
         $name = $user->name;
         $date = $userAttendance->date;
