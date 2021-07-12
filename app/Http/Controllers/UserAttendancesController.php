@@ -7,6 +7,8 @@ use App\UserAttendance;
 use App\UserLocation;
 use App\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\UserAttendanceMail;
 
 class UserAttendancesController extends Controller
 {
@@ -106,17 +108,19 @@ class UserAttendancesController extends Controller
 
     $user = User::find($userAttendance->user_id);
 
-    $address = $userAttendance->login_address;
-    $phone = '8898539930';
-    $name = $user->name;
-    $date = $userAttendance->date;
-    $time = $userAttendance->login_time;
-    $lat = $userAttendance->login_lat;
-    $lng = $userAttendance->login_lng;
-    $battery = '-';
-    $address = $address;
+    // $address = $userAttendance->login_address;
+    // $phone = '9579862371';
+    // $name = $user->name;
+    // $date = $userAttendance->date;
+    // $time = $userAttendance->login_time;
+    // $lat = $userAttendance->login_lat;
+    // $lng = $userAttendance->login_lng;
+    // $battery = '-';
+    // $address = $address;
+
     
-    $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
+    
+    // $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
 
 
     $geocodesController = new GeocodesController();
@@ -137,6 +141,7 @@ class UserAttendancesController extends Controller
         $battery = '-';
         $address = $address;
         
+        Mail::to($user->so->email)->send(new UserAttendanceMail($user, $userAttendance));
         $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
       }
     }
@@ -291,9 +296,9 @@ class UserAttendancesController extends Controller
 
   public function sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address)
   {
-    $endpoint = "http://mobicomm.dove-sms.com//submitsms.jsp?user=PousseM&key=fc53bf6154XX&mobile=+91$phone&message=Your OTP is&senderid=POUSSE&accusage=1";
+    // $endpoint = "http://mobicomm.dove-sms.com//submitsms.jsp?user=PousseM&key=fc53bf6154XX&mobile=+91$phone&message=Your OTP is&senderid=POUSSE&accusage=1";
     // $endpoint = "http://mobicomm.dove-sms.com//submitsms.jsp?user=PousseM&key=fc53bf6154XX&mobile=+91$phone&message=$name%0A$date%0ALogout Time: $time%0ALocation: $address%0ABTRY: $battery %&senderid=POUSSE&accusage=1";
-    // $endpoint = "http://mobicomm.dove-sms.com//submitsms.jsp?user=PousseM&key=fc53bf6154XX&mobile=+91$phone&message=$name%0A$date%0ALogout Time: $time%0ALocation: $address%0ABTRY: $battery %&senderid=POUSSE&accusage=1";
+    $endpoint = "http://mobicomm.dove-sms.com//submitsms.jsp?user=PousseM&key=fc53bf6154XX&mobile=+91$phone&message=$name%0A$date%0ATime: $time%0ALocation: $address%0ABTRY: $battery %&senderid=POUSSE&accusage=1";
     $client = new \GuzzleHttp\Client();
     $client->request('GET', $endpoint);
   }
