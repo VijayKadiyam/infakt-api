@@ -107,7 +107,7 @@ class UserAttendancesController extends Controller
     $user = User::find($userAttendance->user_id);
 
     $address = $userAttendance->login_address;
-    $phone = '9967832161';
+    $phone = '9579862371';
     $name = $user->name;
     $date = $userAttendance->date;
     $time = $userAttendance->login_time;
@@ -291,7 +291,7 @@ class UserAttendancesController extends Controller
 
   public function sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address)
   {
-    $endpoint = "http://mobicomm.dove-sms.com//submitsms.jsp?user=PousseM&key=fc53bf6154XX&mobile=+91$phone&message=Your OTP is&senderid=POUSSE&accusage=1";
+    $endpoint = "http://mobicomm.dove-sms.com//submitsms.jsp?user=PousseM&key=fc53bf6154XX&mobile=+91$phone&message=$name%0A$date%0ATime: $time%0ABTRY: $battery %&senderid=POUSSE&accusage=1";
     // $endpoint = "http://mobicomm.dove-sms.com//submitsms.jsp?user=PousseM&key=fc53bf6154XX&mobile=+91$phone&message=$name%0A$date%0ALogout Time: $time%0ALocation: $address%0ABTRY: $battery %&senderid=POUSSE&accusage=1";
     $client = new \GuzzleHttp\Client();
     $client->request('GET', $endpoint);
