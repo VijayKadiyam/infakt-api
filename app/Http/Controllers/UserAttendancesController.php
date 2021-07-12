@@ -115,8 +115,6 @@ class UserAttendancesController extends Controller
     $lng = $userAttendance->login_lng;
     $battery = '-';
     $address = $address;
-
-    return $user->so;
     
     $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
 
