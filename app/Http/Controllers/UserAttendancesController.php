@@ -106,6 +106,8 @@ class UserAttendancesController extends Controller
 
     $user = User::find($userAttendance->user_id);
 
+    return $userAttendance;
+
     $address = $userAttendance->login_address;
     $phone = '9967832161';
     $name = $user->name;
