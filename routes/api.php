@@ -304,6 +304,7 @@ Route::get('getCounts', 'GraphsController@getCounts');
 Route::post('upload_retailer_image', 'UploadsController@uploadRetailerImage');
 Route::post('upload_notice_image', 'UploadsController@uploadNoticeImage');
 Route::post('upload_user_image', 'UploadsController@uploadUserImage');
+Route::post('upload_user_attendance_selfie_image', 'UploadsController@uploadSelfieImage');
 
 Route::get('send_otp', 'SendSmsController@index');
 
@@ -327,4 +328,6 @@ Route::resource('asset_statuses', 'AssetStatusesController');
 Route::get('shelf_analyses/masters', 'ShelfAnalysisController@masters');
 Route::post('upload_shelf_analysis_image', 'ShelfAnalysisController@uploadShelfAnalysisImage');
 Route::resource('shelf_analyses', 'ShelfAnalysisController');
+Route::resource('sku_availabilities', 'SkuAvailabilitiesController');
+Route::resource('daily_photos', 'DailyPhotosController');
 

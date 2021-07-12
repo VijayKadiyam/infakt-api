@@ -563,7 +563,7 @@ class AnalyticsController extends Controller
     }
 
     // Attendances of current - 1 month
-    for ($i=1; $i <= $currentDay; $i++) { 
+    for ($i=1; $i <= 31; $i++) { 
       $date = 2021 . '-' . sprintf("%02d", $request->month - 1) . '-' . sprintf("%02d", $i);
 
       $userAttendance = UserAttendance::where('date', '=', $date)
@@ -578,7 +578,7 @@ class AnalyticsController extends Controller
     }
 
     // Attendances of current - 2 month
-    for ($i=1; $i <= $currentDay; $i++) { 
+    for ($i=1; $i <= 31; $i++) { 
       $date = 2021 . '-' . sprintf("%02d", $request->month - 2) . '-' . sprintf("%02d", $i);
 
       $userAttendance = UserAttendance::where('date', '=', $date)
@@ -591,6 +591,36 @@ class AnalyticsController extends Controller
           'login_time'  =>  null
         ];
     }
+
+    // Attendances of current - 3 month
+    for ($i=1; $i <= 31; $i++) { 
+      $date = 2021 . '-' . sprintf("%02d", $request->month - 3) . '-' . sprintf("%02d", $i);
+
+      $userAttendance = UserAttendance::where('date', '=', $date)
+        ->first();
+      if($userAttendance)
+        $userAttendances[] = $userAttendance;
+      else
+        $userAttendances[] = [
+          'date'        =>  $date,
+          'login_time'  =>  null
+        ];
+    }
+
+    // Attendances of current - 4 month
+    // for ($i=1; $i <= 31; $i++) { 
+    //   $date = 2021 . '-' . sprintf("%02d", $request->month - 3) . '-' . sprintf("%02d", $i);
+
+    //   $userAttendance = UserAttendance::where('date', '=', $date)
+    //     ->first();
+    //   if($userAttendance)
+    //     $userAttendances[] = $userAttendance;
+    //   else
+    //     $userAttendances[] = [
+    //       'date'        =>  $date,
+    //       'login_time'  =>  null
+    //     ];
+    // }
 
     $totalWorkingHrs = 0;
     $totalDays = 0;
@@ -616,7 +646,8 @@ class AnalyticsController extends Controller
             'color'   =>  '#FFA500',
           ];
         }
-        else if($totalDuration <= 5){
+        else 
+          if($totalDuration <= 5){
           $lessThan5hrs++;
           $attendances[] = [
             'date'    =>  $userAttendance->date,

@@ -90,7 +90,11 @@ class AssetTest extends TestCase
             'reference_plan_id',
             'updated_at',
             'created_at',
-            'id'
+            'id',
+            'retailer',
+            'reference_plan',
+            'manufacturer',
+            'asset_statuses',
           ],
           'success'
         ]);
@@ -150,6 +154,10 @@ class AssetTest extends TestCase
             'unique_id',
             'size',
             'manufacturer_id',
+            'retailer',
+            'reference_plan',
+            'manufacturer',
+            'asset_statuses',
           ],
           'success'
       ]);

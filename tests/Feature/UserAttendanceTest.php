@@ -275,7 +275,8 @@ class UserAttendanceTest extends TestCase
             'remarks',
             'login_address',
             'logout_address',
-            'company_id'
+            'company_id',
+            'selfie_path'
           ],
           'success'
       ]);

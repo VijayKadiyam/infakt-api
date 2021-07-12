@@ -370,5 +370,15 @@ class Company extends Model
   {
     return $this->hasMany(ShelfAnalysis::class);
   }
+
+  public function sku_availabilities()
+  {
+    return $this->hasMany(SkuAvailability::class);
+  }
+
+  public function daily_photos()
+  {
+    return $this->hasMany(DailyPhoto::class);
+  }
   
 }

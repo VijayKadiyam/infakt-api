@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class UserAttendance extends Model
 {
   protected $fillable = [
-    'date', 'login_time', 'logout_time', 'login_lat', 'login_lng', 'logout_lat', 'logout_lng', 'battery', 'session_type', 'remarks', 'login_address', 'logout_address', 'company_id'
+    'date', 'login_time', 'logout_time', 'login_lat', 'login_lng', 'logout_lat', 'logout_lng', 'battery', 'session_type', 'remarks', 'login_address', 'logout_address', 'company_id', 'selfie_path'
   ];
 
   /*

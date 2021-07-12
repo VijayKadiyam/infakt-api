@@ -50,12 +50,14 @@ class AssetStatusesController extends Controller
         $asset = Asset::where('id', '=', $assetStatus->asset_id)
           ->first();
 
-        $asset->retailer = $asset->retailer;
-        $asset->reference_plan = $asset->reference_plan;
-        $asset->manufacturer = $asset->manufacturer;
-        $asset->asset_statuses = $asset->asset_statuses;
-        Mail::to('kvjkumr@gmail.com')
-          ->send(new AssetStatusMail($asset));
+        if($asset) {
+          $asset->retailer = $asset->retailer;
+          $asset->reference_plan = $asset->reference_plan;
+          $asset->manufacturer = $asset->manufacturer;
+          $asset->asset_statuses = $asset->asset_statuses;
+          Mail::to('kvjkumr@gmail.com')
+            ->send(new AssetStatusMail($asset));
+        }
     
         return response()->json([
           'data'    =>  $assetStatus,
@@ -65,6 +67,18 @@ class AssetStatusesController extends Controller
 
     public function show(AssetStatus $assetStatus)
     {
+      $asset = Asset::where('id', '=', $assetStatus->asset_id)
+          ->first();
+          
+      if($asset) {
+        $asset->retailer = $asset->retailer;
+        $asset->reference_plan = $asset->reference_plan;
+        $asset->manufacturer = $asset->manufacturer;
+        $asset->asset_statuses = $asset->asset_statuses;
+        Mail::to('kvjkumr@gmail.com')
+          ->send(new AssetStatusMail($asset));
+      }
+
       return response()->json([
           'data'   =>  $assetStatus
         ], 200);
@@ -83,12 +97,14 @@ class AssetStatusesController extends Controller
         $asset = Asset::where('id', '=', $assetStatus->asset_id)
           ->first();
 
-        $asset->retailer = $asset->retailer;
-        $asset->reference_plan = $asset->reference_plan;
-        $asset->manufacturer = $asset->manufacturer;
-        $asset->asset_statuses = $asset->asset_statuses;
-        Mail::to('kvjkumr@gmail.com')
-          ->send(new AssetStatusMail($asset));
+        if($asset) {
+          $asset->retailer = $asset->retailer;
+          $asset->reference_plan = $asset->reference_plan;
+          $asset->manufacturer = $asset->manufacturer;
+          $asset->asset_statuses = $asset->asset_statuses;
+          Mail::to('kvjkumr@gmail.com')
+            ->send(new AssetStatusMail($asset));
+        }
         
         return response()->json([
           'data'  =>  $assetStatus,

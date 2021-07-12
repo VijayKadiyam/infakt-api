@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Retailer;
 use App\Notice;
 use App\User;
+use App\UserAttendance;
 
 class UploadsController extends Controller
 {
@@ -71,6 +72,33 @@ class UploadsController extends Controller
         $retailer->lng =$request->lng;
       $retailer->image_path = $imagePath;
       $retailer->update();
+    }
+
+    return response()->json([
+      'data'  => [
+        'image_path'  =>  $imagePath
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function uploadSelfieImage(Request $request)
+  {
+    $request->validate([
+      'userAttendanceId'        => 'required',
+    ]);
+
+    $imagePath = '';
+    if ($request->hasFile('imagepath')) {
+      $file = $request->file('imagepath');
+      $name = $request->filename ?? 'photo.jpg';
+      // $name = $name . $file->getClientOriginalExtension();;
+      $imagePath = 'user_attendances/' .  $request->userAttendanceId . '/' . $name;
+      Storage::disk('local')->put($imagePath, file_get_contents($file), 'public');
+
+      $userAttendance = UserAttendance::where('id', '=', request()->userAttendanceId)->first();
+      $userAttendance->selfie_path = $imagePath;
+      $userAttendance->update();
     }
 
     return response()->json([
