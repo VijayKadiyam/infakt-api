@@ -380,5 +380,11 @@ class Company extends Model
   {
     return $this->hasMany(DailyPhoto::class);
   }
+
+  public function courses()
+  {
+    return $this->hasMany(Course::class)
+      ->with('course_details');
+  }
   
 }

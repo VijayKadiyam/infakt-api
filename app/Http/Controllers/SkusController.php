@@ -114,15 +114,28 @@ class SkusController extends Controller
         foreach ($skuStocks as $stock) {
           $totalQty += $stock->qty;
         }
+        $receivedQty = 0;
+        $returnedQty = 0; 
         $consumedQty = 0;
+
         foreach ($orders as $order) {
           foreach ($order->order_details as $detail) {
-            if($detail->sku_id == $sku->id) 
+            if($detail->sku_id == $sku->id && $order->order_type == 'Stock Received') 
+              $receivedQty += $detail->qty;
+            if($detail->sku_id == $sku->id && $order->order_type == 'Stock Returned') 
+              $returnedQty += $detail->qty;
+            if($detail->sku_id == $sku->id && $order->order_type == 'Sales') 
               $consumedQty += $detail->qty;
           }
         }
         
         $sku['qty'] = ($totalQty - $consumedQty) > 0 ? ($totalQty - $consumedQty) : 0;
+
+        $sku['opening_stock'] = $totalQty;
+        $sku['received_stock'] = $receivedQty;
+        $sku['returned_stock'] = $returnedQty;
+        $sku['sales_stock'] = $consumedQty;
+        $sku['closing_stock'] = ($totalQty - $consumedQty) > 0 ? ($totalQty + $receivedQty + $returnedQty - $consumedQty) : 0;
       }
     }
     

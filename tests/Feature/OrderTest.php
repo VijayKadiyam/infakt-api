@@ -244,6 +244,7 @@ class OrderTest extends TestCase
             'reason_for_no_order',
             'invoice_no',
             'invoice_date',
+            'order_type',
             'order_details'
           ],
           'success'

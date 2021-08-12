@@ -39,6 +39,9 @@ class UserAttendancesController extends Controller
     if($request->date && $request->month == null && $request->year == null && $request->userId == null) {
       $userAttendances = $userAttendances->where('date', '=', $request->date);
     }
+    if($request->date && $request->month == null && $request->year == null) {
+      $userAttendances = $userAttendances->where('date', '=', $request->date);
+    }
     if($request->month) {
       $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
     }
