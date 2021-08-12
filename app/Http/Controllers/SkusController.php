@@ -80,16 +80,16 @@ class SkusController extends Controller
     }
 
     $user = User::find($request->userId);
-    if($user) {
-      $stocks = Stock::where('distributor_id', '=', $user->distributor_id)
-        ->whereYear('created_at', Carbon::now())
-        ->latest()
-        ->get();
+    // if($user) {
+      $stocks = Stock::whereYear('created_at', Carbon::now());
+      if($user)
+        $stocks = $stocks->where('distributor_id', '=', $user->distributor_id);
+      $stocks = $stocks->latest()->get();
 
-      $orders = Order::where('distributor_id', '=', $user->distributor_id)
-        ->whereYear('created_at', Carbon::now())
-        ->latest()
-        ->get();
+      $orders = Order::whereYear('created_at', Carbon::now());
+      if($user)
+        $orders = $orders->where('distributor_id', '=', $user->distributor_id);
+      $orders = $orders->latest()->get();
 
       foreach ($skus as $sku) {
         $skuStocks = [];
@@ -137,7 +137,7 @@ class SkusController extends Controller
         $sku['sales_stock'] = $consumedQty;
         $sku['closing_stock'] = ($totalQty - $consumedQty) > 0 ? ($totalQty + $receivedQty + $returnedQty - $consumedQty) : 0;
       }
-    }
+    // }
     
 
     return response()->json([
