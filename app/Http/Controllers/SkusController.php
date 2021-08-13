@@ -94,7 +94,7 @@ class SkusController extends Controller
       foreach ($skus as $sku) {
         $skuStocks = [];
         foreach ($stocks as $stock) {
-          if($sku->id == $stock['sku_id']) 
+          if($sku['id'] == $stock['sku_id']) 
             $skuStocks[] = $stock;
         }
         $sku['price'] = sizeof($skuStocks) > 0 ? $skuStocks[0]['price'] : 0;
