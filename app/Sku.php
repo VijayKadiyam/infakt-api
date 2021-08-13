@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Sku extends Model
 {
   protected $fillable = [
-    'name', 'sku_type_id', 'company_id', 'offer_id', 'hsn_code', 'gst_percent'
+    'name', 'sku_type_id', 'company_id', 'offer_id', 'hsn_code', 'gst_percent', 'category'
   ];
 
   /*
