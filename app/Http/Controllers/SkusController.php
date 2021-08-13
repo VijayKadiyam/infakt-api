@@ -172,11 +172,11 @@ class SkusController extends Controller
    *
    *@
    */
-  public function show(Product $product, Sku $skus)
+  public function show(Product $product, Sku $sku)
   {
     return response()->json([
-      'data'   =>  $skus
-    ], 200);   
+      'data'   =>  $sku
+    ], 200);
   }
 
   /*
@@ -184,16 +184,16 @@ class SkusController extends Controller
    *
    *@
    */
-  public function update(Request $request, Product $product, Sku $skus)
+  public function update(Request $request, Product $product, Sku $sku)
   {
     $request->validate([
       'name'  =>  'required',
     ]);
 
-    $skus->update($request->all());
+    $sku->update($request->all());
       
     return response()->json([
-      'data'  =>  $skus
+      'data'  =>  $sku
     ], 200);
   }
 }
