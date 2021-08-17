@@ -386,5 +386,12 @@ class Company extends Model
     return $this->hasMany(Course::class)
       ->with('course_details');
   }
+
+  public function requisitions()
+  {
+    return $this->hasMany(Requisition::class);
+  }
+
+  
   
 }
