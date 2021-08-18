@@ -552,6 +552,7 @@ class AnalyticsController extends Controller
       $date = 2021 . '-' . $request->month . '-' . sprintf("%02d", $i);
 
       $userAttendance = UserAttendance::where('date', '=', $date)
+        ->where('user_id', '=', $user->id)
         ->first();
       if($userAttendance)
         $userAttendances[] = $userAttendance;
