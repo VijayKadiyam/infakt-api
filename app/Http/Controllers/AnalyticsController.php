@@ -548,7 +548,7 @@ class AnalyticsController extends Controller
 
     // Attendances of current month
     $userAttendances = [];
-    for ($i=$dojDay; $i <= $currentDay; $i++) { 
+    for ($i=$startDay; $i <= $currentDay; $i++) { 
       $date = 2021 . '-' . $request->month . '-' . sprintf("%02d", $i);
 
       $userAttendance = UserAttendance::where('date', '=', $date)
