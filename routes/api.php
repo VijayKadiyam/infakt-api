@@ -333,3 +333,5 @@ Route::resource('daily_photos', 'DailyPhotosController');
 
 Route::resource('courses', 'CoursesController');
 Route::resource('courses/{course}/course_details', 'CourseDetailsController');
+
+Route::resource('requisitions', 'RequisitionsController');

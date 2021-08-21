@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Requisition extends Model
 {
     protected $fillable = [
-        'title', 'description', 'requisition_type', 'image_path'
+        'title', 'description', 'requisition_type', 'image_path', 'user_id'
       ];
     
       /*
