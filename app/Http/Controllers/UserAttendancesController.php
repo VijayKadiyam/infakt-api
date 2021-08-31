@@ -51,6 +51,12 @@ class UserAttendancesController extends Controller
     if($request->userId) {
       $userAttendances = $userAttendances->where('user_id', '=', $request->userId);
     }
+    if($request->supervisorId) {
+      $supervisorId = $request->supervisorId;
+      $userAttendances = $userAttendances->whereHas('user',  function ($q) use($supervisorId) {
+        $q->where('supervisor_id', '=', $supervisorId);
+      });
+    }
     $userAttendances = $userAttendances->get();
 
     // else if($request->month && $request->userid) {

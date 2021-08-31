@@ -40,6 +40,10 @@ class UsersController extends Controller
       ]
     ];
 
+    $supervisorsController = new UsersController();
+    $request->request->add(['role_id' => 4]);
+    $supervisorsResponse = $supervisorsController->index($request);
+
     $salesOfficersController = new UsersController();
     $request->request->add(['role_id' => 6]);
     $salesOfficersResponse = $salesOfficersController->index($request);
@@ -73,6 +77,7 @@ class UsersController extends Controller
       'company_designations'  =>  $companyDesignationsResponse->getData()->data,
       'company_states'        =>  $companyStatesResponse->getData()->data,
       'beat_types'            =>  $beatTypes,
+      'supervisors'           =>  $supervisorsResponse->getData()->data,
       'sales_officers'        =>  $salesOfficersResponse->getData()->data,
       'area_managers'         =>  $areaManagersResponse->getData()->data,
       'regional_managers'     =>  $regionalManagersResponse->getData()->data,

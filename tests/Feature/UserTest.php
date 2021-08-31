@@ -376,6 +376,7 @@ class UserTest extends TestCase
             'so_id', 'asm_id', 'rms_id', 'nsm_id', 'distributor_id',
             'region',
             'state_code',
+            'supervisor_id',
             'roles',
             'companies',
             'notifications',
@@ -499,7 +500,8 @@ class UserTest extends TestCase
             'beat_type_id',
             'so_id', 'asm_id', 'rms_id', 'nsm_id', 'distributor_id',
             'region',
-            'state_code'
+            'state_code',
+            'supervisor_id'
           ],
           'success'
         ]);
@@ -623,7 +625,8 @@ class UserTest extends TestCase
             'beat_type_id',
             'so_id', 'asm_id', 'rms_id', 'nsm_id', 'distributor_id',
             'region',
-            'state_code'
+            'state_code',
+            'supervisor_id'
           ],
           'success'
         ]);
