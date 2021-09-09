@@ -23,6 +23,9 @@ class UserReferencePlansController extends Controller
     $referencePlanResponse = $referencePlanController->index($request);
 
     $days = [
+      [ 'id'    =>  0,
+        'value' => 'ALL'
+      ],
       [ 'id'    =>  1,
         'value' => 'MONDAY'
       ], 
