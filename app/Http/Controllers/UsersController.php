@@ -116,6 +116,7 @@ class UsersController extends Controller
         ->where('name', 'LIKE', '%' . $request->searchEmp . '%')
         ->orWhere('email', 'LIKE', '%' . $request->searchEmp . '%')
         ->orWhere('phone', 'LIKE', '%' . $request->searchEmp . '%')
+        ->orWhere('employee_code', 'LIKE', '%' . $request->searchEmp . '%')
         ->latest()->get();
     } else if ($request->report) {
       $now = Carbon::now();
