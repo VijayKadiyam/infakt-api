@@ -102,7 +102,6 @@ class CrudeUsersController extends Controller
           ];
           $userData = User::find($user_id);
           $userData->update($data);
-          return $userData;
         }
       }
     }
