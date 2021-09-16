@@ -92,6 +92,7 @@ class SkusController extends Controller
       $orders = $orders->latest()->get();
 
       foreach ($skus as $sku) {
+        $sku['mrp_price'] = $sku->price;
         $skuStocks = [];
         foreach ($stocks as $stock) {
           if($sku['id'] == $stock['sku_id']) 
