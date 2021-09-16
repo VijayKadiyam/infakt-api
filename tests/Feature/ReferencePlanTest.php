@@ -11,7 +11,7 @@ use App\ReferencePlan;
 class ReferencePlanTest extends TestCase
 {
   use DatabaseTransactions;
-  
+
   public function setUp()
   {
     parent::setUp();
@@ -23,10 +23,10 @@ class ReferencePlanTest extends TestCase
     $this->headers['company-id'] = $this->company->id;
 
     factory(\App\ReferencePlan::class)->create([
-      'company_id'  =>  $this->company->id 
+      'company_id'  =>  $this->company->id
     ]);
 
-    $this->payload = [ 
+    $this->payload = [
       'name'     =>  'CST',
     ];
   }
@@ -35,7 +35,7 @@ class ReferencePlanTest extends TestCase
   function user_must_be_logged_in_before_accessing_the_controller()
   {
     $this->json('post', '/api/reference_plans')
-      ->assertStatus(401); 
+      ->assertStatus(401);
   }
 
   /** @test */
@@ -44,11 +44,11 @@ class ReferencePlanTest extends TestCase
     $this->json('post', '/api/reference_plans', [], $this->headers)
       ->assertStatus(422)
       ->assertExactJson([
-          "errors"  =>  [
-            "name"    =>  ["The name field is required."]
-          ],
-          "message" =>  "The given data was invalid."
-        ]);
+        "errors"  =>  [
+          "name"    =>  ["The name field is required."]
+        ],
+        "message" =>  "The given data was invalid."
+      ]);
   }
 
   /** @test */
@@ -58,34 +58,34 @@ class ReferencePlanTest extends TestCase
     $this->json('post', '/api/reference_plans', $this->payload, $this->headers)
       ->assertStatus(201)
       ->assertJson([
-          'data'   =>[
-            'name' => 'CST'
-          ]
-        ])
+        'data'   => [
+          'name' => 'CST'
+        ]
+      ])
       ->assertJsonStructureExact([
-          'data'   => [
-            'name',
-            'company_id',
-            'updated_at',
-            'created_at',
-            'id'
-          ]
-        ]);
+        'data'   => [
+          'name',
+          'company_id',
+          'updated_at',
+          'created_at',
+          'id'
+        ]
+      ]);
   }
 
   /** @test */
   function list_of_reference_plans()
   {
-    $this->json('GET', '/api/reference_plans',[], $this->headers)
+    $this->json('GET', '/api/reference_plans', [], $this->headers)
       ->assertStatus(200)
       ->assertJsonStructure([
-          'data' => [
-            0=>[
-              'name'
-            ] 
+        'data' => [
+          0 => [
+            'name'
           ]
-        ]);
-      $this->assertCount(1, ReferencePlan::all());
+        ]
+      ]);
+    $this->assertCount(1, ReferencePlan::all());
   }
 
   /** @test */
@@ -95,35 +95,63 @@ class ReferencePlanTest extends TestCase
     $this->json('get', "/api/reference_plans/1", [], $this->headers)
       ->assertStatus(200)
       ->assertJson([
-          'data'  => [
-            'name'=> 'Mulund',
-          ]
-        ]);
+        'data'  => [
+          'name' => 'Mulund',
+        ]
+      ]);
   }
 
   /** @test */
   function update_single_reference_plan()
   {
-    $payload = [ 
+    $payload = [
       'name'  =>  'Mulund Updated'
     ];
 
     $this->json('patch', '/api/reference_plans/1', $payload, $this->headers)
       ->assertStatus(200)
       ->assertJson([
-          'data'    => [
-            'name'  =>  'Mulund Updated',
-          ]
-       ])
+        'data'    => [
+          'name'  =>  'Mulund Updated',
+        ]
+      ])
       ->assertJsonStructureExact([
-          'data'  => [
-            'id',
-            'company_id',
-            'name',
-            'created_at',
-            'updated_at',
-            'town'
+        'data'  => [
+          'id',
+          'company_id',
+          'name',
+          'created_at',
+          'updated_at',
+          'town'
+        ]
+      ]);
+  }
+
+  /** @test */
+  function Beats_mapping()
+  {
+    $this->disableEH();
+    // $payload = [
+    //   'name'                 => 'sangeetha',
+    //   'phone'                => 9844778380,
+    //   'email'                => 'sangeetha@gmail.com',
+    //   'doj'               =>  '12-02-2019',
+    //   'dob'               =>  '04-05-1992',
+    //   'company_designation_id'  =>  1,
+    //   'company_state_id' => 1,
+    //   'company_state_branch_id' => 1,
+    //   'pf_no'                   =>  '1234567654',
+    //   'uan_no'                  =>  '1234565432',
+    //   'esi_no'                  =>  '234565'
+    // ];
+    $this->json('post', '/api/reference_plans/beats_mapping', $this->payload, $this->headers)
+      ->assertStatus(201)
+      ->assertJsonStructure([
+        'data' => [
+          0 => [
+            'name'
           ]
+          ],'success'
       ]);
   }
 }

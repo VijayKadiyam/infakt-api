@@ -8,6 +8,9 @@ use App\ReferencePlan;
 use App\UserReferencePlan;
 use App\User;
 use App\Order;
+use App\Retailer;
+use App\Sku;
+use App\Stock;
 use Carbon\Carbon;
 
 class ReferencePlansController extends Controller
@@ -26,14 +29,14 @@ class ReferencePlansController extends Controller
   {
     $reference_plans = [];
     $count = 0;
-    if($request->userId && $request->weekNo && $request->day) {
+    if ($request->userId && $request->weekNo && $request->day) {
       $user = User::find($request->userId);
       $whichWeek = $request->weekNo / 12;
-      if($user->beat_type_id == 1)
+      if ($user->beat_type_id == 1)
         $whichWeek = 1;
-      else if($user->beat_type_id == 2 && $whichWeek == 3)
+      else if ($user->beat_type_id == 2 && $whichWeek == 3)
         $whichWeek = 1;
-      else if($user->beat_type_id == 2 && $whichWeek == 4)
+      else if ($user->beat_type_id == 2 && $whichWeek == 4)
         $whichWeek = 2;
       // $whichWeek = 1;
       // if($user->beat_type_id != null) {
@@ -47,7 +50,7 @@ class ReferencePlansController extends Controller
         ->get();
 
       $totalOrderValue = 0;
-      foreach($user_reference_plans as $user_reference_plan) {
+      foreach ($user_reference_plans as $user_reference_plan) {
         $referencePlanNames[] = $user_reference_plan->reference_plan->name;
         $totalOutlets = sizeof($user_reference_plan->reference_plan->retailers);
         $rfmtd = 0;
@@ -59,7 +62,7 @@ class ReferencePlansController extends Controller
             // ->whereMonth('created_at', Carbon::now()->month)
             ->with('order_details')
             ->get();
-          if(sizeof($orders) > 0)  {
+          if (sizeof($orders) > 0) {
             $ordersTaken++;
             foreach ($orders as $order) {
               $rfmtd += $order->total;
@@ -73,7 +76,6 @@ class ReferencePlansController extends Controller
             $retailer['l3m']  = $rfmtd;;
             $retailer['is_done'] = 'N';
           }
-
         }
 
         $user_reference_plan->reference_plan['total_outlets'] = $totalOutlets;
@@ -84,7 +86,7 @@ class ReferencePlansController extends Controller
 
         $reference_plans[] = $user_reference_plan->reference_plan;
       }
-    } else 
+    } else
       $reference_plans = request()->company->reference_plans;
 
     $count = sizeof($reference_plans);
@@ -112,7 +114,7 @@ class ReferencePlansController extends Controller
 
     return response()->json([
       'data'    =>  $referencePlan
-    ], 201); 
+    ], 201);
   }
 
   /*
@@ -124,7 +126,7 @@ class ReferencePlansController extends Controller
   {
     return response()->json([
       'data'   =>  $referencePlan
-    ], 200);   
+    ], 200);
   }
 
   /*
@@ -139,9 +141,84 @@ class ReferencePlansController extends Controller
     ]);
 
     $referencePlan->update($request->all());
-      
+
     return response()->json([
       'data'  =>  $referencePlan
     ], 200);
+  }
+
+  /*
+   * Mapping  Beats To user,Distributor & SKU
+   *
+   *@
+   */
+  public function Beats_Mapping(Request $request)
+  {
+    ini_set("memory_limit", "10056M");
+    $AllBeats = ReferencePlan::all();
+    // Beats[ReferencePlan] Loop
+    foreach ($AllBeats as $key => $beat) {
+      // Create beat user
+      $user_reference_plans = UserReferencePlan::where('reference_plan_id', $beat->id)->get();
+
+      // Create Distributor Of the User
+      $Distributor  = $request->all();
+      $Distributor['name'] = $beat->name;
+      $Distributor['password'] = bcrypt('123456');
+      $Distributor['password_backup'] = bcrypt('123456');
+      $Distributor['email'] = str_replace(" ", "", $beat->name).mt_rand(1,9999) . '@distributor';
+      $Distributor = new User($Distributor);
+      $Distributor->save();
+
+      $Distributor->assignRole(10);
+      $Distributor->roles = $Distributor->roles;
+      $Distributor->assignCompany($request->company->id);
+      $Distributor->companies = $Distributor->companies;
+      // Map Distributor to beat User
+      $Distributor_ID = $Distributor->id;
+      foreach ($user_reference_plans as $key => $beat_user) {
+        $Update_User = User::where('id', $beat_user->id)
+          ->update(['distributor_id' => $Distributor_ID]);
+      }
+
+      // Create Retailer[Outlet] Of Beat 
+      $retailer_Data = [
+        'name' => $beat->name,
+        'address' => $beat->town
+      ];
+      $retailer = new Retailer($retailer_Data);
+      $beat->retailers()->save($retailer);
+
+      // SKUs Loop
+      // // $skus = request()->company->skus;
+      $sku_data = [
+        'name' => "Sku 1",
+        'company_id' => $request->company->id,
+      ];
+      $sku = new Sku($sku_data);
+      $sku->save();
+
+      $skus = Sku::all();
+      $i = 5000;
+      foreach ($skus as $key => $sku) {
+        // Create SKUs Stock Based On the Distributor Data  
+        $stock_data = [
+          'sku_id' => $sku->id,
+          'qty' => false,
+          'price' => false,
+          'invoice_no' => 'invoice' . $i,
+          'total' => false,
+          'distributor_id' => $Distributor_ID,
+          'sku_type_id' => 1,
+        ];
+        $stock = new Stock($stock_data);
+        $sku->stocks()->save($stock);
+        $i++;;
+      }
+    }
+    return response()->json([
+      'data'=>$AllBeats,
+      'success'  =>  true
+    ], 201);
   }
 }
