@@ -107,6 +107,9 @@ Route::get('sales/single-employee-sales-email', 'SalesController@singleEmployeeS
 // Route::resource('stocks/{stock}/sales', 'SalesController');
 
 Route::resource('reference_plans', 'ReferencePlansController');
+Route::post('reference_plans/beats_mapping', 'ReferencePlansController@Beats_Mapping');
+Route::post('users/beats_mapping', 'UsersController@Beats_Mapping');
+
 Route::get('/retailers/masters', 'RetailersController@masters');
 Route::get('/retailers', 'RetailersController@list_of_retailer');
 Route::resource('reference_plans/{reference_plan}/retailers', 'RetailersController');
