@@ -154,15 +154,18 @@ class ReferencePlansController extends Controller
    */
   public function Beats_Mapping(Request $request)
   {
-    ini_set("memory_limit", "10056M");
+    ini_set('max_execution_time', 1000);
+
     $AllBeats = ReferencePlan::all();
+
     // Beats[ReferencePlan] Loop
     foreach ($AllBeats as $key => $beat) {
+
       // Create beat user
       $user_reference_plans = UserReferencePlan::where('reference_plan_id', $beat->id)->get();
 
       // Create Distributor Of the User
-      $Distributor  = $request->all();
+      $Distributor  = [];
       $Distributor['name'] = $beat->name;
       $Distributor['password'] = bcrypt('123456');
       $Distributor['password_backup'] = bcrypt('123456');
@@ -174,10 +177,11 @@ class ReferencePlansController extends Controller
       $Distributor->roles = $Distributor->roles;
       $Distributor->assignCompany($request->company->id);
       $Distributor->companies = $Distributor->companies;
+
       // Map Distributor to beat User
       $Distributor_ID = $Distributor->id;
       foreach ($user_reference_plans as $key => $beat_user) {
-        $Update_User = User::where('id', $beat_user->id)
+        $Update_User = User::where('id', $beat_user->user_id)
           ->update(['distributor_id' => $Distributor_ID]);
       }
 
@@ -191,21 +195,22 @@ class ReferencePlansController extends Controller
 
       // SKUs Loop
       // // $skus = request()->company->skus;
-      $sku_data = [
-        'name' => "Sku 1",
-        'company_id' => $request->company->id,
-      ];
-      $sku = new Sku($sku_data);
-      $sku->save();
+      // $sku_data = [
+      //   'name' => "Sku 1",
+      //   'company_id' => $request->company->id,
+      // ];
+      // $sku = new Sku($sku_data);
+      // $sku->save();
 
       $skus = Sku::all();
       $i = 5000;
       foreach ($skus as $key => $sku) {
+
         // Create SKUs Stock Based On the Distributor Data  
         $stock_data = [
           'sku_id' => $sku->id,
           'qty' => false,
-          'price' => false,
+          'price' => $sku->price,
           'invoice_no' => 'invoice' . $i,
           'total' => false,
           'distributor_id' => $Distributor_ID,
@@ -213,7 +218,7 @@ class ReferencePlansController extends Controller
         ];
         $stock = new Stock($stock_data);
         $sku->stocks()->save($stock);
-        $i++;;
+        $i++;
       }
     }
     return response()->json([
