@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateSkus6Table extends Migration
+class UpdateRetailers8Tabl extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class UpdateSkus6Table extends Migration
      */
     public function up()
     {
-        Schema::table('skus', function (Blueprint $table) {
-            $table->float('price')->default(0);
+        Schema::table('retailers', function (Blueprint $table) {
+            $table->float('latitude')->nullable();
+            $table->float('longitude')->nullable();
         });
     }
 
@@ -25,8 +26,6 @@ class UpdateSkus6Table extends Migration
      */
     public function down()
     {
-        Schema::table('skus', function (Blueprint $table) {
-            //
-        });
+        //
     }
 }

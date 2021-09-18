@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Role;
 use \Carbon\Carbon;
+use App\Sku;
+use App\Stock;
 
 class UsersController extends Controller
 {
@@ -116,6 +118,7 @@ class UsersController extends Controller
         ->where('name', 'LIKE', '%' . $request->searchEmp . '%')
         ->orWhere('email', 'LIKE', '%' . $request->searchEmp . '%')
         ->orWhere('phone', 'LIKE', '%' . $request->searchEmp . '%')
+        ->orWhere('employee_code', 'LIKE', '%' . $request->searchEmp . '%')
         ->latest()->get();
     } else if ($request->report) {
       $now = Carbon::now();
@@ -180,7 +183,10 @@ class UsersController extends Controller
       'role_id'                 =>  'required',
     ]);
 
-    $user  = $request->all();
+    // $user  = $request->all();
+    $user['name'] = $request->name;
+    $user['email'] = $request->email;
+    $user['phone'] = $request->phone;
     $user['password'] = bcrypt('123456');
     $user['password_backup'] = bcrypt('123456');
     // $password = mt_rand(100000, 999999);
@@ -194,6 +200,26 @@ class UsersController extends Controller
     $user->roles = $user->roles;
     $user->assignCompany($request->company_id);
     $user->companies = $user->companies;
+
+    if($request->role_id == 10) {
+      $skus = Sku::all();
+      $i = 5000;
+      foreach ($skus as $key => $sku) {
+        // Create SKUs Stock Based On the Distributor Data  
+        $stock_data = [
+          'sku_id' => $sku->id,
+          'qty' => false,
+          'price' => $sku->price,
+          'invoice_no' => 'invoice' . $user->name . $i,
+          'total' => false,
+          'distributor_id' => $user->id,
+          'sku_type_id' => 1,
+        ];
+        $stock = new Stock($stock_data);
+        $sku->stocks()->save($stock);
+        $i++;
+      }
+    }
 
     return response()->json([
       'data'     =>  $user

@@ -66,10 +66,14 @@ class UploadsController extends Controller
       Storage::disk('local')->put($imagePath, file_get_contents($file), 'public');
 
       $retailer = Retailer::where('id', '=', request()->retailerid)->first();
-      if($request->lat)
+      if($request->lat) {
         $retailer->lat =$request->lat;
-      if($request->lng)
+        $retailer->latitude =$request->lat;
+      }
+      if($request->lng) {
         $retailer->lng =$request->lng;
+        $retailer->longitude =$request->lng;
+      }
       $retailer->image_path = $imagePath;
       $retailer->update();
     }

@@ -9,6 +9,7 @@ use App\Stock;
 use App\User;
 use App\Order;
 use Carbon\Carbon;
+use App\UserReferencePlan;
 
 class SkusController extends Controller
 {
@@ -74,22 +75,33 @@ class SkusController extends Controller
       $count = $skus->count();
       $skus = $skus->paginate(request()->rowsPerPage)->toArray();
       $skus = $skus['data'];
-    } else {
+    } 
+    else if(request()->search) {
+      $skus = request()->company->skus()
+        ->where('name', 'LIKE', '%' . $request->search . '%')
+        ->get();
+    }
+    else {
       $skus = request()->company->skus; 
       $count = $skus->count();
     }
 
     $user = User::find($request->userId);
-    // if($user) {
-      $stocks = Stock::whereYear('created_at', Carbon::now());
+    // // if($user) {
+      
+      $stocks = [];
       if($user)
-        $stocks = $stocks->where('distributor_id', '=', $user->distributor_id);
-      $stocks = $stocks->latest()->get();
+        $stocks = Stock::whereYear('created_at', Carbon::now())
+          ->whereMonth('created_at', Carbon::now())
+          ->where('distributor_id', '=', $user->distributor_id)
+          ->latest()->get();
 
-      $orders = Order::whereYear('created_at', Carbon::now());
+      $orders = [];
       if($user)
-        $orders = $orders->where('distributor_id', '=', $user->distributor_id);
-      $orders = $orders->latest()->get();
+        $orders = Order::whereYear('created_at', Carbon::now())
+          ->whereMonth('created_at', Carbon::now())
+          ->where('distributor_id', '=', $user->distributor_id)
+          ->latest()->get();
 
       foreach ($skus as $sku) {
         $sku['mrp_price'] = $sku->price;
@@ -173,9 +185,12 @@ class SkusController extends Controller
    *
    *@
    */
-  public function show(Product $product, Sku $sku)
+  public function show(Product $product, $sku)
   {
-    return response()->json([
+    $sku = Sku::where('id', '=', $sku)
+      ->first();
+    
+      return response()->json([
       'data'   =>  $sku
     ], 200);
   }
