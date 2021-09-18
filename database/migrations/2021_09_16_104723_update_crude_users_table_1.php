@@ -20,7 +20,7 @@ class UpdateCrudeUsersTable1 extends Migration
            $table->string('billing_code',50)->nullable();
            $table->string('store_code',50)->nullable();
            $table->renameColumn('name','store_name',50)->nullable();
-           $table->renameColumn('email','store_address',50)->nullable();
+        //    $table->renameColumn('email','store_address',50)->nullable();
            $table->string('ba_name',50)->nullable();
            $table->string('location',100)->nullable();
            $table->string('city',50)->nullable();
