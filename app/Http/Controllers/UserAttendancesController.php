@@ -34,30 +34,54 @@ class UserAttendancesController extends Controller
    */
   public function index(Request $request)
   {
-    $userAttendances = request()->company->user_attendances();
+    $supervisors = User::with('roles')
+      ->whereHas('roles',  function ($q) {
+        $q->where('name', '=', 'SUPERVISOR');
+      })->orderBy('name')->get();
+    // return $supervisors;
 
-    if($request->date && $request->month == null && $request->year == null && $request->userId == null) {
-      $userAttendances = $userAttendances->where('date', '=', $request->date);
+    $User_Attendances = [];
+    foreach ($supervisors as $supervisor) {
+
+      $users = User::where('supervisor_id', '=', $supervisor->id)->get();
+
+      foreach ($users as $user) {
+
+        $userAttendances = request()->company->user_attendances()->where('user_id', '=', $user->id);
+
+        if ($request->date && $request->month == null && $request->year == null && $request->userId == null) {
+          $userAttendances = $userAttendances->where('date', '=', $request->date);
+        }
+        if ($request->date && $request->month == null && $request->year == null) {
+          $userAttendances = $userAttendances->where('date', '=', $request->date);
+        }
+        if ($request->month) {
+          $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
+        }
+        if ($request->year) {
+          $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
+        }
+        if ($request->userId) {
+          $userAttendances = $userAttendances->where('user_id', '=', $request->userId);
+        }
+        if ($request->supervisorId) {
+          $supervisorId = $request->supervisorId;
+          $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
+            $q->where('supervisor_id', '=', $supervisorId);
+          });
+        }
+        $userAttendances = $userAttendances->get();
+        if (count($userAttendances) != 0) {
+          foreach ($userAttendances as $attendance)
+            $User_Attendances[] = $attendance;
+        }
+      }
+
     }
-    if($request->date && $request->month == null && $request->year == null) {
-      $userAttendances = $userAttendances->where('date', '=', $request->date);
-    }
-    if($request->month) {
-      $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
-    }
-    if($request->year) {
-      $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
-    }
-    if($request->userId) {
-      $userAttendances = $userAttendances->where('user_id', '=', $request->userId);
-    }
-    if($request->supervisorId) {
-      $supervisorId = $request->supervisorId;
-      $userAttendances = $userAttendances->whereHas('user',  function ($q) use($supervisorId) {
-        $q->where('supervisor_id', '=', $supervisorId);
-      });
-    }
-    $userAttendances = $userAttendances->get();
+
+
+
+    // $userAttendances = $userAttendances->get();
 
     // else if($request->month && $request->userid) {
     //   $userAttendances = UserAttendance::with('user_attendance_breaks')
@@ -89,7 +113,8 @@ class UserAttendancesController extends Controller
 
 
     return response()->json([
-      'data'     =>  $userAttendances,
+      'data'     =>  $User_Attendances,
+      // 'data'     =>  $userAttendances,
       'success' =>  true
     ], 200);
   }
@@ -109,7 +134,7 @@ class UserAttendancesController extends Controller
       // 'login_lng'   =>  'required',
       // 'logout_lat'  =>  'required',
       // 'logout_lng'  =>  'required'
-    ]); 
+    ]);
 
     $userAttendance = new UserAttendance($request->all());
     $userAttendance->company_id = request()->company->id;
@@ -127,15 +152,14 @@ class UserAttendancesController extends Controller
     // $battery = '-';
     // $address = $address;
 
-    
-    
+
+
     // $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
 
 
     $geocodesController = new GeocodesController();
-    if($user->so != null) {
-      if($userAttendance->login_time && $userAttendance->login_lat)
-      {
+    if ($user->so != null) {
+      if ($userAttendance->login_time && $userAttendance->login_lat) {
         // $request->request->add(['lat' => $userAttendance->login_lat]);
         // $request->request->add(['lng' => $userAttendance->login_lng]);
 
@@ -149,14 +173,13 @@ class UserAttendancesController extends Controller
         $lng = $userAttendance->login_lng;
         $battery = '-';
         $address = $address;
-        
+
         Mail::to($user->so->email)->send(new UserAttendanceMail($user, $userAttendance));
         $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
       }
     }
-    if(sizeof($user->supervisors) > 0)
-      if($userAttendance->login_time && $userAttendance->login_lat)
-      {
+    if (sizeof($user->supervisors) > 0)
+      if ($userAttendance->login_time && $userAttendance->login_lat) {
         $request->request->add(['lat' => $userAttendance->login_lat]);
         $request->request->add(['lng' => $userAttendance->login_lng]);
 
@@ -169,7 +192,7 @@ class UserAttendancesController extends Controller
         $lng = $userAttendance->login_lng;
         $battery = '-';
         $address = $address;
-        
+
         $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
       }
 
@@ -180,7 +203,7 @@ class UserAttendancesController extends Controller
     //   $checkLocation = UserLocation::whereDate('created_at', '=', Carbon::parse($userAttendance->created_at)->format('Y-m-d'))
     //     ->where('user_id', '=', $user->id)
     //     ->latest()->first();
-      
+
     //   if($checkLocation) {
     //   // if($request->user()->id == 375) {
     //     if($checkLocation->content['coords']['latitude'])
@@ -199,7 +222,7 @@ class UserAttendancesController extends Controller
     //     $lng = $checkLocation->content['coords']['longitude'];
     //     $battery = $checkLocation->content['battery']['level'];
     //     $address = $checkLocation->address;
-        
+
     //     $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
     //     $this->sendSMS('9820704909', $name, $date, $time, $lat, $lng, $battery, $address);
     //     $this->sendSMS('9579862371', $name, $date, $time, $lat, $lng, $battery, $address);
@@ -209,7 +232,7 @@ class UserAttendancesController extends Controller
     return response()->json([
       'data'    =>  $userAttendance,
       'success' =>  true
-    ], 201); 
+    ], 201);
   }
 
   /*
@@ -221,7 +244,7 @@ class UserAttendancesController extends Controller
   {
     return response()->json([
       'data'   =>  $userAttendance
-    ], 200);   
+    ], 200);
   }
 
   /*
@@ -246,15 +269,14 @@ class UserAttendancesController extends Controller
     $user = User::find($userAttendance->user_id);
 
     $geocodesController = new GeocodesController();
-    if(sizeof($user->supervisors) > 0) {
+    if (sizeof($user->supervisors) > 0) {
       $checkLocation = UserLocation::whereDate('created_at', '=', Carbon::parse($userAttendance->created_at)->format('Y-m-d'))
         ->where('user_id', '=', $user->id)
         ->latest()->first();
-      
-      if($checkLocation) {
-      // if($request->user()->id == 375) {
-        if($checkLocation->content['coords']['latitude'])
-        {
+
+      if ($checkLocation) {
+        // if($request->user()->id == 375) {
+        if ($checkLocation->content['coords']['latitude']) {
           $request->request->add(['lat' => $checkLocation->content['coords']['latitude']]);
           $request->request->add(['lng' => $checkLocation->content['coords']['longitude']]);
         }
@@ -269,14 +291,13 @@ class UserAttendancesController extends Controller
         $lng = $checkLocation->content['coords']['longitude'];
         $battery = $checkLocation->content['battery']['level'] * 100;
         $address = $checkLocation->address;
-        
+
         $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
         $this->sendSMS('9820704909', $name, $date, $time, $lat, $lng, $battery, $address);
         $this->sendSMS('9579862371', $name, $date, $time, $lat, $lng, $battery, $address);
       } else {
-        if(sizeof($user->supervisors) > 0)
-          if($userAttendance->logout_time && $userAttendance->logout_lat)
-          {
+        if (sizeof($user->supervisors) > 0)
+          if ($userAttendance->logout_time && $userAttendance->logout_lat) {
             $request->request->add(['lat' => $userAttendance->logout_lat]);
             $request->request->add(['lng' => $userAttendance->logout_lng]);
 
@@ -289,14 +310,14 @@ class UserAttendancesController extends Controller
             $lng = $userAttendance->logout_lng;
             $battery = $userAttendance->battery;
             $address = $address;
-            
+
             $this->sendSMS($phone, $name, $date, $time, $lat, $lng, $battery, $address);
           }
       }
     }
 
     // $userLocation = UserLocation::whereDate('created_at', '=', Carbon::parse($date)->format('Y-m-d'))->first();
-      
+
     return response()->json([
       'data'  =>  $userAttendance,
       'success' =>  true
