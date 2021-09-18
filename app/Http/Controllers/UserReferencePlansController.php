@@ -74,7 +74,19 @@ class UserReferencePlansController extends Controller
       $count = $user_reference_plans->count();
       $user_reference_plans = $user_reference_plans->paginate(request()->rowsPerPage)->toArray();
       $user_reference_plans = $user_reference_plans['data'];
-    } else {
+    } 
+    else if(request()->search) {
+      $sr = request()->search;
+      $user_reference_plans = request()->company->user_reference_plans()
+        ->whereHas('user',  function ($q) use($sr) {
+          $q->where('name', 'LIKE', '%' . $sr . '%');
+          $q->orWhere('email', 'LIKE', '%' . $sr . '%');
+          $q->orWhere('phone', 'LIKE', '%' . $sr . '%');
+          $q->orWhere('employee_code', 'LIKE', '%' . $sr . '%');
+        })
+        ->get();
+    }
+    else {
       $user_reference_plans = request()->company->user_reference_plans; 
       $count = $user_reference_plans->count();
     }

@@ -75,7 +75,13 @@ class SkusController extends Controller
       $count = $skus->count();
       $skus = $skus->paginate(request()->rowsPerPage)->toArray();
       $skus = $skus['data'];
-    } else {
+    } 
+    else if(request()->search) {
+      $skus = request()->company->skus()
+        ->where('name', 'LIKE', '%' . $request->search . '%')
+        ->get();
+    }
+    else {
       $skus = request()->company->skus; 
       $count = $skus->count();
     }
@@ -179,9 +185,12 @@ class SkusController extends Controller
    *
    *@
    */
-  public function show(Product $product, Sku $sku)
+  public function show(Product $product, $sku)
   {
-    return response()->json([
+    $sku = Sku::where('id', '=', $sku)
+      ->first();
+    
+      return response()->json([
       'data'   =>  $sku
     ], 200);
   }

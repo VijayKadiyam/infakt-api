@@ -86,10 +86,22 @@ class ReferencePlansController extends Controller
 
         $reference_plans[] = $user_reference_plan->reference_plan;
       }
-    } else
+    } 
+    else if(request()->search) {
+      $reference_plans = request()->company->reference_plans()
+        ->where('name', 'LIKE', '%' . $request->search . '%')
+        ->get();
+    }
+    else if (request()->page && request()->rowsPerPage) {
+      $reference_plans = request()->company->reference_plans();
+      $count = $reference_plans->count();
+      $reference_plans = $reference_plans->paginate(request()->rowsPerPage)->toArray();
+      $reference_plans = $reference_plans['data'];
+    }
+    else
       $reference_plans = request()->company->reference_plans;
 
-    $count = sizeof($reference_plans);
+    // $count = sizeof($reference_plans);
 
     return response()->json([
       'data'     =>  $reference_plans,
