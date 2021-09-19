@@ -34,11 +34,76 @@ class UserAttendancesController extends Controller
    */
   public function index(Request $request)
   {
+
+    $userAttendances = request()->company->user_attendances();
+
+    if ($request->date && $request->month == null && $request->year == null && $request->userId == null) {
+      $userAttendances = $userAttendances->where('date', '=', $request->date);
+    }
+    if ($request->date && $request->month == null && $request->year == null) {
+      $userAttendances = $userAttendances->where('date', '=', $request->date);
+    }
+    if ($request->month) {
+      $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
+    }
+    if ($request->year) {
+      $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
+    }
+    if ($request->userId) {
+      $userAttendances = $userAttendances->where('user_id', '=', $request->userId);
+    }
+    if ($request->supervisorId) {
+      $supervisorId = $request->supervisorId;
+      $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
+        $q->where('supervisor_id', '=', $supervisorId);
+      });
+    }
+
+    $userAttendances = $userAttendances->get();
+
+    // $userAttendances = $userAttendances->get();
+
+    // else if($request->month && $request->userid) {
+    //   $userAttendances = UserAttendance::with('user_attendance_breaks')
+    //                       ->whereMonth('date', '=', $request->month)
+    //                       ->where('user_id', '=', $request->userid)
+    //                       ->latest()->get();
+    // }
+    // else if($request->month) {
+    //   $userAttendances = UserAttendance::with('user_attendance_breaks')
+    //                       ->whereMonth('date', '=', $request->month)
+    //                       ->where('user_id', '=', $request->user()->id)->latest()->get();
+    // }
+
+    // if($request->searchDate) {
+    //   $date = $request->searchDate;
+    //   $userAttendances = request()->company->users()->with(['user_attendances' => function($q) use($date) {
+    //       $q->where('date', '=', $date);
+    //     }])->get();
+    // }
+
+
+    // if($request->fromDate & $request->toDate) {
+    //   $fromDate = date($request->fromDate);
+    //   $toDate = date($request->toDate);
+    //   $userAttendances = request()->company->users()->with(['user_attendances' => function($q) use($fromDate, $toDate) {
+    //       $q->whereBetween('date', [$fromDate, $toDate]);
+    //     }])->get();
+    // }
+
+
+    return response()->json([
+      'data'     =>  $userAttendances,
+      'success' =>  true
+    ], 200);
+  }
+// user Atteandance for client
+  public function user_attendance(Request $request)
+  {
     $supervisors = User::with('roles')
       ->whereHas('roles',  function ($q) {
         $q->where('name', '=', 'SUPERVISOR');
       })->orderBy('name')->get();
-    // return $supervisors;
 
     $User_Attendances = [];
     foreach ($supervisors as $supervisor) {
@@ -76,45 +141,10 @@ class UserAttendancesController extends Controller
             $User_Attendances[] = $attendance;
         }
       }
-
     }
-
-
-
-    // $userAttendances = $userAttendances->get();
-
-    // else if($request->month && $request->userid) {
-    //   $userAttendances = UserAttendance::with('user_attendance_breaks')
-    //                       ->whereMonth('date', '=', $request->month)
-    //                       ->where('user_id', '=', $request->userid)
-    //                       ->latest()->get();
-    // }
-    // else if($request->month) {
-    //   $userAttendances = UserAttendance::with('user_attendance_breaks')
-    //                       ->whereMonth('date', '=', $request->month)
-    //                       ->where('user_id', '=', $request->user()->id)->latest()->get();
-    // }
-
-    // if($request->searchDate) {
-    //   $date = $request->searchDate;
-    //   $userAttendances = request()->company->users()->with(['user_attendances' => function($q) use($date) {
-    //       $q->where('date', '=', $date);
-    //     }])->get();
-    // }
-
-
-    // if($request->fromDate & $request->toDate) {
-    //   $fromDate = date($request->fromDate);
-    //   $toDate = date($request->toDate);
-    //   $userAttendances = request()->company->users()->with(['user_attendances' => function($q) use($fromDate, $toDate) {
-    //       $q->whereBetween('date', [$fromDate, $toDate]);
-    //     }])->get();
-    // }
-
 
     return response()->json([
       'data'     =>  $User_Attendances,
-      // 'data'     =>  $userAttendances,
       'success' =>  true
     ], 200);
   }
