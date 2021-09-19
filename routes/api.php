@@ -66,6 +66,7 @@ Route::resource('company_leaves', 'CompanyLeavesController');
 Route::resource('leave_types', 'LeaveTypesController');
 
 Route::get('user_attendances/masters', 'UserAttendancesController@masters');
+Route::get('user_attendances/user_attendance', 'UserAttendancesController@user_attendance');
 Route::resource('user_attendances', 'UserAttendancesController');
 Route::resource('user_attendances/{user_attendance}/user_attendance_breaks', 'UserAttendanceBreaksController');
 Route::resource('user_applications', 'UserApplicationsController');
