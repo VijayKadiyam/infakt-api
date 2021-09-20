@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Target extends Model
 {
   protected $fillable = [
-    'month', 'year', 'target', 'company_id'
+    'month', 'year', 'target', 'company_id', 'user_id'
   ];
 
   public function user()
