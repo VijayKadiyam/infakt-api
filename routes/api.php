@@ -344,3 +344,5 @@ Route::get('crude_targets', 'CrudeTargetsController@index');
 Route::post('upload_target', 'CrudeTargetsController@uploadTarget');
 Route::get('process_target', 'CrudeTargetsController@processTarget');
 Route::get('truncate_targets', 'CrudeTargetsController@truncate');
+
+Route::resource('channel_filters', 'ChannelFiltersController');
