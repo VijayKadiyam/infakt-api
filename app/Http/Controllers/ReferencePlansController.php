@@ -88,7 +88,7 @@ class ReferencePlansController extends Controller
       }
     } 
     else if(request()->search == 'all') 
-      $reference_plans = request()->company->reference_plans;
+    $reference_plans = request()->company->reference_plans;
     else if(request()->search) {
       $reference_plans = request()->company->reference_plans()
         ->where('name', 'LIKE', '%' . $request->search . '%')
