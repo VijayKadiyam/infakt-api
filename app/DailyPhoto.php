@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class DailyPhoto extends Model
 {
     protected $fillable = [
-        'user_id', 'image_path', 'description'
+        'user_id', 'image_path', 'description','title','date'
     ];
     
     public function users()

@@ -29,7 +29,9 @@ class DailyPhotoTest extends TestCase
 
         $this->payload = [ 
             'image_path'    =>  '2',
-            'description'   =>  'Descriptison 2'
+            'description'   =>  'Descriptison 2',
+            'title'   =>  'title 1',
+            'date'   =>  'date 1',
         ];
     }
 
@@ -55,13 +57,17 @@ class DailyPhotoTest extends TestCase
         ->assertJson([
             'data'  =>  [
                 'image_path'    =>  '2',
-                'description'   =>  'Descriptison 2'
+                'description'   =>  'Descriptison 2',
+                'title'   =>  'title 1',
+                'date'   =>  'date 1',
             ]
             ])
         ->assertJsonStructureExact([
             'data'  =>  [
                 'image_path',
                 'description',
+                'title',
+                'date',
                 'company_id',
                 'updated_at',
                 'created_at',
@@ -79,7 +85,9 @@ class DailyPhotoTest extends TestCase
             'data'  =>  [
                 0 =>  [
                 'image_path',
-                'description'
+                'description',
+                'title',
+                'date'
                 ] 
             ]
         ]);
@@ -89,12 +97,50 @@ class DailyPhotoTest extends TestCase
     /** @test */
     function show_single_daily_photo()
     {
-        $this->json('get', "/api/daily_photos/2", [], $this->headers)
+        $this->json('get', "/api/daily_photos/1", [], $this->headers)
         ->assertStatus(200)
         ->assertJson([
             'data'  => [
-                'image_path'    =>  '2',
-                'description'   =>  'Descriptison 2'
+                'image_path'    =>  '1',
+                'description'   =>  'Descriptison 1',
+                'title'   =>  'title 1',
+                'date'   =>  'date 1',
+            ]
+            ])
+        ->assertJsonStructureExact([
+            'data'    => [
+                'id',
+                'company_id',
+                'user_id',
+                'image_path',
+                'description',
+                
+                'created_at',
+                'updated_at',
+                'title',
+                'date',
+            ]
+            ]);
+    }
+
+    /** @test */
+    function update_single_daily_photo()
+    {
+        $payload = [ 
+            'image_path'    =>  '1',
+            'description'   =>  'Descriptison 1 Updated',
+            'title'   =>  'title 1',
+            'date'   =>  'date 1',
+        ];
+
+        $this->json('patch', '/api/daily_photos/1', $payload, $this->headers)
+        ->assertStatus(200)
+        ->assertJson([
+            'data'    => [
+                'image_path'    =>  '1',
+                'description'   =>  'Descriptison 1 Updated',
+                'title'   =>  'title 1',
+                'date'   =>  'date 1',
             ]
             ])
         ->assertJsonStructureExact([
@@ -105,34 +151,9 @@ class DailyPhotoTest extends TestCase
                 'image_path',
                 'description',
                 'created_at',
-                'updated_at'
-            ]
-            ]);
-    }
-
-    /** @test */
-    function update_single_daily_photo()
-    {
-        $payload = [ 
-            'image_path'    =>  '1',
-            'description'   =>  'Descriptison 1 Updated'
-        ];
-
-        $this->json('patch', '/api/daily_photos/1', $payload, $this->headers)
-        ->assertStatus(200)
-        ->assertJson([
-            'data'    => [
-                'image_path'    =>  '1',
-                'description'   =>  'Descriptison 1 Updated'
-            ]
-            ])
-        ->assertJsonStructureExact([
-            'data'    => [
-                'id',
-                'image_path',
-                'description',
-                'created_at',
-                'updated_at'
+                'updated_at',
+                'title',
+                'date'
             ]
             ]);
     }
