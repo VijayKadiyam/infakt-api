@@ -344,3 +344,9 @@ Route::get('crude_targets', 'CrudeTargetsController@index');
 Route::post('upload_target', 'CrudeTargetsController@uploadTarget');
 Route::get('process_target', 'CrudeTargetsController@processTarget');
 Route::get('truncate_targets', 'CrudeTargetsController@truncate');
+
+
+Route::get('crude_user_mappings', 'CrudeUserMappingsController@index');
+Route::post('upload_user_mapping', 'CrudeUserMappingsController@uploadUserMapping');
+Route::get('process_user_mapping', 'CrudeUserMappingsController@processUserMapping');
+Route::get('truncate_user_mappings', 'CrudeUserMappingsController@truncate');
