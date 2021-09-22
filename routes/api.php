@@ -87,6 +87,7 @@ Route::post('upload_profile', 'UploadController@uploadProfile');
 Route::post('upload_signature', 'UploadController@uploadSignature');
 Route::post('upload_bill/{id}', 'UploadController@uploadBill');
 Route::post('upload_retailer/{id}', 'UploadController@uploadRetailer');
+Route::post('upload_daily_photo', 'UploadController@uploadDailyPhotos');
 
 Route::resource('products', 'ProductsController');
 Route::get('productSkusStocks', 'ProductsController@productSkusStocks');
