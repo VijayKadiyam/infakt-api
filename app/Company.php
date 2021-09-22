@@ -392,6 +392,9 @@ class Company extends Model
     return $this->hasMany(Requisition::class);
   }
 
-  
+  public function channel_filters()
+  {
+    return $this->hasMany(ChannelFilter::class);
+  }
   
 }
