@@ -14,7 +14,7 @@ class UpdateSkus7Table extends Migration
     public function up()
     {
         Schema::table('skus', function (Blueprint $table) {
-            //
+            $table->string('main_category')->nullable();
         });
     }
 
