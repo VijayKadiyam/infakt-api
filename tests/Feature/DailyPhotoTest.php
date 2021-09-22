@@ -29,6 +29,10 @@ class DailyPhotoTest extends TestCase
 
         $this->payload = [ 
             'image_path'    =>  '2',
+            'image_path1'    =>  '1',
+            'image_path2'    =>  '1',
+            'image_path3'    =>  '1',
+            'image_path4'    =>  '1',
             'description'   =>  'Descriptison 2',
             'title'   =>  'title 1',
             'date'   =>  'date 1',
@@ -57,6 +61,10 @@ class DailyPhotoTest extends TestCase
         ->assertJson([
             'data'  =>  [
                 'image_path'    =>  '2',
+                'image_path1'    =>  '1',
+                'image_path2'    =>  '1',
+                'image_path3'    =>  '1',
+                'image_path4'    =>  '1',
                 'description'   =>  'Descriptison 2',
                 'title'   =>  'title 1',
                 'date'   =>  'date 1',
@@ -65,6 +73,10 @@ class DailyPhotoTest extends TestCase
         ->assertJsonStructureExact([
             'data'  =>  [
                 'image_path',
+                'image_path1',
+                'image_path2',
+                'image_path3',
+                'image_path4',
                 'description',
                 'title',
                 'date',
@@ -85,6 +97,10 @@ class DailyPhotoTest extends TestCase
             'data'  =>  [
                 0 =>  [
                 'image_path',
+                'image_path1',
+                'image_path2',
+                'image_path3',
+                'image_path4',
                 'description',
                 'title',
                 'date'
@@ -102,6 +118,10 @@ class DailyPhotoTest extends TestCase
         ->assertJson([
             'data'  => [
                 'image_path'    =>  '1',
+                'image_path1'    =>  '1',
+                'image_path2'    =>  '1',
+                'image_path3'    =>  '1',
+                'image_path4'    =>  '1',
                 'description'   =>  'Descriptison 1',
                 'title'   =>  'title 1',
                 'date'   =>  'date 1',
@@ -119,6 +139,10 @@ class DailyPhotoTest extends TestCase
                 'updated_at',
                 'title',
                 'date',
+                'image_path1',
+                'image_path2',
+                'image_path3',
+                'image_path4',
             ]
             ]);
     }
@@ -128,6 +152,10 @@ class DailyPhotoTest extends TestCase
     {
         $payload = [ 
             'image_path'    =>  '1',
+            'image_path1'    =>  '1',
+                'image_path2'    =>  '1',
+                'image_path3'    =>  '1',
+                'image_path4'    =>  '1',
             'description'   =>  'Descriptison 1 Updated',
             'title'   =>  'title 1',
             'date'   =>  'date 1',
@@ -138,6 +166,10 @@ class DailyPhotoTest extends TestCase
         ->assertJson([
             'data'    => [
                 'image_path'    =>  '1',
+                'image_path1'    =>  '1',
+                'image_path2'    =>  '1',
+                'image_path3'    =>  '1',
+                'image_path4'    =>  '1',
                 'description'   =>  'Descriptison 1 Updated',
                 'title'   =>  'title 1',
                 'date'   =>  'date 1',
@@ -153,7 +185,11 @@ class DailyPhotoTest extends TestCase
                 'created_at',
                 'updated_at',
                 'title',
-                'date'
+                'date',
+                'image_path1',
+                'image_path2',
+                'image_path3',
+                'image_path4',
             ]
             ]);
     }
