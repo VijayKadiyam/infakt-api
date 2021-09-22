@@ -87,6 +87,7 @@ Route::post('upload_profile', 'UploadController@uploadProfile');
 Route::post('upload_signature', 'UploadController@uploadSignature');
 Route::post('upload_bill/{id}', 'UploadController@uploadBill');
 Route::post('upload_retailer/{id}', 'UploadController@uploadRetailer');
+Route::post('upload_daily_photo', 'UploadController@uploadDailyPhotos');
 
 Route::resource('products', 'ProductsController');
 Route::get('productSkusStocks', 'ProductsController@productSkusStocks');
@@ -345,8 +346,4 @@ Route::post('upload_target', 'CrudeTargetsController@uploadTarget');
 Route::get('process_target', 'CrudeTargetsController@processTarget');
 Route::get('truncate_targets', 'CrudeTargetsController@truncate');
 
-
-Route::get('crude_user_mappings', 'CrudeUserMappingsController@index');
-Route::post('upload_user_mapping', 'CrudeUserMappingsController@uploadUserMapping');
-Route::get('process_user_mapping', 'CrudeUserMappingsController@processUserMapping');
-Route::get('truncate_user_mappings', 'CrudeUserMappingsController@truncate');
+Route::resource('channel_filters', 'ChannelFiltersController');

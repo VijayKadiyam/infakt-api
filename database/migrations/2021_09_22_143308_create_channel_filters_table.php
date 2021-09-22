@@ -4,22 +4,19 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCrudeTargetsTable extends Migration
+class CreateChannelFiltersTable extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
-     */
+     */     
     public function up()
     {
-        Schema::create('crude_targets', function (Blueprint $table) {
+        Schema::create('channel_filters', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('company_id')->nullable();
-            $table->string('store_code')->nullable();
-            $table->integer('month')->nullable();
-            $table->integer('year')->nullable();
-            $table->float('target')->nullable();
+            $table->integer('company_id');
+            $table->string('name',100)->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ class CreateCrudeTargetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('crude_targets');
+        Schema::dropIfExists('channel_filters');
     }
 }
