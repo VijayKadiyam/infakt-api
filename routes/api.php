@@ -348,6 +348,7 @@ Route::get('truncate_targets', 'CrudeTargetsController@truncate');
 
 Route::resource('channel_filters', 'ChannelFiltersController');
 
+Route::post('upload_channel_filter_detail_photos', 'UploadController@uploadChannelFilterDetailPhotos');
 Route::resource('channel_filter_details', 'ChannelFilterDetailsController');
 Route::resource('channel_filter_fifos', 'ChannelFilterFifosController');
 
