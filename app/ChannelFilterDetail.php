@@ -41,4 +41,9 @@ class ChannelFilterDetail extends Model
         'visit_feedback',
         'selfie_imagepath',
     ];
+
+    public function company()
+  {
+    return $this->belongsTo(Company::class);
+  }
 }
