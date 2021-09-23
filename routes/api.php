@@ -347,3 +347,5 @@ Route::get('process_target', 'CrudeTargetsController@processTarget');
 Route::get('truncate_targets', 'CrudeTargetsController@truncate');
 
 Route::resource('channel_filters', 'ChannelFiltersController');
+
+Route::resource('channel_filter_details', 'ChannelFilterDetailsController');
