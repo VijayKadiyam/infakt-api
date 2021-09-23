@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ChannelFilterDetail;
 use App\DailyPhoto;
 use Illuminate\Http\Request;
 use App\User;
@@ -200,6 +201,114 @@ class UploadController extends Controller
         'image_path2' => $imagePath2,
         'image_path3' => $imagePath3,
         'image_path4' => $imagePath4,
+      ],
+      'success' =>  true
+    ]);
+  
+  }
+
+  public function uploadChannelFilterDetailPhotos(Request $request)
+  {
+    $request->validate([
+      'id'        => 'required',
+    ]);
+
+    $id = request()->id;
+
+    $brand_block_imagepath = '';
+    if ($request->hasFile('brand_block_imagepath')) {
+      $file = $request->file('brand_block_imagepath');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();;
+      $brand_block_imagepath = 'channel-Filter-detail-photos/' .  $request->id . '/' . $name;
+      Storage::disk('local')->put($brand_block_imagepath, file_get_contents($file), 'public');
+
+      $ChannelFilterDetails = ChannelFilterDetail::where('id', '=', $id)->first();
+      $ChannelFilterDetails->ChannelFilterDetails = $ChannelFilterDetails;
+      $ChannelFilterDetails->update();
+    }
+
+    $primary_category_imagepath='';
+    if ($request->hasFile('primary_category_imagepath')) {
+      $file = $request->file('primary_category_imagepath');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();;
+      $primary_category_imagepath = 'channel-Filter-detail-photos/' .  $request->id . '/' . $name;
+      Storage::disk('local')->put($primary_category_imagepath, file_get_contents($file), 'public');
+
+      $ChannelFilterDetails = ChannelFilterDetail::where('id', '=', $id)->first();
+      $ChannelFilterDetails->primary_category_imagepath = $primary_category_imagepath;
+      $ChannelFilterDetails->update();
+    }
+    $secondary_category_imagepath='';
+    if ($request->hasFile('secondary_category_imagepath')) {
+      $file = $request->file('secondary_category_imagepath');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();;
+      $secondary_category_imagepath = 'channel-Filter-detail-photos/' .  $request->id . '/' . $name;
+      Storage::disk('local')->put($secondary_category_imagepath, file_get_contents($file), 'public');
+
+      $ChannelFilterDetails = DailyPhoto::where('id', '=', $id)->first();
+      $ChannelFilterDetails->secondary_category_imagepath = $secondary_category_imagepath;
+      $ChannelFilterDetails->update();
+    }
+    $secondary_category_fsu_imagepath='';
+    if ($request->hasFile('secondary_category_fsu_imagepath')) {
+      $file = $request->file('secondary_category_fsu_imagepath');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();;
+      $secondary_category_fsu_imagepath = 'channel-Filter-detail-photos/' .  $request->id . '/' . $name;
+      Storage::disk('local')->put($secondary_category_fsu_imagepath, file_get_contents($file), 'public');
+
+      $ChannelFilterDetails = ChannelFilterDetail::where('id', '=', $id)->first();
+      $ChannelFilterDetails->secondary_category_fsu_imagepath = $secondary_category_fsu_imagepath;
+      $ChannelFilterDetails->update();
+    }
+    $secondary_category_parasite_imagepath='';
+    if ($request->hasFile('secondary_category_parasite_imagepath')) {
+      $file = $request->file('secondary_category_parasite_imagepath');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();;
+      $secondary_category_parasite_imagepath = 'channel-Filter-detail-photos/' .  $request->id . '/' . $name;
+      Storage::disk('local')->put($secondary_category_parasite_imagepath, file_get_contents($file), 'public');
+
+      $ChannelFilterDetails = ChannelFilterDetail::where('id', '=', $id)->first();
+      $ChannelFilterDetails->secondary_category_parasite_imagepath = $secondary_category_parasite_imagepath;
+      $ChannelFilterDetails->update();
+    }
+    $gandola_imagepath='';
+    if ($request->hasFile('gandola_imagepath')) {
+      $file = $request->file('gandola_imagepath');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();;
+      $gandola_imagepath = 'channel-Filter-detail-photos/' .  $request->id . '/' . $name;
+      Storage::disk('local')->put($gandola_imagepath, file_get_contents($file), 'public');
+
+      $ChannelFilterDetails = ChannelFilterDetail::where('id', '=', $id)->first();
+      $ChannelFilterDetails->gandola_imagepath = $gandola_imagepath;
+      $ChannelFilterDetails->update();
+    }
+    $selfie_imagepath='';
+    if ($request->hasFile('selfie_imagepath')) {
+      $file = $request->file('selfie_imagepath');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();;
+      $selfie_imagepath = 'channel-Filter-detail-photos/' .  $request->id . '/' . $name;
+      Storage::disk('local')->put($selfie_imagepath, file_get_contents($file), 'public');
+
+      $ChannelFilterDetails = ChannelFilterDetail::where('id', '=', $id)->first();
+      $ChannelFilterDetails->selfie_imagepath = $selfie_imagepath;
+      $ChannelFilterDetails->update();
+    }
+    return response()->json([
+      'data'  => [
+        'brand_block_imagepath'  =>  $brand_block_imagepath,
+        'primary_category_imagepath' => $primary_category_imagepath,
+        'secondary_category_imagepath' => $secondary_category_imagepath,
+        'secondary_category_fsu_imagepath' => $secondary_category_fsu_imagepath,
+        'secondary_category_parasite_imagepath' => $secondary_category_parasite_imagepath,
+        'gandola_imagepath' => $gandola_imagepath,
+        'selfie_imagepath' => $selfie_imagepath,
       ],
       'success' =>  true
     ]);
