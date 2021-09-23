@@ -406,5 +406,9 @@ class Company extends Model
   {
     return $this->hasMany(ChannelFilterFifo::class);
   }
+  public function channel_filter_oos()
+  {
+    return $this->hasMany(ChannelFilterOos::class);
+  }
   
 }
