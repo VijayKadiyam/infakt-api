@@ -349,3 +349,6 @@ Route::get('truncate_targets', 'CrudeTargetsController@truncate');
 Route::resource('channel_filters', 'ChannelFiltersController');
 
 Route::resource('channel_filter_details', 'ChannelFilterDetailsController');
+Route::resource('channel_filter_fifos', 'ChannelFilterFifosController');
+
+// Route::resource('channel_filter_fifo_expiries', 'ChannelFilterFifoExpiriesController');
