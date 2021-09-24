@@ -410,5 +410,9 @@ class Company extends Model
   {
     return $this->hasMany(ChannelFilterOos::class);
   }
+  public function channel_competition_offers()
+  {
+    return $this->hasMany(ChannelCompetitionOffer::class);
+  }
   
 }
