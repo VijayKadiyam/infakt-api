@@ -414,5 +414,9 @@ class Company extends Model
   {
     return $this->hasMany(ChannelCompetitionOffer::class);
   }
+  public function trackers()
+  {
+    return $this->hasMany(Tracker::class);
+  }
   
 }

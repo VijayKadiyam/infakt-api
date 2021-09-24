@@ -354,3 +354,4 @@ Route::resource('channel_filter_fifos', 'ChannelFilterFifosController');
 Route::resource('channel_filter_oos', 'ChannelFilterOosController');
 
 Route::resource('channel_competition_offers', 'ChannelCompetitionOffersController');
+Route::resource('trackers', 'TrackersController');
