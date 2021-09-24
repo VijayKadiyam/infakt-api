@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class VisitorNPD extends Model
+class VisitorNpd extends Model
 {
     protected $fillable = [
         'sku_id',

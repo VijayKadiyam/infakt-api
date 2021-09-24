@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateVisitorNPDsTable extends Migration
+class CreateVisitorNpdsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateVisitorNPDsTable extends Migration
      */
     public function up()
     {
-        Schema::create('visitor_n_p_ds', function (Blueprint $table) {
+        Schema::create('visitor_npds', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('visitor_id')->nullable();
             $table->integer('sku_id')->nullable();
@@ -30,6 +30,6 @@ class CreateVisitorNPDsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('visitor_n_p_ds');
+        Schema::dropIfExists('visitor_npds');
     }
 }

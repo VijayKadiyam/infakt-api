@@ -24,7 +24,7 @@ class Visitor extends Model
 
   public function visitor_npds()
   {
-    return $this->hasMany(VisitorNPD::class);
+    return $this->hasMany(VisitorNpd::class);
   }
 
   public function visitor_stocks()
@@ -34,6 +34,6 @@ class Visitor extends Model
 
   public function visitor_testers()
   {
-    return $this->hasMany(VisitorTest::class);
+    return $this->hasMany(VisitorTester::class);
   }
 }

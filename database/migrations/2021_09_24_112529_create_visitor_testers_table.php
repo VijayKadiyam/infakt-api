@@ -17,7 +17,7 @@ class CreateVisitorTestersTable extends Migration
             $table->increments('id');
             $table->integer('visitor_id')->nullable();
             $table->integer('sku_id')->nullable();
-            $table->integer('is_listed')->nullable();
+            $table->integer('sku_status')->nullable();
             $table->timestamps();
         });
     }
