@@ -410,5 +410,9 @@ class Company extends Model
   {
     return $this->hasMany(ChannelFilterOos::class);
   }
+  public function visitors()
+  {
+    return $this->hasMany(Visitor::class);
+  }
   
 }
