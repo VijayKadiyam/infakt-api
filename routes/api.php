@@ -87,6 +87,7 @@ Route::post('upload_profile', 'UploadController@uploadProfile');
 Route::post('upload_signature', 'UploadController@uploadSignature');
 Route::post('upload_bill/{id}', 'UploadController@uploadBill');
 Route::post('upload_retailer/{id}', 'UploadController@uploadRetailer');
+Route::post('upload_daily_photo', 'UploadController@uploadDailyPhotos');
 
 Route::resource('products', 'ProductsController');
 Route::get('productSkusStocks', 'ProductsController@productSkusStocks');
@@ -344,3 +345,15 @@ Route::get('crude_targets', 'CrudeTargetsController@index');
 Route::post('upload_target', 'CrudeTargetsController@uploadTarget');
 Route::get('process_target', 'CrudeTargetsController@processTarget');
 Route::get('truncate_targets', 'CrudeTargetsController@truncate');
+
+Route::resource('channel_filters', 'ChannelFiltersController');
+
+Route::post('upload_channel_filter_detail_photos', 'UploadController@uploadChannelFilterDetailPhotos');
+Route::resource('channel_filter_details', 'ChannelFilterDetailsController');
+Route::resource('channel_filter_fifos', 'ChannelFilterFifosController');
+Route::resource('channel_filter_oos', 'ChannelFilterOosController');
+
+Route::resource('channel_competition_offers', 'ChannelCompetitionOffersController');
+Route::resource('trackers', 'TrackersController');
+
+Route::resource('visitors', 'VisitorsController');
