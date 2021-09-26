@@ -61,7 +61,7 @@ class UploadsController extends Controller
     if ($request->hasFile('imagepath')) {
       $file = $request->file('imagepath');
       $name = $request->filename ?? 'photo.jpg';
-      $name = $name . $file->getClientOriginalExtension();;
+      // $name = $name . $file->getClientOriginalExtension();
       $imagePath = 'retailers/' .  $request->retailerid . '/' . $name;
       Storage::disk('local')->put($imagePath, file_get_contents($file), 'public');
 
