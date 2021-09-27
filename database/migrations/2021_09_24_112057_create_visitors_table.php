@@ -18,6 +18,8 @@ class CreateVisitorsTable extends Migration
             $table->integer('company_id');
             $table->integer('user_id')->nullable();
             $table->integer('retailer_id')->nullable();
+            $table->string('name')->nullable();
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

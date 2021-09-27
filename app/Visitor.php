@@ -9,7 +9,9 @@ class Visitor extends Model
 {
     protected $fillable = [
         'user_id',
-        'retailer_id'
+        'retailer_id',
+        'name',
+        'description'
     ];
 
     public function company()
