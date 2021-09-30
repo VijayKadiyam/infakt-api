@@ -115,7 +115,7 @@ class UserAttendancesController extends Controller
       if ($request->year) {
         $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
       }
-      $userAttendances->get();
+      $userAttendances = $userAttendances->get();
       $User_Attendances = $userAttendances;
     }
     else if ($request->supervisorId) {
@@ -130,7 +130,7 @@ class UserAttendancesController extends Controller
       if ($request->year) {
         $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
       }
-      $userAttendances->get();
+      $userAttendances = $userAttendances->get();
       $User_Attendances = $userAttendances;
     }
     else {
@@ -154,15 +154,6 @@ class UserAttendancesController extends Controller
           if ($request->year) {
             $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
           }
-          if ($request->userId) {
-            $userAttendances = $userAttendances->where('user_id', '=', $request->userId);
-          }
-          if ($request->supervisorId) {
-            $supervisorId = $request->supervisorId;
-            $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
-              $q->where('supervisor_id', '=', $supervisorId);
-            });
-          }
           $userAttendances = $userAttendances->get();
           if (count($userAttendances) != 0) {
             foreach ($userAttendances as $attendance)
@@ -171,8 +162,6 @@ class UserAttendancesController extends Controller
         }
       }
     }
-
-    
 
     return response()->json([
       'data'     =>  $User_Attendances,
