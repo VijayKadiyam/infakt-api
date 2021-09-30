@@ -15,7 +15,7 @@ class UserReferencePlansController extends Controller
 
   public function masters(Request $request)
   {
-    $request->request->add(['search' => 'all']);
+    $request->request->add(['role_id' => '5']);
     $usersController = new UsersController();
     $usersResponse = $usersController->index($request);
 
