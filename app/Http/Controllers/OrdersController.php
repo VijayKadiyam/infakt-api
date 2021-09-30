@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Order;
 use App\OrderDetail;
+use App\User;
 
 class OrdersController extends Controller
 {
@@ -144,5 +145,83 @@ class OrdersController extends Controller
     $order->update();
 
     dd($order->toArray());
+  }
+
+  public function offtakes(Request $request)
+  {
+    $count = 0;
+    $orders = [];
+    if($request->userId) {
+      $orders = request()->company->orders_list()
+        ->where('user_id', '=', $request->userId);
+
+      if ($request->month) {
+        $orders = $orders->whereMonth('created_at', '=', $request->month);
+      }
+      if ($request->year) {
+        $orders = $orders->whereYear('created_at', '=', $request->year);
+      }
+
+      $orders = $orders->get();
+    } else {
+      $supervisors = User::with('roles')
+      ->whereHas('roles',  function ($q) {
+        $q->where('name', '=', 'SUPERVISOR');
+      })->orderBy('name')->get();
+
+      foreach ($supervisors as $supervisor) {
+
+        $users = User::where('supervisor_id', '=', $supervisor->id)->get();
+
+        foreach ($users as $user) {
+
+          $ors = request()->company->orders_list()
+            ->where('user_id', '=', $user->id);
+
+          if ($request->date) {
+            $ors = $ors->whereDate('created_at', $request->date);
+          }
+          if ($request->month) {
+            $ors = $ors->whereMonth('date', '=', $request->month);
+          }
+          if ($request->year) {
+            $ors = $ors->whereYear('date', '=', $request->year);
+          }
+          $ors = $ors->get();
+          if (count($ors) != 0) {
+            foreach ($ors as $order)
+              $orders[] = $order;
+          }
+        }
+      }
+    }
+    // if($request->userId && $request->date) {
+    //   $orders = request()->company->orders_list()
+    //     ->where('user_id', '=', $request->userId)
+    //     ->whereDate('created_at', $request->date)
+    //     ->get();
+    // }
+    // else if(request()->page && request()->rowsPerPage) {
+    //   $orders = request()->company->orders_list();
+    //   $count = $orders->count();
+    //   $orders = $orders->paginate(request()->rowsPerPage)->toArray();
+    //   $orders = $orders['data'];
+    // } 
+    // else if(request()->page && request()->rowsPerPage && $request->distributorId) {
+    //   $orders = request()->company->orders_list()
+    //     ->where('distributor_id', '=', $request->distributorId);
+    //   $count = $orders->count();
+    //   $orders = $orders->paginate(request()->rowsPerPage)->toArray();
+    //   $orders = $orders['data'];
+    // } else {
+    //   $orders = request()->company->orders_list; 
+    //   $count = $orders->count();
+    // }
+
+    return response()->json([
+      'data'     =>  $orders,
+      'count'    =>   $count,
+      'success'   =>  true
+    ], 200);
   }
 }

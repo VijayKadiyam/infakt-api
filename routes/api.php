@@ -293,6 +293,8 @@ Route::resource('notices', 'NoticesController');
 
 Route::get('orders/generate_invoice', 'OrdersController@generateInvoice');
 Route::resource('orders', 'OrdersController');
+Route::get('offtakes', 'OrdersController@offtakes');
+
 Route::resource('sales_orders', 'SalesOrdersController');
 
 Route::get('daySummary', 'AnalyticsController@daySummary');

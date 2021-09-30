@@ -100,11 +100,6 @@ class UserAttendancesController extends Controller
 // user Atteandance for client
   public function user_attendance(Request $request)
   {
-    $supervisors = User::with('roles')
-      ->whereHas('roles',  function ($q) {
-        $q->where('name', '=', 'SUPERVISOR');
-      })->orderBy('name')->get();
-    
     $User_Attendances = [];
     if ($request->userId) {
       $userAttendances = request()->company->user_attendances();
@@ -134,6 +129,11 @@ class UserAttendancesController extends Controller
       $User_Attendances = $userAttendances;
     }
     else {
+      $supervisors = User::with('roles')
+      ->whereHas('roles',  function ($q) {
+        $q->where('name', '=', 'SUPERVISOR');
+      })->orderBy('name')->get();
+
       foreach ($supervisors as $supervisor) {
 
         $users = User::where('supervisor_id', '=', $supervisor->id)->get();
