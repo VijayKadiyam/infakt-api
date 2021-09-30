@@ -104,7 +104,8 @@ class UserAttendancesController extends Controller
       ->whereHas('roles',  function ($q) {
         $q->where('name', '=', 'SUPERVISOR');
       })->orderBy('name')->get();
-
+    
+    $User_Attendances = [];
     if ($request->userId) {
       $userAttendances = request()->company->user_attendances();
       $userAttendances = $userAttendances->where('user_id', '=', $request->userId);
@@ -115,6 +116,7 @@ class UserAttendancesController extends Controller
         $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
       }
       $userAttendances->get();
+      $User_Attendances = $userAttendances;
     }
     else if ($request->supervisorId) {
       $supervisorId = $request->supervisorId;
@@ -129,9 +131,9 @@ class UserAttendancesController extends Controller
         $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
       }
       $userAttendances->get();
+      $User_Attendances = $userAttendances;
     }
     else {
-      $User_Attendances = [];
       foreach ($supervisors as $supervisor) {
 
         $users = User::where('supervisor_id', '=', $supervisor->id)->get();
