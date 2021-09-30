@@ -110,7 +110,6 @@ class SkusController extends Controller
           if($sku['id'] == $stock['sku_id']) 
             $skuStocks[] = $stock;
         }
-        
         // $sku['price'] = sizeof($skuStocks) > 0 ? $skuStocks[0]['price'] : 0;
         $sku['offer_price'] = null;
         if(sizeof($skuStocks) > 0) {
