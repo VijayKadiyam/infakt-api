@@ -110,10 +110,11 @@ class SkusController extends Controller
           if($sku['id'] == $stock['sku_id']) 
             $skuStocks[] = $stock;
         }
-        $sku['price'] = sizeof($skuStocks) > 0 ? $skuStocks[0]['price'] : 0;
+        
+        // $sku['price'] = sizeof($skuStocks) > 0 ? $skuStocks[0]['price'] : 0;
         $sku['offer_price'] = null;
         if(sizeof($skuStocks) > 0) {
-          $sku['price'] = $skuStocks[0]['price'];
+          // $sku['price'] = $skuStocks[0]['price'];
           if($sku['offer_id'] != null) {
             if($sku['offer']['offer_type']['name'] == 'FLAT') {
               $sku['offer_price'] = $sku['price'] - $sku['offer']['offer'];
