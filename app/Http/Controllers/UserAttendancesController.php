@@ -105,43 +105,72 @@ class UserAttendancesController extends Controller
         $q->where('name', '=', 'SUPERVISOR');
       })->orderBy('name')->get();
 
-    $User_Attendances = [];
-    foreach ($supervisors as $supervisor) {
+    if ($request->userId) {
+      $userAttendances = request()->company->user_attendances();
+      $userAttendances = $userAttendances->where('user_id', '=', $request->userId);
+      if ($request->month) {
+        $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
+      }
+      if ($request->year) {
+        $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
+      }
+      $userAttendances->get();
+    }
+    else if ($request->supervisorId) {
+      $supervisorId = $request->supervisorId;
+      $userAttendances = request()->company->user_attendances();
+      $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
+        $q->where('supervisor_id', '=', $supervisorId);
+      });
+      if ($request->month) {
+        $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
+      }
+      if ($request->year) {
+        $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
+      }
+      $userAttendances->get();
+    }
+    else {
+      $User_Attendances = [];
+      foreach ($supervisors as $supervisor) {
 
-      $users = User::where('supervisor_id', '=', $supervisor->id)->get();
+        $users = User::where('supervisor_id', '=', $supervisor->id)->get();
 
-      foreach ($users as $user) {
+        foreach ($users as $user) {
 
-        $userAttendances = request()->company->user_attendances()->where('user_id', '=', $user->id);
+          $userAttendances = request()->company->user_attendances()->where('user_id', '=', $user->id);
 
-        if ($request->date && $request->month == null && $request->year == null && $request->userId == null) {
-          $userAttendances = $userAttendances->where('date', '=', $request->date);
-        }
-        if ($request->date && $request->month == null && $request->year == null) {
-          $userAttendances = $userAttendances->where('date', '=', $request->date);
-        }
-        if ($request->month) {
-          $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
-        }
-        if ($request->year) {
-          $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
-        }
-        if ($request->userId) {
-          $userAttendances = $userAttendances->where('user_id', '=', $request->userId);
-        }
-        if ($request->supervisorId) {
-          $supervisorId = $request->supervisorId;
-          $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
-            $q->where('supervisor_id', '=', $supervisorId);
-          });
-        }
-        $userAttendances = $userAttendances->get();
-        if (count($userAttendances) != 0) {
-          foreach ($userAttendances as $attendance)
-            $User_Attendances[] = $attendance;
+          if ($request->date && $request->month == null && $request->year == null && $request->userId == null) {
+            $userAttendances = $userAttendances->where('date', '=', $request->date);
+          }
+          if ($request->date && $request->month == null && $request->year == null) {
+            $userAttendances = $userAttendances->where('date', '=', $request->date);
+          }
+          if ($request->month) {
+            $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
+          }
+          if ($request->year) {
+            $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
+          }
+          if ($request->userId) {
+            $userAttendances = $userAttendances->where('user_id', '=', $request->userId);
+          }
+          if ($request->supervisorId) {
+            $supervisorId = $request->supervisorId;
+            $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
+              $q->where('supervisor_id', '=', $supervisorId);
+            });
+          }
+          $userAttendances = $userAttendances->get();
+          if (count($userAttendances) != 0) {
+            foreach ($userAttendances as $attendance)
+              $User_Attendances[] = $attendance;
+          }
         }
       }
     }
+
+    
 
     return response()->json([
       'data'     =>  $User_Attendances,
