@@ -33,22 +33,22 @@ class VisitorTest extends TestCase
         $this->payload = [
             'user_id' => 1,
             'retailer_id' => 1,
-            'bas' =>  [
+            'visitor_bas' =>  [
                 0 =>  [
                     'visitor_id' =>  1,
                 ]
             ],
-            'npds' =>  [
+            'visitor_npds' =>  [
                 0 =>  [
                     'visitor_id' =>  1,
                 ]
             ],
-            'stocks' =>  [
+            'visitor_stocks' =>  [
                 0 =>  [
                     'visitor_id' =>  1,
                 ]
             ],
-            'testers' =>  [
+            'visitor_testers' =>  [
                 0 =>  [
                     'visitor_id' =>  1,
                 ]
@@ -173,7 +173,7 @@ class VisitorTest extends TestCase
             'id'          =>  $visitor->id,
             'user_id' => 2,
             'retailer_id' => 2,
-            'bas' =>  [
+            'visitor_bas' =>  [
                 0 =>  [
 
                     'id'        =>  $visitorBa->id,
@@ -184,7 +184,7 @@ class VisitorTest extends TestCase
                     'visitor_id' =>  '2',
                 ],
             ],
-            'npds' =>  [
+            'visitor_npds' =>  [
                 0 =>  [
 
                     'id'        =>  $visitorNpd->id,
@@ -195,7 +195,7 @@ class VisitorTest extends TestCase
                     'visitor_id' =>  '2',
                 ],
             ],
-            'stocks' =>  [
+            'visitor_stocks' =>  [
                 0 =>  [
 
                     'id'        =>  $visitorStock->id,
@@ -206,7 +206,7 @@ class VisitorTest extends TestCase
                     'visitor_id' =>  '2',
                 ],
             ],
-            'testers' =>  [
+            'visitor_testers' =>  [
                 0 =>  [
 
                     'id'        =>  $visitorTester->id,
@@ -278,10 +278,10 @@ class VisitorTest extends TestCase
                     'company_id',
                     'user_id',
                     'retailer_id',
-                    'name',
-                    'description',
                     'created_at',
                     'updated_at',
+                    // 'name',
+                    // 'description',
                     'visitor_bas',
                     'visitor_npds',
                     'visitor_stocks',
@@ -294,7 +294,7 @@ class VisitorTest extends TestCase
             'id'          =>  $visitor->id,
             'user_id' => 2,
             'retailer_id' => 2,
-            'bas' =>  [
+            'visitor_bas' =>  [
                 0 =>  [
 
                     'id'        =>  $visitorBa->id,
@@ -302,7 +302,7 @@ class VisitorTest extends TestCase
                 ],
 
             ],
-            'npds' =>  [
+            'visitor_npds' =>  [
                 0 =>  [
 
                     'id'        =>  $visitorNpd->id,
@@ -310,7 +310,7 @@ class VisitorTest extends TestCase
                 ],
 
             ],
-            'stocks' =>  [
+            'visitor_stocks' =>  [
                 0 =>  [
 
                     'id'        =>  $visitorStock->id,
@@ -318,7 +318,7 @@ class VisitorTest extends TestCase
                 ],
 
             ],
-            'testers' =>  [
+            'visitor_testers' =>  [
                 0 =>  [
 
                     'id'        =>  $visitorTester->id,
@@ -375,15 +375,15 @@ class VisitorTest extends TestCase
                     'company_id',
                     'user_id',
                     'retailer_id',
-                    'name',
-                    'description',
                     'created_at',
                     'updated_at',
+                    // 'name',
+                    // 'description',
                     'visitor_bas',
                     'visitor_npds',
                     'visitor_stocks',
                     'visitor_testers',
-                ]
+                ],
             ]);
     }
 
