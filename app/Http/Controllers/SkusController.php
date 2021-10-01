@@ -99,7 +99,7 @@ class SkusController extends Controller
       $orders = [];
       if($user)
         $orders = Order::whereYear('created_at', Carbon::now())
-          ->whereMonth('created_at', Carbon::now())
+          // ->whereMonth('created_at', Carbon::now())
           ->where('distributor_id', '=', $user->distributor_id)
           ->latest()->get();
 
@@ -155,7 +155,7 @@ class SkusController extends Controller
           }
         }
         
-        $sku['qty'] = ($totalQty - $consumedQty) > 0 ? ($totalQty + $receivedQty + $returnedQty - $consumedQty) : 0;
+        $sku['qty'] = ($totalQty + $receivedQty + $returnedQty - $consumedQty);
 
         $sku['opening_stock'] = $totalQty;
         $sku['received_stock'] = $receivedQty;
