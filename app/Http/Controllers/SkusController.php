@@ -141,7 +141,7 @@ class SkusController extends Controller
               if($detail->sku_id == $sku->id && $order->order_type == 'Stock Returned') 
                 $totalQty += $detail->qty;
               if($detail->sku_id == $sku->id && $order->order_type == 'Sales') 
-                $totalQty = $detail->qty;
+                $totalQty -= $detail->qty;
             }
           } else {
             foreach ($order->order_details as $detail) {
