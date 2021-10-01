@@ -32,7 +32,8 @@ class VisitorsController extends Controller
 
         return response()->json([
             'data'     =>  $visitors,
-            'count'    =>   $count
+            'count'    =>   $count,
+            'success'   =>  true
         ], 200);
     }
 
@@ -206,7 +207,8 @@ class VisitorsController extends Controller
         $visitor->visitor_stocks = $visitor->visitor_stocks;
         $visitor->visitor_testers = $visitor->visitor_testers;
         return response()->json([
-            'data'    =>  $visitor
+            'data'    =>  $visitor,
+            'success'   =>  true
         ], 201);
     }
 
@@ -238,7 +240,8 @@ class VisitorsController extends Controller
         $visitor->update($request->all());
 
         return response()->json([
-            'data'  =>  $visitor
+            'data'  =>  $visitor,
+            'success'   =>  true
         ], 200);
     }
 
