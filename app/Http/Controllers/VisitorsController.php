@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Visitor;
 use App\VisitorBa;
-use App\VisitorNpd;
 use App\VisitorStock;
+use App\VisitorNpd;
 use App\VisitorTester;
 use Illuminate\Http\Request;
-use Tests\Feature\VisitorTest;
 
 class VisitorsController extends Controller
 {
@@ -47,7 +46,8 @@ class VisitorsController extends Controller
         $request->validate([
             'user_id'  =>  'required',
         ]);
-
+        
+        // return request()->visitor_bas;
         if ($request->id == null || $request->id == '') {
             // Save Visitor
             $visitor = new Visitor(request()->all());
@@ -55,29 +55,30 @@ class VisitorsController extends Controller
             // dd($visitor);
 
             // Save Visitor Bas
-            if (isset($request->bas))
-                foreach ($request->bas as $ba) {
+            // dd($request->all());
+            if (isset($request->visitor_bas))
+                foreach ($request->visitor_bas as $ba) {
                     $bas = new VisitorBa($ba);
                     $visitor->visitor_bas()->save($bas);
                 }
             // ---------------------------------------------------
             // Save Visitor Npds
-            if (isset($request->npds))
-                foreach ($request->npds as $npd) {
+            if (isset($request->visitor_npds))
+                foreach ($request->visitor_npds as $npd) {
                     $npds = new VisitorNpd($npd);
                     $visitor->visitor_npds()->save($npds);
                 }
             // ---------------------------------------------------
             // Save Visitor Stocks
-            if (isset($request->stocks))
-                foreach ($request->stocks as $stock) {
+            if (isset($request->visitor_stocks))
+                foreach ($request->visitor_stocks as $stock) {
                     $stocks = new VisitorStock($stock);
                     $visitor->visitor_stocks()->save($stocks);
                 }
             // ---------------------------------------------------
             // Save Visitor Testers
-            if (isset($request->testers))
-                foreach ($request->testers as $tester) {
+            if (isset($request->visitor_testers))
+                foreach ($request->visitor_testers as $tester) {
                     $testers = new VisitorTester($tester);
                     $visitor->visitor_testers()->save($testers);
                 }
@@ -86,10 +87,10 @@ class VisitorsController extends Controller
             // Update Visitor
             $visitor = Visitor::find($request->id);
             $visitor->update($request->all());
-
+            
             // Check if Visitor Bas deleted
-            if (isset($request->bas)) {
-                $visitorBaIdResponseArray = array_pluck($request->bas, 'id');
+            if (isset($request->visitor_bas)) {
+                $visitorBaIdResponseArray = array_pluck($request->visitor_bas, 'id');
             } else
                 $visitorBaIdResponseArray = [];
             $visitorId = $visitor->id;
@@ -101,10 +102,11 @@ class VisitorsController extends Controller
                     $visitorBa = VisitorBa::find($differenceVisitorBaId);
                     $visitorBa->delete();
                 }
+                // dd(request()->visitor_bas);
 
             // Update Visitor Ba
-            if (isset($request->bas))
-                foreach ($request->bas as $ba) {
+            if (isset($request->visitor_bas))
+                foreach ($request->visitor_bas as $ba) {
                     if (!isset($ba['id'])) {
                         $visitor_ba = new VisitorBa($ba);
                         $visitor->visitor_bas()->save($visitor_ba);
@@ -116,8 +118,9 @@ class VisitorsController extends Controller
 
             // ---------------------------------------------------
             // Check if Visitor Npds deleted
-            if (isset($request->npds)) {
-                $visitorNpdIdResponseArray = array_pluck($request->npds, 'id');
+
+            if (isset($request->visitor_npds)) {
+                $visitorNpdIdResponseArray = array_pluck($request->visitor_npds, 'id');
             } else
                 $visitorNpdIdResponseArray = [];
             $visitorId = $visitor->id;
@@ -131,8 +134,8 @@ class VisitorsController extends Controller
                 }
 
             // Update Visitor Npd
-            if (isset($request->npds))
-                foreach ($request->npds as $npd) {
+            if (isset($request->visitor_npds))
+                foreach ($request->visitor_npds as $npd) {
                     if (!isset($npd['id'])) {
                         $visitor_npd = new VisitorNpd($npd);
                         $visitor->visitor_npds()->save($visitor_npd);
@@ -144,8 +147,8 @@ class VisitorsController extends Controller
 
             // ---------------------------------------------------
             // Check if Visitor Stocks deleted
-            if (isset($request->stocks)) {
-                $visitorStockIdResponseArray = array_pluck($request->stocks, 'id');
+            if (isset($request->visitor_stocks)) {
+                $visitorStockIdResponseArray = array_pluck($request->visitor_stocks, 'id');
             } else
                 $visitorStockIdResponseArray = [];
             $visitorId = $visitor->id;
@@ -159,8 +162,8 @@ class VisitorsController extends Controller
                 }
 
             // Update Visitor Stock
-            if (isset($request->stocks))
-                foreach ($request->stocks as $stock) {
+            if (isset($request->visitor_stocks))
+                foreach ($request->visitor_stocks as $stock) {
                     if (!isset($stock['id'])) {
                         $visitor_stock = new VisitorStock($stock);
                         $visitor->visitor_stocks()->save($visitor_stock);
@@ -172,8 +175,8 @@ class VisitorsController extends Controller
 
             // ---------------------------------------------------
             // Check if Visitor Tester deleted
-            if (isset($request->testers)) {
-                $visitorTesterIdResponseArray = array_pluck($request->testers, 'id');
+            if (isset($request->visitor_testers)) {
+                $visitorTesterIdResponseArray = array_pluck($request->visitor_testers, 'id');
             } else
                 $visitorTesterIdResponseArray = [];
             $visitorId = $visitor->id;
@@ -187,8 +190,8 @@ class VisitorsController extends Controller
                 }
 
             // Update Visitor Tester
-            if (isset($request->testers))
-                foreach ($request->testers as $tester) {
+            if (isset($request->visitor_testers))
+                foreach ($request->visitor_testers as $tester) {
                     if (!isset($tester['id'])) {
                         $visitor_tester = new VisitorTester($tester);
                         $visitor->visitor_testers()->save($visitor_tester);
@@ -208,7 +211,7 @@ class VisitorsController extends Controller
         $visitor->visitor_testers = $visitor->visitor_testers;
         return response()->json([
             'data'    =>  $visitor,
-            'success'   =>  true
+            // 'success'   =>  true
         ], 201);
     }
 
@@ -237,6 +240,7 @@ class VisitorsController extends Controller
    */
     public function update(Request $request, Visitor $visitor)
     {
+        dd($request->all());
         $visitor->update($request->all());
 
         return response()->json([
