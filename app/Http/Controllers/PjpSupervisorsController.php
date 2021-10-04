@@ -12,6 +12,21 @@ class PjpSupervisorsController extends Controller
       $this->middleware(['auth:api', 'company']);
     }
   
+    public function masters(Request $request)
+  {
+    $request->request->add(['role_id' => '4']);
+    $usersController = new UsersController();
+    $usersResponse = $usersController->index($request);
+
+    $pjpController = new PjpsController();
+    $pjpResponse = $pjpController->index($request);
+
+
+    return response()->json([
+      'users'           =>  $usersResponse->getData()->data,
+      'pjps' =>  $pjpResponse->getData()->data,
+    ], 200);
+  }
     /*
          * To get all pjp_supervisors
            *
