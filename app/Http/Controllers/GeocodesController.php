@@ -47,7 +47,7 @@ class GeocodesController extends Controller
   }
 
   public function kanhaiLoc(Request $request) {
-    return "12345";
+    // return "12345";
     $lat = $request->lat;
     $lng = $request->lng;
     try {
