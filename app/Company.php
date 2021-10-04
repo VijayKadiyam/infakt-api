@@ -426,5 +426,9 @@ class Company extends Model
   {
     return $this->hasMany(Tracker::class);
   }
+  public function pjps()
+  {
+    return $this->hasMany(Pjp::class);
+  }
   
 }
