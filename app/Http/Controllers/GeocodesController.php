@@ -50,8 +50,8 @@ class GeocodesController extends Controller
     $lat = $request->lat;
     $lng = $request->lng;
     try {
-      // $endpoint = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" . $lat . "," . $lng . "&key=AIzaSyDSECwAUD8Ynppe3u_MGuczSeDsH7uP2FQ";
-      $endpoint = "https://test.easyhrworld.com/api/v2/attendance/getGeoLocation?lat=$lat&log=$lng";
+      $endpoint = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" . $lat . "," . $lng . "&key=AIzaSyDSECwAUD8Ynppe3u_MGuczSeDsH7uP2FQ";
+      // $endpoint = "https://test.easyhrworld.com/api/v2/attendance/getGeoLocation?lat=$lat&log=$lng";
       $client = new \GuzzleHttp\Client(
         [
           'headers' => [
