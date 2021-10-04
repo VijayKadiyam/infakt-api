@@ -12,6 +12,8 @@ class PjpMarketsController extends Controller
         $this->middleware(['auth:api', 'company']);
     }
 
+    
+
     /*
          * To get all pjp_markets
            *
@@ -61,10 +63,10 @@ class PjpMarketsController extends Controller
          *
          *@
          */
-    public function show(PjpMarket $pjp_market)
+    public function show(PjpMarket $pjpMarket)
     {
         return response()->json([
-            'data'   =>  $pjp_market
+            'data'   =>  $pjpMarket
         ], 200);
     }
 
@@ -73,17 +75,17 @@ class PjpMarketsController extends Controller
          *
          *@
          */
-    public function update(Request $request, PjpMarket $pjp_market)
+    public function update(Request $request, PjpMarket $pjpMarket)
     {
         $request->validate([
             'pjp_id'    =>  'required',
             'market_name'    =>  'required'
         ]);
 
-        $pjp_market->update($request->all());
+        $pjpMarket->update($request->all());
 
         return response()->json([
-            'data'  =>  $pjp_market
+            'data'  =>  $pjpMarket
         ], 200);
     }
 }

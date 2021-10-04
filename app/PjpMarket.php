@@ -16,4 +16,9 @@ class PjpMarket extends Model
     {
         return $this->belongsTo(Company::class);
     }
+
+    public function pjp()
+    {
+        return $this->belongsTo(Pjp::class);
+    }
 }

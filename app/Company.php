@@ -428,7 +428,8 @@ class Company extends Model
   }
   public function pjps()
   {
-    return $this->hasMany(Pjp::class);
+    return $this->hasMany(Pjp::class)
+    ->with('pjp_markets');
   }
   public function pjp_markets()
   {
@@ -436,7 +437,9 @@ class Company extends Model
   }
   public function pjp_supervisors()
   {
-    return $this->hasMany(PjpSupervisor::class);
+    return $this->hasMany(PjpSupervisor::class)
+    ->with('user');
+    
   }
   
 }
