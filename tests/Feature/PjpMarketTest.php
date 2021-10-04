@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Pjp;
 use App\PjpMarket;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -26,8 +27,12 @@ class PjpMarketTest extends TestCase
             'company_id'  =>  $this->company->id
         ]);
 
+        $this->pjp = factory(Pjp::class)->create([
+            'company_id'  =>  $this->company->id
+        ]);
+
         $this->payload = [
-            'pjp_id' => 1,
+            'pjp_id' => $this->pjp->id,
             'market_name' => 'Market Name',
             'gps_address' => 'Gps Address',
         ];
@@ -36,7 +41,7 @@ class PjpMarketTest extends TestCase
     /** @test */
     function it_requires_following_details()
     {
-        $this->json('post', '/api/pjp_markets', [], $this->headers)
+        $this->json('post', '/api/pjps/'. $this->pjp->id .'/pjp_markets', [], $this->headers)
             ->assertStatus(422)
             ->assertExactJson([
                 "errors"  =>  [
@@ -50,7 +55,7 @@ class PjpMarketTest extends TestCase
     /** @test */
     function add_new_pjp_market()
     {
-        $this->json('post', '/api/pjp_markets', $this->payload, $this->headers)
+        $this->json('post', '/api/pjps/'. $this->pjp->id .'/pjp_markets', $this->payload, $this->headers)
             ->assertStatus(201)
             ->assertJson([
                 'data'   => [
@@ -75,7 +80,7 @@ class PjpMarketTest extends TestCase
     /** @test */
     function list_of_pjp_markets()
     {
-        $this->json('GET', '/api/pjp_markets', [], $this->headers)
+        $this->json('GET', '/api/pjps/'. $this->pjp->id .'/pjp_markets', [], $this->headers)
             ->assertStatus(200)
             ->assertJsonStructure([
                 'data' => [
@@ -90,11 +95,11 @@ class PjpMarketTest extends TestCase
     /** @test */
     function show_single_channel_filter()
     {
-        $this->json('get', "/api/pjp_markets/1", [], $this->headers)
+        $this->json('get', '/api/pjp_markets/1', [], $this->headers)
             ->assertStatus(200)
             ->assertJson([
                 'data'  => [
-                    'pjp_id' => 1,
+                    'pjp_id' => $this->pjp->id,
                     'market_name' => 'Market Name',
                     'gps_address' => 'Gps Address',
                 ]
@@ -105,7 +110,7 @@ class PjpMarketTest extends TestCase
     function update_single_channel_filter()
     {
         $payload = [
-            'pjp_id' => 2,
+            'pjp_id' => $this->pjp->id,
             'market_name' => 'Market Name Updated',
             'gps_address' => 'Gps Address Updated',
         ];
@@ -114,7 +119,7 @@ class PjpMarketTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'data'    => [
-                    'pjp_id' => 2,
+                    'pjp_id' => $this->pjp->id,
                     'market_name' => 'Market Name Updated',
                     'gps_address' => 'Gps Address Updated',
                 ]
