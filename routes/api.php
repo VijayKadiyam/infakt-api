@@ -129,6 +129,7 @@ Route::resource('marks', 'MarksController');
 
 Route::get('time', 'TimesController@index');
 Route::get('geocode', 'GeocodesController@index');
+Route::get('kanhaiLoc', 'GeocodesController@kanhaiLoc');
 Route::post('sendEmail', 'SendEmailController@index');
 
 Route::resource('users/{user}/user_offer_letters', 'UserOfferLettersController');
