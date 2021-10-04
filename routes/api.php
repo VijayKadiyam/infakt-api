@@ -361,3 +361,4 @@ Route::resource('trackers', 'TrackersController');
 
 Route::resource('visitors', 'VisitorsController');
 Route::resource('pjps', 'PjpsController');
+Route::resource('pjp_markets', 'PjpMarketsController');
