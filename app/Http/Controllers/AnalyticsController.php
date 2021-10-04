@@ -719,6 +719,7 @@ class AnalyticsController extends Controller
 
     return response()->json([
       'data'    =>  $data,
+      
       'success' =>  true
     ]);
   }

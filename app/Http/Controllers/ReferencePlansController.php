@@ -59,6 +59,7 @@ class ReferencePlansController extends Controller
         foreach ($user_reference_plan->reference_plan->retailers as $retailer) {
           $orders = Order::where('retailer_id', '=', $retailer->id)
             ->whereDate('created_at', Carbon::now())
+            ->where('order_type', '=', 'Sales')
             // ->whereMonth('created_at', Carbon::now()->month)
             ->with('order_details')
             ->get();
