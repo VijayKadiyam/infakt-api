@@ -11,132 +11,124 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class PjpMarketTest extends TestCase
 {
     use DatabaseTransactions;
-  
+
     public function setUp()
     {
-      parent::setUp();
-  
-      $this->company = factory(\App\Company::class)->create([
-        'name' => 'test'
-      ]);
-      $this->user->assignCompany($this->company->id);
-      $this->headers['company-id'] = $this->company->id;
-  
-      factory(PjpMarket::class)->create([
-        'company_id'  =>  $this->company->id 
-      ]);
-  
-      $this->payload = [ 
-        'pjp_id' => 1,
-        'market_name' => 'Market Name',
-        'gps_address' => 'Gps Address',
-      ];
+        parent::setUp();
+
+        $this->company = factory(\App\Company::class)->create([
+            'name' => 'test'
+        ]);
+        $this->user->assignCompany($this->company->id);
+        $this->headers['company-id'] = $this->company->id;
+
+        factory(PjpMarket::class)->create([
+            'company_id'  =>  $this->company->id
+        ]);
+
+        $this->payload = [
+            'pjp_id' => 1,
+            'market_name' => 'Market Name',
+            'gps_address' => 'Gps Address',
+        ];
     }
-  
-    /** @test */
-    function user_must_be_logged_in_before_accessing_the_controller()
-    {
-      $this->json('post', '/api/users/' . $this->user->id .  '/targets')
-        ->assertStatus(401); 
-    }
-  
+
     /** @test */
     function it_requires_following_details()
     {
-      $this->json('post', '/api/users/' . $this->user->id .  '/targets', [], $this->headers)
-        ->assertStatus(422)
-        ->assertExactJson([
-            "errors"  =>  [
-              "month"   =>  ["The month field is required."],
-              "year"     =>  ["The year field is required."],
-              "target"  =>  ["The target field is required."],
-            ],
-            "message" =>  "The given data was invalid."
-          ]);
+        $this->json('post', '/api/pjp_markets', [], $this->headers)
+            ->assertStatus(422)
+            ->assertExactJson([
+                "errors"  =>  [
+                    "pjp_id"    =>  ["The pjp id field is required."],
+                    "market_name"    =>  ["The market name field is required."]
+                ],
+                "message" =>  "The given data was invalid."
+            ]);
     }
-  
+
     /** @test */
-    function add_new_target()
+    function add_new_pjp_market()
     {
-      $this->disableEH();
-      $this->json('post', '/api/users/' . $this->user->id .  '/targets', $this->payload, $this->headers)
-        ->assertStatus(201)
-        ->assertJson([
-            'data'   =>[
-              'month' =>  2,
-              'year'  =>  2,
-              'target'=>  200,
-            ]
-          ])
-        ->assertJsonStructureExact([
-            'data'   => [
-              'month',
-              'year',
-              'target',
-              'user_id',
-              'updated_at',
-              'created_at',
-              'id',
-            ]
-          ]);
+        $this->json('post', '/api/pjp_markets', $this->payload, $this->headers)
+            ->assertStatus(201)
+            ->assertJson([
+                'data'   => [
+                    'pjp_id' => 1,
+                    'market_name' => 'Market Name',
+                    'gps_address' => 'Gps Address',
+                ]
+            ])
+            ->assertJsonStructureExact([
+                'data'   => [
+                    'pjp_id',
+                    'market_name',
+                    'gps_address',
+                    'company_id',
+                    'updated_at',
+                    'created_at',
+                    'id'
+                ]
+            ]);
     }
-  
+
     /** @test */
-    function list_of_targets()
+    function list_of_pjp_markets()
     {
-      $this->json('GET', '/api/users/' . $this->user->id .  '/targets',[], $this->headers)
-        ->assertStatus(200)
-        ->assertJsonStructure([
-            'data' => [
-              0 =>  [
-                'month',
-              ] 
-            ]
-          ]);
-      $this->assertCount(1, Target::all());
+        $this->json('GET', '/api/pjp_markets', [], $this->headers)
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'data' => [
+                    0 => [
+                        'pjp_id'
+                    ]
+                ]
+            ]);
+        $this->assertCount(1, PjpMarket::all());
     }
-  
+
     /** @test */
-    function show_single_target()
+    function show_single_channel_filter()
     {
-      $this->json('get', "/api/users/" . $this->user->id .  "/targets/1", [], $this->headers)
-        ->assertStatus(200)
-        ->assertJson([
-            'data'  => [
-              'month' =>  1
-            ]
-          ]);
+        $this->json('get', "/api/pjp_markets/1", [], $this->headers)
+            ->assertStatus(200)
+            ->assertJson([
+                'data'  => [
+                    'pjp_id' => 1,
+                    'market_name' => 'Market Name',
+                    'gps_address' => 'Gps Address',
+                ]
+            ]);
     }
-  
+
     /** @test */
-    function update_single_target()
+    function update_single_channel_filter()
     {
-      $payload = [ 
-        'month' =>  3,
-        'year'  =>  3,
-        'target'=>  300,
-      ];
-  
-      $this->json('patch', '/api/users/' . $this->user->id .  '/targets/1', $payload, $this->headers)
-        ->assertStatus(200)
-        ->assertJson([
-            'data'    => [
-              'month' =>  3,
-              'year'  =>  3,
-              'target'=>  300,
-            ]
-         ])
-        ->assertJsonStructureExact([
-            'data'  => [
-              'id',
-              'user_id',
-              'month',
-              'year',
-              'target',
-              'created_at',
-              'updated_at',
-              'company_id'
-            ]
-        ]);
+        $payload = [
+            'pjp_id' => 2,
+            'market_name' => 'Market Name Updated',
+            'gps_address' => 'Gps Address Updated',
+        ];
+
+        $this->json('patch', '/api/pjp_markets/1', $payload, $this->headers)
+            ->assertStatus(200)
+            ->assertJson([
+                'data'    => [
+                    'pjp_id' => 2,
+                    'market_name' => 'Market Name Updated',
+                    'gps_address' => 'Gps Address Updated',
+                ]
+            ])
+            ->assertJsonStructureExact([
+                'data'  => [
+                    'id',
+                    'company_id',
+                    'pjp_id',
+                    'market_name',
+                    'gps_address',
+                    'created_at',
+                    'updated_at'
+                ]
+            ]);
     }
-  }
+}

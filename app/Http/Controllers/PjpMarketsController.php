@@ -2,83 +2,88 @@
 
 namespace App\Http\Controllers;
 
+use App\PjpMarket;
 use Illuminate\Http\Request;
 
 class PjpMarketsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware(['auth:api', 'company']);
+    }
+
+    /*
+         * To get all pjp_markets
+           *
+         *@
+         */
     public function index()
     {
-        //
+        $count = 0;
+        if (request()->page && request()->rowsPerPage) {
+            $pjp_markets = request()->company->pjp_markets();
+            $count = $pjp_markets->count();
+            $pjp_markets = $pjp_markets->paginate(request()->rowsPerPage)->toArray();
+            $pjp_markets = $pjp_markets['data'];
+        } else {
+            $pjp_markets = request()->company->pjp_markets;
+            $count = $pjp_markets->count();
+        }
+
+        return response()->json([
+            'data'     =>  $pjp_markets,
+            'count'    =>   $count
+        ], 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    /*
+         * To store a new pjp_markets
+         *
+         *@
+         */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'pjp_id'    =>  'required',
+            'market_name'    =>  'required'
+        ]);
+
+        $pjp_market = new PjpMarket($request->all());
+        $request->company->pjp_markets()->save($pjp_market);
+
+        return response()->json([
+            'data'    =>  $pjp_market
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    /*
+         * To view a single pjp_market
+         *
+         *@
+         */
+    public function show(PjpMarket $pjp_market)
     {
-        //
+        return response()->json([
+            'data'   =>  $pjp_market
+        ], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    /*
+         * To update a pjp_market
+         *
+         *@
+         */
+    public function update(Request $request, PjpMarket $pjp_market)
     {
-        //
-    }
+        $request->validate([
+            'pjp_id'    =>  'required',
+            'market_name'    =>  'required'
+        ]);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+        $pjp_market->update($request->all());
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return response()->json([
+            'data'  =>  $pjp_market
+        ], 200);
     }
 }

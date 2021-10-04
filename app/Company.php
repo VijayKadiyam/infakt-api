@@ -430,5 +430,9 @@ class Company extends Model
   {
     return $this->hasMany(Pjp::class);
   }
+  public function pjp_markets()
+  {
+    return $this->hasMany(PjpMarket::class);
+  }
   
 }
