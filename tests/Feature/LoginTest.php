@@ -15,15 +15,15 @@ class LoginTest extends TestCase
   /** @test */
   function login_requires_email_and_password()
   {
-    $this->json('POST','/api/login')
+    $this->json('POST', '/api/login')
       ->assertStatus(422)
       ->assertExactJson([
-          "errors"  =>  [
-            "email"     =>  ["The email field is required."],
-            "password"  =>  ["The password field is required."]
-          ],
-          "message" =>  "The given data was invalid."
-        ]);
+        "errors"  =>  [
+          "email"     =>  ["The email field is required."],
+          "password"  =>  ["The password field is required."]
+        ],
+        "message" =>  "The given data was invalid."
+      ]);
   }
 
   /** @test */
@@ -36,24 +36,26 @@ class LoginTest extends TestCase
       'password' => bcrypt('behappy'),
       'active'   => 1
     ]);
-    $payLoad=[
+    $payLoad = [
       'email'    =>  'sangeetha@gmail.com',
       'password' => 'behappy'
     ];
-    $this->json('POST','/api/login',$payLoad)
+    $this->json('POST', '/api/login', $payLoad)
       ->assertStatus(200)
       ->assertJsonStructure([
-          'data'  =>[ 
-            'phone',
-            'email',
-            'api_token'
-          ]
-        ])
+        'data'  => [
+          'phone',
+          'email',
+          'api_token'
+        ]
+      ])
       ->assertJsonStructureExact([
-          'data',
-          'message',
-          'token',
-          'success'
-        ]);; 
+        'data',
+        'message',
+        'token',
+        'success',
+        'currentAndroidVersionFromApi',
+        'currentSupVersionFromApi'
+      ]);;
   }
 }

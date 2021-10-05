@@ -28,12 +28,12 @@ class DstributorReferencePlanTest extends TestCase
     $this->json('post', '/api/distributor_reference_plan', [], $this->headers)
       ->assertStatus(422)
       ->assertExactJson([
-          "errors"     =>  [
-            "distributor_id"    =>  ["The distributor id field is required."],
-            "reference_plan_id" =>  ["The reference plan id field is required."]
-          ],
-          "message"    =>  "The given data was invalid."
-        ]);
+        "errors"     =>  [
+          "distributor_id"    =>  ["The distributor id field is required."],
+          "reference_plan_id" =>  ["The reference plan id field is required."]
+        ],
+        "message"    =>  "The given data was invalid."
+      ]);
   }
 
   /** @test */
@@ -41,7 +41,7 @@ class DstributorReferencePlanTest extends TestCase
   {
     $distributor = factory(\App\User::class)->create();
     $referencePlan = factory(\App\ReferencePlan::class)->create([
-      'company_id'  =>  $this->company->id 
+      'company_id'  =>  $this->company->id
     ]);
     $distributor->assignReferencePlan($referencePlan->id);
     $check = $distributor->hasReferencePlan($referencePlan->id);
@@ -54,70 +54,52 @@ class DstributorReferencePlanTest extends TestCase
     $this->disableEH();
     $distributor = factory(\App\User::class)->create();
     $referencePlan = factory(\App\ReferencePlan::class)->create([
-      'company_id'  =>  $this->company->id 
+      'company_id'  =>  $this->company->id
     ]);
-    
+
     $distributor = factory(\App\User::class)->create();
-    $this->payload = [ 
+    $this->payload = [
       'reference_plan_id' => $referencePlan->id,
       'distributor_id'    => $distributor->id
     ];
     $this->json('post', '/api/distributor_reference_plan?op=assign', $this->payload)
       ->assertStatus(201)
       ->assertJson([
-          'data'  =>  [
-            'name'                    =>  $distributor->name,
-            'phone'                   =>  $distributor->phone,
-            'email'                   =>  $distributor->email,
-            'doj'                     =>  $distributor->doj,
-            'dob'                     =>  $distributor->dob,
-            'company_designation_id'  =>  $distributor->company_designation_id,
-            'company_state_branch_id' =>  $distributor->company_state_branch_id,
-            'pf_no'                   =>  $distributor->pf_no,
-            'uan_no'                  =>  $distributor->uan_no,
-            'esi_no'                  =>  $distributor->esi_no,
-            'salary'                  =>  $distributor->salary,
-            'image_path'              =>  $distributor->image_path,
-            'terms_accepted'          =>  $distributor->terms_accepted,
-            'reference_plans'                   =>  [
-              0 =>  [
-                'name'  =>  $referencePlan->name,
-              ]
+        'data'  =>  [
+          'name'                    =>  $distributor->name,
+          'phone'                   =>  $distributor->phone,
+          'email'                   =>  $distributor->email,
+          'doj'                     =>  $distributor->doj,
+          'dob'                     =>  $distributor->dob,
+          'company_designation_id'  =>  $distributor->company_designation_id,
+          'company_state_branch_id' =>  $distributor->company_state_branch_id,
+          'pf_no'                   =>  $distributor->pf_no,
+          'uan_no'                  =>  $distributor->uan_no,
+          'esi_no'                  =>  $distributor->esi_no,
+          'salary'                  =>  $distributor->salary,
+          'image_path'              =>  $distributor->image_path,
+          'terms_accepted'          =>  $distributor->terms_accepted,
+          'reference_plans'                   =>  [
+            0 =>  [
+              'name'  =>  $referencePlan->name,
             ]
           ]
-        ])
+        ]
+      ])
       ->assertJsonStructureExact([
         'data'  =>  [
           'id',
-          'name',
           'email',
           'email_verified_at',
           'active',
           'phone',
           'api_token',
-          'doj',
-          'dob',
-          'company_designation_id',
-          'company_state_branch_id',
-          'pf_no',
-          'uan_no',
-          'esi_no',
           'created_at',
           'updated_at',
-          'salary',
           'image_path',
-          'employee_code',
-          'asm_area',
-          'asm_name',
-          'uid_no',
-          'terms_accepted',
-          'company_state_id',
           'address',
-          'unique_id',
-          'appointment_letter',
-          'contract_expiry',
           'resume_path',
-          'photo_path', 
+          'photo_path',
           'residential_proof_path',
           'education_proof_path',
           'pan_card_path',
@@ -174,15 +156,47 @@ class DstributorReferencePlanTest extends TestCase
           'form_11_sign_path',
           'graduity_form_sign_path',
           'password_backup',
-          'gender',
+          // 'gender',
           'pds_form_checked',
-          'form_2_checked', 
-          'form_11_checked', 
+          'form_2_checked',
+          'form_11_checked',
           'graduity_form_checked',
           'beat_type_id',
           'so_id', 'asm_id', 'rms_id', 'nsm_id', 'distributor_id',
+          'name',
+          'doj',
+          'dob',
+          'company_designation_id',
+          'company_state_branch_id',
+          'pf_no',
+          'uan_no',
+          'esi_no',
+          'salary',
+          'employee_code',
+          'asm_area',
+          'asm_name',
+          'uid_no',
+          'terms_accepted',
+          'company_state_id',
+          'unique_id',
+          'appointment_letter',
+          'contract_expiry',
+          'gender',
           'region',
           'state_code',
+          'supervisor_id',
+          'channel',
+          'chain_name',
+          'billing_code',
+          'ba_name',
+          'location',
+          'city',
+          'state',
+          'rsm',
+          'asm',
+          'supervisor_name',
+          'store_type',
+          'brand',
           'reference_plans'
         ]
       ]);
