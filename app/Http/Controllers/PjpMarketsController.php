@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Pjp;
 use App\PjpMarket;
 use Illuminate\Http\Request;
 
@@ -12,29 +13,24 @@ class PjpMarketsController extends Controller
         $this->middleware(['auth:api', 'company']);
     }
 
-    
+
 
     /*
          * To get all pjp_markets
            *
          *@
          */
-    public function index()
+    public function index(Pjp $pjp)
     {
-        $count = 0;
-        if (request()->page && request()->rowsPerPage) {
-            $pjp_markets = request()->company->pjp_markets();
-            $count = $pjp_markets->count();
-            $pjp_markets = $pjp_markets->paginate(request()->rowsPerPage)->toArray();
-            $pjp_markets = $pjp_markets['data'];
-        } else {
-            $pjp_markets = request()->company->pjp_markets;
-            $count = $pjp_markets->count();
-        }
+        // $pjp_markets = PjpMarket::where('pjp_id', '=', $pjp->id)
+        // ->get();
+        // dd($pjp_markets);
+        $pjp_markets = $pjp->pjp_markets;
+        // dd($pjp_markets);
 
         return response()->json([
             'data'     =>  $pjp_markets,
-            'count'    =>   $count
+            'success'   =>  true
         ], 200);
     }
 
