@@ -70,7 +70,7 @@ class UserReferencePlansController extends Controller
 
     $count = 0;
     if(request()->page && request()->rowsPerPage) {
-      $user_reference_plans = request()->company->user_reference_plans();
+      $user_reference_plans = request()->company->user_reference_plans()->orderBy('user_id');
       $count = $user_reference_plans->count();
       $user_reference_plans = $user_reference_plans->paginate(request()->rowsPerPage)->toArray();
       $user_reference_plans = $user_reference_plans['data'];
@@ -84,10 +84,10 @@ class UserReferencePlansController extends Controller
           $q->orWhere('phone', 'LIKE', '%' . $sr . '%');
           $q->orWhere('employee_code', 'LIKE', '%' . $sr . '%');
         })
-        ->get();
+        ->orderBy('user_id')->get();
     }
     else {
-      $user_reference_plans = request()->company->user_reference_plans; 
+      $user_reference_plans = request()->company->user_reference_plans()->orderBy('user_id')->get(); 
       $count = $user_reference_plans->count();
     }
 
