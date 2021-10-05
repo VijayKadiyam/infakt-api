@@ -120,6 +120,7 @@ class CrudePjpsController extends Controller
                     // Create a New SuperVisor User
                     $Supervisor  = [];
                     $Supervisor['name'] = $pjp->supervisor_name;
+                    $Supervisor['employee_code'] = $pjp->employee_code;
                     $Supervisor['password'] = bcrypt('123456');
                     $Supervisor['password_backup'] = bcrypt('123456');
                     $Supervisor['email'] = str_replace(" ", "", $pjp->supervisor_name) . mt_rand(1, 9999) . '@supervisor';
