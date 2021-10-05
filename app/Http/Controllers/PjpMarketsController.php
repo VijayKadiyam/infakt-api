@@ -22,11 +22,7 @@ class PjpMarketsController extends Controller
          */
     public function index(Pjp $pjp)
     {
-        // $pjp_markets = PjpMarket::where('pjp_id', '=', $pjp->id)
-        // ->get();
-        // dd($pjp_markets);
         $pjp_markets = $pjp->pjp_markets;
-        // dd($pjp_markets);
 
         return response()->json([
             'data'     =>  $pjp_markets,
