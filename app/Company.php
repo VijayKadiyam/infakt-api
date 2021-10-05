@@ -438,7 +438,7 @@ class Company extends Model
   public function pjp_supervisors()
   {
     return $this->hasMany(PjpSupervisor::class)
-    ->with('user');
+    ->with('pjp','user');
     
   }
   
