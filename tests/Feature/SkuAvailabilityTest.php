@@ -100,7 +100,7 @@ class SkuAvailabilityTest extends TestCase
                     ]
                 ]
             ]);
-        $this->assertCount(1, SkuAvailability::all());
+        $this->assertCount(0, SkuAvailability::all());
     }
 
     /** @test */

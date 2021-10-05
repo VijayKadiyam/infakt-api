@@ -160,8 +160,7 @@ class StockTest extends TestCase
             'id',
             'sku_id',
             'sku_type_id',
-            '
-            ',
+            'qty',
             'offer_id',
             'price',
             'created_at',
