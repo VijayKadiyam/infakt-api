@@ -34,7 +34,7 @@ class UserAttendancesController extends Controller
    */
   public function index(Request $request)
   {
-
+    $analysis = [];
     $userAttendances = request()->company->user_attendances();
 
     if ($request->date && $request->month == null && $request->year == null && $request->userId == null) {
@@ -54,9 +54,14 @@ class UserAttendancesController extends Controller
     }
     if ($request->supervisorId) {
       $supervisorId = $request->supervisorId;
+      $supervisorUsers = User::where('supervisor_id', '=', $supervisorId)
+        ->get();
+      $analysis['supervisorUsersCount'] = $supervisorUsers->count();      
       $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
         $q->where('supervisor_id', '=', $supervisorId);
       });
+      $analysis['supervisorLoginUsersCount'] = $userAttendances->count();
+      $analysis['supervisorPercentLoggedIn'] = round(($analysis['supervisorLoginUsersCount'] / $analysis['supervisorUsersCount']) * 100, 2);
     }
 
     $userAttendances = $userAttendances->get();
@@ -94,6 +99,7 @@ class UserAttendancesController extends Controller
 
     return response()->json([
       'data'     =>  $userAttendances,
+      'analysis'  =>  $analysis,
       'success' =>  true
     ], 200);
   }
