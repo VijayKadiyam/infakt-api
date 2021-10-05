@@ -67,7 +67,7 @@ class GeocodesController extends Controller
       $content = json_decode($response->getBody(), true);
 
       // This is for Google API
-      $content['address'] = $content['results'] ? $content['results'][0]['formatted_address'] : '';
+      $content['address'] = $content['results'] ? $content['results'][0]['formatted_address'] : $lat . '-' . $lng;
 
       return $content;
     }
