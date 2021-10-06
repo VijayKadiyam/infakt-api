@@ -21,9 +21,19 @@ class PjpSupervisor extends Model
     {
         return $this->belongsTo(User::class);
     }
+    // public function pjp()
+    // {
+    //     return $this->belongsTo(Pjp::class,'actual_pjp_id','id');
+    // }
 
+    public function pjp()
+    {
+        return $this->belongsTo(Pjp::class, 'actual_pjp_id')
+            ->with('pjp_markets');
+    }
     public function company()
     {
         return $this->belongsTo(Company::class);
     }
+
 }

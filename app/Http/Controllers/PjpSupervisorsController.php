@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 
 class PjpSupervisorsController extends Controller
 {
-    public function __construct()
-    {
-      $this->middleware(['auth:api', 'company']);
-    }
-  
-    public function masters(Request $request)
+  public function __construct()
+  {
+    $this->middleware(['auth:api', 'company']);
+  }
+
+  public function masters(Request $request)
   {
     $request->request->add(['role_id' => '4']);
     $usersController = new UsersController();
@@ -27,7 +27,7 @@ class PjpSupervisorsController extends Controller
       'pjps' =>  $pjpResponse->getData()->data,
     ], 200);
   }
-    /*
+  /*
          * To get all pjp_supervisors
            *
          *@
@@ -51,53 +51,59 @@ class PjpSupervisorsController extends Controller
         'count'    =>   $count
       ], 200);
     }
-  
-    /*
+
+    return response()->json([
+      'data'     =>  $pjp_supervisors,
+      'count'    =>   $count
+    ], 200);
+  }
+
+  /*
          * To store a new pjp_supervisors
          *
          *@
          */
-    public function store(Request $request)
-    {
-      $request->validate([
-        'user_id'    =>  'required'
-      ]);
-  
-      $pjp_supervisor = new PjpSupervisor($request->all());
-      $request->company->pjp_supervisors()->save($pjp_supervisor);
-  
-      return response()->json([
-        'data'    =>  $pjp_supervisor
-      ], 201);
-    }
-  
-    /*
+  public function store(Request $request)
+  {
+    $request->validate([
+      'user_id'    =>  'required'
+    ]);
+
+    $pjp_supervisor = new PjpSupervisor($request->all());
+    $request->company->pjp_supervisors()->save($pjp_supervisor);
+
+    return response()->json([
+      'data'    =>  $pjp_supervisor
+    ], 201);
+  }
+
+  /*
          * To view a single pjp_supervisor
          *
          *@
          */
-    public function show(PjpSupervisor $pjp_supervisor)
-    {
-      return response()->json([
-        'data'   =>  $pjp_supervisor
-      ], 200);
-    }
-  
-    /*
+  public function show(PjpSupervisor $pjp_supervisor)
+  {
+    return response()->json([
+      'data'   =>  $pjp_supervisor
+    ], 200);
+  }
+
+  /*
          * To update a pjp_supervisor
          *
          *@
          */
-    public function update(Request $request, PjpSupervisor $pjp_supervisor)
-    {
-      $request->validate([
-        'user_id'  =>  'required',
-      ]);
-  
-      $pjp_supervisor->update($request->all());
-  
-      return response()->json([
-        'data'  =>  $pjp_supervisor
-      ], 200);
-    }
+  public function update(Request $request, PjpSupervisor $pjp_supervisor)
+  {
+    $request->validate([
+      'user_id'  =>  'required',
+    ]);
+
+    $pjp_supervisor->update($request->all());
+
+    return response()->json([
+      'data'  =>  $pjp_supervisor
+    ], 200);
   }
+}
