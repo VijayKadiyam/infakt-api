@@ -365,6 +365,7 @@ Route::resource('pjps/{pjp}/pjp_markets', 'PjpMarketsController');
 Route::resource('pjp_markets', 'PjpMarketsController');
 Route::get('pjp_supervisors/masters', 'PjpSupervisorsController@masters');
 Route::resource('pjp_supervisors', 'PjpSupervisorsController');
+Route::resource('pjp_visited_supervisors', 'PjpVisitedSupervisorsController');
 
 // Crude PJP
 Route::get('crude_pjps', 'CrudePjpsController@index');
