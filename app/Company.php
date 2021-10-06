@@ -441,5 +441,10 @@ class Company extends Model
     ->with('pjp','user');
     
   }
+  public function pjp_visited_supervisor()
+  {
+    return $this->hasMany(PjpVisitedSupervisor::class);
+    
+  }
   
 }
