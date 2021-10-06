@@ -446,6 +446,10 @@ class User extends Authenticatable
   {
     return $this->belongsToMany(ReferencePlan::class, 'distributor_reference_plan', 'distributor_id', 'reference_plan_id');
   }
+  public function pjp_supervisors()
+  {
+    return $this->belongsToMany(PjpSupervisor::class);
+  }
 
   public function assignReferencePlan($reference_plan)
   {
