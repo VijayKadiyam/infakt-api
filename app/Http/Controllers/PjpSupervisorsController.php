@@ -35,6 +35,7 @@ class PjpSupervisorsController extends Controller
     public function index()
     {
       $count = 0;
+      
       if (request()->page && request()->rowsPerPage) {
         $pjp_supervisors = request()->company->pjp_supervisors();
         $count = $pjp_supervisors->count();

@@ -20,7 +20,27 @@ class PjpsController extends Controller
   public function index()
   {
     $count = 0;
-    if (request()->page && request()->rowsPerPage) {
+    $pjps = [];
+    if(request()->supervisorId && request()->monthId) {
+      $pjpSupervisors = request()->company->pjp_supervisors()
+        ->where('user_id', '=', request()->supervisorId)
+        ->get();
+      foreach($pjpSupervisors as $pjpSupervisor) {
+        $pjp = request()->company->pjps()
+          ->where('id', '=', $pjpSupervisor->actual_pjp_id)
+          ->first();
+        foreach($pjp->pjp_markets  as $pjpMarket) {
+          if($pjpMarket->id == $pjpSupervisor->visited_pjp_market_id) {
+            $pjpMarket['pjp_supervisor'] = $pjpSupervisor;
+          } else {
+            // $pjpMarket['pjp_supervisor'] = [];
+          }
+        }
+        if($pjp) 
+          $pjps[] = $pjp;
+      }
+    }
+    else if (request()->page && request()->rowsPerPage) {
       $pjps = request()->company->pjps();
       $count = $pjps->count();
       $pjps = $pjps->paginate(request()->rowsPerPage)->toArray();
@@ -32,7 +52,8 @@ class PjpsController extends Controller
 
     return response()->json([
       'data'     =>  $pjps,
-      'count'    =>   $count
+      'count'    =>   $count,
+      'success' =>  true,
     ], 200);
   }
 
