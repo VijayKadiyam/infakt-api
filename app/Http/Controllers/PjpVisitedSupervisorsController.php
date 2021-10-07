@@ -21,14 +21,33 @@ class PjpVisitedSupervisorsController extends Controller
          *@
          */
     public function index(PjpSupervisor $pjpSupervisor)
-    {
-        $pjp_visited_supervisors = $pjpSupervisor->pjp_visited_supervisor;
-
-        return response()->json([
-            'data'     =>  $pjp_visited_supervisors,
-            'success'   =>  true
-        ], 200);
+     {
+    $count = 0;
+    if (request()->page && request()->rowsPerPage) {
+      $pjp_visited_supervisors = request()->company->pjp_visited_supervisors();
+      $count = $pjp_visited_supervisors->count();
+      $pjp_visited_supervisors = $pjp_visited_supervisors->paginate(request()->rowsPerPage)->toArray();
+      $pjp_visited_supervisors = $pjp_visited_supervisors['data'];
+    } 
+    // else if (request()->search == 'all') {
+    //   $pjp_visited_supervisors = request()->company->pjp_visited_supervisors;
+    // } else if (request()->search) {
+    //   $pjp_visited_supervisors = request()->company->pjp_visited_supervisors()
+    //   ->whereHas('user',  function ($q) {
+    //     $q->where('name', 'LIKE', '%' . request()->search . '%');
+    //   })->get();
+        
+    // } 
+    else {
+      $pjp_visited_supervisors = request()->company->pjp_visited_supervisors;
+      $count = $pjp_visited_supervisors->count();
     }
+
+    return response()->json([
+      'data'     =>  $pjp_visited_supervisors,
+      'count'    =>   $count
+    ], 200);
+  }
 
     /*
          * To store a new pjp_markets
