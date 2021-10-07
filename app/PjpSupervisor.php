@@ -31,7 +31,7 @@ class PjpSupervisor extends Model
         return $this->belongsTo(Pjp::class, 'actual_pjp_id')
             ->with('pjp_markets');
     }
-    public function pjp_visited_supervisor()
+    public function pjp_visited_supervisors()
     {
         return $this->hasMany(PjpVisitedSupervisor::class);
     }
