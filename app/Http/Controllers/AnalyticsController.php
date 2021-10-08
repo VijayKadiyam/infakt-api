@@ -52,6 +52,7 @@ class AnalyticsController extends Controller
         foreach ($user_reference_plan->reference_plan->retailers as $retailer) {
           $orders = Order::where('retailer_id', '=', $retailer->id)
             ->whereDate('created_at', $request->date)
+            ->where('order_type', '=', 'Sales')
             ->with('order_details')
             ->get();
           if(sizeof($orders) > 0)  {

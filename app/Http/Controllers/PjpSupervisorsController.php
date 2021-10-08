@@ -32,24 +32,25 @@ class PjpSupervisorsController extends Controller
            *
          *@
          */
-    public function index()
-    {
-      $count = 0;
-      
-      if (request()->page && request()->rowsPerPage) {
-        $pjp_supervisors = request()->company->pjp_supervisors();
-        $count = $pjp_supervisors->count();
-        $pjp_supervisors = $pjp_supervisors->paginate(request()->rowsPerPage)->toArray();
-        $pjp_supervisors = $pjp_supervisors['data'];
-      } else {
-        $pjp_supervisors = request()->company->pjp_supervisors;
-        $count = $pjp_supervisors->count();
-      }
-  
-      return response()->json([
-        'data'     =>  $pjp_supervisors,
-        'count'    =>   $count
-      ], 200);
+  public function index(Request $request)
+  {
+    $count = 0;
+    if (request()->page && request()->rowsPerPage) {
+      $pjp_supervisors = request()->company->pjp_supervisors();
+      $count = $pjp_supervisors->count();
+      $pjp_supervisors = $pjp_supervisors->paginate(request()->rowsPerPage)->toArray();
+      $pjp_supervisors = $pjp_supervisors['data'];
+    } else if (request()->search == 'all') {
+      $pjp_supervisors = request()->company->pjp_supervisors;
+    } else if (request()->search) {
+      $pjp_supervisors = request()->company->pjp_supervisors()
+      ->whereHas('user',  function ($q) {
+        $q->where('name', 'LIKE', '%' . request()->search . '%');
+      })->get();
+        
+    } else {
+      $pjp_supervisors = request()->company->pjp_supervisors;
+      $count = $pjp_supervisors->count();
     }
 
     return response()->json([
