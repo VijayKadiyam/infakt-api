@@ -22,4 +22,6 @@ class PjpMarket extends Model
         return $this->belongsTo(Pjp::class)
         ->with('pjp_markets');
     }
+
+    
 }
