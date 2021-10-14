@@ -372,3 +372,9 @@ Route::get('crude_pjps', 'CrudePjpsController@index');
 Route::post('upload_pjp', 'CrudePjpsController@uploadPjp');
 Route::get('process_pjp', 'CrudePjpsController@processPjp');
 Route::get('truncate_pjps', 'CrudePjpsController@truncate');
+
+// Crude User Mapping 
+Route::get('crude_user_mappings', 'CrudeUserMappingsController@index');
+Route::post('upload_user_mapping', 'CrudeUserMappingsController@uploadUserMapping');
+Route::get('process_user_mapping', 'CrudeUserMappingsController@processUserMapping');
+Route::get('truncate_user_mappings', 'CrudeUserMappingsController@truncate');
