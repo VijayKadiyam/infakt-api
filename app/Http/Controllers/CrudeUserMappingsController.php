@@ -51,18 +51,19 @@ class CrudeUserMappingsController extends Controller
         $Batch = ImportBatch::where('type', '=', $type)
             ->latest()
             ->first();
-
-        $batch_no = 1;
-        if ($Batch) {
-            $batch_no = $Batch->batch_no + 1;
+        $is_existing_batch = request()->is_existing_batch; //   true[1] or false[0]
+        if (!$is_existing_batch) {
+            $batch_no = 1;
+            if ($Batch) {
+                $batch_no = $Batch->batch_no + 1;
+            }
+            $Batch_data = [
+                'type' => $type,
+                'batch_no' => $batch_no,
+            ];
+            $Batch = new ImportBatch($Batch_data);
+            request()->company->import_batches()->save($Batch);
         }
-        $Batch_data = [
-            'type' => $type,
-            'batch_no' => $batch_no,
-        ];
-        $Batch = new ImportBatch($Batch_data);
-        request()->company->import_batches()->save($Batch);
-
         $Conflicts = [];
         $crude_users = CrudeUserMapping::all();
         foreach ($crude_users as $user) {
@@ -227,8 +228,7 @@ class CrudeUserMappingsController extends Controller
                     } else {
                         // update
                     }
-                    if (!$us->distributor_id) {
-
+                    if ($us->distributor_id == null) {
                         // Create Distributor Of the User
                         $Distributor  = [
                             'name' => $beat->name,
@@ -256,20 +256,24 @@ class CrudeUserMappingsController extends Controller
                     $skus = Sku::all();
                     $i = 5000;
                     foreach ($skus as $key => $sku) {
-
-                        // Create SKUs Stock Based On the Distributor Data  
-                        $stock_data = [
-                            'sku_id' => $sku->id,
-                            'qty' => false,
-                            'price' => $sku->price,
-                            'invoice_no' => 'invoice' . $i,
-                            'total' => false,
-                            'distributor_id' => $Distributor_ID,
-                            'sku_type_id' => 1,
-                        ];
-                        $stock = new Stock($stock_data);
-                        $sku->stocks()->save($stock);
-                        $i++;
+                        $SkuStock = Stock::where('distributor_id', '=', $Distributor_ID)
+                            ->where('sku_id', '=', $sku->id)
+                            ->first();
+                        if (!$SkuStock) {
+                            // Create SKUs Stock Based On the Distributor Data  
+                            $stock_data = [
+                                'sku_id' => $sku->id,
+                                'qty' => false,
+                                'price' => $sku->price,
+                                'invoice_no' => 'invoice' . $i,
+                                'total' => false,
+                                'distributor_id' => $Distributor_ID,
+                                'sku_type_id' => 1,
+                            ];
+                            $stock = new Stock($stock_data);
+                            $sku->stocks()->save($stock);
+                            $i++;
+                        }
                     }
                 }
             }
