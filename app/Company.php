@@ -447,5 +447,9 @@ class Company extends Model
     ->with('pjp','pjp_supervisor');
     
   }
+  public function import_batches()
+  {
+    return $this->hasMany(ImportBatch::class);
+  }
   
 }

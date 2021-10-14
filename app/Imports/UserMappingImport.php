@@ -32,13 +32,13 @@ class UserMappingImport implements ToModel, WithHeadingRow
                 'rsm'        =>  $row['RSM'],
                 'asm'       =>  $row['ASM'],
                 'supervisor_name'       =>  $row['Supervisor Name'],
-                'store_type'        =>  $row['Store Type'],
-                'brand'       =>  $row['BRAND'],
-                'ba_status'       =>  $row['BA status'],
-                'store_status'       =>  $row['Store Status'],
-                'user_login_id'       =>  $row['User id'],
-                'user_password'       =>  $row['Pasword'],
-                'remark'       =>  $row['Remarks'],
+                'store_type'        => (array_key_exists('Store Type', $row) && $row['Store Type'])  ? $row['Store Type'] : NULL,
+                'brand'       => (array_key_exists('BRAND', $row) && $row['BRAND']) ? $row['BRAND'] : NULL,
+                'ba_status'       => (array_key_exists('BA status', $row) && $row['BA status'])  ? $row['BA status'] : NULL,
+                'store_status'       => (array_key_exists('Store Status', $row) && $row['Store Status'])  ? $row['Store Status'] : NULL,
+                'user_login_id'       => (array_key_exists('User id', $row) && $row['User id'])  ? $row['User id'] : NULL,
+                'user_password'       => (array_key_exists('Pasword', $row) && $row['Pasword']) ? $row['Pasword'] : NULL,
+                'remark'       => (array_key_exists('Remarks', $row) && $row['Remarks']) ? $row['Remarks'] : NULL,
             ];
 
             return new CrudeUserMapping($data);
