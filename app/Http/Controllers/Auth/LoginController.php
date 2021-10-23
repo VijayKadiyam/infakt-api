@@ -54,7 +54,7 @@ class LoginController extends Controller
           'message' =>  "User is Logged in Successfully",
           'token'   =>  $user->api_token,
           'success' =>  true,
-          'currentAndroidVersionFromApi' =>  '1.0.12',
+          'currentAndroidVersionFromApi' =>  '1.0.13',
           'currentSupVersionFromApi' =>  '1.0.3',
       ]);
     }
