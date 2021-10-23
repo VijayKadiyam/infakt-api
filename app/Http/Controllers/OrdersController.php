@@ -195,29 +195,7 @@ class OrdersController extends Controller
         }
       }
     }
-    // if($request->userId && $request->date) {
-    //   $orders = request()->company->orders_list()
-    //     ->where('user_id', '=', $request->userId)
-    //     ->whereDate('created_at', $request->date)
-    //     ->get();
-    // }
-    // else if(request()->page && request()->rowsPerPage) {
-    //   $orders = request()->company->orders_list();
-    //   $count = $orders->count();
-    //   $orders = $orders->paginate(request()->rowsPerPage)->toArray();
-    //   $orders = $orders['data'];
-    // } 
-    // else if(request()->page && request()->rowsPerPage && $request->distributorId) {
-    //   $orders = request()->company->orders_list()
-    //     ->where('distributor_id', '=', $request->distributorId);
-    //   $count = $orders->count();
-    //   $orders = $orders->paginate(request()->rowsPerPage)->toArray();
-    //   $orders = $orders['data'];
-    // } else {
-    //   $orders = request()->company->orders_list; 
-    //   $count = $orders->count();
-    // }
-
+    
     return response()->json([
       'data'     =>  $orders,
       'count'    =>   $count,

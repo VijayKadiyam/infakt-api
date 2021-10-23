@@ -13,8 +13,17 @@ class PjpVisitedSupervisorsController extends Controller
         $this->middleware(['auth:api', 'company']);
     }
 
+  public function masters(Request $request)
+  {
+    $usersController = new UsersController();
+    $request->request->add(['role_id' => '4']);
+    $usersResponse = $usersController->index($request);
 
-
+    return response()->json([
+      'users'   =>  $usersResponse->getData()->data,
+    ], 200);
+  }
+  
     /*
          * To get all pjp_markets
            *
@@ -70,7 +79,7 @@ class PjpVisitedSupervisorsController extends Controller
             $pjp_visited_supervisor->update($request->all());
           
         }
-
+        
         return response()->json([
             'data'    =>  $pjp_visited_supervisor
         ], 201);

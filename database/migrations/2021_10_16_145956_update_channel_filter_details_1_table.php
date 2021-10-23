@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdatePjps1Table extends Migration
+class UpdateChannelFilterDetails1Table extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class UpdatePjps1Table extends Migration
      */
     public function up()
     {
-        Schema::table('pjps', function (Blueprint $table) {
-            // $table->string('remarks');
+        Schema::table('channel_filter_details', function (Blueprint $table) {
+            $table->string('ba_training_sub_category')->nullable();
         });
     }
 

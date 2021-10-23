@@ -17,10 +17,17 @@ class ChannelFilterDetailsController extends Controller
          *
        *@
        */
-    public function index()
+    public function index(Request $request)
     {
         $count = 0;
-        if (request()->page && request()->rowsPerPage) {
+        if($request->userId && $request->date && $request->retailerId) {
+            $channel_filter_details = request()->company->channel_filter_details()
+                ->where('ba_1', '=', $request->userId)
+                ->where('date', '=', $request->date)
+                ->where('retailer_id', '=', $request->retailerId)
+                ->get();
+        }
+        else if (request()->page && request()->rowsPerPage) {
             $channel_filter_details = request()->company->channel_filter_details();
             $count = $channel_filter_details->count();
             $channel_filter_details = $channel_filter_details->paginate(request()->rowsPerPage)->toArray();
@@ -32,7 +39,8 @@ class ChannelFilterDetailsController extends Controller
 
         return response()->json([
             'data'     =>  $channel_filter_details,
-            'count'    =>   $count
+            'count'    =>   $count,
+            'success'   =>  true
         ], 200);
     }
 
@@ -47,8 +55,16 @@ class ChannelFilterDetailsController extends Controller
             'ba_1'    =>  'required'
         ]);
 
-        $channel_filter_detail = new ChannelFilterDetail($request->all());
-        $request->company->channel_filter_details()->save($channel_filter_detail);
+        if($request->id == null) {
+            $channel_filter_detail = new ChannelFilterDetail($request->all());
+            $request->company->channel_filter_details()->save($channel_filter_detail);
+        } else {
+            $channel_filter_detail = ChannelFilterDetail::where('id', '=', $request->id)
+                ->first();
+            if($channel_filter_detail) 
+                $channel_filter_detail->update($request->all());
+        }
+        
 
         return response()->json([
             'data'    =>  $channel_filter_detail

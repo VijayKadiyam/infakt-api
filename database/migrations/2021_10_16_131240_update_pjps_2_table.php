@@ -13,6 +13,7 @@ class UpdatePjps2Table extends Migration
      */
     public function up()
     {
+
         Schema::table('pjps', function (Blueprint $table) {
             $table->string('remarks')->nullable();
         });

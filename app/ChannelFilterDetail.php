@@ -40,6 +40,7 @@ class ChannelFilterDetail extends Model
         'date',
         'visit_feedback',
         'selfie_imagepath',
+        'ba_training_sub_category',
     ];
 
     public function company()
