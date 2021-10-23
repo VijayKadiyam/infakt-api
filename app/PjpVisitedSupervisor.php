@@ -12,6 +12,7 @@ class PjpVisitedSupervisor extends Model
         'visited_pjp_market_id',
         'remarks',
         'gps_address',
+        'is_visited'
     ];
 
     public function company() {
