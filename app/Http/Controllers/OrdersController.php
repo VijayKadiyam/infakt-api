@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Order;
 use App\OrderDetail;
+use App\User;
 
 class OrdersController extends Controller
 {
@@ -17,26 +18,24 @@ class OrdersController extends Controller
   public function index(Request $request)
   {
     $count = 0;
-    if($request->userId && $request->date) {
+    if ($request->userId && $request->date) {
       $orders = request()->company->orders_list()
         ->where('user_id', '=', $request->userId)
         ->whereDate('created_at', $request->date)
         ->get();
-    }
-    else if(request()->page && request()->rowsPerPage) {
+    } else if (request()->page && request()->rowsPerPage) {
       $orders = request()->company->orders_list();
       $count = $orders->count();
       $orders = $orders->paginate(request()->rowsPerPage)->toArray();
       $orders = $orders['data'];
-    } 
-    else if(request()->page && request()->rowsPerPage && $request->distributorId) {
+    } else if (request()->page && request()->rowsPerPage && $request->distributorId) {
       $orders = request()->company->orders_list()
         ->where('distributor_id', '=', $request->distributorId);
       $count = $orders->count();
       $orders = $orders->paginate(request()->rowsPerPage)->toArray();
       $orders = $orders['data'];
     } else {
-      $orders = request()->company->orders_list; 
+      $orders = request()->company->orders_list;
       $count = $orders->count();
     }
 
@@ -59,14 +58,14 @@ class OrdersController extends Controller
       'order_details.*.value'   =>  'required',
     ]);
 
-    if($request->id == null || $request->id == '') {
+    if ($request->id == null || $request->id == '') {
       // Save Order
       $order = new Order($request->all());
       $request->company->orders_list()->save($order);
 
       // Save Order Details
-      if(isset($request->order_details))
-        foreach($request->order_details as $detail) {
+      if (isset($request->order_details))
+        foreach ($request->order_details as $detail) {
           $order_detail = new OrderDetail($detail);
           $order->order_details()->save($order_detail);
         }
@@ -78,29 +77,27 @@ class OrdersController extends Controller
       $order->update($request->all());
 
       // Check if Order Detail deleted
-      if(isset($request->order_details))
-        $orderDetailIdResponseArray = array_pluck($request->order_details , 'id');
+      if (isset($request->order_details))
+        $orderDetailIdResponseArray = array_pluck($request->order_details, 'id');
       else
         $orderDetailIdResponseArray = [];
       $orderId = $order->id;
-      $orderDetailIdArray = array_pluck(OrderDetail::where('order_id','=',$orderId)->get(),'id');
+      $orderDetailIdArray = array_pluck(OrderDetail::where('order_id', '=', $orderId)->get(), 'id');
       $differenceOrderDetailIds = array_diff($orderDetailIdArray, $orderDetailIdResponseArray);
       // Delete which is there in the database but not in the response
-      if($differenceOrderDetailIds)
-        foreach($differenceOrderDetailIds as $differenceOrderDetailId)
-        {
+      if ($differenceOrderDetailIds)
+        foreach ($differenceOrderDetailIds as $differenceOrderDetailId) {
           $orderDetail = OrderDetail::find($differenceOrderDetailId);
           $orderDetail->delete();
         }
 
       // Update Order Details
-      if(isset($request->order_details))
-        foreach($request->order_details as $detail) {
-          if(!isset($detail['id'])) {
+      if (isset($request->order_details))
+        foreach ($request->order_details as $detail) {
+          if (!isset($detail['id'])) {
             $order_detail = new OrderDetail($detail);
             $order->order_details()->save($order_detail);
-          }
-          else {
+          } else {
             $order_detail = OrderDetail::find($detail['id']);
             $order_detail->update($detail);
           }
@@ -114,7 +111,7 @@ class OrdersController extends Controller
     return response()->json([
       'data'    =>  $order,
       'success' =>  true
-    ], 201); 
+    ], 201);
   }
 
   public function show(Order $order)
@@ -122,13 +119,13 @@ class OrdersController extends Controller
     return response()->json([
       'data'   =>  $order,
       'success' =>  true
-    ], 200);   
+    ], 200);
   }
 
   public function update(Request $request, Order $order)
   {
     $order->update($request->all());
-      
+
     return response()->json([
       'data'  =>  $order
     ], 200);
@@ -144,5 +141,90 @@ class OrdersController extends Controller
     $order->update();
 
     dd($order->toArray());
+  }
+
+  public function offtakes(Request $request)
+  {
+    $count = 0;
+    $orders = [];
+    if ($request->userId) {
+      return 1;
+      $orders = request()->company->orders_list()
+        ->where('user_id', '=', $request->userId);
+
+      if ($request->month) {
+        $orders = $orders->whereMonth('created_at', '=', $request->month);
+      }
+      if ($request->year) {
+        $orders = $orders->whereYear('created_at', '=', $request->year);
+      }
+
+      $orders = $orders->get();
+    } else {
+      $supervisors = User::with('roles')
+        ->whereHas('roles',  function ($q) {
+          $q->where('name', '=', 'SUPERVISOR');
+        })->orderBy('name')->get();
+
+      foreach ($supervisors as $supervisor) {
+
+        $users = User::where('supervisor_id', '=', $supervisor->id)->get();
+
+        foreach ($users as $user) {
+
+          $ors = request()->company->orders_list()
+            ->where('user_id', '=', $user->id)
+            ->with('order_details')
+            ->whereHas('order_details',  function ($q) {
+              $q->groupBy('sku_id');
+            });
+          if ($request->date) {
+            $ors = $ors->whereDate('created_at', $request->date);
+          }
+          if ($request->month) {
+            $ors = $ors->whereMonth('date', '=', $request->month);
+          }
+          if ($request->year) {
+            $ors = $ors->whereYear('date', '=', $request->year);
+          }
+          $ors = $ors->get();
+          if (count($ors) != 0) {
+            foreach ($ors as $order)
+
+              $orders[] = $order;
+          }
+        }
+      }
+    }
+    // return $ors->get();
+
+    // if($request->userId && $request->date) {
+    //   $orders = request()->company->orders_list()
+    //     ->where('user_id', '=', $request->userId)
+    //     ->whereDate('created_at', $request->date)
+    //     ->get();
+    // }
+    // else if(request()->page && request()->rowsPerPage) {
+    //   $orders = request()->company->orders_list();
+    //   $count = $orders->count();
+    //   $orders = $orders->paginate(request()->rowsPerPage)->toArray();
+    //   $orders = $orders['data'];
+    // } 
+    // else if(request()->page && request()->rowsPerPage && $request->distributorId) {
+    //   $orders = request()->company->orders_list()
+    //     ->where('distributor_id', '=', $request->distributorId);
+    //   $count = $orders->count();
+    //   $orders = $orders->paginate(request()->rowsPerPage)->toArray();
+    //   $orders = $orders['data'];
+    // } else {
+    //   $orders = request()->company->orders_list; 
+    //   $count = $orders->count();
+    // }
+
+    return response()->json([
+      'data'     =>  $orders,
+      'count'    =>   $count,
+      'success'   =>  true
+    ], 200);
   }
 }
