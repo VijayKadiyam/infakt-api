@@ -18,7 +18,7 @@ class CreateRequisitionsTable extends Migration
             $table->integer('company_id');
             $table->string('title')->nullable();
             $table->string('description')->nullable();
-            $table->string('requisition_type')->nullable();
+            $table->string('requisition_type')->nullable(); 
             $table->string('image_path')->nullable();
             $table->timestamps();
         });

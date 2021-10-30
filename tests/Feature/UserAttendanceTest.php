@@ -129,6 +129,29 @@ class UserAttendanceTest extends TestCase
     $this->assertCount(2, UserAttendance::all());
   }
 
+  /** @test */
+  function list_of_user_attendances_of_supervisor()
+  {
+    $this->disableEH();
+
+    $this->json('GET', '/api/user_attendances?supervisorId=1',[], $this->headers)
+      ->assertStatus(200)
+      ->assertJsonStructure([
+          'data' => [
+            // 0 =>  [
+            //   'date',
+            //   'login_time',
+            //   'logout_time',
+            //   'login_lat',
+            //   'login_lng',
+            //   'logout_lat',
+            //   'logout_lng'
+            // ] 
+          ]
+        ]);
+    $this->assertCount(2, UserAttendance::all());
+  }
+
   // /** @test */
   // function list_of_user_attendances_of_specific_dat()
   // {

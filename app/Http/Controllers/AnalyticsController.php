@@ -52,6 +52,7 @@ class AnalyticsController extends Controller
         foreach ($user_reference_plan->reference_plan->retailers as $retailer) {
           $orders = Order::where('retailer_id', '=', $retailer->id)
             ->whereDate('created_at', $request->date)
+            ->where('order_type', '=', 'Sales')
             ->with('order_details')
             ->get();
           if(sizeof($orders) > 0)  {
@@ -102,6 +103,7 @@ class AnalyticsController extends Controller
     // Total orders of a month
     $ordersOfMonth = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month)
+      ->where('order_type', '=', 'Sales')
       ->get();
 
     // Get target
@@ -163,6 +165,7 @@ class AnalyticsController extends Controller
     // Total orders of a month
     $ordersOfMonth = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month)
+      ->where('order_type', '=', 'Sales')
       ->get();
 
     // Get target
@@ -243,16 +246,19 @@ class AnalyticsController extends Controller
     // Total orders of this month
     $ordersOfMonth = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month)
+      ->where('order_type', '=', 'Sales')
       ->get();
 
     // Total orders of last month
     $ordersOfLastMonth = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month != 1 ? $request->month - 1 : 1)
+      ->where('order_type', '=', 'Sales')
       ->get();
 
     // Total orders of last 2 month
     $ordersOfLast2Month = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month != 2 ? $request->month - 2 : 1)
+      ->where('order_type', '=', 'Sales')
       ->get();
 
     $achieved = 0;
@@ -359,16 +365,19 @@ class AnalyticsController extends Controller
     // Total orders of a month
     $ordersOfMonth = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month)
+      ->where('order_type', '=', 'Sales')
       ->get();
 
     // Total orders of last month
     $ordersOfLastMonth = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month != 1 ? $request->month - 1 : 1)
+      ->where('order_type', '=', 'Sales')
       ->get();
 
     // Total orders of last 2 month
     $ordersOfLast2Month = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month != 2 ? $request->month - 2 : 1)
+      ->where('order_type', '=', 'Sales')
       ->get();
 
     // Get target
@@ -473,6 +482,7 @@ class AnalyticsController extends Controller
     $orders = Order::where('user_id', '=', $request->userId)
       // ->where('status', '=', 1)
       ->whereMonth('created_at', $request->month)
+      ->where('order_type', '=', 'Sales')
       ->latest()
       ->get();
     foreach ($orders as $order) {
@@ -564,49 +574,49 @@ class AnalyticsController extends Controller
     }
 
     // Attendances of current - 1 month
-    for ($i=1; $i <= 31; $i++) { 
-      $date = 2021 . '-' . sprintf("%02d", $request->month - 1) . '-' . sprintf("%02d", $i);
+    // for ($i=1; $i <= 31; $i++) { 
+    //   $date = 2021 . '-' . sprintf("%02d", $request->month - 1) . '-' . sprintf("%02d", $i);
 
-      $userAttendance = UserAttendance::where('date', '=', $date)
-        ->first();
-      if($userAttendance)
-        $userAttendances[] = $userAttendance;
-      else
-        $userAttendances[] = [
-          'date'        =>  $date,
-          'login_time'  =>  null
-        ];
-    }
+    //   $userAttendance = UserAttendance::where('date', '=', $date)
+    //     ->first();
+    //   if($userAttendance)
+    //     $userAttendances[] = $userAttendance;
+    //   else
+    //     $userAttendances[] = [
+    //       'date'        =>  $date,
+    //       'login_time'  =>  null
+    //     ];
+    // }
 
-    // Attendances of current - 2 month
-    for ($i=1; $i <= 31; $i++) { 
-      $date = 2021 . '-' . sprintf("%02d", $request->month - 2) . '-' . sprintf("%02d", $i);
+    // // Attendances of current - 2 month
+    // for ($i=1; $i <= 31; $i++) { 
+    //   $date = 2021 . '-' . sprintf("%02d", $request->month - 2) . '-' . sprintf("%02d", $i);
 
-      $userAttendance = UserAttendance::where('date', '=', $date)
-        ->first();
-      if($userAttendance)
-        $userAttendances[] = $userAttendance;
-      else
-        $userAttendances[] = [
-          'date'        =>  $date,
-          'login_time'  =>  null
-        ];
-    }
+    //   $userAttendance = UserAttendance::where('date', '=', $date)
+    //     ->first();
+    //   if($userAttendance)
+    //     $userAttendances[] = $userAttendance;
+    //   else
+    //     $userAttendances[] = [
+    //       'date'        =>  $date,
+    //       'login_time'  =>  null
+    //     ];
+    // }
 
-    // Attendances of current - 3 month
-    for ($i=1; $i <= 31; $i++) { 
-      $date = 2021 . '-' . sprintf("%02d", $request->month - 3) . '-' . sprintf("%02d", $i);
+    // // Attendances of current - 3 month
+    // for ($i=1; $i <= 31; $i++) { 
+    //   $date = 2021 . '-' . sprintf("%02d", $request->month - 3) . '-' . sprintf("%02d", $i);
 
-      $userAttendance = UserAttendance::where('date', '=', $date)
-        ->first();
-      if($userAttendance)
-        $userAttendances[] = $userAttendance;
-      else
-        $userAttendances[] = [
-          'date'        =>  $date,
-          'login_time'  =>  null
-        ];
-    }
+    //   $userAttendance = UserAttendance::where('date', '=', $date)
+    //     ->first();
+    //   if($userAttendance)
+    //     $userAttendances[] = $userAttendance;
+    //   else
+    //     $userAttendances[] = [
+    //       'date'        =>  $date,
+    //       'login_time'  =>  null
+    //     ];
+    // }
 
     // Attendances of current - 4 month
     // for ($i=1; $i <= 31; $i++) { 
@@ -710,6 +720,7 @@ class AnalyticsController extends Controller
 
     return response()->json([
       'data'    =>  $data,
+      
       'success' =>  true
     ]);
   }

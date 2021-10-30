@@ -1,9 +1,10 @@
 <?php
 
 use Faker\Generator as Faker;
+use App\Requisition;
 
-$factory->define(Model::class, function (Faker $faker) {
+$factory->define(Requisition::class, function (Faker $faker) {
     return [
-        //
+        'title' =>  'Title 1'
     ];
 });

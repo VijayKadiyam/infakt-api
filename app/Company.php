@@ -392,6 +392,64 @@ class Company extends Model
     return $this->hasMany(Requisition::class);
   }
 
+  public function channel_filters()
+  {
+    return $this->hasMany(ChannelFilter::class);
+  }
+
+  public function channel_filter_details()
+  {
+    return $this->hasMany(ChannelFilterDetail::class);
+  }
+
+  public function channel_filter_fifos()
+  {
+    return $this->hasMany(ChannelFilterFifo::class);
+  }
+  public function channel_filter_oos()
+  {
+    return $this->hasMany(ChannelFilterOos::class);
+  }
+
+  public function visitors()
+  {
+    return $this->hasMany(Visitor::class)
+      ->with('visitor_bas', 'visitor_npds', 'visitor_stocks');
+  }
+
+  public function channel_competition_offers()
+  {
+    return $this->hasMany(ChannelCompetitionOffer::class);
+  }
   
+  public function trackers()
+  {
+    return $this->hasMany(Tracker::class);
+  }
+  public function pjps()
+  {
+    return $this->hasMany(Pjp::class)
+    ->with('pjp_markets');
+  }
+  public function pjp_markets()
+  {
+    return $this->hasMany(PjpMarket::class);
+  }
+  public function pjp_supervisors()
+  {
+    return $this->hasMany(PjpSupervisor::class)
+    ->with('pjp','user');
+    
+  }
+  public function pjp_visited_supervisors()
+  {
+    return $this->hasMany(PjpVisitedSupervisor::class)
+    ->with('pjp','pjp_supervisor');
+    
+  }
+  public function import_batches()
+  {
+    return $this->hasMany(ImportBatch::class);
+  }
   
 }

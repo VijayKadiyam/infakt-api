@@ -61,15 +61,19 @@ class UploadsController extends Controller
     if ($request->hasFile('imagepath')) {
       $file = $request->file('imagepath');
       $name = $request->filename ?? 'photo.jpg';
-      $name = $name . $file->getClientOriginalExtension();;
+      // $name = $name . $file->getClientOriginalExtension();
       $imagePath = 'retailers/' .  $request->retailerid . '/' . $name;
       Storage::disk('local')->put($imagePath, file_get_contents($file), 'public');
 
       $retailer = Retailer::where('id', '=', request()->retailerid)->first();
-      if($request->lat)
+      if($request->lat) {
         $retailer->lat =$request->lat;
-      if($request->lng)
+        $retailer->latitude =$request->lat;
+      }
+      if($request->lng) {
         $retailer->lng =$request->lng;
+        $retailer->longitude =$request->lng;
+      }
       $retailer->image_path = $imagePath;
       $retailer->update();
     }

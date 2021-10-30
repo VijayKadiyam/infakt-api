@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Retailer extends Model
 {
   protected $fillable = [
-    'name', 'address', 'retailer_code', 'proprietor_name', 'phone', 'gst_no', 'bank_name', 'ac_no', 'ifsc_code', 'branch', 'cheque_path', 'retailer_category_id', 'retailer_classification_id', 'image_path', 'lat', 'lng', 'approved', 'imagepath', 'geolocation_address', 'state_code'
+    'name', 'address', 'retailer_code','reference_plan_id', 'proprietor_name', 'phone', 'gst_no', 'bank_name', 'ac_no', 'ifsc_code', 'branch', 'cheque_path', 'retailer_category_id', 'retailer_classification_id', 'image_path', 'lat', 'lng', 'approved', 'imagepath', 'geolocation_address', 'state_code', 'latitude', 'longitude'
   ];
 
   /*

@@ -45,5 +45,35 @@ class GeocodesController extends Controller
       'data'  =>  $content['results'] ? $content['results'][0]['formatted_address'] : ''
     ]);
   }
+
+  public function kanhaiLoc(Request $request) {
+    $lat = $request->lat;
+    $lng = $request->lng;
+    try {
+      $endpoint = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" . $lat . "," . $lng . "&key=AIzaSyDSECwAUD8Ynppe3u_MGuczSeDsH7uP2FQ";
+      // $endpoint = "https://test.easyhrworld.com/api/v2/attendance/getGeoLocation?lat=$lat&log=$lng";
+      $client = new \GuzzleHttp\Client(
+        [
+          'headers' => [
+            'Accept'  => 'application/json',
+            'Content-Type'  => 'application/json',
+            'X-API-KEY' => '356a192b7913b04c54574d18c28d46e6395428ab'
+          ]
+        ]
+      );
+
+      $response = $client->request('GET', $endpoint);
+      $statusCode = $response->getStatusCode();
+      $content = json_decode($response->getBody(), true);
+
+      // This is for Google API
+      $content['address'] = $content['results'] ? $content['results'][0]['formatted_address'] : $lat . '-' . $lng;
+
+      return $content;
+    }
+    catch(Exception $ex) {
+
+    }
+  }
   
 }

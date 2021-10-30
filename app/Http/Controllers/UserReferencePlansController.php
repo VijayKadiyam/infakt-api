@@ -15,7 +15,7 @@ class UserReferencePlansController extends Controller
 
   public function masters(Request $request)
   {
-    $request->request->add(['search' => 'all']);
+    $request->request->add(['role_id' => '5']);
     $usersController = new UsersController();
     $usersResponse = $usersController->index($request);
 
@@ -23,6 +23,9 @@ class UserReferencePlansController extends Controller
     $referencePlanResponse = $referencePlanController->index($request);
 
     $days = [
+      [ 'id'    =>  0,
+        'value' => 'ALL'
+      ],
       [ 'id'    =>  1,
         'value' => 'MONDAY'
       ], 
@@ -67,12 +70,24 @@ class UserReferencePlansController extends Controller
 
     $count = 0;
     if(request()->page && request()->rowsPerPage) {
-      $user_reference_plans = request()->company->user_reference_plans();
+      $user_reference_plans = request()->company->user_reference_plans()->orderBy('user_id');
       $count = $user_reference_plans->count();
       $user_reference_plans = $user_reference_plans->paginate(request()->rowsPerPage)->toArray();
       $user_reference_plans = $user_reference_plans['data'];
-    } else {
-      $user_reference_plans = request()->company->user_reference_plans; 
+    } 
+    else if(request()->search) {
+      $sr = request()->search;
+      $user_reference_plans = request()->company->user_reference_plans()
+        ->whereHas('user',  function ($q) use($sr) {
+          $q->where('name', 'LIKE', '%' . $sr . '%');
+          $q->orWhere('email', 'LIKE', '%' . $sr . '%');
+          $q->orWhere('phone', 'LIKE', '%' . $sr . '%');
+          $q->orWhere('employee_code', 'LIKE', '%' . $sr . '%');
+        })
+        ->orderBy('user_id')->get();
+    }
+    else {
+      $user_reference_plans = request()->company->user_reference_plans()->orderBy('user_id')->get(); 
       $count = $user_reference_plans->count();
     }
 

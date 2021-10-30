@@ -17,12 +17,12 @@ class DistributorUserTest extends TestCase
     $this->json('post', '/api/distributor_user', [], $this->headers)
       ->assertStatus(422)
       ->assertExactJson([
-          "errors"     =>  [
-            "distributor_id"  =>  ["The distributor id field is required."],
-            "user_id"         =>  ["The user id field is required."]
-          ],
-          "message"    =>  "The given data was invalid."
-        ]);
+        "errors"     =>  [
+          "distributor_id"  =>  ["The distributor id field is required."],
+          "user_id"         =>  ["The user id field is required."]
+        ],
+        "message"    =>  "The given data was invalid."
+      ]);
   }
 
   /** @test */
@@ -41,66 +41,48 @@ class DistributorUserTest extends TestCase
     $this->disableEH();
     $userTwo       = factory(\App\User::class)->create();
     $distributor = factory(\App\User::class)->create();
-    $this->payload = [ 
+    $this->payload = [
       'user_id'       => $userTwo->id,
-      'distributor_id'=> $distributor->id
+      'distributor_id' => $distributor->id
     ];
     $this->json('post', '/api/distributor_user?op=assign', $this->payload)
       ->assertStatus(201)
       ->assertJson([
-          'data'  =>  [
-            'name'                    =>  $userTwo->name,
-            'phone'                   =>  $userTwo->phone,
-            'email'                   =>  $userTwo->email,
-            'doj'                     =>  $userTwo->doj,
-            'dob'                     =>  $userTwo->dob,
-            'company_designation_id'  =>  $userTwo->company_designation_id,
-            'company_state_branch_id' =>  $userTwo->company_state_branch_id,
-            'pf_no'                   =>  $userTwo->pf_no,
-            'uan_no'                  =>  $userTwo->uan_no,
-            'esi_no'                  =>  $userTwo->esi_no,
-            'salary'                  =>  $userTwo->salary,
-            'image_path'              =>  $userTwo->image_path,
-            'terms_accepted'          =>  $userTwo->terms_accepted,
-            'distributors'                   =>  [
-              0 =>  [
-                'name'  =>  $distributor->name,
-              ]
+        'data'  =>  [
+          'name'                    =>  $userTwo->name,
+          'phone'                   =>  $userTwo->phone,
+          'email'                   =>  $userTwo->email,
+          'doj'                     =>  $userTwo->doj,
+          'dob'                     =>  $userTwo->dob,
+          'company_designation_id'  =>  $userTwo->company_designation_id,
+          'company_state_branch_id' =>  $userTwo->company_state_branch_id,
+          'pf_no'                   =>  $userTwo->pf_no,
+          'uan_no'                  =>  $userTwo->uan_no,
+          'esi_no'                  =>  $userTwo->esi_no,
+          'salary'                  =>  $userTwo->salary,
+          'image_path'              =>  $userTwo->image_path,
+          'terms_accepted'          =>  $userTwo->terms_accepted,
+          'distributors'                   =>  [
+            0 =>  [
+              'name'  =>  $distributor->name,
             ]
           ]
-        ])
+        ]
+      ])
       ->assertJsonStructureExact([
         'data'  =>  [
           'id',
-          'name',
           'email',
           'email_verified_at',
           'active',
           'phone',
           'api_token',
-          'doj',
-          'dob',
-          'company_designation_id',
-          'company_state_branch_id',
-          'pf_no',
-          'uan_no',
-          'esi_no',
           'created_at',
           'updated_at',
-          'salary',
           'image_path',
-          'employee_code',
-          'asm_area',
-          'asm_name',
-          'uid_no',
-          'terms_accepted',
-          'company_state_id',
           'address',
-          'unique_id',
-          'appointment_letter',
-          'contract_expiry',
           'resume_path',
-          'photo_path', 
+          'photo_path',
           'residential_proof_path',
           'education_proof_path',
           'pan_card_path',
@@ -157,15 +139,47 @@ class DistributorUserTest extends TestCase
           'form_11_sign_path',
           'graduity_form_sign_path',
           'password_backup',
-          'gender',
+          // 'gender',
           'pds_form_checked',
-          'form_2_checked', 
-          'form_11_checked', 
+          'form_2_checked',
+          'form_11_checked',
           'graduity_form_checked',
           'beat_type_id',
           'so_id', 'asm_id', 'rms_id', 'nsm_id', 'distributor_id',
+          'name',
+          'doj',
+          'dob',
+          'company_designation_id',
+          'company_state_branch_id',
+          'pf_no',
+          'uan_no',
+          'esi_no',
+          'salary',
+          'employee_code',
+          'asm_area',
+          'asm_name',
+          'uid_no',
+          'terms_accepted',
+          'company_state_id',
+          'unique_id',
+          'appointment_letter',
+          'contract_expiry',
+          'gender',
           'region',
           'state_code',
+          'supervisor_id',
+          'channel',
+          'chain_name',
+          'billing_code',
+          'ba_name',
+          'location',
+          'city',
+          'state',
+          'rsm',
+          'asm',
+          'supervisor_name',
+          'store_type',
+          'brand',
           'distributors'
         ]
       ]);

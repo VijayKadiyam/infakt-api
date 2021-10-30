@@ -16,7 +16,7 @@ class TargetsController extends Controller
   public function masters(Request $request)
   {
     $usersController = new UsersController();
-    $request->request->add(['search' => 'all']);
+    $request->request->add(['role_id' => '5']);
     $usersResponse = $usersController->index($request);
 
     $months = [

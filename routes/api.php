@@ -66,6 +66,7 @@ Route::resource('company_leaves', 'CompanyLeavesController');
 Route::resource('leave_types', 'LeaveTypesController');
 
 Route::get('user_attendances/masters', 'UserAttendancesController@masters');
+Route::get('user_attendances/user_attendance', 'UserAttendancesController@user_attendance');
 Route::resource('user_attendances', 'UserAttendancesController');
 Route::resource('user_attendances/{user_attendance}/user_attendance_breaks', 'UserAttendanceBreaksController');
 Route::resource('user_applications', 'UserApplicationsController');
@@ -86,6 +87,7 @@ Route::post('upload_profile', 'UploadController@uploadProfile');
 Route::post('upload_signature', 'UploadController@uploadSignature');
 Route::post('upload_bill/{id}', 'UploadController@uploadBill');
 Route::post('upload_retailer/{id}', 'UploadController@uploadRetailer');
+Route::post('upload_daily_photo', 'UploadController@uploadDailyPhotos');
 
 Route::resource('products', 'ProductsController');
 Route::get('productSkusStocks', 'ProductsController@productSkusStocks');
@@ -107,6 +109,9 @@ Route::get('sales/single-employee-sales-email', 'SalesController@singleEmployeeS
 // Route::resource('stocks/{stock}/sales', 'SalesController');
 
 Route::resource('reference_plans', 'ReferencePlansController');
+Route::post('reference_plans/beats_mapping', 'ReferencePlansController@Beats_Mapping');
+Route::post('users/beats_mapping', 'UsersController@Beats_Mapping');
+
 Route::get('/retailers/masters', 'RetailersController@masters');
 Route::get('/retailers', 'RetailersController@list_of_retailer');
 Route::resource('reference_plans/{reference_plan}/retailers', 'RetailersController');
@@ -124,6 +129,7 @@ Route::resource('marks', 'MarksController');
 
 Route::get('time', 'TimesController@index');
 Route::get('geocode', 'GeocodesController@index');
+Route::get('kanhaiLoc', 'GeocodesController@kanhaiLoc');
 Route::post('sendEmail', 'SendEmailController@index');
 
 Route::resource('users/{user}/user_offer_letters', 'UserOfferLettersController');
@@ -288,6 +294,8 @@ Route::resource('notices', 'NoticesController');
 
 Route::get('orders/generate_invoice', 'OrdersController@generateInvoice');
 Route::resource('orders', 'OrdersController');
+Route::get('offtakes', 'OrdersController@offtakes');
+
 Route::resource('sales_orders', 'SalesOrdersController');
 
 Route::get('daySummary', 'AnalyticsController@daySummary');
@@ -333,3 +341,41 @@ Route::resource('daily_photos', 'DailyPhotosController');
 
 Route::resource('courses', 'CoursesController');
 Route::resource('courses/{course}/course_details', 'CourseDetailsController');
+
+Route::resource('requisitions', 'RequisitionsController');
+
+Route::get('crude_targets', 'CrudeTargetsController@index');
+Route::post('upload_target', 'CrudeTargetsController@uploadTarget');
+Route::get('process_target', 'CrudeTargetsController@processTarget');
+Route::get('truncate_targets', 'CrudeTargetsController@truncate');
+
+Route::resource('channel_filters', 'ChannelFiltersController');
+
+Route::post('upload_channel_filter_detail_photos', 'UploadController@uploadChannelFilterDetailPhotos');
+Route::resource('channel_filter_details', 'ChannelFilterDetailsController');
+Route::resource('channel_filter_fifos', 'ChannelFilterFifosController');
+Route::resource('channel_filter_oos', 'ChannelFilterOosController');
+
+Route::resource('channel_competition_offers', 'ChannelCompetitionOffersController');
+Route::resource('trackers', 'TrackersController');
+
+Route::resource('visitors', 'VisitorsController');
+Route::resource('pjps', 'PjpsController');
+Route::resource('pjps/{pjp}/pjp_markets', 'PjpMarketsController');
+Route::resource('pjp_markets', 'PjpMarketsController');
+Route::get('pjp_supervisors/masters', 'PjpSupervisorsController@masters');
+Route::resource('pjp_supervisors', 'PjpSupervisorsController');
+Route::get('pjp_visited_supervisors/masters', 'PjpVisitedSupervisorsController@masters');
+Route::resource('pjp_visited_supervisors', 'PjpVisitedSupervisorsController');
+
+// Crude PJP
+Route::get('crude_pjps', 'CrudePjpsController@index');
+Route::post('upload_pjp', 'CrudePjpsController@uploadPjp');
+Route::get('process_pjp', 'CrudePjpsController@processPjp');
+Route::get('truncate_pjps', 'CrudePjpsController@truncate');
+
+// Crude User Mapping 
+Route::get('crude_user_mappings', 'CrudeUserMappingsController@index');
+Route::post('upload_user_mapping', 'CrudeUserMappingsController@uploadUserMapping');
+Route::get('process_user_mapping', 'CrudeUserMappingsController@processUserMapping');
+Route::get('truncate_user_mappings', 'CrudeUserMappingsController@truncate');

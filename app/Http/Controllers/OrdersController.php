@@ -147,8 +147,7 @@ class OrdersController extends Controller
   {
     $count = 0;
     $orders = [];
-    if ($request->userId) {
-      return 1;
+    if($request->userId) {
       $orders = request()->company->orders_list()
         ->where('user_id', '=', $request->userId);
 
@@ -162,9 +161,9 @@ class OrdersController extends Controller
       $orders = $orders->get();
     } else {
       $supervisors = User::with('roles')
-        ->whereHas('roles',  function ($q) {
-          $q->where('name', '=', 'SUPERVISOR');
-        })->orderBy('name')->get();
+      ->whereHas('roles',  function ($q) {
+        $q->where('name', '=', 'SUPERVISOR');
+      })->orderBy('name')->get();
 
       foreach ($supervisors as $supervisor) {
 
@@ -190,7 +189,6 @@ class OrdersController extends Controller
           $ors = $ors->get();
           if (count($ors) != 0) {
             foreach ($ors as $order)
-
               $orders[] = $order;
           }
         }

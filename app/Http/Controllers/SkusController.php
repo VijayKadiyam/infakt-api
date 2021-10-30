@@ -9,6 +9,7 @@ use App\Stock;
 use App\User;
 use App\Order;
 use Carbon\Carbon;
+use App\UserReferencePlan;
 
 class SkusController extends Controller
 {
@@ -74,33 +75,45 @@ class SkusController extends Controller
       $count = $skus->count();
       $skus = $skus->paginate(request()->rowsPerPage)->toArray();
       $skus = $skus['data'];
-    } else {
+    } 
+    else if(request()->search) {
+      $skus = request()->company->skus()
+        ->where('name', 'LIKE', '%' . $request->search . '%')
+        ->get();
+    }
+    else {
       $skus = request()->company->skus; 
       $count = $skus->count();
     }
 
     $user = User::find($request->userId);
-    // if($user) {
-      $stocks = Stock::whereYear('created_at', Carbon::now());
+    if($user) {
+      
+      $stocks = [];
       if($user)
-        $stocks = $stocks->where('distributor_id', '=', $user->distributor_id);
-      $stocks = $stocks->latest()->get();
+        $stocks = Stock::whereYear('created_at', Carbon::now())
+          ->whereMonth('created_at', Carbon::now())
+          ->where('distributor_id', '=', $user->distributor_id)
+          ->latest()->get();
 
-      $orders = Order::whereYear('created_at', Carbon::now());
+      $orders = [];
       if($user)
-        $orders = $orders->where('distributor_id', '=', $user->distributor_id);
-      $orders = $orders->latest()->get();
+        $orders = Order::whereYear('created_at', Carbon::now())
+          // ->whereMonth('created_at', Carbon::now())
+          ->where('distributor_id', '=', $user->distributor_id)
+          ->latest()->get();
 
       foreach ($skus as $sku) {
+        $sku['mrp_price'] = $sku->price;
         $skuStocks = [];
         foreach ($stocks as $stock) {
           if($sku['id'] == $stock['sku_id']) 
             $skuStocks[] = $stock;
         }
-        $sku['price'] = sizeof($skuStocks) > 0 ? $skuStocks[0]['price'] : 0;
+        // $sku['price'] = sizeof($skuStocks) > 0 ? $skuStocks[0]['price'] : 0;
         $sku['offer_price'] = null;
         if(sizeof($skuStocks) > 0) {
-          $sku['price'] = $skuStocks[0]['price'];
+          // $sku['price'] = $skuStocks[0]['price'];
           if($sku['offer_id'] != null) {
             if($sku['offer']['offer_type']['name'] == 'FLAT') {
               $sku['offer_price'] = $sku['price'] - $sku['offer']['offer'];
@@ -119,25 +132,38 @@ class SkusController extends Controller
         $consumedQty = 0;
 
         foreach ($orders as $order) {
-          foreach ($order->order_details as $detail) {
-            if($detail->sku_id == $sku->id && $order->order_type == 'Stock Received') 
-              $receivedQty += $detail->qty;
-            if($detail->sku_id == $sku->id && $order->order_type == 'Stock Returned') 
-              $returnedQty += $detail->qty;
-            if($detail->sku_id == $sku->id && $order->order_type == 'Sales') 
-              $consumedQty += $detail->qty;
+          $todayDate = Carbon::now()->format('d-m-Y');
+          $orderDate = Carbon::parse($order->created_at)->format('d-m-Y');
+          if($orderDate != $todayDate) {
+            foreach ($order->order_details as $detail) {
+              if($detail->sku_id == $sku->id && $order->order_type == 'Stock Received') 
+                $totalQty += $detail->qty;
+              if($detail->sku_id == $sku->id && $order->order_type == 'Stock Returned') 
+                $totalQty += $detail->qty;
+              if($detail->sku_id == $sku->id && $order->order_type == 'Sales') 
+                $totalQty -= $detail->qty;
+            }
+          } else {
+            foreach ($order->order_details as $detail) {
+              if($detail->sku_id == $sku->id && $order->order_type == 'Stock Received') 
+                $receivedQty += $detail->qty;
+              if($detail->sku_id == $sku->id && $order->order_type == 'Stock Returned') 
+                $returnedQty += $detail->qty;
+              if($detail->sku_id == $sku->id && $order->order_type == 'Sales') 
+                $consumedQty += $detail->qty;
+            }
           }
         }
         
-        $sku['qty'] = ($totalQty - $consumedQty) > 0 ? ($totalQty - $consumedQty) : 0;
+        $sku['qty'] = ($totalQty + $receivedQty + $returnedQty - $consumedQty);
 
         $sku['opening_stock'] = $totalQty;
         $sku['received_stock'] = $receivedQty;
         $sku['returned_stock'] = $returnedQty;
         $sku['sales_stock'] = $consumedQty;
-        $sku['closing_stock'] = ($totalQty - $consumedQty) > 0 ? ($totalQty + $receivedQty + $returnedQty - $consumedQty) : 0;
+        $sku['closing_stock'] = ($totalQty + $receivedQty + $returnedQty - $consumedQty);
       }
-    // }
+    }
     
 
     return response()->json([
@@ -172,9 +198,12 @@ class SkusController extends Controller
    *
    *@
    */
-  public function show(Product $product, Sku $sku)
+  public function show(Product $product, $sku)
   {
-    return response()->json([
+    $sku = Sku::where('id', '=', $sku)
+      ->first();
+    
+      return response()->json([
       'data'   =>  $sku
     ], 200);
   }
