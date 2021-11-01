@@ -45,15 +45,20 @@ class CrudeTargetsController extends Controller
     set_time_limit(0);
 
     $crude_targets = CrudeTarget::all();
+    $Conflicts = [];
 
     foreach ($crude_targets as $target) {
       if ($target->store_code) {
         $us = User::where('employee_code', '=', $target->store_code)
           ->first();
-          if ($us) {
+        if (!$us) {
+          $target['source'] = 'excel';
+          array_push($Conflicts, $target);
+        }
+        else {
           $user_id = $us['id'];
           $data = [
-            'company_id'=> request()->company->id,
+            'company_id' => request()->company->id,
             'user_id' => $user_id,
             'month' => $target->month,
             'year' => $target->year,
@@ -74,6 +79,10 @@ class CrudeTargetsController extends Controller
         }
       }
     }
+    return response()->json([
+      'data'    =>  $Conflicts,
+      'success' =>  true
+    ]);
   }
 
   public function truncate()
