@@ -34,6 +34,6 @@ class Order extends Model
   public function order_details()
   {
     return $this->hasMany(OrderDetail::class)
-      ->with('sku');
+    ->where('is_active', '=', 1)->with('sku');
   }
 }
