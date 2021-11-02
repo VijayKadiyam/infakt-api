@@ -271,6 +271,7 @@ class OrdersController extends Controller
             }
             // End singleDaySalesOrders Foreach
             foreach($order->order_details as $orderDetail) {
+              $salesOrder['id'] = $order->id;
               $salesOrder['order_type'] = $order->order_type;
               $salesOrder['created_at'] = Carbon::parse($order->created_at)->format('d-m-Y');
               $salesOrder['user'] = $order->user;
@@ -299,6 +300,7 @@ class OrdersController extends Controller
             }
             // End singleDayStockReceived Foreach
             foreach($order->order_details as $orderDetail) {
+              $stockReceived['id'] = $order->id;
               $stockReceived['order_type'] = $order->order_type;
               $stockReceived['created_at'] = Carbon::parse($order->created_at)->format('d-m-Y');
               $stockReceived['user'] = $order->user;
@@ -327,6 +329,7 @@ class OrdersController extends Controller
             }
             // End singleDayStockReturned Foreach
             foreach($order->order_details as $orderDetail) {
+              $stockReturned['id'] = $order->id;
               $stockReturned['order_type'] = $order->order_type;
               $stockReturned['created_at'] = Carbon::parse($order->created_at)->format('d-m-Y');
               $stockReturned['user'] = $order->user;
