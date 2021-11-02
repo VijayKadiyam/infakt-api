@@ -217,6 +217,7 @@ class OrdersController extends Controller
       if(sizeof($ordersOfADay) > 0) {
         $singleDaySalesOrders = [];
         $singleDayStockReceived = [];
+        $singleDayStockReturned = [];
 
         $salesOrder = [
           'order_details' => [],
