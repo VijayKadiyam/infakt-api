@@ -295,6 +295,7 @@ Route::resource('notices', 'NoticesController');
 Route::get('orders/generate_invoice', 'OrdersController@generateInvoice');
 Route::post('delete_order/{id}', 'OrdersController@deleteOrder');
 Route::post('delete_order_detail/{id}', 'OrdersController@deleteOrderDetail');
+Route::get('deleteMultipleOrders', 'OrdersController@deleteMultipleOrders');
 Route::resource('orders', 'OrdersController');
 Route::get('offtakes', 'OrdersController@offtakes');
 

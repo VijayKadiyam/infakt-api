@@ -132,6 +132,19 @@ class OrdersController extends Controller
     ], 200);
   }
 
+  public function deleteMultipleOrders() {
+    $orders = Order::whereDate('created_at', '<=', '2021-10-31')
+      ->delete();
+
+    $order_details = OrderDetail::whereDate('created_at', '<=', '2021-10-31')
+      ->delete();
+
+    return response()->json([
+      'orders'  =>  $orders,
+      'order_details'  =>  $order_details,
+    ]); 
+  }
+
   public function deleteOrder($id)
   {
     $order = Order::where('id', '=', $id)->first();
