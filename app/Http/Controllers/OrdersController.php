@@ -392,7 +392,7 @@ class OrdersController extends Controller
     // }
 
     return response()->json([
-      'data'     =>  $orders,
+      'data'     =>  $finalOrders,
       'count'    =>   $count,
       'success'   =>  true
     ], 200);
