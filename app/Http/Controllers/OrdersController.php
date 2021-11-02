@@ -272,6 +272,10 @@ class OrdersController extends Controller
             // End singleDaySalesOrders Foreach
             foreach($order->order_details as $orderDetail) {
               $salesOrder['id'] = $order->id;
+              $salesOrder['distributor_id'] = $order->distributor_id;
+              $salesOrder['retailer_id'] = $order->retailer_id;
+              $salesOrder['user_id'] = $order->user_id;
+              $salesOrder['status'] = $order->status;
               $salesOrder['order_type'] = $order->order_type;
               $salesOrder['created_at'] = Carbon::parse($order->created_at)->format('d-m-Y');
               $salesOrder['user'] = $order->user;
@@ -301,6 +305,10 @@ class OrdersController extends Controller
             // End singleDayStockReceived Foreach
             foreach($order->order_details as $orderDetail) {
               $stockReceived['id'] = $order->id;
+              $stockReceived['distributor_id'] = $order->distributor_id;
+              $stockReceived['retailer_id'] = $order->retailer_id;
+              $stockReceived['user_id'] = $order->user_id;
+              $stockReceived['status'] = $order->status;
               $stockReceived['order_type'] = $order->order_type;
               $stockReceived['created_at'] = Carbon::parse($order->created_at)->format('d-m-Y');
               $stockReceived['user'] = $order->user;
@@ -330,6 +338,10 @@ class OrdersController extends Controller
             // End singleDayStockReturned Foreach
             foreach($order->order_details as $orderDetail) {
               $stockReturned['id'] = $order->id;
+              $stockReturned['distributor_id'] = $order->distributor_id;
+              $stockReturned['retailer_id'] = $order->retailer_id;
+              $stockReturned['user_id'] = $order->user_id;
+              $stockReturned['status'] = $order->status;
               $stockReturned['order_type'] = $order->order_type;
               $stockReturned['created_at'] = Carbon::parse($order->created_at)->format('d-m-Y');
               $stockReturned['user'] = $order->user;
