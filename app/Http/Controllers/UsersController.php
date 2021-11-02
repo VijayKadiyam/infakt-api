@@ -120,7 +120,8 @@ class UsersController extends Controller
         ->orWhere('phone', 'LIKE', '%' . $request->searchEmp . '%')
         ->orWhere('employee_code', 'LIKE', '%' . $request->searchEmp . '%')
         ->latest()->get();
-    } else if ($request->report) {
+    } 
+    else if ($request->report) {
       $now = Carbon::now();
       $role = Role::find($request->role_id);
       $users = $request->company->users()
@@ -151,8 +152,8 @@ class UsersController extends Controller
       $users = $request->company->users()
         ->where('dob', '=', $now->format('Y-m-d'))
         ->get();
-    } else if ($request->role_id) {
-      $role = Role::find($request->role_id);
+    } else if ($request->roleId) {
+      $role = Role::find($request->roleId);
       $users = $request->company->users()
         ->whereHas('roles', function ($q) use ($role) {
           $q->where('name', '=', $role->name);
