@@ -132,6 +132,37 @@ class OrdersController extends Controller
     ], 200);
   }
 
+  public function deleteOrder($id)
+  {
+    $order = Order::where('id', '=', $id)->first();
+    $order->is_active = 0;
+    $order->update();
+
+    if ($order) {
+      $orderDetails = OrderDetail::where('order_id', '=', $order->id)->get();
+      foreach ($orderDetails as $orderDetail) {
+        $order_Detail = OrderDetail::where('id', '=', $orderDetail->id)->first();
+        $order_Detail->is_active = 0;
+        $order_Detail->update();
+      }
+    }
+    return response()->json([
+      'data'  =>  $order
+    ], 200);
+  }
+
+  public function deleteOrderDetail($id)
+  {
+    $orderDetails = OrderDetail::where('id', '=', $id)->first();
+    $orderDetails->is_active = 0;
+    $orderDetails->update();
+
+
+    return response()->json([
+      'data'  =>  $orderDetails
+    ], 200);
+  }
+
   public function generateInvoice(Request $request)
   {
     $orderId = $request->orderId;
@@ -149,7 +180,7 @@ class OrdersController extends Controller
   {
     $count = 0;
     $orders = [];
-    if($request->userId) {
+    if ($request->userId) {
       $orders = request()->company->orders_list()
         ->where('user_id', '=', $request->userId);
       if ($request->date) {
@@ -165,9 +196,9 @@ class OrdersController extends Controller
       $orders = $orders->get();
     } else {
       $supervisors = User::with('roles')
-      ->whereHas('roles',  function ($q) {
-        $q->where('name', '=', 'SUPERVISOR');
-      })->orderBy('name')->get();
+        ->whereHas('roles',  function ($q) {
+          $q->where('name', '=', 'SUPERVISOR');
+        })->orderBy('name')->get();
 
       foreach ($supervisors as $supervisor) {
 
