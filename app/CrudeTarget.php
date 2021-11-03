@@ -12,5 +12,6 @@ class CrudeTarget extends Model
         'month',
         'year',
         'target',
+        'achieved',
     ];
 }

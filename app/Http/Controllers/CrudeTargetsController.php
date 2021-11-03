@@ -57,13 +57,21 @@ class CrudeTargetsController extends Controller
         }
         else {
           $user_id = $us['id'];
+
           $data = [
             'company_id' => request()->company->id,
             'user_id' => $user_id,
             'month' => $target->month,
             'year' => $target->year,
-            'target' => $target->target,
+            // 'target' => $target->target,
+            // 'achieved' => $target->achieved,
           ];
+          if($target->target !=''){
+            $data['target'] = $target->target;
+          }
+          if($target->achieved !=''){
+            $data['achieved'] = $target->achieved;
+          }
           $User_target = Target::where('user_id', '=', $user_id)
             ->where('month', '=', $target->month)
             ->where('year', '=', $target->year)->first();
