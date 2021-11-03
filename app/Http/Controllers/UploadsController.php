@@ -113,6 +113,33 @@ class UploadsController extends Controller
     ]);
   }
 
+  public function uploadLogoutSelfieImage(Request $request)
+  {
+    $request->validate([
+      'userAttendanceId'        => 'required',
+      'imagepath'  =>  'required'
+    ]);
+
+    $logoutSelfiePath = '';
+    if ($request->hasFile('imagepath')) {
+      $file = $request->file('imagepath');
+      $name = $request->filename ?? 'photo.jpg';
+      $logoutSelfiePath = 'user_attendances/' .  $request->userAttendanceId . '/' . $name;
+      Storage::disk('local')->put($logoutSelfiePath, file_get_contents($file), 'public');
+
+      $userAttendance = UserAttendance::where('id', '=', request()->userAttendanceId)->first();
+      $userAttendance->logout_selfie_path = $logoutSelfiePath;
+      $userAttendance->update();
+    }
+
+    return response()->json([
+      'data'  => [
+        'logout_selfie_path'  =>  $logoutSelfiePath
+      ],
+      'success' =>  true
+    ]);
+  }
+
   public function uploadNoticeImage(Request $request)
   {
     $request->validate([
