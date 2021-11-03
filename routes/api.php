@@ -88,6 +88,7 @@ Route::post('upload_signature', 'UploadController@uploadSignature');
 Route::post('upload_bill/{id}', 'UploadController@uploadBill');
 Route::post('upload_retailer/{id}', 'UploadController@uploadRetailer');
 Route::post('upload_daily_photo', 'UploadController@uploadDailyPhotos');
+Route::post('upload_daily_photo', 'UploadController@uploadDailyPhotos');
 
 Route::resource('products', 'ProductsController');
 Route::get('productSkusStocks', 'ProductsController@productSkusStocks');
@@ -316,6 +317,7 @@ Route::post('upload_retailer_image', 'UploadsController@uploadRetailerImage');
 Route::post('upload_notice_image', 'UploadsController@uploadNoticeImage');
 Route::post('upload_user_image', 'UploadsController@uploadUserImage');
 Route::post('upload_user_attendance_selfie_image', 'UploadsController@uploadSelfieImage');
+Route::post('upload_user_attendance_logout_selfie_image', 'UploadsController@uploadLogoutSelfieImage');
 
 Route::get('send_otp', 'SendSmsController@index');
 
