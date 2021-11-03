@@ -132,6 +132,7 @@ class NoticeTest extends TestCase
             'imagepath',
             'created_at',
             'updated_at',
+            'link'
           ]
       ]);
   }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateUsersTable25 extends Migration
+class UpdateChannelFilterDetails1Table extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class UpdateUsersTable25 extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('batch_no', 100)->nullable();
+        Schema::table('channel_filter_details', function (Blueprint $table) {
+            $table->string('ba_training_sub_category')->nullable();
         });
     }
 
@@ -25,8 +25,6 @@ class UpdateUsersTable25 extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
+        //
     }
 }

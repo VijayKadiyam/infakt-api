@@ -119,7 +119,8 @@ class PjpTest extends TestCase
                     'location',
                     'region',
                     'created_at',
-                    'updated_at'
+                    'updated_at',
+                    'remarks',
                 ]
             ]);
     }

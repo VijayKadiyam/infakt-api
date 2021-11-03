@@ -16,7 +16,7 @@ class VisitorsController extends Controller
         $this->middleware(['auth:api', 'company']);
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $count = 0;
         if (request()->page && request()->rowsPerPage) {
@@ -24,7 +24,15 @@ class VisitorsController extends Controller
             $count = $visitors->count();
             $visitors = $visitors->paginate(request()->rowsPerPage)->toArray();
             $visitors = $visitors['data'];
-        } else {
+        } 
+        else if($request->retailerId && $request->month) {
+            $visitors = request()->company->visitors()
+                ->where('retailer_id', '=', $request->retailerId)
+                ->whereMonth('created_at', $request->month);
+            $count = $visitors->count();
+            $visitors = $visitors->get();
+        }
+        else {
             $visitors = request()->company->visitors;
             $count = $visitors->count();
         }

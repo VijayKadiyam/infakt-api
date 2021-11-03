@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Imports;
+
 use App\CrudeTarget;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -10,27 +11,30 @@ HeadingRowFormatter::default('none');
 
 class TargetImport implements ToModel, WithHeadingRow
 {
-    public function model(array $row)
-    {
-
+  public function model(array $row)
+  {
+    if ($row['Target'] != '' || $row['Achieved'] != '') {
       $data = [
         'company_id'  =>  request()->company->id,
         'store_code' =>  $row['Store Code'],
         'target'      =>  $row['Target'],
+        'achieved'      =>  $row['Achieved'],
         'month'  =>  request()->month,
         'year'  =>  request()->year,
       ];
-  
       return new CrudeTarget($data);
     }
-  
-    public function headingRow(): int
-    {
-      return 1;
-    }
-  
-    public function batchSize(): int
-    {
-      return 1000;
-    }
+
+
   }
+
+  public function headingRow(): int
+  {
+    return 1;
+  }
+
+  public function batchSize(): int
+  {
+    return 1000;
+  }
+}

@@ -321,6 +321,7 @@ class Company extends Model
   public function orders_list()
   {
     return $this->hasMany(Order::class)
+      ->where('is_active', '=', 1)
       ->with('user', 'distributor', 'retailer', 'order_details')
       ->latest();
   }
@@ -454,4 +455,5 @@ class Company extends Model
   {
     return $this->hasMany(PjpVisitedSupervisorExpense::class);
   }
+
 }

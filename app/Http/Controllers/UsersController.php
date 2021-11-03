@@ -120,7 +120,8 @@ class UsersController extends Controller
         ->orWhere('phone', 'LIKE', '%' . $request->searchEmp . '%')
         ->orWhere('employee_code', 'LIKE', '%' . $request->searchEmp . '%')
         ->latest()->get();
-    } else if ($request->report) {
+    } 
+    else if ($request->report) {
       $now = Carbon::now();
       $role = Role::find($request->role_id);
       $users = $request->company->users()

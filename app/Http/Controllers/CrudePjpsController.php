@@ -91,58 +91,60 @@ class CrudePjpsController extends Controller
                     $pjpMarket = new PjpMarket($Marketdata);
                     request()->company->pjp_markets()->save($pjpMarket);
                 }
-                // fetch User using Employee Code
-                $Supervisor = User::where('employee_code', '=', $pjp->employee_code)->first();
-                if ($Supervisor) {
-                    // If Supervisor Exist Check Mapping
-                    $pjpSupervisor = PjpSupervisor::where('user_id', '=', $Supervisor->id)->where('date', '=', $pjp->visit_date)
-                        ->first();
+            }
 
-                    $Supervisordata = [
-                        // pjp_supervisors column name = $pjp->crude_pjps column name
-                        'user_id' => $Supervisor->id,
-                        'date' => $pjp->visit_date,
-                        'actual_pjp_id' => $pjp_data->id,
-                        'actual_pjp_market_id' => $pjpMarket->id,
-                    ];
-                    if ($pjpSupervisor) {
-                        // Update Existing pjp Supervisor 
-                        $pjpSupervisor_id = $pjpSupervisor['id'];
+            // fetch User using Employee Code
+            $Supervisor = User::where('employee_code', '=', $pjp->employee_code)->first();
+            if ($Supervisor) {
+                // If Supervisor Exist Check Mapping
+                $pjpSupervisor = PjpSupervisor::where('user_id', '=', $Supervisor->id)->where('date', '=', $pjp->visit_date)
+                    ->first();
 
-                        $pjpSupervisor = PjpSupervisor::find($pjpSupervisor_id);
-                        $pjpSupervisor->update($Supervisordata);
-                    } else {
-                        // Insert New pjp Supervisor
-                        $pjpSupervisor = new PjpSupervisor($Supervisordata);
-                        request()->company->pjp_supervisors()->save($pjpSupervisor);
-                    }
+                $Supervisordata = [
+                    // pjp_supervisors column name = $pjp->crude_pjps column name
+                    'user_id' => $Supervisor->id,
+                    'date' => $pjp->visit_date,
+                    'actual_pjp_id' => $pjp_data->id,
+                    // 'actual_pjp_market_id' => $pjpMarket->id,
+                ];
+                if ($pjpSupervisor) {
+                    // Update Existing pjp Supervisor 
+                    $pjpSupervisor_id = $pjpSupervisor['id'];
+
+                    $pjpSupervisor = PjpSupervisor::find($pjpSupervisor_id);
+                    $pjpSupervisor->update($Supervisordata);
                 } else {
-                    // Create a New SuperVisor User
-                    $Supervisor  = [];
-                    $Supervisor['name'] = $pjp->supervisor_name;
-                    $Supervisor['employee_code'] = $pjp->employee_code;
-                    $Supervisor['password'] = bcrypt('123456');
-                    $Supervisor['password_backup'] = bcrypt('123456');
-                    $Supervisor['email'] = str_replace(" ", "", $pjp->supervisor_name) . mt_rand(1, 9999) . '@supervisor';
-                    $Supervisor = new User($Supervisor);
-                    $Supervisor->save();
-
-                    $Supervisor->assignRole(4);
-                    $Supervisor->roles = $Supervisor->roles;
-                    $Supervisor->assignCompany(request()->company->id);
-                    $Supervisor->companies = $Supervisor->companies;
-
-                    $Supervisordata = [
-                        // pjp_supervisors column name = $pjp->crude_pjps column name
-                        'user_id' => $Supervisor->id,
-                        'date' => $pjp->visit_date,
-                        'actual_pjp_id' => $pjp_data->id,
-                        'actual_pjp_market_id' => $pjpMarket->id,
-                    ];
+                    // Insert New pjp Supervisor
                     $pjpSupervisor = new PjpSupervisor($Supervisordata);
                     request()->company->pjp_supervisors()->save($pjpSupervisor);
                 }
+            } else {
+                // Create a New SuperVisor User
+                $Supervisor  = [];
+                $Supervisor['name'] = $pjp->supervisor_name;
+                $Supervisor['employee_code'] = $pjp->employee_code;
+                $Supervisor['password'] = bcrypt('123456');
+                $Supervisor['password_backup'] = bcrypt('123456');
+                $Supervisor['email'] = str_replace(" ", "", $pjp->supervisor_name) . mt_rand(1, 9999) . '@supervisor';
+                $Supervisor = new User($Supervisor);
+                $Supervisor->save();
+
+                $Supervisor->assignRole(4);
+                $Supervisor->roles = $Supervisor->roles;
+                $Supervisor->assignCompany(request()->company->id);
+                $Supervisor->companies = $Supervisor->companies;
+
+                $Supervisordata = [
+                    // pjp_supervisors column name = $pjp->crude_pjps column name
+                    'user_id' => $Supervisor->id,
+                    'date' => $pjp->visit_date,
+                    'actual_pjp_id' => $pjp_data->id,
+                    // 'actual_pjp_market_id' => $pjpMarket->id,
+                ];
+                $pjpSupervisor = new PjpSupervisor($Supervisordata);
+                request()->company->pjp_supervisors()->save($pjpSupervisor);
             }
+            
         }
     }
 

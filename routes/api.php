@@ -294,6 +294,9 @@ Route::resource('resumes', 'ResumesController');
 Route::resource('notices', 'NoticesController');
 
 Route::get('orders/generate_invoice', 'OrdersController@generateInvoice');
+Route::post('delete_order/{id}', 'OrdersController@deleteOrder');
+Route::post('delete_order_detail/{id}', 'OrdersController@deleteOrderDetail');
+Route::get('deleteMultipleOrders', 'OrdersController@deleteMultipleOrders');
 Route::resource('orders', 'OrdersController');
 Route::get('offtakes', 'OrdersController@offtakes');
 
@@ -367,6 +370,7 @@ Route::resource('pjps/{pjp}/pjp_markets', 'PjpMarketsController');
 Route::resource('pjp_markets', 'PjpMarketsController');
 Route::get('pjp_supervisors/masters', 'PjpSupervisorsController@masters');
 Route::resource('pjp_supervisors', 'PjpSupervisorsController');
+Route::get('pjp_visited_supervisors/masters', 'PjpVisitedSupervisorsController@masters');
 Route::resource('pjp_visited_supervisors', 'PjpVisitedSupervisorsController');
 
 // Crude PJP

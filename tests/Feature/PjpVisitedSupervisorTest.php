@@ -56,6 +56,7 @@ class PjpVisitedSupervisorTest extends TestCase
     /** @test */
     function add_new_pjp_market()
     {
+        $this->disableEH();
         $this->json('post', '/api/pjp_visited_supervisors/', $this->payload, $this->headers)
             ->assertStatus(201)
             ->assertJson([
@@ -120,15 +121,16 @@ class PjpVisitedSupervisorTest extends TestCase
     function update_single_visited_supervisor()
     {
         $payload = [
+            'id'                =>  1,
             'pjp_supervisor_id' => 2,
             'visited_pjp_id' => 2,
             'visited_pjp_market_id' => 2,
             'remarks' => 'Remarks Updated',
             'gps_address' => 'Gps Address Updated',
         ];
-
-        $this->json('patch', '/api/pjp_visited_supervisors/1', $payload, $this->headers)
-            ->assertStatus(200)
+        $this->disableEH();
+        $this->json('post', '/api/pjp_visited_supervisors', $payload, $this->headers)
+            ->assertStatus(201)
             ->assertJson([
                 'data'    => [
                     'pjp_supervisor_id' => 2,
@@ -148,7 +150,8 @@ class PjpVisitedSupervisorTest extends TestCase
                     'remarks',
                     'gps_address',
                     'created_at',
-                    'updated_at'
+                    'updated_at',
+                    'is_visited'
                 ]
             ]);
     }

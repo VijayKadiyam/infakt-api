@@ -8,7 +8,8 @@ class Pjp extends Model
 {
     protected $fillable=[
         'location',
-        'region'
+        'region',
+        'remarks',
     ];
 
     public function company()

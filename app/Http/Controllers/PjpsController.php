@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Pjp;
+use App\PjpVisitedSupervisor;
 use Illuminate\Http\Request;
 
 class PjpsController extends Controller
@@ -24,16 +25,21 @@ class PjpsController extends Controller
     if(request()->supervisorId && request()->monthId) {
       $pjpSupervisors = request()->company->pjp_supervisors()
         ->where('user_id', '=', request()->supervisorId)
+        ->whereMonth('date', '=', request()->monthId)
         ->get();
       foreach($pjpSupervisors as $pjpSupervisor) {
         $pjp = request()->company->pjps()
           ->where('id', '=', $pjpSupervisor->actual_pjp_id)
           ->first();
-        foreach($pjp->pjp_markets  as $pjpMarket) {
-          if($pjpMarket->id == $pjpSupervisor->visited_pjp_market_id) {
-            $pjpMarket['pjp_supervisor'] = $pjpSupervisor;
+        $pjp['pjp_supervisor'] = $pjpSupervisor;
+        foreach($pjp->pjp_markets as  $pjpMarket) {
+          $pjpVisitedSupervisor = PjpVisitedSupervisor::where('pjp_supervisor_id', '=', $pjpSupervisor->id)
+            ->where('visited_pjp_market_id', '=', $pjpMarket->id)
+            ->first();
+          if($pjpVisitedSupervisor != null) {
+            $pjpMarket['pjp_visited_supervisor'] = $pjpVisitedSupervisor;
           } else {
-            // $pjpMarket['pjp_supervisor'] = [];
+            $pjpMarket['pjp_visited_supervisor'] = (object)[];
           }
         }
         if($pjp) 

@@ -327,7 +327,8 @@ class ChannelFilterDetailTest extends TestCase
                     'visit_feedback',
                     'selfie_imagepath',
                     'created_at',
-                    'updated_at'
+                    'updated_at',
+                    'ba_training_sub_category'
                 ]
             ]);
     }
