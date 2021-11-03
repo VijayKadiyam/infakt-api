@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ImportBatch;
 use Illuminate\Http\Request;
 use App\User;
 use App\Role;
@@ -26,6 +27,9 @@ class UsersController extends Controller
 
     $companyStatesController = new CompanyStatesController();
     $companyStatesResponse = $companyStatesController->index($request->company);
+
+    $type = 'Users';
+    $batches = ImportBatch::where('type', '=', $type)->get();
 
     $beatTypes = [
       0 =>  [
@@ -74,6 +78,36 @@ class UsersController extends Controller
       'CENTRAL'
     ];
 
+    $brands = [
+      'MamaEarth',
+      'Derma'
+    ];
+    $channels = [
+      'GT',
+      'MT',
+      'MT - CNC',
+      'IIA',
+    ];
+    $chain_names = [
+      'GT',
+      'Big Bazar',
+      'Dmart',
+      'Guardian',
+      'H&G',
+      'Lee Merche',
+      'LuLu',
+      'Metro CNC',
+      'More Retail',
+      'MT',
+      'Reliance',
+      'Spencer',
+      'Walmart',
+      'Lifestyle',
+      'INCS',
+      'Ximivogue',
+      'Shopper Stop'
+    ];
+
     return response()->json([
       'roles'                 =>  $rolesResponse->getData()->data,
       'company_designations'  =>  $companyDesignationsResponse->getData()->data,
@@ -86,6 +120,10 @@ class UsersController extends Controller
       'national_managers'     =>  $nationalManagersResponse->getData()->data,
       'distributors'          =>  $distributorsResponse->getData()->data,
       'regions'               =>  $regions,
+      'batches'               =>  $batches,
+      'brands'               =>  $brands,
+      'channels'               =>  $channels,
+      'chain_names'               =>  $chain_names,
     ], 200);
   }
 
@@ -120,8 +158,7 @@ class UsersController extends Controller
         ->orWhere('phone', 'LIKE', '%' . $request->searchEmp . '%')
         ->orWhere('employee_code', 'LIKE', '%' . $request->searchEmp . '%')
         ->latest()->get();
-    } 
-    else if ($request->report) {
+    } else if ($request->report) {
       $now = Carbon::now();
       $role = Role::find($request->role_id);
       $users = $request->company->users()
@@ -158,6 +195,10 @@ class UsersController extends Controller
         ->whereHas('roles', function ($q) use ($role) {
           $q->where('name', '=', $role->name);
         })->latest()->get();
+    } elseif ($request->batch_no) {
+      $users = $request->company->users()
+        ->where('batch_no', '=', $request->batch_no)
+        ->get();
     }
 
     return response()->json([
@@ -166,6 +207,37 @@ class UsersController extends Controller
     ], 200);
   }
 
+  public function search(Request $request)
+  {
+
+    $users = $request->company->users();
+    if ($request->batch_no) {
+      $users = $users
+        ->where('user_id', 'LIKE', '%' . $request->batch_no . '%');
+    }
+    if ($request->region) {
+      $users = $users
+        ->where('region', 'LIKE', '%' . $request->region . '%');
+    }
+    if ($request->channel) {
+      $users = $users
+        ->where('channel', 'LIKE', '%' . $request->channel . '%');
+    }
+    if ($request->chain_name) {
+      $users = $users
+        ->where('chain_name', 'LIKE', '%' . $request->chain_name . '%');
+    }
+    if ($request->brand) {
+      $users = $users
+        ->where('brand', 'LIKE', '%' . $request->brand . '%');
+    }
+    $users = $users->get();
+
+    return response()->json([
+      'data'     =>  $users,
+      'success'   =>  true
+    ], 200);
+  }
   /*
    * To store a new company user
    *
@@ -202,7 +274,7 @@ class UsersController extends Controller
     $user->assignCompany($request->company_id);
     $user->companies = $user->companies;
 
-    if($request->role_id == 10) {
+    if ($request->role_id == 10) {
       $skus = Sku::all();
       $i = 5000;
       foreach ($skus as $key => $sku) {
@@ -234,7 +306,7 @@ class UsersController extends Controller
    */
   public function show($id)
   {
-    $user = User::where('id' , '=', $id)
+    $user = User::where('id', '=', $id)
       ->with('roles', 'companies', 'company_designation', 'company_state_branch', 'supervisors', 'notifications', 'salaries', 'distributors')->first();
 
     return response()->json([
