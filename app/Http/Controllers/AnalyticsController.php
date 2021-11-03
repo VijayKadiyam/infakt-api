@@ -658,11 +658,11 @@ class AnalyticsController extends Controller
           ];
         }
         else 
-          if($totalDuration <= 5){
+          if($totalDuration <= 8.5){
           $lessThan5hrs++;
           $attendances[] = [
             'date'    =>  $userAttendance->date,
-            'status'  =>  '<5 Hrs',
+            'status'  =>  '<8.5 Hrs',
             'color'   =>  '#392897',
           ];
           $attendances[] = [
@@ -682,7 +682,7 @@ class AnalyticsController extends Controller
           $greaterThan5hrs++;
           $attendances[] = [
             'date'    =>  $userAttendance->date,
-            'status'  =>  '>=5 Hrs',
+            'status'  =>  '>=8.5 Hrs',
             'color'   =>  '#108108',
           ];
           $attendances[] = [
