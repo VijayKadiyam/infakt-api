@@ -23,10 +23,10 @@ Route::get('count', 'HomeController@count');
 
 
 Route::post('/register', 'Auth\RegisterController@register');
-Route::post('/reset_password','Auth\ResetPasswordController@reset_password');
+Route::post('/reset_password', 'Auth\ResetPasswordController@reset_password');
 Route::post('login', 'Auth\LoginController@login');
-Route::post('/logout','Auth\LoginController@logout');
-Route::get('/logout','Auth\LoginController@logout');
+Route::post('/logout', 'Auth\LoginController@logout');
+Route::get('/logout', 'Auth\LoginController@logout');
 
 Route::resource('versions', 'VersionsController');
 Route::resource('roles', 'RolesController');
@@ -384,3 +384,6 @@ Route::get('crude_user_mappings', 'CrudeUserMappingsController@index');
 Route::post('upload_user_mapping', 'CrudeUserMappingsController@uploadUserMapping');
 Route::get('process_user_mapping', 'CrudeUserMappingsController@processUserMapping');
 Route::get('truncate_user_mappings', 'CrudeUserMappingsController@truncate');
+
+// PJP Visited Supervisor Expenses
+Route::resource('pjp_visited_supervisor_expenses', 'PjpVisitedSupervisorExpensesController');

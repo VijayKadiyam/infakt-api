@@ -450,4 +450,10 @@ class Company extends Model
   {
     return $this->hasMany(ImportBatch::class);
   }
+
+  public function pjp_visited_supervisor_expenses()
+  {
+    return $this->hasMany(PjpVisitedSupervisorExpense::class);
+  }
+
 }
