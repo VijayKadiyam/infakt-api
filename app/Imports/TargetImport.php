@@ -13,11 +13,12 @@ class TargetImport implements ToModel, WithHeadingRow
 {
   public function model(array $row)
   {
-    if ($row['Target'] != '') {
+    if ($row['Target'] != '' || $row['Achieved'] != '') {
       $data = [
         'company_id'  =>  request()->company->id,
         'store_code' =>  $row['Store Code'],
         'target'      =>  $row['Target'],
+        'achieved'      =>  $row['Achieved'],
         'month'  =>  request()->month,
         'year'  =>  request()->year,
       ];
