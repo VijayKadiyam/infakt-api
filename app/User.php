@@ -29,7 +29,9 @@ class User extends Authenticatable
     'supervisor_name',
     'store_type',
     'brand',
-    'batch_no'
+    'batch_no',
+    'ba_status',
+    'pms_emp_id'
   ];
 
   /**

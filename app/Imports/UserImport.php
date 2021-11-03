@@ -13,34 +13,38 @@ class UserImport implements ToModel, WithHeadingRow
 {
   public function model(array $row)
   {
-    $data = [
-      // 'crude_users column name' = $row['Excel column name']
-      'company_id'  =>  request()->company->id,
-      'empid' =>  $row['EMP ID'],
-      'region'      =>  $row['Region'],
-      'channel'     =>  $row['Channel'],
-      'chain_name'        =>  $row['Chain Name'],
-      'billing_code'       =>  $row['Billing Code '],
-      'store_code'       =>  $row['Store Code'],
-      'store_name'        =>  $row['Store Name'],
-      'store_address'       =>  $row['Store Address '],
-      'ba_name'       =>  $row['BA Name'],
-      'location'        =>  $row['Location'],
-      'city'       =>  $row['City'],
-      'state'       =>  $row['State'],
-      'rsm'        =>  $row['RSM'],
-      'asm'       =>  $row['ASM'],
-      'supervisor_name'       =>  $row['Supervisor Name'],
-      'store_type'        =>  $row['Store Type'],
-      'brand'       =>  $row['BRAND'],
-    ];
+    if ($row['New Store CD'] != '') {
+      $data = [
+        // 'crude_users column name' = $row['Excel column name']
+        'company_id'  =>  request()->company->id,
+        'empid' =>  $row['EMP ID'],
+        'region'      =>  $row['Region'],
+        'channel'     =>  $row['Channel'],
+        'chain_name'        =>  $row['Chain Name'],
+        'store_code'       =>  $row['New Store CD'],
+        'store_name'        =>  $row['Store Name'],
+        'ba_name'       =>  $row['BA Name'],
+        'location'        =>  $row['Location'],
+        'city'       =>  $row['City'],
+        'state'       =>  $row['State'],
+        'rsm'        =>  $row['RSM'],
+        'asm'       =>  $row['ASM'],
+        'supervisor_name'       =>  $row['Supervisor Name'],
+        'brand'       =>  $row['BRAND'],
+        'ba_status'       =>  $row['BA status'],
 
-    return new CrudeUser($data);
+        //Optional fields 
+        'billing_code'       => (array_key_exists('Billing Code', $row) && $row['Billing Code']) ? $row['Billing Code'] : null,
+        'store_type'       => (array_key_exists('Store Type', $row) && $row['Store Type']) ? $row['Store Type'] : null,
+      ];
+
+      return new CrudeUser($data);
+    }
   }
 
   public function headingRow(): int
   {
-    return 1;
+    return 2;
   }
 
   public function batchSize(): int

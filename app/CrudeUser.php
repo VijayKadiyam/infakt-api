@@ -26,5 +26,6 @@ class CrudeUser extends Model
     'supervisor_name',
     'store_type',
     'brand',
+    'ba_status',
   ];
 }
