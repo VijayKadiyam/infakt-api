@@ -352,13 +352,13 @@ class Company extends Model
   public function assets()
   {
     return $this->hasMany(Asset::class)
-    ->with('retailer', 'reference_plan', 'manufacturer', 'asset_statuses');
+      ->with('retailer', 'reference_plan', 'manufacturer', 'asset_statuses');
   }
 
   public function asset_statuses()
   {
     return $this->hasMany(AssetStatus::class)
-    ->with('asset');
+      ->with('asset');
   }
 
   public function manufacturers()
@@ -421,7 +421,7 @@ class Company extends Model
   {
     return $this->hasMany(ChannelCompetitionOffer::class);
   }
-  
+
   public function trackers()
   {
     return $this->hasMany(Tracker::class);
@@ -429,7 +429,7 @@ class Company extends Model
   public function pjps()
   {
     return $this->hasMany(Pjp::class)
-    ->with('pjp_markets');
+      ->with('pjp_markets');
   }
   public function pjp_markets()
   {
@@ -438,18 +438,20 @@ class Company extends Model
   public function pjp_supervisors()
   {
     return $this->hasMany(PjpSupervisor::class)
-    ->with('pjp','user');
-    
+      ->with('pjp', 'user');
   }
   public function pjp_visited_supervisors()
   {
     return $this->hasMany(PjpVisitedSupervisor::class)
-    ->with('pjp','pjp_supervisor');
-    
+      ->with('pjp', 'pjp_supervisor');
   }
   public function import_batches()
   {
     return $this->hasMany(ImportBatch::class);
   }
-  
+
+  public function pjp_visited_supervisor_expenses()
+  {
+    return $this->hasMany(PjpVisitedSupervisorExpense::class);
+  }
 }
