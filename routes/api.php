@@ -386,4 +386,5 @@ Route::get('process_user_mapping', 'CrudeUserMappingsController@processUserMappi
 Route::get('truncate_user_mappings', 'CrudeUserMappingsController@truncate');
 
 // PJP Visited Supervisor Expenses
+Route::get('pjp_visited_supervisor_expenses/masters', 'PjpVisitedSupervisorExpensesController@masters');
 Route::resource('pjp_visited_supervisor_expenses', 'PjpVisitedSupervisorExpensesController');

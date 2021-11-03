@@ -12,11 +12,61 @@ class PjpVisitedSupervisorExpensesController extends Controller
         $this->middleware(['auth:api', 'company']);
     }
 
-    /*
-         * To get all pjp_visited_supervisor_expenses
-           *
-         *@
-         */
+    public function masters(Request $request)
+    {
+        $expenseTypes = [
+            [
+                'id'    =>  'Food',
+                'value' => 'Food'
+            ],
+            [
+                'id'    =>  'Accommodation',
+                'value' => 'Accommodation'
+            ],
+            [
+                'id'    =>  'Travelling',
+                'value' => 'Travelling'
+            ],
+        ];
+
+        $travellingWays = [
+            [
+                'id'    =>  '1 Way',
+                'value' => '1 Way'
+            ],
+            [
+                'id'    =>  '2 Way',
+                'value' => '2 Way'
+            ],
+        ];
+
+        $transportModes = [
+            [
+                'id'    =>  'Bike',
+                'value' => 'Bike'
+            ],
+            [
+                'id'    =>  'Bus',
+                'value' => 'Bus'
+            ],
+            [
+                'id'    =>  'Car',
+                'value' => 'Car'
+            ],
+            [
+                'id'    =>  'Train',
+                'value' => 'Train'
+            ],
+        ];
+
+
+        return response()->json([
+            'expenseTypes'            =>  $expenseTypes,
+            'travellingWays'           =>  $travellingWays,
+            'transportModes'           =>  $transportModes
+        ], 200);
+    }
+    
     public function index()
     {
         $pjp_visited_supervisor_expenses = request()->company->pjp_visited_supervisor_expenses;
