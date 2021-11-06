@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\PjpVisitedSupervisor;
 use App\PjpVisitedSupervisorExpense;
 use Illuminate\Http\Request;
 
@@ -66,7 +67,7 @@ class PjpVisitedSupervisorExpensesController extends Controller
             'transportModes'           =>  $transportModes
         ], 200);
     }
-    
+
     public function index()
     {
         $pjp_visited_supervisor_expenses = request()->company->pjp_visited_supervisor_expenses;
@@ -86,6 +87,7 @@ class PjpVisitedSupervisorExpensesController extends Controller
          */
     public function store(Request $request)
     {
+        // return $request->all();
         $request->validate([
             'expense_type'    =>  'required'
         ]);
@@ -103,6 +105,15 @@ class PjpVisitedSupervisorExpensesController extends Controller
          *
          *@
          */
+    public function showExpenses($pjp_visited_supervisor_id)
+    {
+        // return $pjp_visited_supervisor_id;
+        $pjp_visited_supervisor_expense = PjpVisitedSupervisorExpense::where('pjp_visited_supervisor_id', '=', $pjp_visited_supervisor_id)->get();
+        return response()->json([
+            'data'   =>  $pjp_visited_supervisor_expense
+        ], 200);
+    }
+
     public function show(PjpVisitedSupervisorExpense $pjp_visited_supervisor_expense)
     {
         return response()->json([
