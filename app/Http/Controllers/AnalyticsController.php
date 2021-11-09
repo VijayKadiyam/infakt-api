@@ -53,6 +53,7 @@ class AnalyticsController extends Controller
           $orders = Order::where('retailer_id', '=', $retailer->id)
             ->whereDate('created_at', $request->date)
             ->where('order_type', '=', 'Sales')
+            ->where('is_active', '=', 1)
             ->with('order_details')
             ->get();
           if(sizeof($orders) > 0)  {
@@ -104,6 +105,7 @@ class AnalyticsController extends Controller
     $ordersOfMonth = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month)
       ->where('order_type', '=', 'Sales')
+      ->where('is_active', '=', 1)
       ->get();
 
     // Get target
@@ -166,6 +168,7 @@ class AnalyticsController extends Controller
     $ordersOfMonth = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month)
       ->where('order_type', '=', 'Sales')
+      ->where('is_active', '=', 1)
       ->get();
 
     // Get target
@@ -247,18 +250,21 @@ class AnalyticsController extends Controller
     $ordersOfMonth = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month)
       ->where('order_type', '=', 'Sales')
+      ->where('is_active', '=', 1)
       ->get();
 
     // Total orders of last month
     $ordersOfLastMonth = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month != 1 ? $request->month - 1 : 1)
       ->where('order_type', '=', 'Sales')
+      ->where('is_active', '=', 1)
       ->get();
 
     // Total orders of last 2 month
     $ordersOfLast2Month = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month != 2 ? $request->month - 2 : 1)
       ->where('order_type', '=', 'Sales')
+      ->where('is_active', '=', 1)
       ->get();
 
     $achieved = 0;
@@ -366,18 +372,21 @@ class AnalyticsController extends Controller
     $ordersOfMonth = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month)
       ->where('order_type', '=', 'Sales')
+      ->where('is_active', '=', 1)
       ->get();
 
     // Total orders of last month
     $ordersOfLastMonth = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month != 1 ? $request->month - 1 : 1)
       ->where('order_type', '=', 'Sales')
+      ->where('is_active', '=', 1)
       ->get();
 
     // Total orders of last 2 month
     $ordersOfLast2Month = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month != 2 ? $request->month - 2 : 1)
       ->where('order_type', '=', 'Sales')
+      ->where('is_active', '=', 1)
       ->get();
 
     // Get target
@@ -483,6 +492,7 @@ class AnalyticsController extends Controller
       // ->where('status', '=', 1)
       ->whereMonth('created_at', $request->month)
       ->where('order_type', '=', 'Sales')
+      ->where('is_active', '=', 1)
       ->latest()
       ->get();
     foreach ($orders as $order) {
