@@ -18,23 +18,25 @@ class PjpsImport implements ToModel, WithHeadingRow
      */
     public function model(array $row)
     {
-        $data = [
-            // 'crude_users column name' = $row['Excel column name']
-            'company_id'  =>  request()->company->id,
-            // 'visit_date' =>  $row['Visit Date'],
-            'visit_date' =>  \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['Visit Date'])->format('Y-m-d'),
-            // 'day'      =>  $row['Day'],
-            'day' =>  \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['Visit Date'])->format('D'),
-            'region'     =>  $row['Region'],
-            'location'        =>  $row['Location'],
-            'market_working_details'       =>  $row['Market Working Detail'],
-            'joint_working_with'       =>  $row['Joint Working with whom'],
-            'employee_code'       =>  $row['Employee Code'],
-            'supervisor_name'        =>  $row['Supervisor Name'],
-            'remarks'       =>  $row['Remarks'],
-        ];
+        if ($row['Store Name'] != '-') {
+            $data = [
+                // 'crude_users column name' = $row['Excel column name']
+                'company_id'  =>  request()->company->id,
+                'visit_date' =>  \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['Visit Date'])->format('Y-m-d'),
+                'day' =>  \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['Visit Date'])->format('D'),
+                'region'     =>  $row['Region'],
+                'location'        =>  $row['Location'],
+                'store_name'       =>  $row['Store Name'],
+                'store_code'       =>  $row['Store Code'],
+                'market_working_details'       =>  $row['Market Working Detail'],
+                'joint_working_with'       =>  $row['Joint Working with whom'],
+                'employee_code'       =>  $row['Employee Code'],
+                'supervisor_name'        =>  $row['Supervisor Name'],
+                'remarks'       =>  $row['Remarks'],
+            ];
 
-        return new CrudePjp($data);
+            return new CrudePjp($data);
+        }
     }
 
     public function headingRow(): int
