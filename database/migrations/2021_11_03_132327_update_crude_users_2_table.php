@@ -15,8 +15,19 @@ class UpdateCrudeUsers2Table extends Migration
     {
         Schema::table('crude_users', function (Blueprint $table) {
             $table->string('ba_status', 100)->nullable();
-            $table->string('location', 200)->nullable()->change();
         });
+
+        if (Schema::hasColumn('crude_users', 'location'))
+        {
+            Schema::table('crude_users', function (Blueprint $table) {
+                $table->string('location', 200)->nullable()->change();
+            });
+        } else {
+            Schema::table('crude_users', function (Blueprint $table) {
+                $table->string('location', 200)->nullable();
+            });
+        }
+
     }
 
     /**
