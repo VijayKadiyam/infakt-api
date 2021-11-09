@@ -46,14 +46,17 @@ class CrudePjpsController extends Controller
     {
         set_time_limit(0);
         $crude_pjps = CrudePjp::all();
-
+        $i = 0;
         foreach ($crude_pjps as $pjp) {
+            if($pjp->location){
+                $location = $pjp->location;
+            }
             //  Check Existing pjp
-            $pjp_data = Pjp::where('location', '=', $pjp->location)->where('region', '=', $pjp->region)
+            $pjp_data = Pjp::where('location', '=', $location)->where('region', '=', $pjp->region)
                 ->first();
             $data = [
                 // pjp column name = $pjp->crude_pjps column name
-                'location' => $pjp->location,
+                'location' => $location,
                 'region' => $pjp->region,
             ];
             if ($pjp_data) {
@@ -71,26 +74,48 @@ class CrudePjpsController extends Controller
 
             // Split Individual Pjp Market via , 
 
-            $market_names = explode(',', $pjp->market_working_details);
-            foreach ($market_names as $market_name) {
-                // Check Existing pjp market
-                $pjpMarket = PjpMarket::where('pjp_id', '=', $pjp_id)->where('market_name', '=', $market_name)
-                    ->first();
-                $Marketdata = [
-                    // pjp_markets column name = $pjp->crude_pjps column name
-                    'pjp_id' => $pjp_id,
-                    'market_name' => $market_name,
-                    'gps_address' => $pjp->location,
-                ];
-                if ($pjpMarket) {
-                    // Update Existing Pjp Markt
-                    $pjpMarket_id = $pjpMarket['id'];
-                    $pjpMarket = PjpMarket::find($pjpMarket_id);
-                    $pjpMarket->update($Marketdata);
-                } else {
-                    $pjpMarket = new PjpMarket($Marketdata);
-                    request()->company->pjp_markets()->save($pjpMarket);
-                }
+            // $market_names = explode(',', $pjp->market_working_details);
+            // foreach ($market_names as $market_name) {
+            //     // Check Existing pjp market
+            //     $pjpMarket = PjpMarket::where('pjp_id', '=', $pjp_id)->where('market_name', '=', $market_name)
+            //         ->first();
+            //     $Marketdata = [
+            //         // pjp_markets column name = $pjp->crude_pjps column name
+            //         'pjp_id' => $pjp_id,
+            //         'market_name' => $market_name,
+            //         'gps_address' => $location,
+            //     ];
+            //     if ($pjpMarket) {
+            //         // Update Existing Pjp Markt
+            //         $pjpMarket_id = $pjpMarket['id'];
+            //         $pjpMarket = PjpMarket::find($pjpMarket_id);
+            //         $pjpMarket->update($Marketdata);
+            //     } else {
+            //         $pjpMarket = new PjpMarket($Marketdata);
+            //         request()->company->pjp_markets()->save($pjpMarket);
+            //     }
+            // }
+
+            // Store Name & Store Code  
+
+            $market_name = $pjp->store_name;
+            $pjpMarket = PjpMarket::where('pjp_id', '=', $pjp_id)->where('market_name', '=', $market_name)
+                ->first();
+            $Marketdata = [
+                // pjp_markets column name = $pjp->crude_pjps column name
+                'pjp_id' => $pjp_id,
+                'market_name' => $market_name,
+                'store_code' => $pjp->store_code,
+                'gps_address' => $location,
+            ];
+            if ($pjpMarket) {
+                // Update Existing Pjp Markt
+                $pjpMarket_id = $pjpMarket['id'];
+                $pjpMarket = PjpMarket::find($pjpMarket_id);
+                $pjpMarket->update($Marketdata);
+            } else {
+                $pjpMarket = new PjpMarket($Marketdata);
+                request()->company->pjp_markets()->save($pjpMarket);
             }
 
             // fetch User using Employee Code
@@ -144,7 +169,7 @@ class CrudePjpsController extends Controller
                 $pjpSupervisor = new PjpSupervisor($Supervisordata);
                 request()->company->pjp_supervisors()->save($pjpSupervisor);
             }
-            
+            $i++;
         }
     }
 

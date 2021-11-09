@@ -16,5 +16,7 @@ class CrudePjp extends Model
         'employee_code',
         'supervisor_name',
         'remarks',
+        'store_name',
+        'store_code',
     ];
 }
