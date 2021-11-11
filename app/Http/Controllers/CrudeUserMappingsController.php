@@ -147,6 +147,7 @@ class CrudeUserMappingsController extends Controller
                             'store_type' => $user->store_type,
                             'brand' => $user->brand,
                             'batch_no' => $Batch->batch_no,
+                            'beat_type_id'=>1,
                         ];
                         $us = new User($data);
                         $us->save();
@@ -182,7 +183,8 @@ class CrudeUserMappingsController extends Controller
                             'store_type' => $user->store_type,
                             'brand' => $user->brand,
                             'batch_no' => $Batch->batch_no,
-                            'excel_status' => false
+                            'excel_status' => false,
+                            'beat_type_id'=>1,
                         ];
                         $us = User::find($user_id);
                         $us->update($data);
