@@ -200,7 +200,7 @@ class UsersController extends Controller
         ->where('batch_no', '=', $request->batch_no)
         ->get();
     }
-
+    // $count = $users->count();
     return response()->json([
       'data'  =>  $users,
       'count' =>   $count
@@ -209,6 +209,8 @@ class UsersController extends Controller
 
   public function search(Request $request)
   {
+    $count = 0;
+    $users = [];
 
     $users = $request->company->users();
     if ($request->batch_no) {
@@ -232,9 +234,10 @@ class UsersController extends Controller
         ->where('brand', 'LIKE', '%' . $request->brand . '%');
     }
     $users = $users->get();
-
+    $count = $users->count();
     return response()->json([
       'data'     =>  $users,
+      'count' =>   $count,
       'success'   =>  true
     ], 200);
   }
