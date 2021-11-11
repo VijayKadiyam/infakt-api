@@ -245,6 +245,14 @@ class OrdersController extends Controller
       }
     }
 
+    if($request->raw == 'YES') {
+      return response()->json([
+        'count'    =>   sizeof($orders),
+        'data'     =>  $orders,
+        'success'   =>  true
+      ], 200);
+    }
+
     // Once we have list of all the orders
     // retailer_id
     $finalOrders = [];
