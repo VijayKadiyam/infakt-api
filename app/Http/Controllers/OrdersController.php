@@ -196,6 +196,7 @@ class OrdersController extends Controller
     if ($request->userId) {
       $orders = request()->company->orders_list()
         ->where('user_id', '=', $request->userId);
+        // ->where('is_active', '=', 1);
       if ($request->date) {
         $orders = $orders->whereDate('created_at', $request->date);
       }
@@ -221,6 +222,7 @@ class OrdersController extends Controller
 
           $ors = request()->company->orders_list()
             ->where('user_id', '=', $user->id)
+            // ->where('is_active', '=', 1)
             ->with('order_details')
             ->whereHas('order_details',  function ($q) {
               $q->groupBy('sku_id');
@@ -243,156 +245,192 @@ class OrdersController extends Controller
       }
     }
 
-    // // Once we have list of all the orders
-    // // retailer_id
-    // $finalOrders = [];
+    // Once we have list of all the orders
+    // retailer_id
+    $finalOrders = [];
 
-    // for($i = 1; $i <= 31; $i++) {
-    //   // To chck single day orders
-    //   $ordersOfADay = [];
-    //   foreach($orders as $or) {
-    //     // var_dump(Carbon::parse($or->created_at)->format('d'));
-    //     if(Carbon::parse($or->created_at)->format('d') == sprintf("%02d", $i)) {
-    //       $ordersOfADay[] = $or;
-    //     }
-    //   }
-    //   // End To chck single day orders
+    for($i = 1; $i <= 31; $i++) {
+      // To check single day orders
+      $ordersOfADay = [];
+      foreach($orders as $or) {
+        // var_dump(Carbon::parse($or->created_at)->format('d'));
+        if(Carbon::parse($or->created_at)->format('d') == sprintf("%02d", $i)) {
+          $ordersOfADay[] = $or;
+        }
+      }
+      // End To check single day orders
 
-    //   if(sizeof($ordersOfADay) > 0) {
-    //     $singleDaySalesOrders = [];
-    //     $singleDayStockReceived = [];
-    //     $singleDayStockReturned = [];
+      if(sizeof($ordersOfADay) > 0) {
+        $singleDaySalesOrders = [];
+        $singleDayStockReceived = [];
+        $singleDayStockReturned = [];
 
-    //     $salesOrder = [
-    //       'order_details' => [],
-    //     ];
-    //     $stockReceived = [
-    //       'order_details' => [],
-    //     ];
-    //     $stockReturned = [
-    //       'order_details' => [],
-    //     ];
+        $salesOrder = [
+          'order_details' => [],
+        ];
+        $stockReceived = [
+          'order_details' => [],
+        ];
+        $stockReturned = [
+          'order_details' => [],
+        ];
 
-    //     foreach($ordersOfADay as $order) {
+        $salesOrdersOfAllRetailersOfADay = [];
+        $stockReceivedOfAllRetailersOfADay = [];
+        $stockReturnedOfAllRetailersOfADay = [];
 
-    //       // Sales
-    //       // Check if this date and this store is already there in the singleDaySalesOrders
-    //       if($order->order_type == 'Sales') {
-    //         foreach($singleDaySalesOrders as $singleDaySalesOrder) {
-    //           if($singleDaySalesOrder['retailer_id'] == $order->retailer_id && $singleDaySalesOrder['order_type'] == 'Sales')
-    //             $salesOrder = $singleDaySalesOrder;
-    //         }
-    //         // End singleDaySalesOrders Foreach
-    //         foreach($order->order_details as $orderDetail) {
-    //           $salesOrder['id'] = $order->id;
-    //           $salesOrder['distributor_id'] = $order->distributor_id;
-    //           $salesOrder['retailer_id'] = $order->retailer_id;
-    //           $salesOrder['user_id'] = $order->user_id;
-    //           $salesOrder['status'] = $order->status;
-    //           $salesOrder['order_type'] = $order->order_type;
-    //           $salesOrder['created_at'] = Carbon::parse($order->created_at)->format('d-m-Y');
-    //           $salesOrder['user'] = $order->user;
-    //           $orderDetailOfSkuAlreadyThere = false;
-    //           foreach($salesOrder['order_details'] as $salesOrdeDetail) {
-    //             if($salesOrdeDetail['sku_id'] == $orderDetail['sku_id']) {
-    //               $orderDetailOfSkuAlreadyThere = true;
-    //               $salesOrdeDetail['qty'] += $orderDetail['qty'];
-    //               $salesOrdeDetail['value'] += $orderDetail['value'];
-    //             }
-    //           }
-    //           if(!$orderDetailOfSkuAlreadyThere) 
-    //             $salesOrder['order_details'][]  = $orderDetail;
-    //         }
-    //         // End Foreach order_details
-    //       }
-    //       // End if($order->orderType = 'Sales')
-    //       // End Sales
+        foreach($ordersOfADay as $order) {
 
-    //       // Stock Received
-    //       // Check if this date and this store is already there in the singleDayStockReceived
-    //       if($order->order_type == 'Stock Received') {
-    //         foreach($singleDayStockReceived as $singleDayStockRec) {
-    //           if($singleDayStockRec['retailer_id'] == $order->retailer_id && $singleDayStockRec['order_type'] == 'Stock Received')
-    //             $stockReceived = $singleDayStockRec;
-    //         }
-    //         // End singleDayStockReceived Foreach
-    //         foreach($order->order_details as $orderDetail) {
-    //           $stockReceived['id'] = $order->id;
-    //           $stockReceived['distributor_id'] = $order->distributor_id;
-    //           $stockReceived['retailer_id'] = $order->retailer_id;
-    //           $stockReceived['user_id'] = $order->user_id;
-    //           $stockReceived['status'] = $order->status;
-    //           $stockReceived['order_type'] = $order->order_type;
-    //           $stockReceived['created_at'] = Carbon::parse($order->created_at)->format('d-m-Y');
-    //           $stockReceived['user'] = $order->user;
-    //           $orderDetailOfSkuAlreadyThere = false;
-    //           foreach($stockReceived['order_details'] as $stockRecDetail) {
-    //             if($stockRecDetail['sku_id'] == $orderDetail['sku_id']) {
-    //               $orderDetailOfSkuAlreadyThere = true;
-    //               $stockRecDetail['qty'] += $orderDetail['qty'];
-    //               $stockRecDetail['value'] += $orderDetail['value'];
-    //             }
-    //           }
-    //           if(!$orderDetailOfSkuAlreadyThere) 
-    //             $stockReceived['order_details'][]  = $orderDetail;
-    //         }
-    //         // End Foreach order_details
-    //       }
-    //       // End if($order->orderType = 'Sales')
-    //       // End Stock Received
+          // Sales
+          // Check if this date and this store is already there in the singleDaySalesOrders
+          if($order->order_type == 'Sales') {
 
-    //       // Stock Returned
-    //       // Check if this date and this store is already there in the singleDayStockReturned
-    //       if($order->order_type == 'Stock Returned') {
-    //         foreach($singleDayStockReturned as $singleDayStockRet) {
-    //           if($singleDayStockRet['retailer_id'] == $order->retailer_id && $singleDayStockRet['order_type'] == 'Stock Returned')
-    //             $stockReturned = $singleDayStockRet;
-    //         }
-    //         // End singleDayStockReturned Foreach
-    //         foreach($order->order_details as $orderDetail) {
-    //           $stockReturned['id'] = $order->id;
-    //           $stockReturned['distributor_id'] = $order->distributor_id;
-    //           $stockReturned['retailer_id'] = $order->retailer_id;
-    //           $stockReturned['user_id'] = $order->user_id;
-    //           $stockReturned['status'] = $order->status;
-    //           $stockReturned['order_type'] = $order->order_type;
-    //           $stockReturned['created_at'] = Carbon::parse($order->created_at)->format('d-m-Y');
-    //           $stockReturned['user'] = $order->user;
-    //           $orderDetailOfSkuAlreadyThere = false;
-    //           foreach($stockReturned['order_details'] as $stockRetDetail) {
-    //             if($stockRetDetail['sku_id'] == $orderDetail['sku_id']) {
-    //               $orderDetailOfSkuAlreadyThere = true;
-    //               $stockRetDetail['qty'] += $orderDetail['qty'];
-    //               $stockRetDetail['value'] += $orderDetail['value'];
-    //             }
-    //           }
-    //           if(!$orderDetailOfSkuAlreadyThere) 
-    //             $stockReturned['order_details'][]  = $orderDetail;
-    //         }
-    //         // End Foreach order_details
-    //       }
-    //       // End if($order->orderType = 'Sales')
-    //       // End Stock Returned
+            for($k = 0; $k < sizeof($salesOrdersOfAllRetailersOfADay); $k++) {
+              if($salesOrdersOfAllRetailersOfADay[$k]['user_id'] == $order->user_id) 
+                $salesOrder = $salesOrdersOfAllRetailersOfADay[$k];
+            }
 
-    //     }
-    //     // End $orders of a day Foreach
-    //     if(sizeof(($salesOrder['order_details'])) > 0)
-    //       $finalOrders[] = $salesOrder;
-    //     $salesOrder = [
-    //       'order_details' => [],
-    //     ];
-    //     if(sizeof(($stockReceived['order_details'])) > 0)
-    //       $finalOrders[] = $stockReceived;
-    //     $stockReceived = [
-    //       'order_details' => [],
-    //     ];
-    //     if(sizeof(($stockReturned['order_details'])) > 0)
-    //       $finalOrders[] = $stockReturned;
-    //     $stockReturned = [
-    //       'order_details' => [],
-    //     ];
-    //   }
-    // }
+            foreach($order->order_details as $orderDetail) {
+              $salesOrder['id'] = $order->id;
+              $salesOrder['distributor_id'] = $order->distributor_id;
+              $salesOrder['retailer_id'] = $order->retailer_id;
+              $salesOrder['user_id'] = $order->user_id;
+              $salesOrder['status'] = $order->status;
+              $salesOrder['order_type'] = $order->order_type;
+              $salesOrder['created_at'] = Carbon::parse($order->created_at)->format('d-m-Y');
+              $salesOrder['user'] = $order->user;
+              $orderDetailOfSkuAlreadyThere = false;
+              for($k = 0; $k < sizeof($salesOrder['order_details']); $k++) {
+                if($salesOrder['order_details'][$k]['sku_id'] == $orderDetail['sku_id']) {
+                  // var_dump(1234);
+                  $orderDetailOfSkuAlreadyThere = true;
+                  $salesOrder['order_details'][$k]['qty'] += $orderDetail['qty'];
+                  $salesOrder['order_details'][$k]['value'] += $orderDetail['value'];
+                }
+              }
+              if(!$orderDetailOfSkuAlreadyThere) 
+                $salesOrder['order_details'][]  = $orderDetail;
+            }
+            // End Foreach order_details
+
+            $isSalesOrderOfSingleRetailersOfADay = 0;
+            for($j = 0; $j < sizeof($salesOrdersOfAllRetailersOfADay); $j++) {
+              if($salesOrdersOfAllRetailersOfADay[$j]['user_id'] == $salesOrder['user_id']) {
+                $salesOrdersOfAllRetailersOfADay[$j] = $salesOrder;
+                $isSalesOrderOfSingleRetailersOfADay = 1;
+              }
+            }
+            if($isSalesOrderOfSingleRetailersOfADay == 0) 
+              $salesOrdersOfAllRetailersOfADay[] = $salesOrder;
+            $salesOrder = [
+              'order_details' => [],
+            ];
+          }
+          // End Sales
+
+
+          // // Stock Received
+          // // Check if this date and this store is already there in the singleDayStockReceived
+          // if($order->order_type == 'Stock Received') {
+
+          //   foreach($stockReceivedOfAllRetailersOfADay as $stockReceivedOfSingleRetailerOfADay) {
+          //     if($stockReceivedOfSingleRetailerOfADay['retailer_id'] == $order->retailer_id) 
+          //       $stockReceived = $stockReceivedOfSingleRetailerOfADay;
+          //   }
+
+          //   // End singleDayStockReceived Foreach
+          //   foreach($order->order_details as $orderDetail) {
+          //     $stockReceived['id'] = $order->id;
+          //     $stockReceived['distributor_id'] = $order->distributor_id;
+          //     $stockReceived['retailer_id'] = $order->retailer_id;
+          //     $stockReceived['user_id'] = $order->user_id;
+          //     $stockReceived['status'] = $order->status;
+          //     $stockReceived['order_type'] = $order->order_type;
+          //     $stockReceived['created_at'] = Carbon::parse($order->created_at)->format('d-m-Y');
+          //     $stockReceived['user'] = $order->user;
+          //     $orderDetailOfSkuAlreadyThere = false;
+          //     foreach($stockReceived['order_details'] as $stockRecDetail) {
+          //       if($stockRecDetail['sku_id'] == $orderDetail['sku_id']) {
+          //         $orderDetailOfSkuAlreadyThere = true;
+          //         $stockRecDetail['qty'] += $orderDetail['qty'];
+          //         $stockRecDetail['value'] += $orderDetail['value'];
+          //       }
+          //     }
+          //     if(!$orderDetailOfSkuAlreadyThere) 
+          //       $stockReceived['order_details'][]  = $orderDetail;
+          //   }
+          //   // End Foreach order_details
+
+          //   $isStockReceivedOfSingleRetailersOfADay = 0;
+          //   foreach($stockReceivedOfAllRetailersOfADay as $stockReceivedOfSingleRetailerOfADay) {
+          //     if($stockReceivedOfSingleRetailerOfADay['retailer_id'] == $stockReceived['retailer_id']) {
+          //       $stockReceivedOfSingleRetailerOfADay = $stockReceived;
+          //       $isStockReceivedOfSingleRetailersOfADay = 1;
+          //     }
+          //   }
+          //   if($isStockReceivedOfSingleRetailersOfADay == 0) 
+          //     $stockReceivedOfSingleRetailerOfADay[] = $stockReceived;
+
+          // }
+          // // End Stock Received
+
+          // // Stock Returned
+          // // Check if this date and this store is already there in the singleDayStockReturned
+          // if($order->order_type == 'Stock Returned') {
+          //   foreach($singleDayStockReturned as $singleDayStockRet) {
+          //     if($singleDayStockRet['retailer_id'] == $order->retailer_id && $singleDayStockRet['order_type'] == 'Stock Returned')
+          //       $stockReturned = $singleDayStockRet;
+          //   }
+          //   // End singleDayStockReturned Foreach
+          //   foreach($order->order_details as $orderDetail) {
+          //     $stockReturned['id'] = $order->id;
+          //     $stockReturned['distributor_id'] = $order->distributor_id;
+          //     $stockReturned['retailer_id'] = $order->retailer_id;
+          //     $stockReturned['user_id'] = $order->user_id;
+          //     $stockReturned['status'] = $order->status;
+          //     $stockReturned['order_type'] = $order->order_type;
+          //     $stockReturned['created_at'] = Carbon::parse($order->created_at)->format('d-m-Y');
+          //     $stockReturned['user'] = $order->user;
+          //     $orderDetailOfSkuAlreadyThere = false;
+          //     foreach($stockReturned['order_details'] as $stockRetDetail) {
+          //       if($stockRetDetail['sku_id'] == $orderDetail['sku_id']) {
+          //         $orderDetailOfSkuAlreadyThere = true;
+          //         $stockRetDetail['qty'] += $orderDetail['qty'];
+          //         $stockRetDetail['value'] += $orderDetail['value'];
+          //       }
+          //     }
+          //     if(!$orderDetailOfSkuAlreadyThere) 
+          //       $stockReturned['order_details'][]  = $orderDetail;
+          //   }
+          //   // End Foreach order_details
+          // }
+          // // End Stock Returned
+
+        }
+        // End $orders of a day Foreach
+
+        foreach($salesOrdersOfAllRetailersOfADay as $salesOrderOfSingleRetailerOfADay) {
+          if(sizeof(($salesOrderOfSingleRetailerOfADay['order_details'])) > 0)
+            $finalOrders[] = $salesOrderOfSingleRetailerOfADay;
+        }
+        
+        // foreach($stockReceivedOfAllRetailersOfADay as $stockReceivedOfSingleRetailerOfADay) {
+        //   if(sizeof(($stockReceivedOfSingleRetailerOfADay['order_details'])) > 0)
+        //     $finalOrders[] = $stockReceivedOfSingleRetailerOfADay;
+        // }
+        // $stockReceived = [
+        //   'order_details' => [],
+        // ];
+        // if(sizeof(($stockReceived['order_details'])) > 0)
+        //   $finalOrders[] = $stockReceived;
+        
+        // if(sizeof(($stockReturned['order_details'])) > 0)
+        //   $finalOrders[] = $stockReturned;
+        // $stockReturned = [
+        //   'order_details' => [],
+        // ];
+      }
+    }
 
 
     // Old code
@@ -423,8 +461,8 @@ class OrdersController extends Controller
     // }
 
     return response()->json([
-      'data'     =>  $orders,
-      'count'    =>   $count,
+      'count'    =>   sizeof($finalOrders),
+      'data'     =>  $finalOrders,
       'success'   =>  true
     ], 200);
   }
