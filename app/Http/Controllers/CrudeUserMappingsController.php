@@ -67,6 +67,7 @@ class CrudeUserMappingsController extends Controller
         $Conflicts = [];
         $crude_users = CrudeUserMapping::all();
         foreach ($crude_users as $user) {
+            $safe_upload_status=FALSE;
             if ($user->store_code) {
                 $location = ($user->location) ? '@' . str_replace(' ', '', $user->location) : '';
                 $email = str_replace(' ', '', $user->store_name) . '' . $location;
@@ -84,17 +85,18 @@ class CrudeUserMappingsController extends Controller
                 }
 
                 // Fetch User by store code
-                $us = User::where('employee_code', '=', $user->store_code)
+                $user_array = User::where('employee_code', '=', $user->store_code)
                     ->get();
-                if (count($us) > 1) {
+                if (count($user_array) > 1) {
                     // Store Code Assigned to Multiple Stores 
-                    foreach ($us as $key => $conflict_user) {
+                    foreach ($user_array as $key => $conflict_user) {
                         $conflict_user['source'] = 'database';
                         array_push($Conflicts, $conflict_user);
                     }
                     $user['source'] = 'excel';
                     array_push($Conflicts, $user);
                 } else {
+
                     // fetch Supervisor by Supervisor name
                     $Supervisor = User::where('name', "=", $user->supervisor_name)
                         ->first();
@@ -106,6 +108,7 @@ class CrudeUserMappingsController extends Controller
                             'password_backup' => bcrypt('123456'),
                             'email' => str_replace(" ", "", $user->supervisor_name) . mt_rand(1, 9999) . '@supervisor',
                             'batch_no' => $Batch->batch_no,
+                            'excel_upload_status'=>true,
                         ];
 
                         $Supervisor = new User($Supervisor_data);
@@ -116,7 +119,8 @@ class CrudeUserMappingsController extends Controller
                         $Supervisor->assignCompany(request()->company->id);
                         $Supervisor->companies = $Supervisor->companies;
                     }
-                    if (count($us) == 0) {
+                    if (count($user_array) == 0) {
+                        $safe_upload_status = TRUE;
                         // No Data Found 
                         $data = [
                             // users column name = $user->crude_users column name
@@ -149,8 +153,13 @@ class CrudeUserMappingsController extends Controller
                         $us->assignRole(5);
                         $us->assignCompany(request()->company->id);
                     } else {
+                        $safe_upload_status = FALSE;
                         // Employee Code Matches then Update User
-                        $user_id = $us[0]->id;
+                        if ($user_array[0]->batch_no != $Batch->batch_no || ($user_array[0]->batch_no == $Batch->batch_no && $user_array[0]->excel_upload_status != TRUE)) {
+                            // If User's Existing Batch No & Current batch No Doesn't Match "AND" User's Excel Upload Status isn't Completed
+                            $safe_upload_status = TRUE;
+                        }
+                        $user_id = $user_array[0]->id;
                         $data = [
                             // users column name = $user->crude_users column name
                             'email'           =>  $user->user_login_id == '' ? $email : $user->user_login_id,
@@ -173,107 +182,113 @@ class CrudeUserMappingsController extends Controller
                             'store_type' => $user->store_type,
                             'brand' => $user->brand,
                             'batch_no' => $Batch->batch_no,
+                            'excel_status' => false
                         ];
                         $us = User::find($user_id);
                         $us->update($data);
                     }
-
-
-                    $bt = ReferencePlan::where('name', '=', $user->store_name)->first();
-                    $data = [
-                        'name' => $user->store_name,
-                        'town' => $user->location,
-                    ];
-                    if (!$bt) {
-                        $beat = new ReferencePlan($data);
-                        request()->company->reference_plans()->save($beat);
-                    } else {
-                        $beat = ReferencePlan::find($bt['id']);
-                        $beat->update($data);
-                    }
-                    $beat_id = $beat['id'];
-
-                    $rt = Retailer::where('name', '=', $user->store_name)->first();
-                    $data = [
-                        'name' => $user->store_name,
-                        'retailer_code' => $user->store_code,
-                        'reference_plan_id' => $beat_id,
-                        'address' => $user->store_address == '' ? $user->city : $user->store_address,
-                    ];
-                    if (!$rt) {
-                        $retailer = new Retailer($data);
-                        $beat->retailers()->save($retailer);
-                    } else {
-                        $retailer = Retailer::find($rt['id']);
-                        $retailer->update($data);
-                    }
-
-                    // Create beat user
-                    $user_reference_plan = UserReferencePlan::where('reference_plan_id', $beat_id)
-                        ->where('user_id', '=', $us->id)->first();
-
-                    if (!$user_reference_plan) {
-                        // insert
-                        $days = 7;
-                        for ($i = 1; $i <= $days; $i++) {
-                            $urp_data = [
-                                'user_id' => $us->id,
-                                'reference_plan_id' => $beat_id,
-                                'day' => $i,
-                                'which_week' => 1
-                            ];
-                            $user_reference_plan = new UserReferencePlan($urp_data);
-                            request()->company->user_reference_plans()->save($user_reference_plan);
-                        }
-                    } else {
-                        // update
-                    }
-                    if ($us->distributor_id == null) {
-                        // Create Distributor Of the User
-                        $Distributor  = [
-                            'name' => $beat->name,
-                            'password' => bcrypt('123456'),
-                            'password_backup' => bcrypt('123456'),
-                            'email' => str_replace(" ", "", $beat->name) . mt_rand(1, 9999) . '@distributor',
-                            'batch_no' => $Batch->batch_no,
+                    if ($safe_upload_status == TRUE) {
+                        // If User's Existing Batch No & Current batch No Doesn't Exist "AND" User's Excel Upload Status isn't Completed
+                        $bt = ReferencePlan::where('name', '=', $user->store_name)->first();
+                        $data = [
+                            'name' => $user->store_name,
+                            'town' => $user->location,
                         ];
-                        $Distributor = new User($Distributor);
-                        $Distributor->save();
-
-                        $Distributor->assignRole(10);
-                        $Distributor->roles = $Distributor->roles;
-                        $Distributor->assignCompany(request()->company->id);
-                        $Distributor->companies = $Distributor->companies;
-                        $Distributor_ID = $Distributor->id;
-                    } else {
-                        $Distributor_ID = $us->distributor_id;
-                    }
-
-                    // Map Distributor to beat User
-                    $Update_User = User::where('id', $user_reference_plan->user_id)
-                        ->update(['distributor_id' => $Distributor_ID]);
-
-                    $skus = Sku::all();
-                    $i = 5000;
-                    foreach ($skus as $key => $sku) {
-                        $SkuStock = Stock::where('distributor_id', '=', $Distributor_ID)
-                            ->where('sku_id', '=', $sku->id)
-                            ->first();
-                        if (!$SkuStock) {
-                            // Create SKUs Stock Based On the Distributor Data  
-                            $stock_data = [
-                                'sku_id' => $sku->id,
-                                'qty' => false,
-                                'price' => $sku->price,
-                                'invoice_no' => 'invoice' . $i,
-                                'total' => false,
-                                'distributor_id' => $Distributor_ID,
-                                'sku_type_id' => 1,
-                            ];
-                            $stock = new Stock($stock_data);
-                            $sku->stocks()->save($stock);
-                            $i++;
+                        if (!$bt) {
+                            $beat = new ReferencePlan($data);
+                            request()->company->reference_plans()->save($beat);
+                        } else {
+                            $beat = ReferencePlan::find($bt['id']);
+                            $beat->update($data);
                         }
+                        $beat_id = $beat['id'];
+
+                        $rt = Retailer::where('name', '=', $user->store_name)->first();
+                        $data = [
+                            'name' => $user->store_name,
+                            'retailer_code' => $user->store_code,
+                            'reference_plan_id' => $beat_id,
+                            'address' => $user->store_address == '' ? $user->city : $user->store_address,
+                        ];
+                        if (!$rt) {
+                            $retailer = new Retailer($data);
+                            $beat->retailers()->save($retailer);
+                        } else {
+                            $retailer = Retailer::find($rt['id']);
+                            $retailer->update($data);
+                        }
+
+                        // Create beat user
+                        $user_reference_plan = UserReferencePlan::where('reference_plan_id', $beat_id)
+                            ->where('user_id', '=', $us->id)->first();
+
+                        if (!$user_reference_plan) {
+                            // insert
+                            $days = 7;
+                            for ($i = 1; $i <= $days; $i++) {
+                                $urp_data = [
+                                    'user_id' => $us->id,
+                                    'reference_plan_id' => $beat_id,
+                                    'day' => $i,
+                                    'which_week' => 1
+                                ];
+                                $user_reference_plan = new UserReferencePlan($urp_data);
+                                request()->company->user_reference_plans()->save($user_reference_plan);
+                            }
+                        } else {
+                            // update
+                        }
+                        if ($us->distributor_id == null) {
+                            // Create Distributor Of the User
+                            $Distributor  = [
+                                'name' => $beat->name,
+                                'password' => bcrypt('123456'),
+                                'password_backup' => bcrypt('123456'),
+                                'email' => str_replace(" ", "", $beat->name) . mt_rand(1, 9999) . '@distributor',
+                                'batch_no' => $Batch->batch_no,
+                                'excel_upload_status'=>true,
+                            ];
+                            $Distributor = new User($Distributor);
+                            $Distributor->save();
+
+                            $Distributor->assignRole(10);
+                            $Distributor->roles = $Distributor->roles;
+                            $Distributor->assignCompany(request()->company->id);
+                            $Distributor->companies = $Distributor->companies;
+                            $Distributor_ID = $Distributor->id;
+                        } else {
+                            $Distributor_ID = $us->distributor_id;
+                        }
+
+                        // Map Distributor to beat User
+                        $Update_User = User::where('id', $user_reference_plan->user_id)
+                            ->update(['distributor_id' => $Distributor_ID]);
+
+                        $skus = Sku::all();
+                        $i = 5000;
+                        foreach ($skus as $key => $sku) {
+                            $SkuStock = Stock::where('distributor_id', '=', $Distributor_ID)
+                                ->where('sku_id', '=', $sku->id)
+                                ->first();
+                            if (!$SkuStock) {
+                                // Create SKUs Stock Based On the Distributor Data  
+                                $stock_data = [
+                                    'sku_id' => $sku->id,
+                                    'qty' => false,
+                                    'price' => $sku->price,
+                                    'invoice_no' => 'invoice' . $i,
+                                    'total' => false,
+                                    'distributor_id' => $Distributor_ID,
+                                    'sku_type_id' => 1,
+                                ];
+                                $stock = new Stock($stock_data);
+                                $sku->stocks()->save($stock);
+                                $i++;
+                            }
+                        }
+                        // When Required All Entries are Done Change User's excel_upload_status to TRUE[Done]
+                        $Update_User_Excel_Status = User::where('id', $us->id)
+                            ->update(['excel_upload_status' => true]);
                     }
                 }
             }
