@@ -132,7 +132,8 @@ class OrdersController extends Controller
     ], 200);
   }
 
-  public function deleteMultipleOrders() {
+  public function deleteMultipleOrders()
+  {
     $orders = Order::whereDate('created_at', '<=', '2021-10-31')
       ->delete();
 
@@ -142,7 +143,7 @@ class OrdersController extends Controller
     return response()->json([
       'orders'  =>  $orders,
       'order_details'  =>  $order_details,
-    ]); 
+    ]);
   }
 
   public function deleteOrder($id)
@@ -186,7 +187,6 @@ class OrdersController extends Controller
     $order->update();
 
     dd($order->toArray());
-
   }
 
   public function offtakes(Request $request)
@@ -196,7 +196,7 @@ class OrdersController extends Controller
     if ($request->userId) {
       $orders = request()->company->orders_list()
         ->where('user_id', '=', $request->userId);
-        // ->where('is_active', '=', 1);
+      // ->where('is_active', '=', 1);
       if ($request->date) {
         $orders = $orders->whereDate('created_at', $request->date);
       }
@@ -249,18 +249,18 @@ class OrdersController extends Controller
     // retailer_id
     $finalOrders = [];
 
-    for($i = 1; $i <= 31; $i++) {
+    for ($i = 1; $i <= 31; $i++) {
       // To check single day orders
       $ordersOfADay = [];
-      foreach($orders as $or) {
+      foreach ($orders as $or) {
         // var_dump(Carbon::parse($or->created_at)->format('d'));
-        if(Carbon::parse($or->created_at)->format('d') == sprintf("%02d", $i)) {
+        if (Carbon::parse($or->created_at)->format('d') == sprintf("%02d", $i)) {
           $ordersOfADay[] = $or;
         }
       }
       // End To check single day orders
 
-      if(sizeof($ordersOfADay) > 0) {
+      if (sizeof($ordersOfADay) > 0) {
         $singleDaySalesOrders = [];
         $singleDayStockReceived = [];
         $singleDayStockReturned = [];
@@ -279,18 +279,18 @@ class OrdersController extends Controller
         $stockReceivedOfAllRetailersOfADay = [];
         $stockReturnedOfAllRetailersOfADay = [];
 
-        foreach($ordersOfADay as $order) {
+        foreach ($ordersOfADay as $order) {
 
           // Sales
           // Check if this date and this store is already there in the singleDaySalesOrders
-          if($order->order_type == 'Sales') {
+          if ($order->order_type == 'Sales') {
 
-            for($k = 0; $k < sizeof($salesOrdersOfAllRetailersOfADay); $k++) {
-              if($salesOrdersOfAllRetailersOfADay[$k]['user_id'] == $order->user_id) 
+            for ($k = 0; $k < sizeof($salesOrdersOfAllRetailersOfADay); $k++) {
+              if ($salesOrdersOfAllRetailersOfADay[$k]['user_id'] == $order->user_id)
                 $salesOrder = $salesOrdersOfAllRetailersOfADay[$k];
             }
 
-            foreach($order->order_details as $orderDetail) {
+            foreach ($order->order_details as $orderDetail) {
               $salesOrder['id'] = $order->id;
               $salesOrder['distributor_id'] = $order->distributor_id;
               $salesOrder['retailer_id'] = $order->retailer_id;
@@ -300,27 +300,27 @@ class OrdersController extends Controller
               $salesOrder['created_at'] = Carbon::parse($order->created_at)->format('d-m-Y');
               $salesOrder['user'] = $order->user;
               $orderDetailOfSkuAlreadyThere = false;
-              for($k = 0; $k < sizeof($salesOrder['order_details']); $k++) {
-                if($salesOrder['order_details'][$k]['sku_id'] == $orderDetail['sku_id']) {
+              for ($k = 0; $k < sizeof($salesOrder['order_details']); $k++) {
+                if ($salesOrder['order_details'][$k]['sku_id'] == $orderDetail['sku_id']) {
                   // var_dump(1234);
                   $orderDetailOfSkuAlreadyThere = true;
                   $salesOrder['order_details'][$k]['qty'] += $orderDetail['qty'];
                   $salesOrder['order_details'][$k]['value'] += $orderDetail['value'];
                 }
               }
-              if(!$orderDetailOfSkuAlreadyThere) 
+              if (!$orderDetailOfSkuAlreadyThere)
                 $salesOrder['order_details'][]  = $orderDetail;
             }
             // End Foreach order_details
 
             $isSalesOrderOfSingleRetailersOfADay = 0;
-            for($j = 0; $j < sizeof($salesOrdersOfAllRetailersOfADay); $j++) {
-              if($salesOrdersOfAllRetailersOfADay[$j]['user_id'] == $salesOrder['user_id']) {
+            for ($j = 0; $j < sizeof($salesOrdersOfAllRetailersOfADay); $j++) {
+              if ($salesOrdersOfAllRetailersOfADay[$j]['user_id'] == $salesOrder['user_id']) {
                 $salesOrdersOfAllRetailersOfADay[$j] = $salesOrder;
                 $isSalesOrderOfSingleRetailersOfADay = 1;
               }
             }
-            if($isSalesOrderOfSingleRetailersOfADay == 0) 
+            if ($isSalesOrderOfSingleRetailersOfADay == 0)
               $salesOrdersOfAllRetailersOfADay[] = $salesOrder;
             $salesOrder = [
               'order_details' => [],
@@ -409,11 +409,11 @@ class OrdersController extends Controller
         }
         // End $orders of a day Foreach
 
-        foreach($salesOrdersOfAllRetailersOfADay as $salesOrderOfSingleRetailerOfADay) {
-          if(sizeof(($salesOrderOfSingleRetailerOfADay['order_details'])) > 0)
+        foreach ($salesOrdersOfAllRetailersOfADay as $salesOrderOfSingleRetailerOfADay) {
+          if (sizeof(($salesOrderOfSingleRetailerOfADay['order_details'])) > 0)
             $finalOrders[] = $salesOrderOfSingleRetailerOfADay;
         }
-        
+
         // foreach($stockReceivedOfAllRetailersOfADay as $stockReceivedOfSingleRetailerOfADay) {
         //   if(sizeof(($stockReceivedOfSingleRetailerOfADay['order_details'])) > 0)
         //     $finalOrders[] = $stockReceivedOfSingleRetailerOfADay;
@@ -423,7 +423,7 @@ class OrdersController extends Controller
         // ];
         // if(sizeof(($stockReceived['order_details'])) > 0)
         //   $finalOrders[] = $stockReceived;
-        
+
         // if(sizeof(($stockReturned['order_details'])) > 0)
         //   $finalOrders[] = $stockReturned;
         // $stockReturned = [
@@ -463,6 +463,75 @@ class OrdersController extends Controller
     return response()->json([
       'count'    =>   sizeof($finalOrders),
       'data'     =>  $finalOrders,
+      'success'   =>  true
+    ], 200);
+  }
+
+  public function daily_offtake_counts(Request $request)
+  {
+    $count = 0;
+    $orders = [];
+    if ($request->userId) {
+      $orders = request()->company->orders_list()
+        ->where('user_id', '=', $request->userId);
+      // ->where('is_active', '=', 1);
+      if ($request->date) {
+        $orders = $orders->whereDate('created_at', $request->date);
+      }
+      if ($request->month) {
+        $orders = $orders->whereMonth('created_at', '=', $request->month);
+      }
+      if ($request->year) {
+        $orders = $orders->whereYear('created_at', '=', $request->year);
+      }
+
+      $orders = $orders->get();
+    } else {
+      $supervisors = User::with('roles')
+        ->whereHas('roles',  function ($q) {
+          $q->where('name', '=', 'SUPERVISOR');
+        })->orderBy('name')->get();
+      $Oftake_users = [];
+      foreach ($supervisors as $supervisor) {
+
+        $users = User::where('supervisor_id', '=', $supervisor->id)->get();
+        $offtake_count = 0;
+        foreach ($users as $user) {
+
+          $ors = request()->company->orders_list()
+            ->where('user_id', '=', $user->id);
+          // ->where('is_active', '=', 1)
+          // ->with('order_details')
+          // ->whereHas('order_details',  function ($q) {
+          //   $q->groupBy('sku_id');
+          // });
+          if ($request->month) {
+            $ors = $ors->whereMonth('created_at', '=', $request->month);
+          }
+          if ($request->year) {
+            $ors = $ors->whereYear('created_at', '=', $request->year);
+          }
+          // $ors = $ors->groupBy(function ($date) {
+          //   return Carbon::parse($date->created_at)->format('D'); // grouping by years
+          // })->get();
+          $ors = $ors->get();
+          $order_date_list = [];
+          if (count($ors) != 0) {
+            foreach ($ors as $key => $order) {
+              $order_date_list[] = Carbon::parse($order->created_at)->format('d');
+            }
+            $array = array_unique($order_date_list);
+            $offtake_count = sizeof($array);
+          }
+
+          $user['Offtake_count'] = $offtake_count;
+          $Oftake_users[] = $user;
+        }
+      }
+    }
+
+    return response()->json([
+      'data'     =>  $Oftake_users,
       'success'   =>  true
     ], 200);
   }
