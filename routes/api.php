@@ -390,3 +390,7 @@ Route::get('truncate_user_mappings', 'CrudeUserMappingsController@truncate');
 Route::get('pjp_visited_supervisor_expenses/masters', 'PjpVisitedSupervisorExpensesController@masters');
 Route::get('pjp_visited_supervisor_expenses/show_expenses/{id}', 'PjpVisitedSupervisorExpensesController@showExpenses');
 Route::resource('pjp_visited_supervisor_expenses', 'PjpVisitedSupervisorExpensesController');
+
+// Offtake Analytics
+Route::get('offtake_reports/masters', 'OfftakeAnalyticsController@masters');
+Route::get('offtake_reports/no_of_products', 'OfftakeAnalyticsController@noOfReports');
