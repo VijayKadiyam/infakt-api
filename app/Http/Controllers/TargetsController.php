@@ -45,27 +45,48 @@ class TargetsController extends Controller
 
   public function search(Request $request)
   {
-    $targets = $request->company->targets();
-    if($request->userId) {
-      $targets = $targets
-        ->where('user_id', '=', $request->userId);
+    $users = User::get();
+    $targets=[];
+    foreach($users as $user){
+      if ($request->from_month && $request->to_month && $request->year) {
+          $user['monthly_targets'] = Target::
+          where('user_id', '=', $user->id)
+          ->whereBetween('month', [$request->from_month, $request->to_month])
+            ->where('year', '=', $request->year)
+            ->get();
+        }
+      $targets[] = $user;
     }
-    if($request->month) {
-      $targets = $targets
-        ->where('month', '=', $request->month);
-    }
-    if($request->year) {
-      $user = User::find($request->userId);
-      $targets = $targets
-        ->where('year', '=', $request->year);
-    }
-    $targets = $targets->get();
 
     return response()->json([
       'data'     =>  $targets,
       'success'   =>  true
     ], 200);
   }
+
+  // public function search(Request $request)
+  // {
+  //   $targets = $request->company->targets();
+  //   if($request->userId) {
+  //     $targets = $targets
+  //       ->where('user_id', '=', $request->userId);
+  //   }
+  //   if($request->month) {
+  //     $targets = $targets
+  //       ->where('month', '=', $request->month);
+  //   }
+  //   if($request->year) {
+  //     $user = User::find($request->userId);
+  //     $targets = $targets
+  //       ->where('year', '=', $request->year);
+  //   }
+  //   $targets = $targets->get();
+
+  //   return response()->json([
+  //     'data'     =>  $targets,
+  //     'success'   =>  true
+  //   ], 200);
+  // }
 
 
   public function index(Request $request, User $user)
@@ -91,14 +112,14 @@ class TargetsController extends Controller
 
     return response()->json([
       'data'    =>  $target
-    ], 201); 
+    ], 201);
   }
 
   public function show(User $user, Target $target)
   {
     return response()->json([
       'data'   =>  $target
-    ], 200);   
+    ], 200);
   }
 
   public function update(Request $request, User $user, Target $target)
@@ -108,7 +129,7 @@ class TargetsController extends Controller
     ]);
 
     $target->update($request->all());
-      
+
     return response()->json([
       'data'  =>  $target
     ], 200);
