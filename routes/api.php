@@ -393,4 +393,4 @@ Route::resource('pjp_visited_supervisor_expenses', 'PjpVisitedSupervisorExpenses
 
 // Offtake Analytics
 Route::get('offtake_reports/masters', 'OfftakeAnalyticsController@masters');
-Route::get('offtake_reports/no_of_products', 'OfftakeAnalyticsController@noOfReports');
+Route::get('offtake_reports/products', 'OfftakeAnalyticsController@noOrValueOfReports');

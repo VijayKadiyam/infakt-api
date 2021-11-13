@@ -37,15 +37,17 @@ class OfftakeAnalyticsController extends Controller
     ], 200);
   }
 
-	public function noOfReports(Request $request) {
-
+	public function noOrValueOfReports(Request $request) 
+	{
 		$request->validate([
 			'month'  =>  'required',            
-			'year'   =>  'required'
-		]);
+			'year'   =>  'required',
+			'type'	 =>		'required',
+ 		]);
 
-		$supervisors = 
-			User::with('roles')
+		$daysInMonth = 0;
+
+		$supervisors = User::with('roles')
 			->where('active', '=', 1)
 			->whereHas('roles',  function ($q) {
 				$q->where('name', '=', 'SUPERVISOR');
@@ -79,7 +81,11 @@ class OfftakeAnalyticsController extends Controller
 				}
 				$ors = $ors->get();
 
-				$daysInMonth = Carbon::createFromDate($request->month)->daysInMonth;
+				$daysInMonth = Carbon::parse($request->year . $request->month . '01')->daysInMonth;
+				$currentMonth = Carbon::now()->format('m');
+				if($request->month == $currentMonth) {
+					$daysInMonth = Carbon::now()->format('d');	
+				}
 				for($i = 1; $i <= $daysInMonth; $i++) {
 					// To check single day orders
 					$ordersOfADay = [];
@@ -91,15 +97,29 @@ class OfftakeAnalyticsController extends Controller
 					}
 					// End To check single day orders
 
-					$skuIDs = [];
-					foreach($ordersOfADay as $order) {
-						foreach($order->order_details as $order_detail) {
-							$skuIDs[] = $order_detail->sku_id; 
+					// If No of SKU per day is required
+					if($request->type == 'no') {
+						$skuIDs = [];
+						foreach($ordersOfADay as $order) {
+							foreach($order->order_details as $order_detail) {
+								$skuIDs[] = $order_detail->sku_id; 
+							}
 						}
+						$uniqueSkuIDs = array_unique($skuIDs);
+						$countUniqueSkuIDs = sizeof($uniqueSkuIDs);
+						$singleUserData['date' . $i] = $countUniqueSkuIDs;
 					}
-					$uniqueSkuIDs = array_unique($skuIDs);
-					$countUniqueSkuIDs = sizeof($uniqueSkuIDs);
-					$singleUserData['date' . $i] = $countUniqueSkuIDs;
+
+					// If value of SKUS required
+					if($request->type == 'value') {
+						$totalValue = 0;
+						foreach($ordersOfADay as $order) {
+							foreach($order->order_details as $order_detail) {
+								$totalValue += $order_detail->value; 
+							}
+						}
+						$singleUserData['date' . $i] = $totalValue;
+					}
 				}
 				$productsOfftakes[] = $singleUserData;
 			}
@@ -108,7 +128,7 @@ class OfftakeAnalyticsController extends Controller
 		return response()->json([   
 			'count' =>  sizeof($productsOfftakes),
 			'data'  =>  $productsOfftakes,
+			'daysInMonth'	=>	$daysInMonth,
 		]);
-
 	}
 }
