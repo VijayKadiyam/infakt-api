@@ -45,7 +45,10 @@ class TargetsController extends Controller
 
   public function search(Request $request)
   {
-    $users = User::get();
+    $users = $request->company->users()->with('roles')
+        ->whereHas('roles',  function ($q) {
+          $q->where('name', '!=', 'Admin');
+        })->get();
     $targets=[];
     foreach($users as $user){
       if ($request->from_month && $request->to_month && $request->year) {
