@@ -195,8 +195,8 @@ class OrdersController extends Controller
     $orders = [];
     if ($request->userId) {
       $orders = request()->company->orders_list()
-        ->where('user_id', '=', $request->userId);
-      // ->where('is_active', '=', 1);
+        ->where('user_id', '=', $request->userId)
+        ->where('is_active', '=', 1);
       if ($request->date) {
         $orders = $orders->whereDate('created_at', $request->date);
       }
@@ -222,7 +222,7 @@ class OrdersController extends Controller
 
           $ors = request()->company->orders_list()
             ->where('user_id', '=', $user->id)
-            // ->where('is_active', '=', 1)
+            ->where('is_active', '=', 1)
             ->with('order_details')
             ->whereHas('order_details',  function ($q) {
               $q->groupBy('sku_id');
@@ -243,6 +243,14 @@ class OrdersController extends Controller
           }
         }
       }
+    }
+
+    if($request->raw == 'YES') {
+      return response()->json([
+        'count'    =>   sizeof($orders),
+        'data'     =>  $orders,
+        'success'   =>  true
+      ], 200);
     }
 
     // Once we have list of all the orders
