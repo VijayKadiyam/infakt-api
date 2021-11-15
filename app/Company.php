@@ -456,4 +456,9 @@ class Company extends Model
     return $this->hasMany(PjpVisitedSupervisorExpense::class);
   }
 
+  public function report_lists()
+  {
+    return $this->hasMany(ReportList::class);
+  }
+
 }
