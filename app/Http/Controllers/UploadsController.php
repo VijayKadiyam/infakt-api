@@ -166,4 +166,31 @@ class UploadsController extends Controller
       'success' =>  true
     ]);
   }
+
+  public function uploadReportListAttchment(Request $request)
+  {
+    $request->validate([
+      'reportid'        => 'required',
+    ]);
+
+    $imagePath = '';
+    if ($request->hasFile('imagepath')) {
+      $file = $request->file('imagepath');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();;
+      $imagePath = 'Report-Attachments/' .  $request->noticeid . '/' . $name;
+      Storage::disk('local')->put($imagePath, file_get_contents($file), 'public');
+
+      $notice = Notice::where('id', '=', request()->reportid)->first();
+      $notice->attachment_path = $imagePath;
+      $notice->update();
+    }
+
+    return response()->json([
+      'data'  => [
+        'attachment_path'  =>  $imagePath
+      ],
+      'success' =>  true
+    ]);
+  }
 }
