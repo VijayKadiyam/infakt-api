@@ -300,6 +300,7 @@ Route::post('delete_order_detail/{id}', 'OrdersController@deleteOrderDetail');
 Route::get('deleteMultipleOrders', 'OrdersController@deleteMultipleOrders');
 Route::resource('orders', 'OrdersController');
 Route::get('offtakes', 'OrdersController@offtakes');
+Route::get('offtake_reports/daily_offtake_counts', 'OrdersController@daily_offtake_counts');
 
 Route::resource('sales_orders', 'SalesOrdersController');
 
@@ -394,3 +395,6 @@ Route::resource('pjp_visited_supervisor_expenses', 'PjpVisitedSupervisorExpenses
 // Offtake Analytics
 Route::get('offtake_reports/masters', 'OfftakeAnalyticsController@masters');
 Route::get('offtake_reports/products', 'OfftakeAnalyticsController@noOrValueOfReports');
+
+// Report Lists
+Route::resource('report_lists', 'ReportListsController');
