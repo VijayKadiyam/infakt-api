@@ -397,4 +397,5 @@ Route::get('offtake_reports/masters', 'OfftakeAnalyticsController@masters');
 Route::get('offtake_reports/products', 'OfftakeAnalyticsController@noOrValueOfReports');
 
 // Report Lists
+Route::post('report_lists_photos', 'UploadsController@uploadReportListAttchment');
 Route::resource('report_lists', 'ReportListsController');
