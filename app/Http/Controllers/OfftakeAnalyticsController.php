@@ -47,11 +47,15 @@ class OfftakeAnalyticsController extends Controller
 
 		$daysInMonth = 0;
 
-		$supervisors = User::with('roles')
+		$supervisors = 
+		// [
+				User::with('roles')
 			->where('active', '=', 1)
 			->whereHas('roles',  function ($q) {
 				$q->where('name', '=', 'SUPERVISOR');
-			})->orderBy('name')->get();
+			})->orderBy('name')->first()
+		// ]
+		;
 
 		$productsOfftakes = [];
 
