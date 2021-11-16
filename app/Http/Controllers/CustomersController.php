@@ -19,22 +19,41 @@ class CustomersController extends Controller
         $request->request->add(['role_id' => '5']);
         $usersResponse = $usersController->index($request);
 
+        $months = [
+            ['text'  =>  'JANUARY', 'value' =>  1],
+            ['text'  =>  'FEBRUARY', 'value' =>  2],
+            ['text'  =>  'MARCH', 'value' =>  3],
+            ['text'  =>  'APRIL', 'value' =>  4],
+            ['text'  =>  'MAY', 'value' =>  5],
+            ['text'  =>  'JUNE', 'value' =>  6],
+            ['text'  =>  'JULY', 'value' =>  7],
+            ['text'  =>  'AUGUST', 'value' =>  8],
+            ['text'  =>  'SEPTEMBER', 'value' =>  9],
+            ['text'  =>  'OCTOBER', 'value' =>  10],
+            ['text'  =>  'NOVEMBER', 'value' =>  11],
+            ['text'  =>  'DECEMBER', 'value' =>  12],
+        ];
+
+        $years = ['2020', '2021'];
+
         return response()->json([
+            'months'  =>  $months,
+            'years'   =>  $years,
             'users'   =>  $usersResponse->getData()->data,
         ], 200);
     }
     public function index()
     {
         $count = 0;
-        if (request()->page && request()->rowsPerPage) {
-            $customers = request()->company->customers();
-            $count = $customers->count();
-            $customers = $customers->paginate(request()->rowsPerPage)->toArray();
-            $customers = $customers['data'];
-        } else {
-            $customers = request()->company->customers;
-            $count = $customers->count();
+        $customers = request()->company->customers();
+        if (request()->month) {
+            $customers = $customers->whereMonth('date', '=', request()->month);
         }
+        if (request()->year) {
+            $customers = $customers->whereYear('date', '=', request()->year);
+        }
+        $customers=$customers->get();
+        $count = $customers->count();
 
         return response()->json([
             'data'     =>  $customers,
