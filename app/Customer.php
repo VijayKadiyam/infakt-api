@@ -18,6 +18,6 @@ class Customer extends Model
         return $this->belongsTo(Company::class);
     }
     public function user() {
-        return $this->hasMany(User::class);
+        return $this->belongsTo(User::class);
     }
 }
