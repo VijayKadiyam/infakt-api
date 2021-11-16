@@ -56,7 +56,7 @@ class UserAttendancesController extends Controller
       $supervisorId = $request->supervisorId;
       $supervisorUsers = User::where('supervisor_id', '=', $supervisorId)
         ->get();
-      $analysis['supervisorUsersCount'] = $supervisorUsers->count();      
+      $analysis['supervisorUsersCount'] = $supervisorUsers->count();
       $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
         $q->where('supervisor_id', '=', $supervisorId);
       });
@@ -103,7 +103,7 @@ class UserAttendancesController extends Controller
       'success' =>  true
     ], 200);
   }
-// user Atteandance for client
+  // user Atteandance for client
   public function user_attendance(Request $request)
   {
     $User_Attendances = [];
@@ -118,8 +118,7 @@ class UserAttendancesController extends Controller
       }
       $userAttendances = $userAttendances->get();
       $User_Attendances = $userAttendances;
-    }
-    else if ($request->supervisorId) {
+    } else if ($request->supervisorId) {
       $supervisorId = $request->supervisorId;
       $userAttendances = request()->company->user_attendances();
       $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
@@ -133,12 +132,11 @@ class UserAttendancesController extends Controller
       }
       $userAttendances = $userAttendances->get();
       $User_Attendances = $userAttendances;
-    }
-    else {
+    } else {
       $supervisors = User::with('roles')
-      ->whereHas('roles',  function ($q) {
-        $q->where('name', '=', 'SUPERVISOR');
-      })->orderBy('name')->get();
+        ->whereHas('roles',  function ($q) {
+          $q->where('name', '=', 'SUPERVISOR');
+        })->orderBy('name')->get();
 
       foreach ($supervisors as $supervisor) {
 
@@ -387,5 +385,49 @@ class UserAttendancesController extends Controller
     $endpoint = "http://mobicomm.dove-sms.com//submitsms.jsp?user=PousseM&key=fc53bf6154XX&mobile=+91$phone&message=$name%0A$date%0ATime: $time%0ALocation: $address%0ABTRY: $battery %&senderid=POUSSE&accusage=1";
     $client = new \GuzzleHttp\Client();
     $client->request('GET', $endpoint);
+  }
+
+  // User Attendance Month Wise
+  public function monthly_attendances(Request $request)
+  {
+    $analysis = [];
+    $userAttendances = request()->company->user_attendances();
+
+    if ($request->month) {
+      $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
+    }
+    if ($request->year) {
+      $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
+    }
+
+    $userAttendances = $userAttendances->get();
+
+    $users = [];
+    $user_Attendance=[];
+    foreach ($userAttendances as $key => $attendance) {
+      $user = $attendance->user;
+      $user_id = $user->id;
+      unset($attendance['user']);
+      $user_key=array_search($user_id, array_column($users, 'id'));
+      // $i=0;
+      if (!$user_key) {
+        $user['attendances']=[];
+        $user->attendances=[];
+        $user['attendances']= $attendance;
+        
+        // return $user->attendances;
+        $users[] = $user;
+      }else{
+        // $i++;
+        $users[$user_key]->attendances[$key]=$attendance;
+        // return $users[$user_key]->attendances[$i];
+      }
+    }
+    return $users;
+    return response()->json([
+      'data'     =>  $userAttendances,
+      'analysis'  =>  $analysis,
+      'success' =>  true
+    ], 200);
   }
 }
