@@ -422,18 +422,61 @@ class UserAttendancesController extends Controller
 
     $users = [];
     foreach ($userAttendances as $key => $attendance) {
+      $present_count = 0;
+      $weekly_off_count = 0;
+      $leave_count = 0;
       $user = $attendance->user->toArray();
       $user_id = $user['id'];
       unset($attendance['user']);
       $user_key = array_search($user_id, array_column($users, 'id'));
       $date = Carbon::parse($attendance->date)->format('j');
+
       if (!$user_key) {
+        $day_count = 1;
+        switch ($attendance->session_type) {
+          case 'PRESENT':
+            $present_count++;
+            break;
+          case 'WEEKLY OFF':
+            $weekly_off_count++;
+            break;
+          case 'LEAVE':
+            $leave_count++;
+            break;
+
+          default:
+            break;
+        }
+        $user['day_count'] = $day_count;
+        $user['present_count'] = $present_count;
+        $user['weekly_off_count'] = $weekly_off_count;
+        $user['leave_count'] = $leave_count;
         $user['attendances'][$date] = $attendance;
         $users[] = $user;
       } else {
+        switch ($attendance->session_type) {
+          case 'PRESENT':
+            $users[$user_key]["present_count"]++;
+            break;
+          case 'WEEKLY OFF':
+            $users[$user_key]['weekly_off_count']++;
+            break;
+          case 'LEAVE':
+            $users[$user_key]['leave_count']++;
+            break;
+
+          default:
+            #code...
+            break;
+        }
+
+        $day_count = sizeof($users[$user_key]["attendances"]) + 1;
         $users[$user_key]["attendances"][$date] = $attendance;
+        $users[$user_key]['day_count'] = $day_count;
+        // $users[$user_key]['present_count'] = $present_count;
       }
     }
+    // return $users;
     return response()->json([
       'data'     =>  $users,
       'success' =>  true

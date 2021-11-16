@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Customer;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CustomersController extends Controller
@@ -40,6 +41,45 @@ class CustomersController extends Controller
             'count'    =>   $count
         ], 200);
     }
+    //     public function index()
+    //     {
+    //         // $count = 0;
+    //         // if (request()->page && request()->rowsPerPage) {
+    //             $weeks = [];
+    //             $customers = request()->company->customers()->get();
+    //             foreach ($customers as $customer) {
+    //                 $date = $customer->date;
+
+    //                 $week = Carbon::parse($date)->weekNumberInMonth;
+    //                 $Week_number="Week".$week;
+    //                 // return $Week_number;
+    //                 // $Week_number = 
+    //                 $weeks[$Week_number]=$customer;
+    //                 // $customers['weeks'][$weeks];
+    //             // $customers = $customers['data'];
+    //         }
+    // // return $weeks;
+
+    //         // else {
+    //         //     $customers = request()->company->customers;
+    //         //     $count = $customers->count();
+    //         // }
+    //         // $count = 0;
+    //         // if (request()->page && request()->rowsPerPage) {
+    //         //     $customers = request()->company->customers();
+    //         //     $count = $customers->count();
+    //         //     $customers = $customers->paginate(request()->rowsPerPage)->toArray();
+    //         //     $customers = $customers['data'];
+    //         // } else {
+    //         //     $customers = request()->company->customers;
+    //         //     $count = $customers->count();
+    //         // }
+
+    //         return response()->json([
+    //             'data'     =>  $weeks,
+    //             // 'count'    =>   $count
+    //         ], 200);
+    //     }
 
     /*
        * To store a new units
@@ -51,9 +91,16 @@ class CustomersController extends Controller
         $request->validate([
             'user_id'    =>  'required'
         ]);
-
-        $customer = new Customer($request->all());
-        $request->company->customers()->save($customer);
+        $customer = new Customer();
+        $customer->company_id = $request->company_id;
+        $customer->user_id = $request->user_id;
+        $customer->date = $request->date;
+        $customer->no_of_customer = $request->no_of_customer;
+        $customer->no_of_billed_customer = $request->no_of_billed_customer;
+        $customer->more_than_two = $request->more_than_two;
+        $customer->week_number = Carbon::parse($request->date)->weekNumberInMonth;
+        $customer->save();
+        // return $customer;
 
         return response()->json([
             'data'    =>  $customer
