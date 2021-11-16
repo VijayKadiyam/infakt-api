@@ -20,8 +20,26 @@ class UserAttendancesController extends Controller
   public function masters(Request $request)
   {
     $sessionTypes = ['PRESENT', 'MEETING', 'MARKET CLOSED', 'LEAVE', 'WEEKLY OFF', 'HALF DAY'];
+    $months = [
+      ['text'  =>  'JANUARY', 'value' =>  1],
+      ['text'  =>  'FEBRUARY', 'value' =>  2],
+      ['text'  =>  'MARCH', 'value' =>  3],
+      ['text'  =>  'APRIL', 'value' =>  4],
+      ['text'  =>  'MAY', 'value' =>  5],
+      ['text'  =>  'JUNE', 'value' =>  6],
+      ['text'  =>  'JULY', 'value' =>  7],
+      ['text'  =>  'AUGUST', 'value' =>  8],
+      ['text'  =>  'SEPTEMBER', 'value' =>  9],
+      ['text'  =>  'OCTOBER', 'value' =>  10],
+      ['text'  =>  'NOVEMBER', 'value' =>  11],
+      ['text'  =>  'DECEMBER', 'value' =>  12],
+    ];
+
+    $years = ['2020', '2021'];
 
     return response()->json([
+      'months'  =>  $months,
+      'years'   =>  $years,
       'session_types' =>  $sessionTypes,
     ], 200);
   }
@@ -403,30 +421,21 @@ class UserAttendancesController extends Controller
     $userAttendances = $userAttendances->get();
 
     $users = [];
-    $user_Attendance=[];
     foreach ($userAttendances as $key => $attendance) {
-      $user = $attendance->user;
-      $user_id = $user->id;
+      $user = $attendance->user->toArray();
+      $user_id = $user['id'];
       unset($attendance['user']);
-      $user_key=array_search($user_id, array_column($users, 'id'));
-      // $i=0;
+      $user_key = array_search($user_id, array_column($users, 'id'));
+      $date = Carbon::parse($attendance->date)->format('j');
       if (!$user_key) {
-        $user['attendances']=[];
-        $user->attendances=[];
-        $user['attendances']= $attendance;
-        
-        // return $user->attendances;
+        $user['attendances'][$date] = $attendance;
         $users[] = $user;
-      }else{
-        // $i++;
-        $users[$user_key]->attendances[$key]=$attendance;
-        // return $users[$user_key]->attendances[$i];
+      } else {
+        $users[$user_key]["attendances"][$date] = $attendance;
       }
     }
-    return $users;
     return response()->json([
-      'data'     =>  $userAttendances,
-      'analysis'  =>  $analysis,
+      'data'     =>  $users,
       'success' =>  true
     ], 200);
   }
