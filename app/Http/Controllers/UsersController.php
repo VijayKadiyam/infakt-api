@@ -215,7 +215,7 @@ class UsersController extends Controller
     $users = $request->company->users();
     if ($request->batch_no) {
       $users = $users
-        ->where('user_id', 'LIKE', '%' . $request->batch_no . '%');
+        ->where('batch_no', '=', $request->batch_no);
     }
     if ($request->region) {
       $users = $users
