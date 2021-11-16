@@ -12,11 +12,16 @@ class CustomersController extends Controller
         $this->middleware(['auth:api', 'company']);
     }
 
-    /*
-       * To get all units
-         *
-       *@
-       */
+    public function masters(Request $request)
+    {
+        $usersController = new UsersController();
+        $request->request->add(['role_id' => '5']);
+        $usersResponse = $usersController->index($request);
+
+        return response()->json([
+            'users'   =>  $usersResponse->getData()->data,
+        ], 200);
+    }
     public function index()
     {
         $count = 0;

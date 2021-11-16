@@ -402,4 +402,5 @@ Route::post('report_lists_photos', 'UploadsController@uploadReportListAttchment'
 Route::resource('report_lists', 'ReportListsController');
 
 // Customers
+Route::get('customers/masters', 'CustomersController@masters');
 Route::resource('customers', 'CustomersController');
