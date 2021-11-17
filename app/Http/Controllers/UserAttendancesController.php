@@ -482,4 +482,112 @@ class UserAttendancesController extends Controller
       'success' =>  true
     ], 200);
   }
+  // Defaulter report
+  public function defaulters(Request $request)
+  {
+    $analysis = [];
+    $userAttendances = request()->company->user_attendances();
+
+    if ($request->month) {
+      $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
+    }
+    if ($request->year) {
+      $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
+    }
+    if ($request->session_type) {
+      $userAttendances = $userAttendances->where('session_type', '=', $request->session_type);
+    }
+    $userAttendances = $userAttendances->get();
+
+    $users = [];
+    $defaulters = [];
+    foreach ($userAttendances as $key => $attendance) {
+      $present_count = 0;
+      $weekly_off_count = 0;
+      $leave_count = 0;
+      $diff = 0;
+      $user = $attendance->user->toArray();
+      unset($attendance['user']);
+      $user_id = $user['id'];
+      $is_defaulter = 0;
+      $defaulter_user_key = '';
+
+      $user_key = array_search($user_id, array_column($users, 'id'));
+      $date = Carbon::parse($attendance->date)->format('j');
+
+      if (!$user_key) {
+        $day_count = 1;
+        switch ($attendance->session_type) {
+          case 'PRESENT':
+            $present_count++;
+            break;
+          case 'WEEKLY OFF':
+            $weekly_off_count++;
+            break;
+          case 'LEAVE':
+            $leave_count++;
+            break;
+
+          default:
+            break;
+        }
+        $user['day_count'] = $day_count;
+        $user['present_count'] = $present_count;
+        $user['weekly_off_count'] = $weekly_off_count;
+        $user['leave_count'] = $leave_count;
+        $user['attendances'][$date] = $attendance;
+        $user['is_defaulter'] = $is_defaulter;
+        $is_defaulter = 0;
+
+        $users[] = $user;
+        $defaulters[] = $user;
+      } else {
+        $previous_log = end($users[$user_key]['attendances']);
+        $previous_date = Carbon::parse($previous_log['date'])->format('j');
+        $diff = $date - $previous_date;
+        switch ($attendance->session_type) {
+          case 'PRESENT':
+            $users[$user_key]["present_count"]++;
+            break;
+          case 'WEEKLY OFF':
+            $users[$user_key]['weekly_off_count']++;
+            break;
+          case 'LEAVE':
+            $users[$user_key]['leave_count']++;
+            break;
+
+          default:
+            #code...
+            break;
+        }
+        $day_count = sizeof($users[$user_key]["attendances"]) + 1;
+        $users[$user_key]["attendances"][$date] = $attendance;
+        $users[$user_key]['day_count'] = $day_count;
+        $defaulter_user_key = array_search($user_id, array_column($defaulters, 'id'));
+        if ($diff == 1) {
+          $is_defaulter = 1;
+          if ($previous_log && empty($defaulters[$defaulter_user_key]["attendances"][$previous_date])) {
+            $defaulters[$defaulter_user_key]["attendances"][$previous_date] = $previous_log;
+          }
+          $defaulters[$defaulter_user_key]["attendances"][$date] = $attendance;
+        }
+        $defaulters[$defaulter_user_key]["is_defaulter"] = $is_defaulter;
+        $defaulters[$defaulter_user_key]["present_count"] = $users[$user_key]["present_count"];
+        $defaulters[$defaulter_user_key]["leave_count"] = $users[$user_key]["leave_count"];
+        $defaulters[$defaulter_user_key]["weekly_off_count"] = $users[$user_key]["weekly_off_count"];
+      }
+    }
+    $D = [];
+    foreach ($defaulters as $key => $user) {
+      if ($user['is_defaulter'] == 1) {
+        $D[] = $user;
+      }
+    }
+
+
+    return response()->json([
+      'data'     =>  $D,
+      'success' =>  true
+    ], 200);
+  }
 }
