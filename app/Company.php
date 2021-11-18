@@ -461,4 +461,9 @@ class Company extends Model
     return $this->hasMany(ReportList::class);
   }
 
+  public function customers()
+  {
+    return $this->hasMany(Customer::class)->with('user');
+  }
+
 }

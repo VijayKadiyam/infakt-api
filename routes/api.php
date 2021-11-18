@@ -68,6 +68,8 @@ Route::resource('leave_types', 'LeaveTypesController');
 
 Route::get('user_attendances/masters', 'UserAttendancesController@masters');
 Route::get('user_attendances/user_attendance', 'UserAttendancesController@user_attendance');
+Route::get('user_attendances/monthly_attendances', 'UserAttendancesController@monthly_attendances');
+Route::get('user_attendances/defaulters', 'UserAttendancesController@defaulters');
 Route::resource('user_attendances', 'UserAttendancesController');
 Route::resource('user_attendances/{user_attendance}/user_attendance_breaks', 'UserAttendanceBreaksController');
 Route::resource('user_applications', 'UserApplicationsController');
@@ -400,3 +402,7 @@ Route::get('exports', 'OfftakeAnalyticsController@exports');
 // Report Lists
 Route::post('report_lists_photos', 'UploadsController@uploadReportListAttchment');
 Route::resource('report_lists', 'ReportListsController');
+
+// Customers
+Route::get('customers/masters', 'CustomersController@masters');
+Route::resource('customers', 'CustomersController');

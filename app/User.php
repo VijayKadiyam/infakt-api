@@ -453,10 +453,11 @@ class User extends Authenticatable
   {
     return $this->belongsToMany(PjpSupervisor::class);
   }
-  // public function pjp_visited_supervisors()
-  // {
-  //   return $this->belongsToMany(PjpVisitedSupervisor::class);
-  // }
+
+  public function customers()
+  {
+    return $this->hasMany(Customer::class);
+  }
 
   public function assignReferencePlan($reference_plan)
   {
