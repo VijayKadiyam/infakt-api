@@ -5,11 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\BAReportExport;
+use App\Company;
 
 class OfftakeAnalyticsController extends Controller
 {
 	public function __construct() {
-		$this->middleware(['auth:api', 'company']);
+		$this->middleware(['auth:api', 'company'])
+			->except(['exports']);
 	}
 
 	public function masters(Request $request)
@@ -48,13 +52,13 @@ class OfftakeAnalyticsController extends Controller
 		$daysInMonth = 0;
 
 		$supervisors = 
-		// [
-				User::with('roles')
-			->where('active', '=', 1)
-			->whereHas('roles',  function ($q) {
-				$q->where('name', '=', 'SUPERVISOR');
-			})->orderBy('name')->first()
-		// ]
+		
+			User::with('roles')
+				->where('active', '=', 1)
+				->whereHas('roles',  function ($q) {
+					$q->where('name', '=', 'SUPERVISOR');
+				})->orderBy('name')->get()
+		
 		;
 
 		$productsOfftakes = [];
@@ -134,5 +138,13 @@ class OfftakeAnalyticsController extends Controller
 			'data'  =>  $productsOfftakes,
 			'daysInMonth'	=>	$daysInMonth,
 		]);
+	}
+
+	public function exports(Request $request) {
+		
+		$date = $request->date;
+		// return view('exports.daily_attendance_export', compact('userAttendances'));
+
+		return Excel::download(new BAReportExport($date), 'BA-Report.xlsx');
 	}
 }

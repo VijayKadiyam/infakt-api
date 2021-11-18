@@ -1,7 +1,7 @@
 #!/bin/bash
 cd /var/www/vhosts/mamaearth/me-api
 
-php /usr/local/bin/composer install
+# php /usr/local/bin/composer install
 
 sudo chmod -R 777 storage public vendor bootstrap database
 
