@@ -146,9 +146,11 @@ class CrudeUserMappingsController extends Controller
                             'supervisor_name' => $user->supervisor_name,
                             'supervisor_id' => $Supervisor->id,
                             'store_type' => $user->store_type,
+                            'store_status' => $user->store_status,
+                            'doj' => $user->doj,
                             'brand' => $user->brand,
                             'ba_status' => $user->ba_status,
-                            'pms_emp_id' => $user->empid,
+                            'pms_emp_id' => $user->emp_id,
                             'batch_no' => $Batch->batch_no,
                             'beat_type_id' => 1,
                         ];
@@ -172,7 +174,7 @@ class CrudeUserMappingsController extends Controller
                             'channel' => $user->channel,
                             'chain_name' => $user->chain_name,
                             'billing_code' => $user->billing_code,
-                            'employee_code' => $user->store_code,
+                            // 'employee_code' => $user->store_code,
                             'name' => $user->store_name,
                             'address' => $user->store_address,
                             'ba_name' => $user->ba_name,
@@ -184,9 +186,12 @@ class CrudeUserMappingsController extends Controller
                             'supervisor_name' => $user->supervisor_name,
                             'supervisor_id' => $Supervisor->id,
                             'store_type' => $user->store_type,
+                            'store_status' => $user->store_status,
                             'brand' => $user->brand,
                             'batch_no' => $Batch->batch_no,
-                            'pms_emp_id' => $user->empid,
+                            'pms_emp_id' => $user->emp_id,
+                            'doj' => $user->doj,
+                            'ba_status' => $user->ba_status,
 
                             'excel_status' => false,
                             'beat_type_id' => 1,
@@ -331,6 +336,7 @@ class CrudeUserMappingsController extends Controller
         $Conflicts = [];
 
         foreach ($crude_users as $user) {
+            // return $user;
             $safe_upload_status = FALSE;
             if ($user->store_code && $user->store_code != "New Store") {
                 $location = ($user->location) ? '@' . str_replace(' ', '', $user->location) : '';
@@ -389,7 +395,7 @@ class CrudeUserMappingsController extends Controller
                         // Insert New User 
                         $data = [
                             // users column name = $user->crude_users column name
-                            'name' => $user->store_name,
+                            'name'            =>  $user->store_name,
                             'email'           =>  $user->user_login_id == '' ? $email : $user->user_login_id,
                             'phone'           =>  $user->phone == '' ? 0 : $user->phone,
                             'password'        =>  bcrypt('123456'),
@@ -410,9 +416,11 @@ class CrudeUserMappingsController extends Controller
                             'supervisor_name' => $user->supervisor_name,
                             'supervisor_id' => $Supervisor->id,
                             'store_type' => $user->store_type,
+                            'store_status' => $user->store_status,
+                            'doj' => $user->doj,
                             'brand' => $user->brand,
                             'ba_status' => $user->ba_status,
-                            'pms_emp_id' => $user->empid,
+                            'pms_emp_id' => $user->emp_id,
                             'batch_no' => $Batch->batch_no,
                             'beat_type_id' => 1,
                         ];
@@ -435,7 +443,6 @@ class CrudeUserMappingsController extends Controller
                             'channel' => $user->channel,
                             'chain_name' => $user->chain_name,
                             'billing_code' => $user->billing_code,
-                            // 'employee_code' => $user->store_code,
                             'name' => $user->store_name,
                             'address' => $user->store_address,
                             'ba_name' => $user->ba_name,
@@ -447,10 +454,13 @@ class CrudeUserMappingsController extends Controller
                             'supervisor_name' => $user->supervisor_name,
                             'supervisor_id' => $Supervisor->id,
                             'store_type' => $user->store_type,
+                            'store_status' => $user->store_status,
                             'brand' => $user->brand,
-                            'ba_status' => $user->ba_status,
-                            'pms_emp_id' => $user->empid,
                             'batch_no' => $Batch->batch_no,
+                            'pms_emp_id' => $user->emp_id,
+                            'doj' => $user->doj,
+                            'ba_status' => $user->ba_status,
+
                             'excel_status' => false,
                             'beat_type_id' => 1,
                         ];
