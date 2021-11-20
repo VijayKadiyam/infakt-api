@@ -19,7 +19,7 @@ class BAReportExport implements WithMultipleSheets
     public function sheets(): array
     {
         $sheets = [];
-        $sheets[] = new DailyAttendanceSheet($date);
+        $sheets[] = new DailyAttendanceSheet($this->date);
 
         return $sheets;
     }

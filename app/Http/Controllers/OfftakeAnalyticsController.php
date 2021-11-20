@@ -141,7 +141,7 @@ class OfftakeAnalyticsController extends Controller
 	}
 
 	public function exports(Request $request) {
-		
+
 		$date = $request->date;
 		// return view('exports.daily_attendance_export', compact('userAttendances'));
 

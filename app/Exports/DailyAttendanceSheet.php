@@ -38,7 +38,7 @@ class DailyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, With
     {
         $company = Company::find(1);
 		$userAttendances = $company->user_attendances()
-			->where('date', '=', '2021-10-10')
+			->where('date', '=', $this->date)
 			->take(10)
 			->get();
 
@@ -50,6 +50,6 @@ class DailyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, With
      */
     public function title(): string
     {
-        return 'Attendance | 10-10-2021';
+        return 'Attendance | ' . $this->date;
     }
 }
