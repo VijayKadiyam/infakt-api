@@ -483,4 +483,40 @@ class CrudeUserMappingsController extends Controller
     {
         CrudeUserMapping::truncate();
     }
+
+    public function sku_generator()
+    {
+        $users = request()->company->users()->with('roles')
+        ->whereHas('roles',  function ($q) {
+          $q->where('name', '=', 'SSM');
+        })->get();
+        foreach ($users as $key => $user) {
+            $skus = Sku::all();
+            $i = 5000;
+            foreach ($skus as $key => $sku) {
+                $SkuStock = Stock::where('distributor_id', '=', $user->distributor_id)
+                    ->where('sku_id', '=', $sku->id)
+                    ->first();
+                if (!$SkuStock) {
+                    // Create SKUs Stock Based On the Distributor Data  
+                    $stock_data = [
+                        'sku_id' => $sku->id,
+                        'qty' => false,
+                        'price' => $sku->price,
+                        'invoice_no' => 'invoice' . $i,
+                        'total' => false,
+                        'distributor_id' => $user->distributor_id,
+                        'sku_type_id' => 1,
+                    ];
+                    $stock = new Stock($stock_data);
+                    $sku->stocks()->save($stock);
+                    $i++;
+                }
+            }
+        }
+        return response()->json([
+            // 'data'    =>  $Conflicts,
+            'success' =>  true
+        ]);
+    }
 }
