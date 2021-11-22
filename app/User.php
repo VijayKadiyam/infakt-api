@@ -31,7 +31,8 @@ class User extends Authenticatable
     'brand',
     'batch_no',
     'ba_status',
-    'pms_emp_id'
+    'pms_emp_id',
+    'store_status'
   ];
 
   /**
