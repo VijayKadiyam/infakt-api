@@ -37,7 +37,7 @@ class UserMappingImport implements ToModel, WithHeadingRow
                 'doj'       => (array_key_exists('DOJ', $row) && $row['DOJ'])  ? \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['DOJ'])->format('Y-m-d') : NULL,
 
                 // 'store_type'        => (array_key_exists('Store Type', $row) && $row['Store Type'])  ? $row['Store Type'] : NULL,
-                // 'store_status'       => (array_key_exists('Store Status', $row) && $row['Store Status'])  ? $row['Store Status'] : NULL,
+                'store_status'       => (array_key_exists('Store Status', $row) && $row['Store Status'])  ? $row['Store Status'] : NULL,
                 // 'user_login_id'       => (array_key_exists('User id', $row) && $row['User id'])  ? $row['User id'] : NULL,
                 // 'user_password'       => (array_key_exists('Pasword', $row) && $row['Pasword']) ? $row['Pasword'] : NULL,
                 // 'remark'       => (array_key_exists('Remarks', $row) && $row['Remarks']) ? $row['Remarks'] : NULL,
