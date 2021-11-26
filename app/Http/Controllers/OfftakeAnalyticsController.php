@@ -57,7 +57,7 @@ class OfftakeAnalyticsController extends Controller
 				->whereHas('roles',  function ($q) {
 					$q->where('name', '=', 'SUPERVISOR');
 				})->orderBy('name')
-			->take(1)
+			// ->take(1)
 			->get();
 
 		$productsOfftakes = [];
