@@ -119,7 +119,7 @@ class CrudePjpsController extends Controller
             }
 
             // fetch User using Employee Code
-            $Supervisor = User::where('employee_code', '=', $pjp->employee_code)->first();
+            $Supervisor = User::where('name', "=", $pjp->supervisor_name)->first();
             if ($Supervisor) {
                 // If Supervisor Exist Check Mapping
                 $pjpSupervisor = PjpSupervisor::where('user_id', '=', $Supervisor->id)->where('date', '=', $pjp->visit_date)
