@@ -5,7 +5,7 @@
         <th>Region</th>
         <th>City</th>
         <th>State</th>
-        <th>Employee Code</th>
+        <th>Store Code</th>
         <th>Store Name</th>
         <th>BA Name</th>
         <th>Supervisor Name</th>

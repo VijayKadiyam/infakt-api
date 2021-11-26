@@ -9,14 +9,17 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
 use App\Company;
+use Carbon\Carbon;
 
 class DailyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
 {
     public $date;
+    public $supervisorId;
 
-    public function __construct($date) 
+    public function __construct($date, $supervisorId) 
     {
         $this->date = $date;
+        $this->supervisorId = $supervisorId;
     }
 
     public function styles(Worksheet $sheet)
@@ -38,9 +41,14 @@ class DailyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, With
     {
         $company = Company::find(1);
 		$userAttendances = $company->user_attendances()
-			->where('date', '=', $this->date)
-			->take(10)
-			->get();
+			->where('date', '=', $this->date);
+        $userAttendances = $userAttendances->take(10);
+        $supervisorId = $this->supervisorId;
+        if($supervisorId != '')
+            $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
+                $q->where('supervisor_id', '=', $supervisorId);
+            });
+        $userAttendances = $userAttendances->get();
 
         return view('exports.daily_attendance_export', compact('userAttendances'));
     }
@@ -50,6 +58,6 @@ class DailyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, With
      */
     public function title(): string
     {
-        return 'Attendance | ' . $this->date;
+        return 'Attendance | ' . Carbon::parse($this->date)->format('d-M-Y');
     }
 }
