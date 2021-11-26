@@ -52,14 +52,13 @@ class OfftakeAnalyticsController extends Controller
 		$daysInMonth = 0;
 
 		$supervisors = 
-		
 			User::with('roles')
 				->where('active', '=', 1)
 				->whereHas('roles',  function ($q) {
 					$q->where('name', '=', 'SUPERVISOR');
-				})->orderBy('name')->get()
-		
-		;
+				})->orderBy('name')
+			// ->take(1)
+			->get();
 
 		$productsOfftakes = [];
 
@@ -67,7 +66,9 @@ class OfftakeAnalyticsController extends Controller
 
 			$singleUserData = [];
 
-			$users = User::where('supervisor_id', '=', $supervisor->id)->get();
+			$users = User::where('supervisor_id', '=', $supervisor->id)
+				->where('active', '=', 1)
+				->get();
 
 			foreach ($users as $user) {
 
@@ -141,10 +142,30 @@ class OfftakeAnalyticsController extends Controller
 	}
 
 	public function exports(Request $request) {
-		
+		ini_set('max_execution_time', 10000);
+
 		$date = $request->date;
+
+		// return Carbon::parse($date)->format('d-M-Y');
 		// return view('exports.daily_attendance_export', compact('userAttendances'));
 
-		return Excel::download(new BAReportExport($date), 'BA-Report.xlsx');
+		// return response()->json([
+		// 	'data'	=>	Excel::store(new BAReportExport($date), "/reports/$date/BA-Report-$date.xlsx", 'local'),
+		// ]);
+		// return Excel::download(new BAReportExport($date, 1757), 'BA-Report.xlsx');
+
+		Excel::download(new BAReportExport($date), "/reports/$date/BA-Report-$date.xlsx", 'local');
+
+		// $supervisors = User::with('roles')
+		// 	->whereHas('roles',  function ($q) {
+		// 	$q->where('name', '=', 'SUPERVISOR');
+		// 	})->orderBy('name')
+		// 	// ->take(1)
+		// 	->get();
+			
+		// foreach ($supervisors as $supervisor) {
+		// 	$name = $supervisor->name;
+		// 	Excel::store(new BAReportExport($date, $supervisor->id), "/reports/$date/$name-BAs-Report-$date.xlsx", 'local');
+		// }
 	}
 }

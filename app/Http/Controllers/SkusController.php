@@ -128,8 +128,9 @@ class SkusController extends Controller
           $totalQty += $stock->qty;
         }
         $receivedQty = 0;
-        $returnedQty = 0; 
+        $purchaseReturnedQty = 0;
         $consumedQty = 0;
+        $returnedQty = 0; 
 
         foreach ($orders as $order) {
           $todayDate = Carbon::now()->format('d-m-Y');
@@ -138,19 +139,23 @@ class SkusController extends Controller
             foreach ($order->order_details as $detail) {
               if($detail->sku_id == $sku->id && $order->order_type == 'Stock Received') 
                 $totalQty += $detail->qty;
-              if($detail->sku_id == $sku->id && $order->order_type == 'Stock Returned') 
-                $totalQty += $detail->qty;
+              if($detail->sku_id == $sku->id && $order->order_type == 'Purchase Returned') 
+                $totalQty -= $detail->qty;
               if($detail->sku_id == $sku->id && $order->order_type == 'Sales') 
                 $totalQty -= $detail->qty;
+              if($detail->sku_id == $sku->id && $order->order_type == 'Stock Returned') 
+                $totalQty += $detail->qty;
             }
           } else {
             foreach ($order->order_details as $detail) {
               if($detail->sku_id == $sku->id && $order->order_type == 'Stock Received') 
                 $receivedQty += $detail->qty;
-              if($detail->sku_id == $sku->id && $order->order_type == 'Stock Returned') 
-                $returnedQty += $detail->qty;
+              if($detail->sku_id == $sku->id && $order->order_type == 'Purchase Returned') 
+                $purchaseReturnedQty += $detail->qty;
               if($detail->sku_id == $sku->id && $order->order_type == 'Sales') 
                 $consumedQty += $detail->qty;
+              if($detail->sku_id == $sku->id && $order->order_type == 'Stock Returned') 
+                $returnedQty += $detail->qty;
             }
           }
         }
@@ -159,9 +164,10 @@ class SkusController extends Controller
 
         $sku['opening_stock'] = $totalQty;
         $sku['received_stock'] = $receivedQty;
-        $sku['returned_stock'] = $returnedQty;
+        $sku['purchase_returned_stock'] = $purchaseReturnedQty;
         $sku['sales_stock'] = $consumedQty;
-        $sku['closing_stock'] = ($totalQty + $receivedQty + $returnedQty - $consumedQty);
+        $sku['returned_stock'] = $returnedQty;
+        $sku['closing_stock'] = ($totalQty + $receivedQty - $purchaseReturnedQty - $consumedQty + $returnedQty);
       }
     }
     
