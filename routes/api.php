@@ -389,6 +389,7 @@ Route::post('upload_user_mapping', 'CrudeUserMappingsController@uploadUserMappin
 Route::get('process_user_mapping', 'CrudeUserMappingsController@processUserMapping');
 Route::get('process_simple_user', 'CrudeUserMappingsController@processSimpleUser');
 Route::get('truncate_user_mappings', 'CrudeUserMappingsController@truncate');
+Route::get('sku_generator', 'CrudeUserMappingsController@sku_generator');
 
 // PJP Visited Supervisor Expenses
 Route::get('pjp_visited_supervisor_expenses/masters', 'PjpVisitedSupervisorExpensesController@masters');

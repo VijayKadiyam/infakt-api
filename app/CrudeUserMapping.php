@@ -30,5 +30,6 @@ class CrudeUserMapping extends Model
         'user_login_id',
         'user_password',
         'remark',
+        'doj',
     ];
 }
