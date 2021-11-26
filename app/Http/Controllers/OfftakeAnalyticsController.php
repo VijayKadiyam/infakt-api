@@ -66,7 +66,9 @@ class OfftakeAnalyticsController extends Controller
 
 			$singleUserData = [];
 
-			$users = User::where('supervisor_id', '=', $supervisor->id)->get();
+			$users = User::where('supervisor_id', '=', $supervisor->id)
+				->where('active', '=', 1)
+				->get();
 
 			foreach ($users as $user) {
 
