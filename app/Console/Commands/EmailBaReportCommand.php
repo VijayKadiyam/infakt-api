@@ -48,6 +48,8 @@ class EmailBaReportCommand extends Command
 
         Mail::to('kvjkumr@gmail.com')->send(new BaReportEmail($todayDate));
 
+        $this->info('BA Report Emailed...');
+
         $supervisors = User::with('roles')
 			->where('active', '=', 1)
 			->whereHas('roles',  function ($q) {
@@ -59,6 +61,8 @@ class EmailBaReportCommand extends Command
 		foreach ($supervisors as $supervisor) {
 			$name = $supervisor->name;
 			Mail::to('kvjkumr@gmail.com')->send(new BaReportEmail($todayDate, $name));
+
+            $this->info("$name BAs Report Emailed...");
 		}
     }
 }
