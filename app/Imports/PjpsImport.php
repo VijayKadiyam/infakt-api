@@ -30,7 +30,7 @@ class PjpsImport implements ToModel, WithHeadingRow
                 'store_code'       =>  $row['Store Code'],
                 'market_working_details'       =>  $row['Market Working Detail'],
                 'joint_working_with'       =>  $row['Joint Working with whom'],
-                'employee_code'       =>  $row['Employee Code'],
+                'employee_code'       =>  $row['Supervisor Code'],
                 'supervisor_name'        =>  $row['Supervisor Name'],
                 'remarks'       =>  $row['Remarks'],
             ];
