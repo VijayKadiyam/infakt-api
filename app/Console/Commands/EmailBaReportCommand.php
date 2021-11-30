@@ -46,7 +46,12 @@ class EmailBaReportCommand extends Command
 
         $this->info('Email Report for Date: ' . $todayDate);
 
-        Mail::to('kvjkumr@gmail.com')->send(new BaReportEmail($todayDate));
+        Mail::to('deepika.k@mamaearth.in')
+            ->cc('ac.north@pousse.in')
+            ->cc('kirit.sayani@pousse.in')
+            ->cc('bharat.upreti@pousse.in')
+            ->cc('kvjkumr@gmail.com')
+            ->send(new BaReportEmail($todayDate));
 
         $this->info('BA Report Emailed...');
 
@@ -55,13 +60,16 @@ class EmailBaReportCommand extends Command
 			->whereHas('roles',  function ($q) {
 			$q->where('name', '=', 'SUPERVISOR');
 			})->orderBy('name')
-			->take(1)
+			// ->take(1)
 			->get();
 		
         $count = 1;
 		foreach ($supervisors as $supervisor) {
 			$name = $supervisor->name;
-			Mail::to('kvjkumr@gmail.com')->send(new BaReportEmail($todayDate, $name));
+			Mail::to($supervisor->email)
+                ->cc('bharat.upreti@pousse.in')
+                ->cc('kvjkumr@gmail.com')
+                ->send(new BaReportEmail($todayDate, $name));
 
             $this->info("$count. $name BAs Report Emailed...");
             $count++;

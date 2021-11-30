@@ -24,9 +24,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('email:ba_report')
-        //     ->everyFiveMinutes();
-            ->dailyAt('17:27');
+            //     ->everyFiveMinutes();
+        $schedule->command('generate:ba_report')->dailyAt('19:00');
+        $schedule->command('email:ba_report')->dailyAt('21:00');
     }
 
     /**
