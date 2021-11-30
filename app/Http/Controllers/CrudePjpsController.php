@@ -48,7 +48,7 @@ class CrudePjpsController extends Controller
         $crude_pjps = CrudePjp::all();
         $i = 0;
         foreach ($crude_pjps as $pjp) {
-            if($pjp->location){
+            if ($pjp->location) {
                 $location = $pjp->location;
             }
             //  Check Existing pjp
@@ -119,7 +119,10 @@ class CrudePjpsController extends Controller
             }
 
             // fetch User using Employee Code
-            $Supervisor = User::where('name', "=", $pjp->supervisor_name)->first();
+            $Supervisor = User::where('employee_code', "=", $pjp->employee_code)->first();
+
+            // fetch User using Supervisor Name
+            // $Supervisor = User::where('name', "=", $pjp->supervisor_name)->first();
             if ($Supervisor) {
                 // If Supervisor Exist Check Mapping
                 $pjpSupervisor = PjpSupervisor::where('user_id', '=', $Supervisor->id)->where('date', '=', $pjp->visit_date)
@@ -150,6 +153,7 @@ class CrudePjpsController extends Controller
                 $Supervisor['employee_code'] = $pjp->employee_code;
                 $Supervisor['password'] = bcrypt('123456');
                 $Supervisor['password_backup'] = bcrypt('123456');
+                $Supervisor['active'] = 1;
                 $Supervisor['email'] = str_replace(" ", "", $pjp->supervisor_name) . mt_rand(1, 9999) . '@supervisor';
                 $Supervisor = new User($Supervisor);
                 $Supervisor->save();
