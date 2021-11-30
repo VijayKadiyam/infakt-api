@@ -97,13 +97,16 @@ class CrudeUserMappingsController extends Controller
                     array_push($Conflicts, $user);
                 } else {
 
-                    // fetch Supervisor by Supervisor name
-                    $Supervisor = User::where('name', "=", $user->supervisor_name)
-                        ->first();
+                    // fetch Supervisor by Supervisor Code
+                    $Supervisor = User::where('employee_code', "=", $user->supervisor_code)->first();
+                    
+                    // // fetch Supervisor by Supervisor name
+                    // $Supervisor = User::where('name', "=", $user->supervisor_name)->first();
                     if (!$Supervisor) {
                         // Create Supervisor
                         $Supervisor_data = [
                             'name' => $user->supervisor_name,
+                            'employee_code' => $user->supervisor_code,
                             'active'          =>  1,
                             'password' => bcrypt('123456'),
                             'password_backup' => bcrypt('123456'),
@@ -254,6 +257,7 @@ class CrudeUserMappingsController extends Controller
                             // Create Distributor Of the User
                             $Distributor  = [
                                 'name' => $beat->name,
+                                'active'          =>  1,
                                 'password' => bcrypt('123456'),
                                 'password_backup' => bcrypt('123456'),
                                 'email' => str_replace(" ", "", $beat->name) . mt_rand(1, 9999) . '@distributor',
