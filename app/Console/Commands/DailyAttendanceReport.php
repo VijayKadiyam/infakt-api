@@ -39,6 +39,7 @@ class DailyAttendanceReport extends Command
      */
     public function handle()
     {
+        $this->line(' THIS LINE WORKS');
         Mail::to('kvjkumr@gmail.com')
             ->send(new DailyAttendanceEmail());
     }
