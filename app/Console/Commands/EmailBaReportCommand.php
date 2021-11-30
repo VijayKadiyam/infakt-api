@@ -41,10 +41,10 @@ class EmailBaReportCommand extends Command
      */
     public function handle()
     {
-        ini_set('max_execution_time', 10000);
+        ini_set('max_execution_time', 0);
         $todayDate = Carbon::now()->addDays(-1)->format('Y-m-d');
 
-        $this->info($todayDate);
+        $this->info('Email Report for Date: ' . $todayDate);
 
         Mail::to('kvjkumr@gmail.com')->send(new BaReportEmail($todayDate));
 
@@ -57,12 +57,14 @@ class EmailBaReportCommand extends Command
 			})->orderBy('name')
 			->take(1)
 			->get();
-			
+		
+        $count = 1;
 		foreach ($supervisors as $supervisor) {
 			$name = $supervisor->name;
 			Mail::to('kvjkumr@gmail.com')->send(new BaReportEmail($todayDate, $name));
 
-            $this->info("$name BAs Report Emailed...");
+            $this->info("$count. $name BAs Report Emailed...");
+            $count++;
 		}
     }
 }

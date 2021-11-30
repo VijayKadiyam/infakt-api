@@ -41,7 +41,7 @@ class GenerateBaReportCommand extends Command
      */
     public function handle()
     {
-        ini_set('max_execution_time', 10000);
+        ini_set('max_execution_time', 0);
 
         $date = Carbon::now()->addDays(-1)->format('Y-m-d');
         $this->info('Generate Report for Date: ' . $date);
@@ -57,12 +57,14 @@ class GenerateBaReportCommand extends Command
 			})->orderBy('name')
 			// ->take(1) 
 			->get();
-			
+		
+        $count = 1;
 		foreach ($supervisors as $supervisor) {
 			$name = $supervisor->name;
 			Excel::store(new BAReportExport($date, $supervisor->id), "/reports/$date/$name-BAs-Report-$date.xlsx", 'local');
 
-            $this->info("$name BAs Report Generated...");
+            $this->info("$count. $name BAs Report Generated...");
+            $count++;
 		}
     }
 }
