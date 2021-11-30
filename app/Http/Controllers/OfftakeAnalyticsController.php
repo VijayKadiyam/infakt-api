@@ -153,19 +153,21 @@ class OfftakeAnalyticsController extends Controller
 		// 	'data'	=>	Excel::store(new BAReportExport($date), "/reports/$date/BA-Report-$date.xlsx", 'local'),
 		// ]);
 		// return Excel::download(new BAReportExport($date, 1757), 'BA-Report.xlsx');
+		// return Excel::download(new BAReportExport($date), "BA-Report.xlsx");
+		Excel::store(new BAReportExport($date), "/reports/$date/BA-Report-$date.xlsx", "local");
 
-		Excel::download(new BAReportExport($date), "/reports/$date/BA-Report-$date.xlsx", 'local');
 
-		// $supervisors = User::with('roles')
-		// 	->whereHas('roles',  function ($q) {
-		// 	$q->where('name', '=', 'SUPERVISOR');
-		// 	})->orderBy('name')
-		// 	// ->take(1)
-		// 	->get();
+		$supervisors = User::with('roles')
+			->where('active', '=', 1)
+			->whereHas('roles',  function ($q) {
+			$q->where('name', '=', 'SUPERVISOR');
+			})->orderBy('name')
+			// ->take(1)
+			->get();
 			
-		// foreach ($supervisors as $supervisor) {
-		// 	$name = $supervisor->name;
-		// 	Excel::store(new BAReportExport($date, $supervisor->id), "/reports/$date/$name-BAs-Report-$date.xlsx", 'local');
-		// }
+		foreach ($supervisors as $supervisor) {
+			$name = $supervisor->name;
+			Excel::store(new BAReportExport($date, $supervisor->id), "/reports/$date/$name-BAs-Report-$date.xlsx", 'local');
+		}
 	}
 }

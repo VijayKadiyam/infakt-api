@@ -191,10 +191,13 @@ class UsersController extends Controller
         ->get();
     } else if ($request->role_id) {
       $role = Role::find($request->role_id);
-      $users = $request->company->users()
+      $users = $request->company->allUsers()
         ->whereHas('roles', function ($q) use ($role) {
           $q->where('name', '=', $role->name);
-        })->latest()->get();
+        });
+      if($request->status != 'all')
+        $users = $users->where('active', '=', $request->status);
+      $users = $users->latest()->get();
     } elseif ($request->batch_no) {
       $users = $request->company->users()
         ->where('batch_no', '=', $request->batch_no)

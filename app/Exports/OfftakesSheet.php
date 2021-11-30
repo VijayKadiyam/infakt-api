@@ -52,7 +52,7 @@ class OfftakesSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
 				$q->where('name', '=', 'SUPERVISOR');
 			})->orderBy('name');
 
-		$supervisors = $supervisors->take(1);
+		// $supervisors = $supervisors->take(1);
 	
 		$supervisorId = $this->supervisorId;
 		if($supervisorId != '')

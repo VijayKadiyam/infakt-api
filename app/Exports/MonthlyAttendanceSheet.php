@@ -55,7 +55,7 @@ class MonthlyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, Wi
 		if ($year)
 			$userAttendances = $userAttendances->whereYear('date', '=', $year);
 
-		$userAttendances = $userAttendances->take(10);
+		// $userAttendances = $userAttendances->take(10);
 
 		$supervisorId = $this->supervisorId;
 		if($supervisorId != '')
