@@ -196,7 +196,7 @@ class UsersController extends Controller
           $q->where('name', '=', $role->name);
         });
       if($request->status != 'all')
-        $users = $users->where('active', '=', $request->status);
+        $users = $users->where('active', '=', 1);
       $users = $users->latest()->get();
     } elseif ($request->batch_no) {
       $users = $request->company->users()
