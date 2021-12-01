@@ -135,8 +135,10 @@ class SkusController extends Controller
         foreach ($orders as $order) {
           $todayDate = Carbon::now()->format('d-m-Y');
           $orderDate = Carbon::parse($order->created_at)->format('d-m-Y');
-          if($orderDate != $todayDate) {
+          // if($orderDate != $todayDate) {
             foreach ($order->order_details as $detail) {
+              if($detail->sku_id == $sku->id && $order->order_type == 'Opening Stock') 
+                $totalQty += $detail->qty;
               if($detail->sku_id == $sku->id && $order->order_type == 'Stock Received') 
                 $totalQty += $detail->qty;
               if($detail->sku_id == $sku->id && $order->order_type == 'Purchase Returned') 
@@ -146,7 +148,7 @@ class SkusController extends Controller
               if($detail->sku_id == $sku->id && $order->order_type == 'Stock Returned') 
                 $totalQty += $detail->qty;
             }
-          } else {
+          // } else {
             foreach ($order->order_details as $detail) {
               if($detail->sku_id == $sku->id && $order->order_type == 'Stock Received') 
                 $receivedQty += $detail->qty;
@@ -157,7 +159,7 @@ class SkusController extends Controller
               if($detail->sku_id == $sku->id && $order->order_type == 'Stock Returned') 
                 $returnedQty += $detail->qty;
             }
-          }
+          // }
         }
         
         $sku['qty'] = ($totalQty + $receivedQty + $returnedQty - $consumedQty);
