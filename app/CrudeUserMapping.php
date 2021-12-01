@@ -22,6 +22,7 @@ class CrudeUserMapping extends Model
         'state',
         'rsm',
         'asm',
+        'supervisor_code',
         'supervisor_name',
         'store_type',
         'brand',
