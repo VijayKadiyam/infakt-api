@@ -67,7 +67,7 @@ class UsersController extends Controller
     $nationalManagersResponse = $nationalManagersController->index($request);
 
     $distributorsController = new UsersController();
-    $request->request->add(['role_id' => 10]);
+    $request->request->add(['role_id' => 10, 'status' =>  'all']);
     $distributorsResponse = $distributorsController->index($request);
 
     $regions = [
