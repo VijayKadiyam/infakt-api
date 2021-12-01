@@ -150,6 +150,8 @@ class SkusController extends Controller
             }
           } else {
             foreach ($order->order_details as $detail) {
+              if($detail->sku_id == $sku->id && $order->order_type == 'Opening Stock') 
+                $totalQty += $detail->qty;
               if($detail->sku_id == $sku->id && $order->order_type == 'Stock Received') 
                 $receivedQty += $detail->qty;
               if($detail->sku_id == $sku->id && $order->order_type == 'Purchase Returned') 
