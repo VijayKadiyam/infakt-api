@@ -166,7 +166,7 @@ class SkusController extends Controller
 
         $sku['opening_stock'] = $totalQty;
         $sku['received_stock'] = $receivedQty;
-        $sku['purchase_returned_stock'] = 1;
+        $sku['purchase_returned_stock'] = $purchaseReturnedQty;
         $sku['sales_stock'] = $consumedQty;
         $sku['returned_stock'] = $returnedQty;
         $sku['closing_stock'] = ($totalQty + $receivedQty - $purchaseReturnedQty - $consumedQty + $returnedQty);
