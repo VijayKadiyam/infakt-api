@@ -55,7 +55,7 @@ class LoginController extends Controller
           'token'   =>  $user->api_token,
           'success' =>  true,
           'currentAndroidVersionFromApi' =>  '1.0.20',
-          'currentSupVersionFromApi' =>  '1.0.3',
+          'currentSupVersionFromApi' =>  '1.0.4',
       ]);
     }
     else {

@@ -13,7 +13,8 @@
         <th>Login Status</th>
         <th>Login Time</th>
         <th>Logout Time</th>
-        <th>Selfie</th>
+        <th>Login Selfie</th>
+        <th>Logout Selfie</th>
         <th>Login Address</th>
         <th>Logout Address</th>
     </tr>
@@ -35,6 +36,11 @@
             <td>{{ $userAttendance->logout_time }}</td>
             <td>
                 <a target="_blank" href="{{ env('BASE_URL') }}{{ $userAttendance->selfie_path }}">
+                    Click to view Image
+                </a>
+            </td>
+            <td>
+                <a target="_blank" href="{{ env('BASE_URL') }}{{ $userAttendance->logout_selfie_path }}">
                     Click to view Image
                 </a>
             </td>
