@@ -50,7 +50,7 @@ class CrudePjpsController extends Controller
         foreach ($crude_pjps as $pjp) {
 
             if ($pjp->location) {
-                $location = $pjp->location.'#'.$pjp->visit_date;
+                $location = $pjp->location . '#' . $pjp->visit_date;
             }
 
             // return $location;
@@ -128,7 +128,9 @@ class CrudePjpsController extends Controller
             // $Supervisor = User::where('name', "=", $pjp->supervisor_name)->first();
             if ($Supervisor) {
                 // If Supervisor Exist Check Mapping
-                $pjpSupervisor = PjpSupervisor::where('user_id', '=', $Supervisor->id)->where('date', '=', $pjp->visit_date)
+                $pjpSupervisor = PjpSupervisor::where('user_id', '=', $Supervisor->id)
+                    ->where('date', '=', $pjp->visit_date)
+                    ->where('actual_pjp_id', '=', $pjp->id)
                     ->first();
 
                 $Supervisordata = [
