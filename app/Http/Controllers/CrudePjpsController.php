@@ -48,9 +48,12 @@ class CrudePjpsController extends Controller
         $crude_pjps = CrudePjp::all();
         $i = 0;
         foreach ($crude_pjps as $pjp) {
+
             if ($pjp->location) {
-                $location = $pjp->location;
+                $location = $pjp->location.'#'.$pjp->visit_date;
             }
+
+            // return $location;
             //  Check Existing pjp
             $pjp_data = Pjp::where('location', '=', $location)->where('region', '=', $pjp->region)
                 ->first();

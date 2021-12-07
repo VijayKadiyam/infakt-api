@@ -51,7 +51,14 @@ class PjpsController extends Controller
       $count = $pjps->count();
       $pjps = $pjps->paginate(request()->rowsPerPage)->toArray();
       $pjps = $pjps['data'];
-    } else {
+    } else if (request()->search == 'all') {
+      $pjps = request()->company->pjps();
+    } else if (request()->search) {
+      $pjps = request()->company->pjps()
+      ->where('location', 'LIKE', '%' . request()->search . '%')
+      ->get();
+        
+    }else {
       $pjps = request()->company->pjps;
       $count = $pjps->count();
     }
