@@ -47,7 +47,7 @@ class EmailBaReportCommand extends Command
         $this->info('Email Report for Date: ' . $todayDate);
 
         Mail::to('deepika.k@mamaearth.in')
-            ->cc(['ac.north@pousse.in', 'kirit.sayani@pousse.in', 'bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'rajlakshmi.s@mamaearth.in'])
+            ->cc(['ac.north@pousse.in', 'bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'rajlakshmi.s@mamaearth.in'])
             ->send(new BaReportEmail($todayDate));
 
         $this->info('BA Report Emailed...');
