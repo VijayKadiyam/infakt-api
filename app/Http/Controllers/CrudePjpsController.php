@@ -130,7 +130,7 @@ class CrudePjpsController extends Controller
                 // If Supervisor Exist Check Mapping
                 $pjpSupervisor = PjpSupervisor::where('user_id', '=', $Supervisor->id)
                     ->where('date', '=', $pjp->visit_date)
-                    ->where('actual_pjp_id', '=', $pjp->id)
+                    ->where('actual_pjp_id', '=', $pjp_data->id)
                     ->first();
 
                 $Supervisordata = [
