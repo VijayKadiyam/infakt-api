@@ -46,6 +46,8 @@ class GenerateBaReportCommand extends Command
         $date = Carbon::now()->addDays(-1)->format('Y-m-d');
         $this->info('Generate Report for Date: ' . $date);
 
+        // Excel::download(new BAReportExport($date), "BA-Report.xlsx");
+
         Excel::store(new BAReportExport($date), "/reports/$date/BA-Report-$date.xlsx", "local");
 
         $this->info('BA Report Generated...');

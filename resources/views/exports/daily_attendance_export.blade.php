@@ -32,15 +32,15 @@
             <td>{{ $userAttendance->user->supervisor_name }}</td>
             <td>{{ $userAttendance->date }}</td>
             <td>{{ $userAttendance->session_type }}</td>
-            <td>{{ $userAttendance->login_time }}</td>
-            <td>{{ $userAttendance->logout_time }}</td>
+            <td>{{ \Carbon\Carbon::parse($userAttendance->login_time)->format('H:i') }}</td>
+            <td>{{ $userAttendance->logout_time ? \Carbon\Carbon::parse($userAttendance->logout_time)->format('H:i') : '10:30' }}</td>
             <td>
-                <a target="_blank" href="{{ env('BASE_URL') }}{{ $userAttendance->selfie_path }}">
+                <a target="_blank" href="{{ env('BASE_URL') }}storage/{{ $userAttendance->selfie_path }}">
                     Click to view Image
                 </a>
             </td>
             <td>
-                <a target="_blank" href="{{ env('BASE_URL') }}{{ $userAttendance->logout_selfie_path }}">
+                <a target="_blank" href="{{ env('BASE_URL') }}storage/{{ $userAttendance->logout_selfie_path }}">
                     Click to view Image
                 </a>
             </td>
