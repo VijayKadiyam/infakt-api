@@ -327,7 +327,7 @@ class AnalyticsController extends Controller
     }
     // Total achieved in last month
     $targetLast = Target::where('user_id', '=', $request->userId)
-    ->where('month', $request->month - 2)
+    ->where('month', $request->month - 1)
     ->first();
     if(isset($targetLast))
       $achievedLast = $targetLast->achieved;
@@ -335,9 +335,14 @@ class AnalyticsController extends Controller
     //   $achievedLast += $order->total;
     // }
     // Total achieved in last 2 month
-    foreach ($ordersOfLast2Month as $order) {
-      $achievedLast2 += $order->total;
-    }
+    $targetLast2 = Target::where('user_id', '=', $request->userId)
+    ->where('month', $request->month - 2)
+    ->first();
+    if(isset($targetLast2))
+      $achievedLast2 = $targetLast2->achieved;
+    // foreach ($ordersOfLast2Month as $order) {
+    //   $achievedLast2 += $order->total;
+    // }
 
     $data = [
       'last_month'    =>  $achievedLast,
