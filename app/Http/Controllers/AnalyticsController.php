@@ -326,9 +326,13 @@ class AnalyticsController extends Controller
       $achieved += $order->total;
     }
     // Total achieved in last month
-    foreach ($ordersOfLastMonth as $order) {
-      $achievedLast += $order->total;
-    }
+    $targetLast = Target::where('user_id', '=', $request->userId)
+    ->where('month', $request->month - 2)
+    ->get();
+    $achievedLast = $targetLast->achieved;
+    // foreach ($ordersOfLastMonth as $order) {
+    //   $achievedLast += $order->total;
+    // }
     // Total achieved in last 2 month
     foreach ($ordersOfLast2Month as $order) {
       $achievedLast2 += $order->total;
