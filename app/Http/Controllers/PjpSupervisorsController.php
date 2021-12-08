@@ -53,6 +53,12 @@ class PjpSupervisorsController extends Controller
       $count = $pjp_supervisors->count();
     }
 
+    foreach($pjp_supervisors as $key => $pjp){
+      $explodelocation = explode("#", $pjp_supervisors[$key]['pjp']['location']);
+      $pjp_supervisors[$key]['pjp']['location'] = $explodelocation[0];
+
+    }
+
     return response()->json([
       'data'     =>  $pjp_supervisors,
       'count'    =>   $count
