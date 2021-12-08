@@ -502,7 +502,7 @@ class OrdersController extends Controller
       $Oftake_users = [];
       foreach ($supervisors as $supervisor) {
 
-        $users = User::where('supervisor_id', '=', $supervisor->id)->get();
+        $users = User::where('supervisor_id', '=', $supervisor->id)->with('roles')->get();
         $offtake_count = 0;
         foreach ($users as $user) {
 

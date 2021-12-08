@@ -125,6 +125,8 @@ class UserAttendancesController extends Controller
   public function user_attendance(Request $request)
   {
     $User_Attendances = [];
+    $totalWorkingHrs = 0;
+
     if ($request->userId) {
       $userAttendances = request()->company->user_attendances();
       $userAttendances = $userAttendances->where('user_id', '=', $request->userId);
@@ -135,7 +137,30 @@ class UserAttendancesController extends Controller
         $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
       }
       $userAttendances = $userAttendances->get();
-      $User_Attendances = $userAttendances;
+      // return $userAttendances;
+      if (count($userAttendances) != 0) {
+        foreach ($userAttendances as $attendance) {
+          $startTime = 0;
+          $finishTime = 0;
+          $finishTimeIn24Hrs = 0;
+          $totalDuration = 0;
+          if ($attendance->logout_time == null) {
+            $attendance['logout_time'] = '10:30:00';
+            // $attendance['logout_time'] = '22:30:00';
+            $finishTime = $attendance['logout_time'];
+          }
+          $startTime = Carbon::parse($attendance['login_time']);
+          $logOutTime = Carbon::parse($attendance['logout_time']);
+          $finishTimeIn24Hrs = $logOutTime->modify('+12 hours')->format('H:i:s');
+          $finishTime = Carbon::parse($finishTimeIn24Hrs);
+
+
+          $totalDuration = round($finishTime->diffInSeconds($startTime) / (60 * 60));
+          $totalWorkingHrs = $totalDuration;
+          $attendance['working_time'] = $totalWorkingHrs;
+          $User_Attendances[] = $attendance;
+        }
+      }
     } else if ($request->supervisorId) {
       $supervisorId = $request->supervisorId;
       $userAttendances = request()->company->user_attendances();
@@ -178,12 +203,33 @@ class UserAttendancesController extends Controller
           }
           $userAttendances = $userAttendances->get();
           if (count($userAttendances) != 0) {
-            foreach ($userAttendances as $attendance)
+            foreach ($userAttendances as $attendance) {
+              $startTime = 0;
+              $finishTime = 0;
+              $finishTimeIn24Hrs = 0;
+              $totalDuration = 0;
+              if ($attendance->logout_time == null) {
+                $attendance['logout_time'] = '10:30:00';
+                // $attendance['logout_time'] = '22:30:00';
+                $finishTime = $attendance['logout_time'];
+              }
+              $startTime = Carbon::parse($attendance['login_time']);
+              $logOutTime = Carbon::parse($attendance['logout_time']);
+              $finishTimeIn24Hrs = $logOutTime->modify('+12 hours')->format('H:i:s');
+              $finishTime = Carbon::parse($finishTimeIn24Hrs);
+
+
+              $totalDuration = round($finishTime->diffInSeconds($startTime) / (60 * 60));
+              $totalWorkingHrs = $totalDuration;
+              $attendance['working_time'] = $totalWorkingHrs;
               $User_Attendances[] = $attendance;
+            }
           }
         }
       }
     }
+
+
 
     return response()->json([
       'data'     =>  $User_Attendances,
