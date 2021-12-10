@@ -408,3 +408,10 @@ Route::resource('report_lists', 'ReportListsController');
 // Customers
 Route::get('customers/masters', 'CustomersController@masters');
 Route::resource('customers', 'CustomersController');
+
+
+// Crude Focused Target
+Route::get('crude_focused_targets', 'CrudeFocusedTargetsController@index');
+Route::post('upload_focused_target', 'CrudeFocusedTargetsController@uploadFocusedTarget');
+Route::get('process_focused_target', 'CrudeFocusedTargetsController@processFocusedTarget');
+Route::get('truncate_focused_targets', 'CrudeFocusedTargetsController@truncate');
