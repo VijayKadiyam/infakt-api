@@ -344,6 +344,11 @@ class Company extends Model
     return $this->hasMany(Target::class)
       ->with('user');
   }
+  public function focused_targets()
+  {
+    return $this->hasMany(FocusedTarget::class)
+      ->with('user');
+  }
 
   public function user_attendances()
   {

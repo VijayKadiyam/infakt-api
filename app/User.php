@@ -402,6 +402,11 @@ class User extends Authenticatable
     return $this->hasMany(Target::class)
       ->with('user');
   }
+  public function focused_targets()
+  {
+    return $this->hasMany(FocusedTarget::class)
+      ->with('user');
+  }
 
   public function rms()
   {
