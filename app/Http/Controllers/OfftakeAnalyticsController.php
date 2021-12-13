@@ -37,7 +37,7 @@ class OfftakeAnalyticsController extends Controller
 
     return response()->json([
       'months'  =>  $months,
-      'years'   =>  $years
+      'years'   =>  $years,
     ], 200);
   }
 
@@ -75,6 +75,7 @@ class OfftakeAnalyticsController extends Controller
 				$singleUserData['user'] = $user;
 
 				$ors = request()->company->orders_list()
+					->where('order_type', '=', 'Sales')
 					->where('user_id', '=', $user->id)
 					->where('is_active', '=', 1)
 					->with('order_details')

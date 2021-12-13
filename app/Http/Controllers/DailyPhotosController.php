@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\DailyPhoto;
+use Illuminate\Support\Facades\Storage;
+use App\User;
 
 class DailyPhotosController extends Controller
 {
@@ -12,22 +14,51 @@ class DailyPhotosController extends Controller
       $this->middleware(['auth:api', 'company']);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-      $count = 0;
-      if(request()->page && request()->rowsPerPage) {
-        $daily_photos = request()->company->daily_photos();
-        $count = $daily_photos->count();
-        $daily_photos = $daily_photos->paginate(request()->rowsPerPage)->toArray();
-        $daily_photos = $daily_photos['data'];
-      } else {
-        $daily_photos = request()->company->daily_photos; 
-        $count = $daily_photos->count();
+      $daily_photos = [];
+
+      $supervisors = User::with('roles')
+        ->whereHas('roles',  function ($q) {
+          $q->where('name', '=', 'SUPERVISOR');
+        })->orderBy('name')->get();
+
+      foreach ($supervisors as $supervisor) {
+
+        $users = User::where('supervisor_id', '=', $supervisor->id)->get();
+
+        foreach ($users as $user) {
+
+          $dailyPhotos = request()->company->daily_photos()->where('user_id', '=', $user->id);
+
+          if ($request->date && $request->month == null && $request->year == null && $request->userId == null) {
+            $dailyPhotos = $dailyPhotos->where('date', '=', $request->date);
+          }
+          if ($request->date && $request->month == null && $request->year == null) {
+            $dailyPhotos = $dailyPhotos->where('date', '=', $request->date);
+          }
+          if ($request->month) {
+            $dailyPhotos = $dailyPhotos->whereMonth('date', '=', $request->month);
+          }
+          if ($request->year) {
+            $dailyPhotos = $dailyPhotos->whereYear('date', '=', $request->year);
+          }
+          $dailyPhotos = $dailyPhotos->get();
+          if (count($dailyPhotos) != 0) {
+            foreach ($dailyPhotos as $dailyPhoto) {
+              $daily_photos[] = $dailyPhoto;
+            }
+          }
+        }
       }
+
+      // $daily_photos = request()->company->daily_photos; 
+      $count = sizeof($daily_photos);
   
       return response()->json([
         'data'     =>  $daily_photos,
-        'count'    =>   $count
+        'count'    =>   $count,
+        'success' =>  true,
       ], 200);
     }
   
@@ -39,12 +70,24 @@ class DailyPhotosController extends Controller
     public function store(Request $request)
     {
       $request->validate([
-        'description'    =>  'required'
+        'description'    =>  'required',
+        'imagepath'       =>  'required',
       ]);
   
       $dailyPhoto = new DailyPhoto($request->all());
       $request->company->daily_photos()->save($dailyPhoto);
-  
+
+      if ($request->hasFile('imagepath')) {
+        $file = $request->file('imagepath');
+        $name = $request->filename . time() ?? 'photo.jpg' . time();
+        // $name = $name . $file->getClientOriginalExtension();;
+        $imagePath = 'daily_photos/' . $name;
+        Storage::disk('local')->put($imagePath, file_get_contents($file), 'public');
+
+        $dailyPhoto->image_path = $imagePath;
+        $dailyPhoto->update();
+      }
+    
       return response()->json([
         'data'    =>  $dailyPhoto
       ], 201); 

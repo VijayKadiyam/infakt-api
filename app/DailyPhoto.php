@@ -13,6 +13,10 @@ class DailyPhoto extends Model
                 'image_path3',
                 'image_path4',
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
     
     public function users()
     {

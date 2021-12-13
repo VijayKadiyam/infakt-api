@@ -325,6 +325,10 @@ class Company extends Model
       ->with('reference_plan', 'user');
   }
 
+  public function orders() {
+    return $this->hasMany(Order::class);
+  }
+
   public function orders_list()
   {
     return $this->hasMany(Order::class)
@@ -391,7 +395,8 @@ class Company extends Model
 
   public function daily_photos()
   {
-    return $this->hasMany(DailyPhoto::class);
+    return $this->hasMany(DailyPhoto::class)
+      ->with('user');
   }
 
   public function courses()
