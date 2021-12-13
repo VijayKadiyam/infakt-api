@@ -294,6 +294,8 @@ Route::resource('inquiries/{inquiry}/inquiry_remarks', 'InquiryRemarksController
 Route::resource('inquiries/{inquiry}/inquiry_followups', 'InquiryFollowupsController');
 
 Route::resource('resumes', 'ResumesController');
+Route::post('delete_notice/{id}', 'NoticesController@destroy');
+
 Route::resource('notices', 'NoticesController');
 
 Route::get('orders/generate_invoice', 'OrdersController@generateInvoice');

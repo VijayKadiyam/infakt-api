@@ -77,4 +77,13 @@ class NoticesController extends Controller
       'data'  =>  $notice
     ], 200);
   }
+
+  public function destroy(Request $request)
+  {
+    $Notice = Notice::find($request->id);
+          $Notice->delete();
+      return response()->json([
+        'data'  =>  'Notice Deleted Succesfully',
+      ]);
+  }
 }
