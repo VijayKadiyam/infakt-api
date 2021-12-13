@@ -14,18 +14,39 @@ class PjpSupervisorsController extends Controller
 
   public function masters(Request $request)
   {
-    $request->request->add(['role_id' => '4']);
-    $usersController = new UsersController();
-    $usersResponse = $usersController->index($request);
+    if ($request->is_simple == true) {
+      $months = [
+        ['text'  =>  'JANUARY', 'value' =>  1],
+        ['text'  =>  'FEBRUARY', 'value' =>  2],
+        ['text'  =>  'MARCH', 'value' =>  3],
+        ['text'  =>  'APRIL', 'value' =>  4],
+        ['text'  =>  'MAY', 'value' =>  5],
+        ['text'  =>  'JUNE', 'value' =>  6],
+        ['text'  =>  'JULY', 'value' =>  7],
+        ['text'  =>  'AUGUST', 'value' =>  8],
+        ['text'  =>  'SEPTEMBER', 'value' =>  9],
+        ['text'  =>  'OCTOBER', 'value' =>  10],
+        ['text'  =>  'NOVEMBER', 'value' =>  11],
+        ['text'  =>  'DECEMBER', 'value' =>  12],
+      ];
 
-    $pjpController = new PjpsController();
-    $pjpResponse = $pjpController->index($request);
+      $years = ['2020', '2021'];
+      return response()->json([
+        'months'  =>  $months,
+        'years'   =>  $years
+      ], 200);
+    } else {
+      $request->request->add(['role_id' => '4']);
+      $usersController = new UsersController();
+      $usersResponse = $usersController->index($request);
 
-
-    return response()->json([
-      'users'           =>  $usersResponse->getData()->data,
-      'pjps' =>  $pjpResponse->getData()->data,
-    ], 200);
+      $pjpController = new PjpsController();
+      $pjpResponse = $pjpController->index($request);
+      return response()->json([
+        'users'           =>  $usersResponse->getData()->data,
+        'pjps' =>  $pjpResponse->getData()->data,
+      ], 200);
+    }
   }
   /*
          * To get all pjp_supervisors
@@ -35,6 +56,7 @@ class PjpSupervisorsController extends Controller
   public function index(Request $request)
   {
     $count = 0;
+
     if (request()->page && request()->rowsPerPage) {
       $pjp_supervisors = request()->company->pjp_supervisors();
       $count = $pjp_supervisors->count();
@@ -44,19 +66,26 @@ class PjpSupervisorsController extends Controller
       $pjp_supervisors = request()->company->pjp_supervisors;
     } else if (request()->search) {
       $pjp_supervisors = request()->company->pjp_supervisors()
-      ->whereHas('user',  function ($q) {
-        $q->where('name', 'LIKE', '%' . request()->search . '%');
-      })->get();
-        
+        ->whereHas('user',  function ($q) {
+          $q->where('name', 'LIKE', '%' . request()->search . '%');
+        })->get();
     } else {
       $pjp_supervisors = request()->company->pjp_supervisors;
       $count = $pjp_supervisors->count();
     }
 
-    foreach($pjp_supervisors as $key => $pjp){
+    $month = $request->month;
+    $year = $request->year;
+    if ($month != null || $year != null) {
+      $pjp_supervisors = request()->company->pjp_supervisors()
+        ->whereMonth('date', '=', $month)
+        ->whereYear('date', '=', $year)
+        ->get();
+    }
+
+    foreach ($pjp_supervisors as $key => $pjp) {
       $explodelocation = explode("#", $pjp_supervisors[$key]['pjp']['location']);
       $pjp_supervisors[$key]['pjp']['location'] = $explodelocation[0];
-
     }
 
     return response()->json([
@@ -112,5 +141,14 @@ class PjpSupervisorsController extends Controller
     return response()->json([
       'data'  =>  $pjp_supervisor
     ], 200);
+  }
+
+  public function destroy(Request $request)
+  {
+    $PjpSupervisor = PjpSupervisor::find($request->id);
+    $PjpSupervisor->delete();
+    return response()->json([
+      'data'  =>  'Pjp Supervisor Deleted Succesfully',
+    ]);
   }
 }
