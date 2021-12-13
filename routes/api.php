@@ -374,6 +374,9 @@ Route::resource('visitors', 'VisitorsController');
 Route::resource('pjps', 'PjpsController');
 Route::resource('pjps/{pjp}/pjp_markets', 'PjpMarketsController');
 Route::resource('pjp_markets', 'PjpMarketsController');
+
+Route::post('delete_pjp_supervisor/{id}', 'PjpSupervisorsController@destroy');
+
 Route::get('pjp_supervisors/masters', 'PjpSupervisorsController@masters');
 Route::resource('pjp_supervisors', 'PjpSupervisorsController');
 Route::get('pjp_visited_supervisors/masters', 'PjpVisitedSupervisorsController@masters');
