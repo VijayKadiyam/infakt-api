@@ -21,7 +21,9 @@ class DailyPhotosController extends Controller
       $supervisors = User::with('roles')
         ->whereHas('roles',  function ($q) {
           $q->where('name', '=', 'SUPERVISOR');
-        })->orderBy('name')->get();
+        })->orderBy('name')
+      // ->take(1)
+      ->get();
 
       foreach ($supervisors as $supervisor) {
 
