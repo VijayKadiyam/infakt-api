@@ -426,3 +426,7 @@ Route::get('truncate_focused_targets', 'CrudeFocusedTargetsController@truncate')
 // Customer Data Entry
 Route::get('customer_data_entries/masters', 'CustomerDataEntriesController@masters');
 Route::resource('customer_data_entries', 'CustomerDataEntriesController');
+
+// Competitor Data
+Route::get('competitor_datas/masters', 'CompetitorDatasController@masters');
+Route::resource('competitor_datas', 'CompetitorDatasController');

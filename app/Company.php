@@ -485,6 +485,10 @@ class Company extends Model
   }
   public function customer_data_entries()
   {
-    return $this->hasMany(CustomerDataEntry::class)->with('user','retailer');
+    return $this->hasMany(CustomerDataEntry::class)->with('user', 'retailer');
+  }
+  public function competitor_datas()
+  {
+    return $this->hasMany(CompetitorData::class)->with('user');
   }
 }
