@@ -23,28 +23,36 @@ class UserReferencePlansController extends Controller
     $referencePlanResponse = $referencePlanController->index($request);
 
     $days = [
-      [ 'id'    =>  0,
+      [
+        'id'    =>  0,
         'value' => 'ALL'
       ],
-      [ 'id'    =>  1,
+      [
+        'id'    =>  1,
         'value' => 'MONDAY'
-      ], 
-      [ 'id'    =>  2,
+      ],
+      [
+        'id'    =>  2,
         'value' => 'TUESDAY'
-      ], 
-      [ 'id'    =>  3,
+      ],
+      [
+        'id'    =>  3,
         'value' => 'WEDNESDAY'
       ],
-      [ 'id'    =>  4,
+      [
+        'id'    =>  4,
         'value' => 'THURSDAY'
-      ], 
-      [ 'id'    =>  5,
+      ],
+      [
+        'id'    =>  5,
         'value' => 'FRIDAY'
-      ], 
-      [ 'id'    =>  6,
+      ],
+      [
+        'id'    =>  6,
         'value' => 'SATURDAY'
       ],
-      [ 'id'    =>  7,
+      [
+        'id'    =>  7,
         'value' => 'SUNDAY'
       ]
     ];
@@ -69,25 +77,23 @@ class UserReferencePlansController extends Controller
     // ], 200);
 
     $count = 0;
-    if(request()->page && request()->rowsPerPage) {
+    if (request()->page && request()->rowsPerPage) {
       $user_reference_plans = request()->company->user_reference_plans()->orderBy('user_id');
       $count = $user_reference_plans->count();
       $user_reference_plans = $user_reference_plans->paginate(request()->rowsPerPage)->toArray();
       $user_reference_plans = $user_reference_plans['data'];
-    } 
-    else if(request()->search) {
+    } else if (request()->search) {
       $sr = request()->search;
       $user_reference_plans = request()->company->user_reference_plans()
-        ->whereHas('user',  function ($q) use($sr) {
+        ->whereHas('user',  function ($q) use ($sr) {
           $q->where('name', 'LIKE', '%' . $sr . '%');
           $q->orWhere('email', 'LIKE', '%' . $sr . '%');
           $q->orWhere('phone', 'LIKE', '%' . $sr . '%');
           $q->orWhere('employee_code', 'LIKE', '%' . $sr . '%');
         })
         ->orderBy('user_id')->get();
-    }
-    else {
-      $user_reference_plans = request()->company->user_reference_plans()->orderBy('user_id')->get(); 
+    } else {
+      $user_reference_plans = request()->company->user_reference_plans()->orderBy('user_id')->get();
       $count = $user_reference_plans->count();
     }
 
@@ -111,24 +117,32 @@ class UserReferencePlansController extends Controller
 
     return response()->json([
       'data'    =>  $userReferencePlan
-    ], 201); 
+    ], 201);
   }
 
   public function show(UserReferencePlan $userReferencePlan)
   {
     return response()->json([
       'data'   =>  $userReferencePlan
-    ], 200);   
+    ], 200);
   }
 
   public function update(Request $request, UserReferencePlan $userReferencePlan)
   {
 
     $userReferencePlan->update($request->all());
-      
+
     return response()->json([
       'data'  =>  $userReferencePlan
     ], 200);
   }
 
+  public function destroy(Request $request)
+  {
+    $UserReferencePlan = UserReferencePlan::find($request->id);
+    $UserReferencePlan->delete();
+    return response()->json([
+      'data'  =>  'User Reference Plan Deleted Succesfully',
+    ]);
+  }
 }
