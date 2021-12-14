@@ -420,3 +420,7 @@ Route::get('crude_focused_targets', 'CrudeFocusedTargetsController@index');
 Route::post('upload_focused_target', 'CrudeFocusedTargetsController@uploadFocusedTarget');
 Route::get('process_focused_target', 'CrudeFocusedTargetsController@processFocusedTarget');
 Route::get('truncate_focused_targets', 'CrudeFocusedTargetsController@truncate');
+
+// Customer Data Entry
+Route::get('customer_data_entries/masters', 'CustomerDataEntriesController@masters');
+Route::resource('customer_data_entries', 'CustomerDataEntriesController');
