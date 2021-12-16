@@ -175,15 +175,15 @@ class SkusController extends Controller
       }
     }
 
-    for($i = 0; $i < sizeof($skus); $i++) {
-      for($j = $i; $j < sizeof($skus); $j++) {
-        if($skus[$i]['opening_stock'] < $skus[$j]['opening_stock']) {
-          $temp = $skus[$i];
-          $skus[$i] = $skus[$j];
-          $skus[$j] = $skus[$i];
-        }
-      }
-    }
+    // for($i = 0; $i < sizeof($skus); $i++) {
+    //   for($j = $i; $j < sizeof($skus); $j++) {
+    //     if($skus[$i]['opening_stock'] < $skus[$j]['opening_stock']) {
+    //       $temp = $skus[$i];
+    //       $skus[$i] = $skus[$j];
+    //       $skus[$j] = $skus[$i];
+    //     }
+    //   }
+    // }
     
 
     return response()->json([
