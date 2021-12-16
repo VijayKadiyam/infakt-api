@@ -21,13 +21,13 @@ class Company extends Model
     return $this->belongsToMany(User::class)
       ->where('active', '=', 1)
       ->with('roles', 'companies', 'company_designation', 'company_state', 'company_state_branch', 'supervisors', 'user_attendances', 'user_appointment_letters', 'user_educations', 'user_work_experiences', 'rms',  'so', 'distributors');
-    }
+  }
 
-    public function allUsers()
-    {
+  public function allUsers()
+  {
     return $this->belongsToMany(User::class)
       ->with('roles', 'companies', 'company_designation', 'company_state', 'company_state_branch', 'supervisors', 'user_attendances', 'user_appointment_letters', 'user_educations', 'user_work_experiences', 'rms',  'so', 'distributors');
-    }
+  }
 
   /*
    * A company has many states
@@ -325,7 +325,8 @@ class Company extends Model
       ->with('reference_plan', 'user');
   }
 
-  public function orders() {
+  public function orders()
+  {
     return $this->hasMany(Order::class);
   }
 
@@ -482,5 +483,12 @@ class Company extends Model
   {
     return $this->hasMany(Customer::class)->with('user');
   }
-
+  public function customer_data_entries()
+  {
+    return $this->hasMany(CustomerDataEntry::class)->with('user', 'retailer');
+  }
+  public function competitor_datas()
+  {
+    return $this->hasMany(CompetitorData::class)->with('user');
+  }
 }

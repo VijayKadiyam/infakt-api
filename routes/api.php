@@ -113,12 +113,14 @@ Route::get('sales/single-employee-sales-email', 'SalesController@singleEmployeeS
 // Route::resource('stocks/{stock}/sales', 'SalesController');
 
 Route::resource('reference_plans', 'ReferencePlansController');
+
 Route::post('reference_plans/beats_mapping', 'ReferencePlansController@Beats_Mapping');
 Route::post('users/beats_mapping', 'UsersController@Beats_Mapping');
 
 Route::get('/retailers/masters', 'RetailersController@masters');
 Route::get('/retailers', 'RetailersController@list_of_retailer');
 Route::resource('reference_plans/{reference_plan}/retailers', 'RetailersController');
+Route::post('delete_map_beat/{id}', 'UserReferencePlansController@destroy');
 Route::get('user_reference_plans/masters', 'UserReferencePlansController@masters');
 Route::resource('user_reference_plans', 'UserReferencePlansController');
 Route::get('un_approved_retailers', 'RetailersController@unApprovedRetailers');
@@ -294,6 +296,8 @@ Route::resource('inquiries/{inquiry}/inquiry_remarks', 'InquiryRemarksController
 Route::resource('inquiries/{inquiry}/inquiry_followups', 'InquiryFollowupsController');
 
 Route::resource('resumes', 'ResumesController');
+Route::post('delete_notice/{id}', 'NoticesController@destroy');
+
 Route::resource('notices', 'NoticesController');
 
 Route::get('orders/generate_invoice', 'OrdersController@generateInvoice');
@@ -372,6 +376,9 @@ Route::resource('visitors', 'VisitorsController');
 Route::resource('pjps', 'PjpsController');
 Route::resource('pjps/{pjp}/pjp_markets', 'PjpMarketsController');
 Route::resource('pjp_markets', 'PjpMarketsController');
+
+Route::post('delete_pjp_supervisor/{id}', 'PjpSupervisorsController@destroy');
+
 Route::get('pjp_supervisors/masters', 'PjpSupervisorsController@masters');
 Route::resource('pjp_supervisors', 'PjpSupervisorsController');
 Route::get('pjp_visited_supervisors/masters', 'PjpVisitedSupervisorsController@masters');
@@ -415,3 +422,11 @@ Route::get('crude_focused_targets', 'CrudeFocusedTargetsController@index');
 Route::post('upload_focused_target', 'CrudeFocusedTargetsController@uploadFocusedTarget');
 Route::get('process_focused_target', 'CrudeFocusedTargetsController@processFocusedTarget');
 Route::get('truncate_focused_targets', 'CrudeFocusedTargetsController@truncate');
+
+// Customer Data Entry
+Route::get('customer_data_entries/masters', 'CustomerDataEntriesController@masters');
+Route::resource('customer_data_entries', 'CustomerDataEntriesController');
+
+// Competitor Data
+Route::get('competitor_datas/masters', 'CompetitorDatasController@masters');
+Route::resource('competitor_datas', 'CompetitorDatasController');
