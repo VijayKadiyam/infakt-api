@@ -16,6 +16,8 @@ class DailyPhotosController extends Controller
 
     public function index(Request $request)
     {
+      $daily_photos = [];
+      
       if ($request->userId) {
         $dailyPhotos = request()->company->daily_photos()->where('user_id', '=', $request->userId);
 
@@ -39,8 +41,6 @@ class DailyPhotosController extends Controller
         }
       }
       else {
-        $daily_photos = [];
-
         $supervisors = User::with('roles')
           ->where('active', '=', 1)
           ->whereHas('roles',  function ($q) {
