@@ -64,7 +64,7 @@ class EmailBaReportCommand extends Command
 		foreach ($supervisors as $supervisor) {
 			$name = $supervisor->name;
 			Mail::to($supervisor->email)
-                ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'rajlakshmi.s@mamaearth.in'])
+                ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'anirban.choudhury@pousse.in'])
                 ->send(new BaReportEmail($todayDate, $name));
 
             $this->info("$count. $name BAs Report Emailed...");
