@@ -207,7 +207,7 @@ class OrdersController extends Controller
         $orders = $orders->whereYear('created_at', '=', $request->year);
       }
       if ($request->orderType) {
-        $orders = $orders->whereYear('order_type', '=', $request->orderType);
+        $orders = $orders->where('order_type', '=', $request->orderType);
       }
 
       $orders = $orders->get();
