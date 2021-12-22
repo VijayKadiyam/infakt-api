@@ -77,6 +77,8 @@ class ReferencePlansController extends Controller
             $retailer['l3m']  = $rfmtd;;
             $retailer['is_done'] = 'N';
           }
+          if($retailer->imagepath == null)
+            $retailer->imagepath = '';
         }
 
         $user_reference_plan->reference_plan['total_outlets'] = $totalOutlets;
