@@ -64,7 +64,8 @@ class CustomerDataEntriesController extends Controller
         $count = $customer_data_entries->count();
         return response()->json([
             'data'     =>  $customer_data_entries,
-            'count'    =>   $count
+            'count'    =>   $count,
+            'success'   =>true,
         ], 200);
     }
 

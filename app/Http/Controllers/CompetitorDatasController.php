@@ -62,7 +62,8 @@ class CompetitorDatasController extends Controller
         $count = $competitor_datas->count();
         return response()->json([
             'data'     =>  $competitor_datas,
-            'count'    =>   $count
+            'count'    =>   $count,
+            'success'   =>  true
         ], 200);
     }
 

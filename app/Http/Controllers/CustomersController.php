@@ -57,6 +57,13 @@ class CustomersController extends Controller
         if (request()->year) {
             $customers = $customers->whereYear('date', '=', request()->year);
         }
+        if(request()->app == 'YES') {
+            return response()->json([
+                'data'     =>  $customers->latest()->get(),
+                'success'  =>   true
+            ], 200); 
+        }
+
 
         $customers = $customers->get();
         $total_no_of_customers_w1 = 0;
@@ -422,7 +429,7 @@ class CustomersController extends Controller
         // return $customer;
 
         return response()->json([
-            'data'    =>  $customer
+            'data'    =>  $customer,
         ], 201);
     }
 
