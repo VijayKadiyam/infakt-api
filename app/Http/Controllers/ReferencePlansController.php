@@ -46,7 +46,7 @@ class ReferencePlansController extends Controller
       // }
       $user_reference_plans = UserReferencePlan::where('user_id', '=', $user->id)
         ->where('day', '=', $request->day)
-        ->where('which_week', '=', $whichWeek)
+        // ->where('which_week', '=', $whichWeek)
         ->get();
 
       $totalOrderValue = 0;
@@ -77,6 +77,8 @@ class ReferencePlansController extends Controller
             $retailer['l3m']  = $rfmtd;;
             $retailer['is_done'] = 'N';
           }
+          if($retailer->imagepath == null)
+            $retailer->imagepath = '';
         }
 
         $user_reference_plan->reference_plan['total_outlets'] = $totalOutlets;

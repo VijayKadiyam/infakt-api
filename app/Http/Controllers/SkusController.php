@@ -174,6 +174,16 @@ class SkusController extends Controller
         $sku['closing_stock'] = ($totalQty + $receivedQty - $purchaseReturnedQty - $consumedQty + $returnedQty);
       }
     }
+
+    for($i = 0; $i < sizeof($skus); $i++) {
+      for($j = $i; $j < sizeof($skus); $j++) {
+        if($skus[$i]['qty'] < $skus[$j]['qty']) {
+          $temp = $skus[$i];
+          $skus[$i] = $skus[$j];
+          $skus[$j] = $temp;
+        }
+      }
+    }
     
 
     return response()->json([

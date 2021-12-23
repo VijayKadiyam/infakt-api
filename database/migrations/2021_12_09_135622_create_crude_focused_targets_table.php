@@ -81,7 +81,7 @@ class CreateCrudeFocusedTargetsTable extends Migration
             $table->integer('moisturizer')->nullable();
             $table->integer('mosquito_protection')->nullable();
             $table->integer('oil')->nullable();
-            $table->integer('oral',)->nullable();
+            $table->integer('oral')->nullable();
             $table->integer('otc')->nullable();
             $table->integer('peeling')->nullable();
             $table->integer('serum')->nullable();

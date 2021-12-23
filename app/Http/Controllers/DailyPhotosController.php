@@ -17,42 +17,68 @@ class DailyPhotosController extends Controller
     public function index(Request $request)
     {
       $daily_photos = [];
+      
+      if ($request->userId) {
+        $dailyPhotos = request()->company->daily_photos()->where('user_id', '=', $request->userId);
 
-      $supervisors = User::with('roles')
-        ->whereHas('roles',  function ($q) {
-          $q->where('name', '=', 'SUPERVISOR');
-        })->orderBy('name')
-      // ->take(1)
-      ->get();
-
-      foreach ($supervisors as $supervisor) {
-
-        $users = User::where('supervisor_id', '=', $supervisor->id)->get();
-
-        foreach ($users as $user) {
-
-          $dailyPhotos = request()->company->daily_photos()->where('user_id', '=', $user->id);
-
-          if ($request->date && $request->month == null && $request->year == null && $request->userId == null) {
-            $dailyPhotos = $dailyPhotos->where('date', '=', $request->date);
+        if ($request->date && $request->month == null && $request->year == null && $request->userId == null) {
+          $dailyPhotos = $dailyPhotos->where('date', '=', $request->date);
+        }
+        if ($request->date && $request->month == null && $request->year == null) {
+          $dailyPhotos = $dailyPhotos->where('date', '=', $request->date);
+        }
+        if ($request->month) {
+          $dailyPhotos = $dailyPhotos->whereMonth('date', '=', $request->month);
+        }
+        if ($request->year) {
+          $dailyPhotos = $dailyPhotos->whereYear('date', '=', $request->year);
+        }
+        $dailyPhotos = $dailyPhotos->get();
+        if (count($dailyPhotos) != 0) {
+          foreach ($dailyPhotos as $dailyPhoto) {
+            $daily_photos[] = $dailyPhoto;
           }
-          if ($request->date && $request->month == null && $request->year == null) {
-            $dailyPhotos = $dailyPhotos->where('date', '=', $request->date);
-          }
-          if ($request->month) {
-            $dailyPhotos = $dailyPhotos->whereMonth('date', '=', $request->month);
-          }
-          if ($request->year) {
-            $dailyPhotos = $dailyPhotos->whereYear('date', '=', $request->year);
-          }
-          $dailyPhotos = $dailyPhotos->get();
-          if (count($dailyPhotos) != 0) {
-            foreach ($dailyPhotos as $dailyPhoto) {
-              $daily_photos[] = $dailyPhoto;
+        }
+      }
+      else {
+        $supervisors = User::with('roles')
+          ->where('active', '=', 1)
+          ->whereHas('roles',  function ($q) {
+            $q->where('name', '=', 'SUPERVISOR');
+          })->orderBy('name')
+        // ->take(1)
+        ->get();
+
+        foreach ($supervisors as $supervisor) {
+
+          $users = User::where('supervisor_id', '=', $supervisor->id)->get();
+
+          foreach ($users as $user) {
+
+            $dailyPhotos = request()->company->daily_photos()->where('user_id', '=', $user->id);
+
+            if ($request->date && $request->month == null && $request->year == null && $request->userId == null) {
+              $dailyPhotos = $dailyPhotos->where('date', '=', $request->date);
+            }
+            if ($request->date && $request->month == null && $request->year == null) {
+              $dailyPhotos = $dailyPhotos->where('date', '=', $request->date);
+            }
+            if ($request->month) {
+              $dailyPhotos = $dailyPhotos->whereMonth('date', '=', $request->month);
+            }
+            if ($request->year) {
+              $dailyPhotos = $dailyPhotos->whereYear('date', '=', $request->year);
+            }
+            $dailyPhotos = $dailyPhotos->get();
+            if (count($dailyPhotos) != 0) {
+              foreach ($dailyPhotos as $dailyPhoto) {
+                $daily_photos[] = $dailyPhoto;
+              }
             }
           }
         }
       }
+      
 
       // $daily_photos = request()->company->daily_photos; 
       $count = sizeof($daily_photos);
