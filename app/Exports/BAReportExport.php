@@ -21,12 +21,12 @@ class BAReportExport implements WithMultipleSheets
     public function sheets(): array
     {
         $sheets = [];
-        $sheets[] = new DailyAttendanceSheet($this->date, $this->supervisorId);
+        // $sheets[] = new DailyAttendanceSheet($this->date, $this->supervisorId);
         $sheets[] = new MonthlyAttendanceSheet($this->date, $this->supervisorId);
-        $sheets[] = new SkuOfftakesSheet($this->date, $this->supervisorId);
-        $sheets[] = new SkuValueOfftakesSheet($this->date, $this->supervisorId);
-        $sheets[] = new OfftakesSheet($this->date, $this->supervisorId);
-        $sheets[] = new OfftakesCountSheet($this->date, $this->supervisorId);
+        // $sheets[] = new SkuOfftakesSheet($this->date, $this->supervisorId);
+        // $sheets[] = new SkuValueOfftakesSheet($this->date, $this->supervisorId);
+        // $sheets[] = new OfftakesSheet($this->date, $this->supervisorId);
+        // $sheets[] = new OfftakesCountSheet($this->date, $this->supervisorId);
         $sheets[] = new LeaveDefaulterSheet($this->date, $this->supervisorId);
 
         return $sheets;

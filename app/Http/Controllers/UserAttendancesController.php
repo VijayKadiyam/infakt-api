@@ -467,6 +467,8 @@ class UserAttendancesController extends Controller
     $userAttendances = $userAttendances->get();
 
     $users = [];
+    $user_id_log = [];
+
     foreach ($userAttendances as $key => $attendance) {
       $present_count = 0;
       $weekly_off_count = 0;
@@ -477,7 +479,9 @@ class UserAttendancesController extends Controller
       $user_key = array_search($user_id, array_column($users, 'id'));
       $date = Carbon::parse($attendance->date)->format('j');
 
-      if (!$user_key) {
+      $is_exist = in_array($user_id, $user_id_log);
+      if (!$user_key && !$is_exist) {
+        $user_id_log[] = $user_id;
         $day_count = 1;
         switch ($attendance->session_type) {
           case 'PRESENT':
@@ -546,6 +550,7 @@ class UserAttendancesController extends Controller
     $userAttendances = $userAttendances->get();
 
     $users = [];
+    $user_id_log = [];
     $defaulters = [];
     foreach ($userAttendances as $key => $attendance) {
       $present_count = 0;
@@ -561,7 +566,9 @@ class UserAttendancesController extends Controller
       $user_key = array_search($user_id, array_column($users, 'id'));
       $date = Carbon::parse($attendance->date)->format('j');
 
-      if (!$user_key) {
+      $is_exist = in_array($user_id, $user_id_log);
+      if (!$user_key && !$is_exist) {
+        $user_id_log[] = $user_id;
         $day_count = 1;
         switch ($attendance->session_type) {
           case 'PRESENT':
