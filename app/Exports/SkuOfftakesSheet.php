@@ -76,6 +76,7 @@ class SkuOfftakesSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
 
 				$company = Company::find(1);
 				$ors = $company->orders_list()
+					->where('order_type', '=', 'Sales')
 					->where('user_id', '=', $user->id)
 					->where('is_active', '=', 1)
 					->with('order_details')
