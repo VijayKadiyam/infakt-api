@@ -10,6 +10,7 @@ class CompetitorData extends Model
         'user_id',
         'competitor',
         'amount',
+        'week',
         'month',
         'year',
     ];
