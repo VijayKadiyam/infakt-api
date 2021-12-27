@@ -30,6 +30,7 @@ class BAReportExport implements WithMultipleSheets
         $sheets[] = new LeaveDefaulterSheet($this->date, $this->supervisorId);
         $sheets[] = new CustomerSheet($this->date, $this->supervisorId);
         $sheets[] = new CustomerDataEntrySheet($this->date, $this->supervisorId);
+        $sheets[] = new CompetitorDataSheet($this->date, $this->supervisorId);
 
         return $sheets;
     }
