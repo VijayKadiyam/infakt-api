@@ -154,7 +154,7 @@ class OfftakeAnalyticsController extends Controller
 		// 	'data'	=>	Excel::store(new BAReportExport($date), "/reports/$date/BA-Report-$date.xlsx", 'local'),
 		// ]);
 		// return Excel::download(new BAReportExport($date, 1757), 'BA-Report.xlsx');
-		return Excel::download(new BAReportExport($date,753), "BA-Report.xlsx");
+		// return Excel::download(new BAReportExport($date,753), "BA-Report.xlsx");
 		Excel::store(new BAReportExport($date), "/reports/$date/BA-Report-$date.xlsx", "local");
 
 
