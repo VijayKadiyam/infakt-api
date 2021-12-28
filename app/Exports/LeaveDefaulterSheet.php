@@ -56,7 +56,7 @@ class LeaveDefaulterSheet implements FromView, ShouldAutoSize, WithStyles, WithT
             $userAttendances = $userAttendances->whereMonth('date', '=', $month);
         if ($year)
             $userAttendances = $userAttendances->whereYear('date', '=', $year);
-            
+
         $userAttendances = $userAttendances->where('session_type', '=', $session_type);
         // $userAttendances = $userAttendances->take(10);
 
@@ -68,6 +68,7 @@ class LeaveDefaulterSheet implements FromView, ShouldAutoSize, WithStyles, WithT
         $userAttendances = $userAttendances->get();
 
         $users = [];
+        $user_id_log = [];
         $defaulters = [];
         foreach ($userAttendances as $key => $attendance) {
             $present_count = 0;
@@ -83,7 +84,9 @@ class LeaveDefaulterSheet implements FromView, ShouldAutoSize, WithStyles, WithT
             $user_key = array_search($user_id, array_column($users, 'id'));
             $date = Carbon::parse($attendance->date)->format('j');
 
-            if (!$user_key) {
+            $is_exist = in_array($user_id, $user_id_log);
+            if (!$user_key && !$is_exist) {
+                $user_id_log[] = $user_id;
                 $day_count = 1;
                 switch ($attendance->session_type) {
                     case 'PRESENT':
@@ -147,12 +150,11 @@ class LeaveDefaulterSheet implements FromView, ShouldAutoSize, WithStyles, WithT
 
         $FinalDefaulters = [];
         foreach ($defaulters as $key => $user) {
-          if ($user['is_defaulter'] == 1) {
-            $FinalDefaulters[] = $user;
-          }
+            if ($user['is_defaulter'] == 1) {
+                $FinalDefaulters[] = $user;
+            }
         }
         return view('exports.leave_defaulter_export', compact('FinalDefaulters', 'daysInMonth'));
-
     }
 
     /**

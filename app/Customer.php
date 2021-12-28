@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Customer extends Model
 {
     protected $fillable = [
+        'company_id',
         'user_id',
         'date',
         'no_of_customer',
         'no_of_billed_customer',
         'more_than_two',
+        'week_number'
     ];
 
     public function company() {

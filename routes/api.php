@@ -423,6 +423,12 @@ Route::post('upload_focused_target', 'CrudeFocusedTargetsController@uploadFocuse
 Route::get('process_focused_target', 'CrudeFocusedTargetsController@processFocusedTarget');
 Route::get('truncate_focused_targets', 'CrudeFocusedTargetsController@truncate');
 
+// Crude Customers
+Route::get('crude_customers', 'CrudeCustomersController@index');
+Route::post('upload_customer', 'CrudeCustomersController@uploadCustomer');
+Route::get('process_customer', 'CrudeCustomersController@processCustomer');
+Route::get('truncate_customers', 'CrudeCustomersController@truncate');
+
 // Customer Data Entry
 Route::get('customer_data_entries/masters', 'CustomerDataEntriesController@masters');
 Route::resource('customer_data_entries', 'CustomerDataEntriesController');
