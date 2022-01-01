@@ -29,7 +29,7 @@ class ReferencePlansController extends Controller
   {
     $reference_plans = [];
     $count = 0;
-    if ($request->userId && $request->weekNo && $request->day) {
+    if ($request->userId) {
       $user = User::find($request->userId);
       $whichWeek = $request->weekNo / 12;
       if ($user->beat_type_id == 1)
