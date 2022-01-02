@@ -111,7 +111,8 @@ class AnalyticsController extends Controller
     // Get target
     $current = Carbon::now();
     $currentMonth = $current->month;
-    $currentYear = $current->year;
+    $currentYear = 2022;
+    // $currentYear = $current->year;
     $target = Target::where('user_id', '=', $request->userId)
       ->where('month', '=', $currentMonth)
       ->where('year', '=', $currentYear)
@@ -174,7 +175,8 @@ class AnalyticsController extends Controller
     // Get target
     $current = Carbon::now();
     $currentMonth = $current->month;
-    $currentYear = $current->year;
+    // $currentYear = $current->year;
+    $currentYear = 2022;
     $target = Target::where('user_id', '=', $request->userId)
       ->where('month', '=', $currentMonth)
       ->where('year', '=', $currentYear)
@@ -402,7 +404,8 @@ class AnalyticsController extends Controller
     // Get target
     $current = Carbon::now();
     $currentMonth = $current->month;
-    $currentYear = $current->year;
+    $currentYear = 2022;
+    // $currentYear = $current->year;
     $target = Target::where('user_id', '=', $request->userId)
       ->where('month', '=', $currentMonth)
       ->where('year', '=', $currentYear)
@@ -562,7 +565,8 @@ class AnalyticsController extends Controller
     $current = Carbon::now();
     $currentDay = $current->day;
     $currentMonth = $current->month;
-    $currentYear = $current->year;
+    $currentYear = 2022;
+    // $currentYear = $current->year;
 
     $user = User::find($request->userId);
     $doj = null;
