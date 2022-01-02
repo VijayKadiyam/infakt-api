@@ -129,7 +129,7 @@ class AnalyticsController extends Controller
     // Datewise orders
     $daysInMonth = Carbon::createFromDate($request->month)->daysInMonth;
     for ($i=1; $i <= $daysInMonth; $i++) { 
-      $date = 2021 . '-' . $request->month . '-' . sprintf("%02d", $i);
+      $date = 2022 . '-' . $request->month . '-' . sprintf("%02d", $i);
       $ordersOfADateTotal = 0;
       foreach ($ordersOfMonth as $order) {
         $orderDate = Carbon::parse($order->created_at)->format('Y-m-d');
@@ -583,7 +583,7 @@ class AnalyticsController extends Controller
     // Attendances of current month
     $userAttendances = [];
     for ($i=$startDay; $i <= $currentDay; $i++) { 
-      $date = 2021 . '-' . $request->month . '-' . sprintf("%02d", $i);
+      $date = 2022 . '-' . $request->month . '-' . sprintf("%02d", $i);
 
       $userAttendance = UserAttendance::where('date', '=', $date)
         ->where('user_id', '=', $user->id)
