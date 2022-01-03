@@ -30,7 +30,7 @@ class PjpSupervisorsController extends Controller
         ['text'  =>  'DECEMBER', 'value' =>  12],
       ];
 
-      $years = ['2020', '2021'];
+      $years = ['2020', '2021', '2022'];
       return response()->json([
         'months'  =>  $months,
         'years'   =>  $years
