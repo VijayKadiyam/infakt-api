@@ -10,6 +10,7 @@ class PjpMarket extends Model
         'pjp_id',
         'market_name',
         'gps_address',
+        'store_code',
     ];
 
     public function company()
