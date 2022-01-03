@@ -34,7 +34,7 @@ class TargetsController extends Controller
       ['text'  =>  'DECEMBER', 'value' =>  12],
     ];
 
-    $years = ['2020', '2021'];
+    $years = ['2020', '2021', '2022'];
 
     return response()->json([
       'users'   =>  $usersResponse->getData()->data,
