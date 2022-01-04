@@ -65,11 +65,11 @@ class PjpsController extends Controller
       $count = $pjps->count();
     }
 
-    foreach($pjps as $key => $pjp){
-      $explodelocation = explode("#", $pjps[$key]['location']);
-      $pjps[$key]['location'] = $explodelocation[0];
+    // foreach($pjps as $key => $pjp){
+    //   $explodelocation = explode("#", $pjps[$key]['location']);
+    //   $pjps[$key]['location'] = $explodelocation[0];
 
-    }
+    // }
     // return $explodelocation;
 
     return response()->json([
