@@ -171,7 +171,7 @@ class CrudeUserMappingsController extends Controller
                         $user_id = $user_array[0]->id;
                         $data = [
                             // users column name = $user->crude_users column name
-                            'email'           =>  $user->user_login_id == '' ? $user->store_code : $user->user_login_id,
+                            // 'email'           =>  $user->user_login_id == '' ? $user->store_code : $user->user_login_id,
                             'phone'           =>  $user->phone == '' ? 0 : $user->phone,
                             'region' => $user->region,
                             'channel' => $user->channel,
@@ -446,7 +446,7 @@ class CrudeUserMappingsController extends Controller
                         $data = [
                             // users column name = $user->crude_users column name
                             'phone'           =>  $user->phone == '' ? 0 : $user->phone,
-                            'email'           =>  $user->user_login_id == '' ? $user->store_code : $user->user_login_id,
+                            // 'email'           =>  $user->user_login_id == '' ? $user->store_code : $user->user_login_id,
                             'region' => $user->region,
                             'channel' => $user->channel,
                             'chain_name' => $user->chain_name,
