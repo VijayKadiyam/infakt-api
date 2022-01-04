@@ -50,7 +50,7 @@ class CrudePjpsController extends Controller
         foreach ($crude_pjps as $pjp) {
 
             if ($pjp->location) {
-                $location = $pjp->location . '#' . $pjp->visit_date;
+                $location = $pjp->location . '#' . $pjp->visit_date . $pjp->employee_code;
             }
 
             // return $location;

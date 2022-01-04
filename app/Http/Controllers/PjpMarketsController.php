@@ -23,11 +23,11 @@ class PjpMarketsController extends Controller
     public function index(Pjp $pjp)
     {
         $pjp_markets = $pjp->pjp_markets;
-        foreach($pjp_markets as $key => $pjpmarket){
-            $explodelocation = explode("#", $pjp_markets[$key]['gps_address']);
-            $pjp_markets[$key]['gps_address'] = $explodelocation[0];
+        // foreach($pjp_markets as $key => $pjpmarket){
+        //     $explodelocation = explode("#", $pjp_markets[$key]['gps_address']);
+        //     $pjp_markets[$key]['gps_address'] = $explodelocation[0];
       
-          }
+        //   }
 
         return response()->json([
             'data'     =>  $pjp_markets,
