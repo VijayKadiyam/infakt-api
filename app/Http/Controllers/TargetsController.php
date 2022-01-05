@@ -48,6 +48,7 @@ class TargetsController extends Controller
     $users = $request->company->users()->with('roles')
         ->whereHas('roles',  function ($q) {
           $q->where('name', '!=', 'Admin');
+          $q->where('name', '!=', 'Distributor');
         })->get();
     $targets=[];
     foreach($users as $user){
