@@ -14,27 +14,27 @@ class FocusedTargetImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
     {
-        if ($row['Target'] != '' || $row['Achieved'] != '') {
+        // if ($row['Target'] != '' || $row['Achieved'] != '') {
             $data = [
                 'company_id'  =>  request()->company->id,
-                'region'      =>  $row['Region'],
-                'channel'     =>  $row['Channel'],
-                'chain_name'        =>  $row['Chain Name'],
+                'region'      =>  (array_key_exists('Region', $row) &&  $row['Region']) ?  $row['Region']: null,
+                'channel'     =>  (array_key_exists('Channel', $row) &&  $row['Channel']) ?  $row['Channel']: null,
+                'chain_name'        =>  (array_key_exists('Chain Name', $row) &&  $row['Chain Name']) ?  $row['Chain Name']: null,
                 'billing_code'       => (array_key_exists('Billing Code', $row) && $row['Billing Code']) ? $row['Billing Code'] : null,
-                'store_code'       =>  $row['Store Code'],
-                'store_name'        =>  $row['Store Name'],
-                'location'        =>  $row['Location'],
-                'city'       =>  $row['City'],
-                'state'       =>  $row['State'],
-                'rsm'        =>  $row['RSM'],
-                'asm'       =>  $row['ASM'],
-                'supervisor_code'       =>  $row['Supervisor Code'],
-                'supervisor_name'       =>  $row['Supervisor Name'],
+                'store_code'       =>  (array_key_exists('Store Code', $row) &&  $row['Store Code']) ?  $row['Store Code']: null,
+                'store_name'        =>  (array_key_exists('Store Name', $row) &&  $row['Store Name']) ?  $row['Store Name']: null,
+                'location'        =>  (array_key_exists('Location', $row) &&  $row['Location']) ?  $row['Location']: null,
+                'city'       =>  (array_key_exists('City', $row) &&  $row['City']) ?  $row['City']: null,
+                'state'       =>  (array_key_exists('State', $row) &&  $row['State']) ?  $row['State']: null,
+                'rsm'        =>  (array_key_exists('RSM', $row) &&  $row['RSM']) ?  $row['RSM']: null,
+                'asm'       =>  (array_key_exists('ASM', $row) &&  $row['ASM']) ?  $row['ASM']: null,
+                'supervisor_code'       =>  (array_key_exists('Supervisor Code', $row) &&  $row['Supervisor Code']) ?  $row['Supervisor Code']: null,
+                'supervisor_name'       =>  (array_key_exists('Supervisor Name', $row) &&  $row['Supervisor Name']) ?  $row['Supervisor Name']: null,
                 'brand'       => (array_key_exists('BRAND', $row) && $row['BRAND']) ? $row['BRAND'] : NULL,
                 'ba_status'       => (array_key_exists('BA status', $row) && $row['BA status'])  ? $row['BA status'] : NULL,
                 'store_status'       => (array_key_exists('Store Status', $row) && $row['Store Status'])  ? $row['Store Status'] : NULL,
-                'target'      =>  $row['Target'],
-                'achieved'      =>  $row['Achieved'],
+                'target'      =>  (array_key_exists('Target', $row) &&  $row['Target']) ?  $row['Target']: null,
+                'achieved'      =>  (array_key_exists('Achieved', $row) &&  $row['Achieved']) ?  $row['Achieved']: null,
                 'month'  =>  request()->month,
                 'year'  =>  request()->year,
                 'baby' => $row['Baby'],
@@ -97,7 +97,7 @@ class FocusedTargetImport implements ToModel, WithHeadingRow
                 'yogurt_for' => $row['Yogurt For'],
             ];
             return new CrudeFocusedTarget($data);
-        }
+        // }
     }
 
     public function headingRow(): int
