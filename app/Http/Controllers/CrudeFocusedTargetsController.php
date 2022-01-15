@@ -108,32 +108,35 @@ class CrudeFocusedTargetsController extends Controller
             if ($target->store_code) {
                 $us = User::where('employee_code', '=', $target->store_code)
                     ->first();
-                $user_id = $us['id'];
+                if ($us) {
 
-                $data = [
-                    'company_id' => request()->company->id,
-                    'user_id' => $user_id,
-                    'month' => $target->month,
-                    'year' => $target->year,
-                ];
+                    $user_id = $us['id'];
 
-                foreach ($category as $key => $cat) {
-                    if ($target->$cat) {
-                        $category_target = $target[$cat];
-                        $data['target'] = $category_target;
-                        $data['category'] = $cat;
-                        $User_target = FocusedTarget::where('user_id', '=', $user_id)
-                            ->where('month', '=', $target->month)
-                            ->where('year', '=', $target->year)
-                            ->where('category', '=', $cat)->first();
-                        if ($User_target) {
-                            // Update FocusedTarget
-                            $targetData = FocusedTarget::where('id', '=', $User_target->id);
-                            $targetData->update($data);
-                        } else {
-                            // Insert FocusedTarget
-                            $targetData = new FocusedTarget($data);
-                            $targetData->save();
+                    $data = [
+                        'company_id' => request()->company->id,
+                        'user_id' => $user_id,
+                        'month' => $target->month,
+                        'year' => $target->year,
+                    ];
+
+                    foreach ($category as $key => $cat) {
+                        if ($target->$cat) {
+                            $category_target = $target[$cat];
+                            $data['target'] = $category_target;
+                            $data['category'] = $cat;
+                            $User_target = FocusedTarget::where('user_id', '=', $user_id)
+                                ->where('month', '=', $target->month)
+                                ->where('year', '=', $target->year)
+                                ->where('category', '=', $cat)->first();
+                            if ($User_target) {
+                                // Update FocusedTarget
+                                $targetData = FocusedTarget::where('id', '=', $User_target->id);
+                                $targetData->update($data);
+                            } else {
+                                // Insert FocusedTarget
+                                $targetData = new FocusedTarget($data);
+                                $targetData->save();
+                            }
                         }
                     }
                 }
