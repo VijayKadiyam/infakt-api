@@ -107,6 +107,7 @@ Route::resource('offers', 'OffersController');
 Route::resource('skus/{skus}/stocks', 'StocksController');
 Route::get('stocks/masters', 'StocksController@masters');
 Route::get('stocks', 'StocksController@all');
+Route::get('closing_stocks', 'StocksController@closing_stocks');
 Route::resource('skus/{sku}/sales', 'SalesController');
 Route::get('sales', 'SalesController@all');
 Route::get('sales/single-employee-sales-email', 'SalesController@singleEmployeeSalesEmail');
