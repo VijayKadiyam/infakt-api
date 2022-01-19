@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Sku;
 use App\Stock;
+use Carbon\Carbon;
 
 class StocksController extends Controller
 {
@@ -25,11 +26,40 @@ class StocksController extends Controller
 
   public function all()
   {
-    $stocks = Stock::with('sku', 'unit', 'distributor', 'offer')
-      ->latest()->get();
+    // return request()->all();
+    $count = 0;
+    if (request()->page && request()->rowsPerPage) {
+      $stocks = Stock::with('sku', 'unit', 'distributor', 'offer');
+      $count = $stocks->count();
+      $stocks = $stocks->paginate(request()->rowsPerPage)->toArray();
+      $stocks = $stocks['data'];
+    } else {
+      $stocks = Stock::with('sku', 'unit', 'distributor', 'offer');
+      $count = $stocks->count();
+    }
 
     return response()->json([
-      'data'     =>  $stocks
+      'data'     =>  $stocks,
+      'count'     => $count
+    ], 200);
+  }
+  public function closing_stocks()
+  {
+    $now = Carbon::now()->format('Y-m-d'); //Closing Stock For todays Log
+    $count = 0;
+    if (request()->page && request()->rowsPerPage) {
+      $stocks = Stock::whereDate('created_at', $now)->with('sku', 'unit', 'distributor', 'offer');
+      $count = $stocks->count();
+      $stocks = $stocks->paginate(request()->rowsPerPage)->toArray();
+      $stocks = $stocks['data'];
+    } else {
+      $stocks = Stock::with('sku', 'unit', 'distributor', 'offer');
+      $count = $stocks->count();
+    }
+
+    return response()->json([
+      'data'     =>  $stocks,
+      'count'     => $count
     ], 200);
   }
 
@@ -66,7 +96,7 @@ class StocksController extends Controller
 
     return response()->json([
       'data'    =>  $stock
-    ], 201); 
+    ], 201);
   }
 
   /*
@@ -78,7 +108,7 @@ class StocksController extends Controller
   {
     return response()->json([
       'data'   =>  $stock
-    ], 200);   
+    ], 200);
   }
 
   /*
@@ -93,7 +123,7 @@ class StocksController extends Controller
     ]);
 
     $stock->update($request->all());
-      
+
     return response()->json([
       'data'  =>  $stock
     ], 200);
