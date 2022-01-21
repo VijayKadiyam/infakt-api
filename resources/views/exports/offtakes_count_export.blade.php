@@ -3,6 +3,8 @@
     <tr>
         <th>Sr. No.</th>
         <th>Region</th>
+        <th>Channel</th>
+        <th>Chain Name</th>
         <th>City</th>
         <th>State</th>
         <th>Store Code</th>
@@ -18,6 +20,8 @@
         <tr>
             <td>{{ $loop->index + 1 }}</td>
             <td>{{ $offtake_user['region'] }}</td>
+            <td>{{ $offtake_user['channel'] }}</td>
+            <td>{{ $offtake_user['chain_name'] }}</td>
             <td>{{ $offtake_user['city'] }}</td>
             <td>{{ $offtake_user['state'] }}</td>
             <td>{{ $offtake_user['employee_code'] }}</td>

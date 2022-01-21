@@ -5,6 +5,8 @@
         <th>Type</th>
         <th>Date</th>
         <th>Region</th>
+        <th>Channel</th>
+        <th>Chain Name</th>
         <th>City</th>
         <th>State</th>
         <th>Store Code</th>
@@ -31,6 +33,8 @@
                 </td>
                 <td>{{ $order['created_at'] }}</td>
                 <td>{{ $order['user']['region'] }}</td>
+                <td>{{ $order['user']['channel'] }}</td>
+                <td>{{ $order['user']['chain_name'] }}</td>
                 <td>{{ $order['user']['city'] }}</td>
                 <td>{{ $order['user']['state'] }}</td>
                 <td>{{ $order['user']['employee_code'] }}</td>
