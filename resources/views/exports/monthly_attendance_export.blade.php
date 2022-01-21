@@ -3,6 +3,8 @@
     <tr>
         <th>Sr. No.</th>
         <th>Region</th>
+        <th>Channel</th>
+        <th>Chain Name</th>
         <th>City</th>
         <th>State</th>
         <th>Store Code</th>
@@ -25,6 +27,8 @@
             <tr>
                 <td>{{ $loop->index + 1 }}</td>
                 <td>{{ $user['region'] }}</td>
+                <td>{{ $user['channel'] }}</td>
+                <td>{{ $user['chain_name'] }}</td>
                 <td>{{ $user['city'] }}</td>
                 <td>{{ $user['state'] }}</td>
                 <td>{{ $user['employee_code'] }}</td>
