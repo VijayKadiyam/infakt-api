@@ -693,13 +693,13 @@ class AnalyticsController extends Controller
           $attendances[] = [
             'date'    =>  $userAttendance->date,
             // 'status'  =>  'IN ' . $userAttendance->login_time,
-            'status'  =>  $userAttendance->login_time,
+            'status'  =>  $userAttendance->login_time ?? '',
             'color'   =>  '#D67676',
           ];
           $attendances[] = [
             'date'    =>  $userAttendance->date,
             // 'status'  =>  'O ' . $userAttendance->logout_time,
-            'status'  =>  $userAttendance->logout_time,
+            'status'  =>  $userAttendance->logout_time ?? '',
             'color'   =>  '#86A9DC',
           ];
         } else {
@@ -713,13 +713,13 @@ class AnalyticsController extends Controller
           $attendances[] = [
             'date'    =>  $userAttendance->date,
             // 'status'  =>  'IN ' . $userAttendance->login_time,
-            'status'  =>  $userAttendance->login_time,
+            'status'  =>  $userAttendance->login_time ?? '',
             'color'   =>  '#D67676',
           ];
           $attendances[] = [
             'date'    =>  $userAttendance->date,
             // 'status'  =>  'O ' . $userAttendance->logout_time,
-            'status'  =>  $userAttendance->logout_time,
+            'status'  =>  $userAttendance->logout_time ?? '',
             'color'   =>  '#86A9DC',
           ];
         }
