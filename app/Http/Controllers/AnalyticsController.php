@@ -727,7 +727,7 @@ class AnalyticsController extends Controller
         $absent++;
         $attendances[] = [
           'date'    =>  $userAttendance['date'],
-          'status'  =>  'Absent',
+          'status'  =>  'ABSENT',
           'color'   =>  '#991111',
         ];
       }
