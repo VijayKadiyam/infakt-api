@@ -19,7 +19,7 @@ class UserAttendancesController extends Controller
 
   public function masters(Request $request)
   {
-    $sessionTypes = ['PRESENT', 'MEETING', 'MARKET CLOSED', 'LEAVE', 'WEEKLY OFF', 'HALF DAY'];
+    $sessionTypes = ['PRESENT', 'MEETING', 'MARKET CLOSED', 'LEAVE', 'WEEKLY OFF', 'HALF DAY', 'WORK FROM HOME', 'HOLIDAY'];
     $months = [
       ['text'  =>  'JANUARY', 'value' =>  1],
       ['text'  =>  'FEBRUARY', 'value' =>  2],

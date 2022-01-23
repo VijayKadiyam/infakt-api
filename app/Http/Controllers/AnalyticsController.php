@@ -33,20 +33,20 @@ class AnalyticsController extends Controller
     $ordersNotTaken = 0;
     $totalOrderValue = 0;
 
-    if($request->userId && $request->weekNo && $request->day) {
+    if ($request->userId && $request->weekNo && $request->day) {
       $user = User::find($request->userId);
       $whichWeek = $request->weekNo / 12;
-      if($user->beat_type_id == 1)
+      if ($user->beat_type_id == 1)
         $whichWeek = 1;
-      else if($user->beat_type_id == 2 && $whichWeek == 3)
+      else if ($user->beat_type_id == 2 && $whichWeek == 3)
         $whichWeek = 1;
-      else if($user->beat_type_id == 2 && $whichWeek == 4)
+      else if ($user->beat_type_id == 2 && $whichWeek == 4)
         $whichWeek = 2;
       $user_reference_plans = UserReferencePlan::where('user_id', '=', $user->id)
         ->where('day', '=', $request->day)
         ->where('which_week', '=', $whichWeek)
         ->get();
-      foreach($user_reference_plans as $user_reference_plan) {
+      foreach ($user_reference_plans as $user_reference_plan) {
         $referencePlanNames[] = $user_reference_plan->reference_plan->name;
         $totalOutlets = sizeof($user_reference_plan->reference_plan->retailers);
         foreach ($user_reference_plan->reference_plan->retailers as $retailer) {
@@ -56,10 +56,10 @@ class AnalyticsController extends Controller
             ->where('is_active', '=', 1)
             ->with('order_details')
             ->get();
-          if(sizeof($orders) > 0)  {
+          if (sizeof($orders) > 0) {
             $ordersTaken++;
             foreach ($orders as $order) {
-              if(sizeof($order->order_details) > 0)
+              if (sizeof($order->order_details) > 0)
                 $productiveOrders++;
               $totalOrderValue += $order->total;
             }
@@ -74,7 +74,7 @@ class AnalyticsController extends Controller
       'beat_names'      => $referencePlanNames,
       'total_outlets'   =>  $totalOutlets,
       'orders_not_taken'  =>  $ordersNotTaken,
-      'orders_taken'      =>  $ordersTaken, 
+      'orders_taken'      =>  $ordersTaken,
       'total_order_value' =>  $totalOrderValue,
       'coverage'          =>  [
         'percent' =>  $totalOutlets != 0 ? round(($ordersTaken * 100) / $totalOutlets) : 0,
@@ -128,16 +128,16 @@ class AnalyticsController extends Controller
 
     // Datewise orders
     $daysInMonth = Carbon::createFromDate($request->month)->daysInMonth;
-    for ($i=1; $i <= $daysInMonth; $i++) { 
+    for ($i = 1; $i <= $daysInMonth; $i++) {
       $date = 2022 . '-' . $request->month . '-' . sprintf("%02d", $i);
       $ordersOfADateTotal = 0;
       foreach ($ordersOfMonth as $order) {
         $orderDate = Carbon::parse($order->created_at)->format('Y-m-d');
-        if($orderDate == $date)
+        if ($orderDate == $date)
           $ordersOfADateTotal += $order->total;
       }
 
-      if($ordersOfADateTotal != 0)
+      if ($ordersOfADateTotal != 0)
         $days[] = [
           'date'    =>  $date,
           'achieved' => $ordersOfADateTotal,
@@ -201,7 +201,7 @@ class AnalyticsController extends Controller
       foreach ($referencePlan->retailers as $retailer) {
         $retailerTotal = 0;
         foreach ($ordersOfMonth as $order) {
-          if($order->retailer->id == $retailer->id) {
+          if ($order->retailer->id == $retailer->id) {
             $retailerTotal += $order->total;
           }
         }
@@ -213,9 +213,9 @@ class AnalyticsController extends Controller
     }
 
     // Outlets in ascending order
-    for ($i=0; $i < sizeof($outlets); $i++) { 
-      for ($j=$i + 1; $j < sizeof($outlets); $j++) { 
-        if($outlets[$i]['achieved'] < $outlets[$j]['achieved']) {
+    for ($i = 0; $i < sizeof($outlets); $i++) {
+      for ($j = $i + 1; $j < sizeof($outlets); $j++) {
+        if ($outlets[$i]['achieved'] < $outlets[$j]['achieved']) {
           $temp = $outlets[$i];
           $outlets[$i] = $outlets[$j];
           $outlets[$j] = $temp;
@@ -282,7 +282,7 @@ class AnalyticsController extends Controller
       $beat = ReferencePlan::where('id', '=', $beatId)
         ->with('retailers')
         ->first();
-      if($beat)
+      if ($beat)
         $referencePlans[] = $beat;
     }
 
@@ -296,27 +296,27 @@ class AnalyticsController extends Controller
         $retailerTotal = 0;
         $retailerLastTotal = 0;
         foreach ($ordersOfMonth as $order) {
-          if($order->retailer->id == $retailer->id) {
+          if ($order->retailer->id == $retailer->id) {
             $retailerTotal += $order->total;
           }
         }
         foreach ($ordersOfLastMonth as $order) {
-          if($order->retailer->id == $retailer->id) {
+          if ($order->retailer->id == $retailer->id) {
             $retailerLastTotal += $order->total;
           }
         }
         $outlets[] = [
           'outlet'        =>  $retailer->name,
           'current_month' =>  $retailerTotal,
-          'last_month'    =>  $retailerLastTotal,  
+          'last_month'    =>  $retailerLastTotal,
         ];
       }
     }
 
     // Outlets in ascending order
-    for ($i=0; $i < sizeof($outlets); $i++) { 
-      for ($j=$i + 1; $j < sizeof($outlets); $j++) { 
-        if($outlets[$i]['current_month'] < $outlets[$j]['current_month']) {
+    for ($i = 0; $i < sizeof($outlets); $i++) {
+      for ($j = $i + 1; $j < sizeof($outlets); $j++) {
+        if ($outlets[$i]['current_month'] < $outlets[$j]['current_month']) {
           $temp = $outlets[$i];
           $outlets[$i] = $outlets[$j];
           $outlets[$j] = $temp;
@@ -329,18 +329,18 @@ class AnalyticsController extends Controller
     }
     // Total achieved in last month
     $targetLast = Target::where('user_id', '=', $request->userId)
-    ->where('month', $request->month - 1)
-    ->first();
-    if(isset($targetLast))
+      ->where('month', $request->month - 1)
+      ->first();
+    if (isset($targetLast))
       $achievedLast = $targetLast->achieved;
     // foreach ($ordersOfLastMonth as $order) {
     //   $achievedLast += $order->total;
     // }
     // Total achieved in last 2 month
     $targetLast2 = Target::where('user_id', '=', $request->userId)
-    ->where('month', $request->month - 2)
-    ->first();
-    if(isset($targetLast2))
+      ->where('month', $request->month - 2)
+      ->first();
+    if (isset($targetLast2))
       $achievedLast2 = $targetLast2->achieved;
     // foreach ($ordersOfLast2Month as $order) {
     //   $achievedLast2 += $order->total;
@@ -424,7 +424,7 @@ class AnalyticsController extends Controller
       $beat = ReferencePlan::where('id', '=', $beatId)
         ->with('retailers')
         ->first();
-      if($beat)
+      if ($beat)
         $referencePlans[] = $beat;
     }
 
@@ -434,7 +434,7 @@ class AnalyticsController extends Controller
         $retailerTotal = 0;
         $retailerNoOfInv = 0;
         foreach ($ordersOfMonth as $order) {
-          if($order->retailer->id == $retailer->id) {
+          if ($order->retailer->id == $retailer->id) {
             $retailerTotal += $order->total;
             $retailerNoOfInv++;
           }
@@ -448,9 +448,9 @@ class AnalyticsController extends Controller
     }
 
     // Outlets in ascending order
-    for ($i=0; $i < sizeof($outlets); $i++) { 
-      for ($j=$i + 1; $j < sizeof($outlets); $j++) { 
-        if($outlets[$i]['value'] < $outlets[$j]['value']) {
+    for ($i = 0; $i < sizeof($outlets); $i++) {
+      for ($j = $i + 1; $j < sizeof($outlets); $j++) {
+        if ($outlets[$i]['value'] < $outlets[$j]['value']) {
           $temp = $outlets[$i];
           $outlets[$i] = $outlets[$j];
           $outlets[$j] = $temp;
@@ -514,7 +514,7 @@ class AnalyticsController extends Controller
         'invoice_no'  =>  strval($order->id),
         // 'invoice_no'  =>  $order->invoice_no ?? '-',
         'outlet_name' =>  $order->retailer->name,
-        'invoice_date'=>  Carbon::parse($order->created_at)->format('d-m-Y'),
+        'invoice_date' =>  Carbon::parse($order->created_at)->format('d-m-Y'),
         'value'       =>  $order->total,
         'status'      =>  $order->status,
       ];
@@ -570,25 +570,25 @@ class AnalyticsController extends Controller
 
     $user = User::find($request->userId);
     $doj = null;
-    if($user->doj != null) {
+    if ($user->doj != null) {
       $doj = Carbon::parse($user->doj);
       $dojDay = $doj->day;
       $dojMonth = $doj->month;
       $dojYear = $doj->year;
-      if($currentYear == $dojYear && $currentMonth == $dojMonth) {
+      if ($currentYear == $dojYear && $currentMonth == $dojMonth) {
         $startDay = $dojDay;
       }
     }
 
     // Attendances of current month
     $userAttendances = [];
-    for ($i=$startDay; $i <= $currentDay; $i++) { 
+    for ($i = $startDay; $i <= $currentDay; $i++) {
       $date = 2022 . '-' . $request->month . '-' . sprintf("%02d", $i);
 
       $userAttendance = UserAttendance::where('date', '=', $date)
         ->where('user_id', '=', $user->id)
         ->first();
-      if($userAttendance)
+      if ($userAttendance)
         $userAttendances[] = $userAttendance;
       else
         $userAttendances[] = [
@@ -666,27 +666,28 @@ class AnalyticsController extends Controller
     $attendances = [];
 
     foreach ($userAttendances as $userAttendance) {
-      if($userAttendance['login_time'] != null) {
+      if ($userAttendance['login_time'] != null) {
         $startTime = Carbon::parse($userAttendance->login_time);
         $finishTime = Carbon::parse($userAttendance->logout_time);
         $totalDuration = round($finishTime->diffInSeconds($startTime) / (60 * 60));
         $totalWorkingHrs += $totalDuration;
         $totalDays++;
         $present++;
-        if($userAttendance->session_type == 'LEAVE') {
-          $absent++;
-          $attendances[] = [
-            'date'    =>  $userAttendance['date'],
-            'status'  =>  'Leave',
-            'color'   =>  '#FFA500',
-          ];
-        }
-        else 
-          if($totalDuration <= 8.5){
+        // if($userAttendance->session_type == 'LEAVE') {
+        //   $absent++;
+        //   $attendances[] = [
+        //     'date'    =>  $userAttendance['date'],
+        //     'status'  =>  'Leave',
+        //     'color'   =>  '#FFA500',
+        //   ];
+        // }
+        // else 
+        if ($totalDuration <= 8.5) {
           $lessThan5hrs++;
           $attendances[] = [
             'date'    =>  $userAttendance->date,
-            'status'  =>  '<8.5 Hrs',
+            // 'status'  =>  '<8.5 Hrs',
+            'status'  =>  $userAttendance->session_type,
             'color'   =>  '#392897',
           ];
           $attendances[] = [
@@ -701,12 +702,12 @@ class AnalyticsController extends Controller
             'status'  =>  $userAttendance->logout_time,
             'color'   =>  '#86A9DC',
           ];
-        }
-        else {
+        } else {
           $greaterThan5hrs++;
           $attendances[] = [
             'date'    =>  $userAttendance->date,
-            'status'  =>  '>=8.5 Hrs',
+            // 'status'  =>  '>=8.5 Hrs',
+            'status'  =>  $userAttendance->session_type,
             'color'   =>  '#108108',
           ];
           $attendances[] = [
@@ -744,7 +745,7 @@ class AnalyticsController extends Controller
 
     return response()->json([
       'data'    =>  $data,
-      
+
       'success' =>  true
     ]);
   }
