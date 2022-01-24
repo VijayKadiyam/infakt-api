@@ -141,10 +141,8 @@ class StocksController extends Controller
           $returnedQty = 0;
 
           foreach ($orders as $order) {
-            $todayDate = '19-01-2022';
-            // $todayDate = Carbon::now()->format('d-m-Y');
-            // $orderDate = Carbon::parse($order->created_at)->format('d-m-Y');
-            $orderDate = '19-01-2022';
+            $todayDate = Carbon::now()->format('d-m-Y');
+            $orderDate = Carbon::parse($order->created_at)->format('d-m-Y');
             if ($orderDate != $todayDate) {
               foreach ($order->order_details as $detail) {
                 if ($detail->sku_id == $sku->id && $order->order_type == 'Opening Stock')
