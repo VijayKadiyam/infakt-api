@@ -89,7 +89,7 @@ class StocksController extends Controller
       ->whereHas('roles',  function ($q) {
         $q->where('name', '!=', 'Admin');
       })->take(10)->get();
-      
+
     foreach ($users as $key => $user) {
 
       if ($user) {
@@ -144,11 +144,11 @@ class StocksController extends Controller
 
           foreach ($orders as $order) {
             // return $order;
-            // $todayDate = Carbon::now()->format('d-m-Y');
-            $todayDate = '19-01-2022';
+            $todayDate = Carbon::now()->format('d-m-Y');
+            // $todayDate = '19-01-2022';
             // return $todayDate;
-            $orderDate = '19-01-2022';
-            // $orderDate = Carbon::parse($order->created_at)->format('d-m-Y');
+            // $orderDate = '19-01-2022';
+            $orderDate = Carbon::parse($order->created_at)->format('d-m-Y');
             if ($orderDate != $todayDate) {
               foreach ($order->order_details as $detail) {
                 if ($detail->sku_id == $sku['id'] && $order->order_type == 'Opening Stock')
