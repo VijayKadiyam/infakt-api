@@ -88,27 +88,29 @@ class StocksController extends Controller
     $users = $request->company->users()->with('roles')
       ->whereHas('roles',  function ($q) {
         $q->where('name', '!=', 'Admin');
-      })->get();
-      // return $users;
+      })->take(10)->get();
+      
     foreach ($users as $key => $user) {
 
       if ($user) {
 
         $stocks = [];
         if ($user)
-          $stocks = Stock::whereYear('created_at', Carbon::now())
-            ->whereMonth('created_at', Carbon::now())
-            ->where('distributor_id', '=', $user->distributor_id)
-            ->latest()->get();
+        $stocks = Stock::whereYear('created_at', Carbon::now())
+        ->whereMonth('created_at', Carbon::now())
+        // ->where('distributor_id', '=', 3050)
+        ->where('distributor_id', '=', $user->distributor_id)
+        ->latest()->get();
 
+            // return $stocks;
         $orders = [];
         if ($user)
-          // $orders = Order::whereDate('created_at', '12-01-2022')
-            $orders = Order::whereDate('created_at', Carbon::now()->format('d-m-Y'))
+          $orders = Order::whereYear('created_at', Carbon::now())
             // ->whereMonth('created_at', Carbon::now())
+            // ->where('distributor_id', '=', 3050)
             ->where('distributor_id', '=', $user->distributor_id)
             ->latest()->get();
-            // return $skus;
+        // return $orders;
         foreach ($skus as $sku) {
           // return $sku['price'];
           $sku['mrp_price'] = $sku['price'];
@@ -141,32 +143,37 @@ class StocksController extends Controller
           $returnedQty = 0;
 
           foreach ($orders as $order) {
-            $todayDate = Carbon::now()->format('d-m-Y');
-            $orderDate = Carbon::parse($order->created_at)->format('d-m-Y');
+            // return $order;
+            // $todayDate = Carbon::now()->format('d-m-Y');
+            $todayDate = '19-01-2022';
+            // return $todayDate;
+            $orderDate = '19-01-2022';
+            // $orderDate = Carbon::parse($order->created_at)->format('d-m-Y');
             if ($orderDate != $todayDate) {
               foreach ($order->order_details as $detail) {
-                if ($detail->sku_id == $sku->id && $order->order_type == 'Opening Stock')
+                if ($detail->sku_id == $sku['id'] && $order->order_type == 'Opening Stock')
                   $totalQty += $detail->qty;
-                if ($detail->sku_id == $sku->id && $order->order_type == 'Stock Received')
+                if ($detail->sku_id == $sku['id'] && $order->order_type == 'Stock Received')
                   $totalQty += $detail->qty;
-                if ($detail->sku_id == $sku->id && $order->order_type == 'Purchase Returned')
+                if ($detail->sku_id == $sku['id'] && $order->order_type == 'Purchase Returned')
                   $totalQty -= $detail->qty;
-                if ($detail->sku_id == $sku->id && $order->order_type == 'Sales')
+                if ($detail->sku_id == $sku['id'] && $order->order_type == 'Sales')
                   $totalQty -= $detail->qty;
-                if ($detail->sku_id == $sku->id && $order->order_type == 'Stock Returned')
+                if ($detail->sku_id == $sku['id'] && $order->order_type == 'Stock Returned')
                   $totalQty += $detail->qty;
               }
             } else {
               foreach ($order->order_details as $detail) {
-                if ($detail->sku_id == $sku->id && $order->order_type == 'Opening Stock')
+                // return $order->order_type;
+                if ($detail->sku_id == $sku['id'] && $order->order_type == 'Opening Stock')
                   $totalQty += $detail->qty;
-                if ($detail->sku_id == $sku->id && $order->order_type == 'Stock Received')
+                if ($detail->sku_id == $sku['id'] && $order->order_type == 'Stock Received')
                   $receivedQty += $detail->qty;
-                if ($detail->sku_id == $sku->id && $order->order_type == 'Purchase Returned')
+                if ($detail->sku_id == $sku['id'] && $order->order_type == 'Purchase Returned')
                   $purchaseReturnedQty += $detail->qty;
-                if ($detail->sku_id == $sku->id && $order->order_type == 'Sales')
+                if ($detail->sku_id == $sku['id'] && $order->order_type == 'Sales')
                   $consumedQty += $detail->qty;
-                if ($detail->sku_id == $sku->id && $order->order_type == 'Stock Returned')
+                if ($detail->sku_id == $sku['id'] && $order->order_type == 'Stock Returned')
                   $returnedQty += $detail->qty;
               }
             }
@@ -186,6 +193,7 @@ class StocksController extends Controller
       }
     }
     $skus = $asd;
+    // return $skus;
     for ($i = 0; $i < sizeof($skus); $i++) {
       for ($j = $i; $j < sizeof($skus); $j++) {
         if ($skus[$i]['qty'] < $skus[$j]['qty']) {
