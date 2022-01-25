@@ -203,9 +203,10 @@ class OrdersController extends Controller
       if ($request->month) {
         $orders = $orders->whereMonth('created_at', '=', $request->month);
       }
-      if ($request->year) {
-        $orders = $orders->whereYear('created_at', '=', $request->year);
-      }
+      $orders = $orders->whereYear('created_at', '=', 2022);
+      // if ($request->year) {
+      //   $orders = $orders->whereYear('created_at', '=', $request->year);
+      // }
       if ($request->orderType) {
         $orders = $orders->where('order_type', '=', $request->orderType);
       }
@@ -217,8 +218,8 @@ class OrdersController extends Controller
         ->whereHas('roles',  function ($q) {
           $q->where('name', '=', 'SUPERVISOR');
         })->orderBy('name')
-      // ->take(1) 
-      ->get();
+        // ->take(1) 
+        ->get();
 
       foreach ($supervisors as $supervisor) {
 
@@ -251,7 +252,7 @@ class OrdersController extends Controller
       }
     }
 
-    if($request->raw == 'YES') {
+    if ($request->raw == 'YES') {
       return response()->json([
         'count'    =>   sizeof($orders),
         'data'     =>  $orders,
