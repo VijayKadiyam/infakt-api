@@ -506,10 +506,15 @@ class OrdersController extends Controller
         ->whereHas('roles',  function ($q) {
           $q->where('name', '=', 'SUPERVISOR');
         })->orderBy('name')->get();
+      if ($request->superVisor_id) {
+        $supervisors = $supervisors->where('id', '=', $request->superVisor_id);
+      }
       $Oftake_users = [];
       foreach ($supervisors as $supervisor) {
 
-        $users = User::where('supervisor_id', '=', $supervisor->id)->get();
+        $users = User::with('roles')->where('supervisor_id', '=', $supervisor->id)
+        ->where('active', '=', 1)
+        ->get();
         $offtake_count = 0;
         foreach ($users as $user) {
 
