@@ -35,7 +35,7 @@ class UserAttendancesController extends Controller
       ['text'  =>  'DECEMBER', 'value' =>  12],
     ];
 
-    $years = ['2020', '2021'];
+    $years = ['2020', '2021','2022'];
 
     return response()->json([
       'months'  =>  $months,
@@ -551,6 +551,11 @@ class UserAttendancesController extends Controller
     if ($request->session_type) {
       $userAttendances = $userAttendances->where('session_type', '=', $request->session_type);
     }
+    $supervisorId = request()->superVisor_id;
+    if ($supervisorId != '')
+      $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
+        $q->where('supervisor_id', '=', $supervisorId);
+      });
     $userAttendances = $userAttendances->get();
 
     $users = [];
