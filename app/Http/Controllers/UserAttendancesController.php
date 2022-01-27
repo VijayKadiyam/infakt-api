@@ -463,7 +463,11 @@ class UserAttendancesController extends Controller
     if ($request->year) {
       $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
     }
-
+    $supervisorId = request()->superVisor_id;
+    if ($supervisorId != '')
+      $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
+        $q->where('supervisor_id', '=', $supervisorId);
+      });
     $userAttendances = $userAttendances->get();
 
     $users = [];
