@@ -34,7 +34,7 @@ class CustomersController extends Controller
             ['text'  =>  'DECEMBER', 'value' =>  12],
         ];
 
-        $years = ['2020', '2021'];
+        $years = ['2020', '2021', '2022'];
 
         return response()->json([
             'months'  =>  $months,
@@ -57,11 +57,17 @@ class CustomersController extends Controller
         if (request()->year) {
             $customers = $customers->whereYear('date', '=', request()->year);
         }
-        if(request()->app == 'YES') {
+
+        $supervisorId = request()->superVisor_id;
+        if ($supervisorId != '')
+            $customers = $customers->whereHas('user',  function ($q) use ($supervisorId) {
+                $q->where('supervisor_id', '=', $supervisorId);
+            });
+        if (request()->app == 'YES') {
             return response()->json([
                 'data'     =>  $customers->latest()->get(),
                 'success'  =>   true
-            ], 200); 
+            ], 200);
         }
 
 
