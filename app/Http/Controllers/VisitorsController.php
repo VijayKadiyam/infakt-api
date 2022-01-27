@@ -21,18 +21,21 @@ class VisitorsController extends Controller
         $count = 0;
         if (request()->page && request()->rowsPerPage) {
             $visitors = request()->company->visitors();
+            $supervisorId = request()->superVisor_id;
+            if ($supervisorId != '')
+                $visitors = $visitors->whereHas('user',  function ($q) use ($supervisorId) {
+                    $q->where('supervisor_id', '=', $supervisorId);
+                });
             $count = $visitors->count();
             $visitors = $visitors->paginate(request()->rowsPerPage)->toArray();
             $visitors = $visitors['data'];
-        } 
-        else if($request->retailerId && $request->month) {
+        } else if ($request->retailerId && $request->month) {
             $visitors = request()->company->visitors()
                 ->where('retailer_id', '=', $request->retailerId)
                 ->whereMonth('created_at', $request->month);
             $count = $visitors->count();
             $visitors = $visitors->get();
-        }
-        else {
+        } else {
             $visitors = request()->company->visitors;
             $count = $visitors->count();
         }
@@ -54,7 +57,7 @@ class VisitorsController extends Controller
         $request->validate([
             'user_id'  =>  'required',
         ]);
-        
+
         // return request()->visitor_bas;
         if ($request->id == null || $request->id == '') {
             // Save Visitor
@@ -95,7 +98,7 @@ class VisitorsController extends Controller
             // Update Visitor
             $visitor = Visitor::find($request->id);
             $visitor->update($request->all());
-            
+
             // Check if Visitor Bas deleted
             if (isset($request->visitor_bas)) {
                 $visitorBaIdResponseArray = array_pluck($request->visitor_bas, 'id');
@@ -110,7 +113,7 @@ class VisitorsController extends Controller
                     $visitorBa = VisitorBa::find($differenceVisitorBaId);
                     $visitorBa->delete();
                 }
-                // dd(request()->visitor_bas);
+            // dd(request()->visitor_bas);
 
             // Update Visitor Ba
             if (isset($request->visitor_bas))

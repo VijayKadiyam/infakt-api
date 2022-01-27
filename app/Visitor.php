@@ -7,18 +7,21 @@ use Tests\Feature\VisitorTest;
 
 class Visitor extends Model
 {
-    protected $fillable = [
-        'user_id',
-        'retailer_id',
-        'name',
-        'description'
-    ];
+  protected $fillable = [
+    'user_id',
+    'retailer_id',
+    'name',
+    'description'
+  ];
 
-    public function company()
+  public function company()
   {
     return $this->belongsTo(Company::class);
   }
-
+  public function user()
+  {
+    return $this->belongsTo(User::class);
+  }
   public function visitor_bas()
   {
     return $this->hasMany(VisitorBa::class);
