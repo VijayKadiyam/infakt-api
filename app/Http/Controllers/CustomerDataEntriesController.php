@@ -58,6 +58,11 @@ class CustomerDataEntriesController extends Controller
         if (request()->year) {
             $customer_data_entries = $customer_data_entries->whereYear('created_at', '=', request()->year);
         }
+        $supervisorId = request()->superVisor_id;
+        if ($supervisorId != '')
+            $customer_data_entries = $customer_data_entries->whereHas('user',  function ($q) use ($supervisorId) {
+                $q->where('supervisor_id', '=', $supervisorId);
+            });
 
         $customer_data_entries = $customer_data_entries->get();
 
