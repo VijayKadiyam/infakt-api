@@ -102,6 +102,8 @@ class CrudeFocusedTargetsController extends Controller
             'tablets',
             'toner',
             'yogurt_for',
+            'rice_range',
+            'almond_range',
         ];
         $focus_target = [];
         foreach ($crude_focused_targets as $column =>  $target) {
