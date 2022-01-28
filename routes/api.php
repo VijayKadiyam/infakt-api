@@ -92,6 +92,8 @@ Route::post('upload_bill/{id}', 'UploadController@uploadBill');
 Route::post('upload_retailer/{id}', 'UploadController@uploadRetailer');
 Route::post('upload_daily_photo', 'UploadController@uploadDailyPhotos');
 Route::post('upload_daily_photo', 'UploadController@uploadDailyPhotos');
+Route::post('upload_ticket', 'UploadController@uploadTicketImages');
+Route::post('upload_ticket_followup', 'UploadController@uploadTicketFollowupImages');
 
 Route::resource('products', 'ProductsController');
 Route::get('productSkusStocks', 'ProductsController@productSkusStocks');

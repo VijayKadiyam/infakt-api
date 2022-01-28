@@ -9,6 +9,8 @@ use App\User;
 use Illuminate\Support\Facades\Storage;
 use App\PlanTravellingDetail;
 use App\Retailer;
+use App\Ticket;
+use App\TicketFollowup;
 
 class UploadController extends Controller
 {
@@ -99,7 +101,7 @@ class UploadController extends Controller
 
     return response()->json([
       'data'  => [
-        'image_path'  =>  $path 
+        'image_path'  =>  $path
       ],
       'success' =>  true
     ]);
@@ -121,7 +123,7 @@ class UploadController extends Controller
 
     return response()->json([
       'data'  => [
-        'image_path'  =>  $path 
+        'image_path'  =>  $path
       ],
       'success' =>  true
     ]);
@@ -146,7 +148,7 @@ class UploadController extends Controller
       $dailyphoto->update();
     }
 
-    $imagePath1='';
+    $imagePath1 = '';
     if ($request->hasFile('image_path1')) {
       $file = $request->file('image_path1');
       $name = $request->filename ?? 'photo.';
@@ -158,7 +160,7 @@ class UploadController extends Controller
       $dailyphoto->image_path1 = $imagePath1;
       $dailyphoto->update();
     }
-    $imagePath2='';
+    $imagePath2 = '';
     if ($request->hasFile('image_path2')) {
       $file = $request->file('image_path2');
       $name = $request->filename ?? 'photo.';
@@ -170,7 +172,7 @@ class UploadController extends Controller
       $dailyphoto->image_path2 = $imagePath2;
       $dailyphoto->update();
     }
-    $imagePath3='';
+    $imagePath3 = '';
     if ($request->hasFile('image_path3')) {
       $file = $request->file('image_path3');
       $name = $request->filename ?? 'photo.';
@@ -182,7 +184,7 @@ class UploadController extends Controller
       $dailyphoto->image_path3 = $imagePath3;
       $dailyphoto->update();
     }
-    $imagePath4='';
+    $imagePath4 = '';
     if ($request->hasFile('image_path4')) {
       $file = $request->file('image_path4');
       $name = $request->filename ?? 'photo.';
@@ -204,7 +206,6 @@ class UploadController extends Controller
       ],
       'success' =>  true
     ]);
-  
   }
 
   public function uploadChannelFilterDetailPhotos(Request $request)
@@ -228,7 +229,7 @@ class UploadController extends Controller
       $ChannelFilterDetails->update();
     }
 
-    $primary_category_imagepath='';
+    $primary_category_imagepath = '';
     if ($request->hasFile('primary_category_imagepath')) {
       $file = $request->file('primary_category_imagepath');
       $name = $request->filename ?? 'photo.';
@@ -240,7 +241,7 @@ class UploadController extends Controller
       $ChannelFilterDetails->primary_category_imagepath = $primary_category_imagepath;
       $ChannelFilterDetails->update();
     }
-    $secondary_category_imagepath='';
+    $secondary_category_imagepath = '';
     if ($request->hasFile('secondary_category_imagepath')) {
       $file = $request->file('secondary_category_imagepath');
       $name = $request->filename ?? 'photo.';
@@ -252,7 +253,7 @@ class UploadController extends Controller
       $ChannelFilterDetails->secondary_category_imagepath = $secondary_category_imagepath;
       $ChannelFilterDetails->update();
     }
-    $secondary_category_fsu_imagepath='';
+    $secondary_category_fsu_imagepath = '';
     if ($request->hasFile('secondary_category_fsu_imagepath')) {
       $file = $request->file('secondary_category_fsu_imagepath');
       $name = $request->filename ?? 'photo.';
@@ -264,7 +265,7 @@ class UploadController extends Controller
       $ChannelFilterDetails->secondary_category_fsu_imagepath = $secondary_category_fsu_imagepath;
       $ChannelFilterDetails->update();
     }
-    $secondary_category_parasite_imagepath='';
+    $secondary_category_parasite_imagepath = '';
     if ($request->hasFile('secondary_category_parasite_imagepath')) {
       $file = $request->file('secondary_category_parasite_imagepath');
       $name = $request->filename ?? 'photo.';
@@ -276,7 +277,7 @@ class UploadController extends Controller
       $ChannelFilterDetails->secondary_category_parasite_imagepath = $secondary_category_parasite_imagepath;
       $ChannelFilterDetails->update();
     }
-    $gandola_imagepath='';
+    $gandola_imagepath = '';
     if ($request->hasFile('gandola_imagepath')) {
       $file = $request->file('gandola_imagepath');
       $name = $request->filename ?? 'photo.';
@@ -288,7 +289,7 @@ class UploadController extends Controller
       $ChannelFilterDetails->gandola_imagepath = $gandola_imagepath;
       $ChannelFilterDetails->update();
     }
-    $selfie_imagepath='';
+    $selfie_imagepath = '';
     if ($request->hasFile('selfie_imagepath')) {
       $file = $request->file('selfie_imagepath');
       $name = $request->filename ?? 'photo.';
@@ -312,6 +313,126 @@ class UploadController extends Controller
       ],
       'success' =>  true
     ]);
-  
+  }
+
+  public function uploadTicketImages(Request $request)
+  {
+    $imagePath1 = '';
+    if ($request->hasFile('image_path1')) {
+      $file = $request->file('image_path1');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();;
+      $imagePath1 = 'tickets/' .  $request->id . '/' . $name;
+      Storage::disk('local')->put($imagePath1, file_get_contents($file), 'public');
+
+      $dailyphoto = Ticket::where('id', '=', request()->id)->first();
+      $dailyphoto->image_path1 = $imagePath1;
+      $dailyphoto->update();
+    }
+    $imagePath2 = '';
+    if ($request->hasFile('image_path2')) {
+      $file = $request->file('image_path2');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();;
+      $imagePath2 = 'tickets/' .  $request->id . '/' . $name;
+      Storage::disk('local')->put($imagePath2, file_get_contents($file), 'public');
+
+      $dailyphoto = Ticket::where('id', '=', request()->id)->first();
+      $dailyphoto->image_path2 = $imagePath2;
+      $dailyphoto->update();
+    }
+    $imagePath3 = '';
+    if ($request->hasFile('image_path3')) {
+      $file = $request->file('image_path3');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();;
+      $imagePath3 = 'tickets/' .  $request->id . '/' . $name;
+      Storage::disk('local')->put($imagePath3, file_get_contents($file), 'public');
+
+      $dailyphoto = Ticket::where('id', '=', request()->id)->first();
+      $dailyphoto->image_path3 = $imagePath3;
+      $dailyphoto->update();
+    }
+    $imagePath4 = '';
+    if ($request->hasFile('image_path4')) {
+      $file = $request->file('image_path4');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();;
+      $imagePath4 = 'tickets/' .  $request->id . '/' . $name;
+      Storage::disk('local')->put($imagePath4, file_get_contents($file), 'public');
+
+      $dailyphoto = Ticket::where('id', '=', request()->id)->first();
+      $dailyphoto->image_path4 = $imagePath4;
+      $dailyphoto->update();
+    }
+    return response()->json([
+      'data'  => [
+        'image_path1' => $imagePath1,
+        'image_path2' => $imagePath2,
+        'image_path3' => $imagePath3,
+        'image_path4' => $imagePath4,
+      ],
+      'success' =>  true
+    ]);
+  }
+  public function uploadTicketFollowupImages(Request $request)
+  {
+    $imagePath1 = '';
+    if ($request->hasFile('image_path1')) {
+      $file = $request->file('image_path1');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();;
+      $imagePath1 = 'ticket-followups/' .  $request->id . '/' . $name;
+      Storage::disk('local')->put($imagePath1, file_get_contents($file), 'public');
+
+      $dailyphoto = TicketFollowup::where('id', '=', request()->id)->first();
+      $dailyphoto->image_path1 = $imagePath1;
+      $dailyphoto->update();
+    }
+    $imagePath2 = '';
+    if ($request->hasFile('image_path2')) {
+      $file = $request->file('image_path2');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();;
+      $imagePath2 = 'ticket-followups/' .  $request->id . '/' . $name;
+      Storage::disk('local')->put($imagePath2, file_get_contents($file), 'public');
+
+      $dailyphoto = TicketFollowup::where('id', '=', request()->id)->first();
+      $dailyphoto->image_path2 = $imagePath2;
+      $dailyphoto->update();
+    }
+    $imagePath3 = '';
+    if ($request->hasFile('image_path3')) {
+      $file = $request->file('image_path3');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();;
+      $imagePath3 = 'ticket-followups/' .  $request->id . '/' . $name;
+      Storage::disk('local')->put($imagePath3, file_get_contents($file), 'public');
+
+      $dailyphoto = TicketFollowup::where('id', '=', request()->id)->first();
+      $dailyphoto->image_path3 = $imagePath3;
+      $dailyphoto->update();
+    }
+    $imagePath4 = '';
+    if ($request->hasFile('image_path4')) {
+      $file = $request->file('image_path4');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();;
+      $imagePath4 = 'ticket-followups/' .  $request->id . '/' . $name;
+      Storage::disk('local')->put($imagePath4, file_get_contents($file), 'public');
+
+      $dailyphoto = TicketFollowup::where('id', '=', request()->id)->first();
+      $dailyphoto->image_path4 = $imagePath4;
+      $dailyphoto->update();
+    }
+    return response()->json([
+      'data'  => [
+        'image_path1' => $imagePath1,
+        'image_path2' => $imagePath2,
+        'image_path3' => $imagePath3,
+        'image_path4' => $imagePath4,
+      ],
+      'success' =>  true
+    ]);
   }
 }
