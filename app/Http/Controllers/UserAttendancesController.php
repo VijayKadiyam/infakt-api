@@ -35,7 +35,7 @@ class UserAttendancesController extends Controller
       ['text'  =>  'DECEMBER', 'value' =>  12],
     ];
 
-    $years = ['2020', '2021','2022'];
+    $years = ['2020', '2021', '2022'];
 
     return response()->json([
       'months'  =>  $months,
@@ -137,14 +137,12 @@ class UserAttendancesController extends Controller
       if ($request->year) {
         $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
       }
-      if ($request->superVisor_id) {
-        $supervisorId = $request->superVisor_id;
+      $supervisorId = request()->supervisorId;
+      if ($supervisorId != '')
         $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
           $q->where('supervisor_id', '=', $supervisorId);
         });
-      }
       $userAttendances = $userAttendances->get();
-      // return $userAttendances;
       if (count($userAttendances) != 0) {
         foreach ($userAttendances as $attendance) {
           $startTime = 0;
