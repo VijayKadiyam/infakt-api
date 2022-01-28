@@ -71,6 +71,7 @@ class UserAttendancesController extends Controller
       $userAttendances = $userAttendances->where('user_id', '=', $request->userId);
     }
     if ($request->supervisorId) {
+      return $request->supervisorId;
       $supervisorId = $request->supervisorId;
       $supervisorUsers = User::where('supervisor_id', '=', $supervisorId)
         ->get();
@@ -135,6 +136,12 @@ class UserAttendancesController extends Controller
       }
       if ($request->year) {
         $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
+      }
+      if ($request->superVisor_id) {
+        $supervisorId = $request->superVisor_id;
+        $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
+          $q->where('supervisor_id', '=', $supervisorId);
+        })->take(2);
       }
       $userAttendances = $userAttendances->get();
       // return $userAttendances;
