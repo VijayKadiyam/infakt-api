@@ -491,4 +491,8 @@ class Company extends Model
   {
     return $this->hasMany(CompetitorData::class)->with('user');
   }
+  public function tickets()
+  {
+    return $this->hasMany(Ticket::class);
+  }
 }
