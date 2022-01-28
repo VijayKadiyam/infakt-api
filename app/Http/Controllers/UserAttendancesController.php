@@ -141,7 +141,7 @@ class UserAttendancesController extends Controller
         $supervisorId = $request->superVisor_id;
         $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
           $q->where('supervisor_id', '=', $supervisorId);
-        })->take(2);
+        });
       }
       $userAttendances = $userAttendances->get();
       // return $userAttendances;
