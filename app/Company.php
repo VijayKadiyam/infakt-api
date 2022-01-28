@@ -433,7 +433,7 @@ class Company extends Model
   public function visitors()
   {
     return $this->hasMany(Visitor::class)
-      ->with('user','visitor_bas', 'visitor_npds', 'visitor_stocks');
+      ->with('user', 'visitor_bas', 'visitor_npds', 'visitor_stocks');
   }
 
   public function channel_competition_offers()
@@ -494,5 +494,9 @@ class Company extends Model
   public function tickets()
   {
     return $this->hasMany(Ticket::class);
+  }
+  public function ticket_followups()
+  {
+    return $this->hasMany(TicketFollowup::class);
   }
 }

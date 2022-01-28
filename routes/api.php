@@ -440,3 +440,6 @@ Route::resource('competitor_datas', 'CompetitorDatasController');
 
 // Ticket
 Route::resource('tickets', 'TicketsController');
+
+// Ticket Followup
+Route::resource('ticket_followups', 'TicketFollowupsController');
