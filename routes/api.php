@@ -437,3 +437,9 @@ Route::resource('customer_data_entries', 'CustomerDataEntriesController');
 // Competitor Data
 Route::get('competitor_datas/masters', 'CompetitorDatasController@masters');
 Route::resource('competitor_datas', 'CompetitorDatasController');
+
+// Ticket
+Route::resource('tickets', 'TicketsController');
+
+// Ticket Followup
+Route::resource('ticket_followups', 'TicketFollowupsController');
