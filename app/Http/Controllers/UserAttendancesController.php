@@ -100,8 +100,8 @@ class UserAttendancesController extends Controller
         }
         if (!$check) {
           $userAttendanceData[] = [
-            'store_name'  =>  $supervisorUser->name ?? '',
-            'ba_name'     =>  $supervisorUser->ba_name ?? '',
+            'store_name'  =>  $supervisorUser->name ?? '-',
+            'ba_name'     =>  $supervisorUser->ba_name ?? '-',
             'present'     =>  'NO',
             'date'        =>  Carbon::parse($request->date)->format('d-m-Y'),
             'time'        =>  '-',
