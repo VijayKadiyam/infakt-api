@@ -54,22 +54,28 @@ class EmailBaReportCommand extends Command
         $this->info('BA Report Emailed...');
 
         $supervisors = User::with('roles')
-			->where('active', '=', 1)
-			->whereHas('roles',  function ($q) {
-			$q->where('name', '=', 'SUPERVISOR');
-			})->orderBy('name')
-			// ->take(1)
-			->get();
-		
+            ->where('active', '=', 1)
+            ->whereHas('roles',  function ($q) {
+                $q->where('name', '=', 'SUPERVISOR');
+            })->orderBy('name')
+            // ->take(1)
+            ->get();
+
         $count = 1;
-		foreach ($supervisors as $supervisor) {
-			$name = $supervisor->name;
-			Mail::to($supervisor->email)
-                ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'anirban.choudhury@pousse.in'])
+        foreach ($supervisors as $supervisor) {
+            $name = $supervisor->name;
+            $rsm = 'casilda.r@mamaearth.in';
+            if ($supervisor->region == 'EAST')
+                $rsm = 'swarupa.c@mamaearth.in';
+            if ($supervisor->region == 'NORTH')
+                $rsm = 'rajlakshmi.s@mamaearth.in';
+
+            Mail::to($supervisor->email)
+                ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'anirban.choudhury@pousse.in', $rsm])
                 ->send(new BaReportEmail($todayDate, $name));
 
             $this->info("$count. $name BAs Report Emailed...");
             $count++;
-		}
+        }
     }
 }

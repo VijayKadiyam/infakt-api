@@ -111,8 +111,6 @@ class UserAttendancesController extends Controller
 
     }
 
-
-
     $userAttendances = $userAttendances->get();
 
     // else if($request->month && $request->userid) {
