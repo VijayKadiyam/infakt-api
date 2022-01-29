@@ -73,7 +73,6 @@ class UserAttendancesController extends Controller
 
     $userAttendanceData = [];
     if ($request->supervisorId) {
-      return $request->supervisorId;
       $supervisorId = $request->supervisorId;
       $supervisorUsers = User::where('supervisor_id', '=', $supervisorId)
         ->get();
@@ -94,8 +93,8 @@ class UserAttendancesController extends Controller
               'ba_name'     =>  $supervisorUser->ba_name,
               'present'     =>  'YES',
               'date'        =>  Carbon::parse($request->date)->format('d-m-Y'),
-              // 'time'        => ($userAttendance->login_time ? $userAttendance->login_time  : '') + ' - ' + ($userAttendance->logout_time ? $userAttendance->logout_time : ''),
-              'time'        => '-'
+              'time'        => ($userAttendance->login_time ? $userAttendance->login_time  : '') + ' - ' + ($userAttendance->logout_time ? $userAttendance->logout_time : ''),
+              // 'time'        => '-'
             ];
           }
         }
