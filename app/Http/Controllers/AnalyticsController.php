@@ -143,6 +143,12 @@ class AnalyticsController extends Controller
           'date'    =>  $date,
           'achieved' => $ordersOfADateTotal,
         ];
+      else {
+        $days[] = [
+          'date'    =>  $date,
+          'achieved' => 0,
+        ];
+      }
     }
 
     $data = [
@@ -204,30 +210,71 @@ class AnalyticsController extends Controller
       }
     }
 
+    return response()->json([
+      'data'    =>  $achievedDatas,
+      'success' =>  true
+    ]);
+  }
+
+  public function focussedKpiReport(Request $request)
+  {
+    $request->validate([
+      'userId'  =>  'required',
+      'month'   =>  'required',
+    ]);
+
+    $user = User::find($request->userId);
 
 
-    // Datewise orders
-    // $daysInMonth = Carbon::createFromDate($request->month)->daysInMonth;
-    // for ($i = 1; $i <= $daysInMonth; $i++) {
-    //   $date = 2022 . '-' . $request->month . '-' . sprintf("%02d", $i);
-    //   $ordersOfADateTotal = 0;
-    //   foreach ($ordersOfMonth as $order) {
-    //     $orderDate = Carbon::parse($order->created_at)->format('Y-m-d');
-    //     if ($orderDate == $date)
-    //       $ordersOfADateTotal += $order->total;
-    //   }
+    // Get target
+    $current = Carbon::now();
+    $currentMonth = $current->month;
+    $currentYear = 2022;
+    // $currentYear = $current->year;
+    $targets = FocusedTarget::where('user_id', '=', $request->userId)
+      ->where('month', '=', $currentMonth)
+      ->where('year', '=', $currentYear)
+      ->get();
+    foreach ($targets as $target) {
+      $category = $target ? $target->category : '';
+      $target = $target ? $target->target : 0;
+      $achieved = 0;
 
-    //   if ($ordersOfADateTotal != 0)
-    //     $days[] = [
-    //       'date'    =>  $date,
-    //       'achieved' => $ordersOfADateTotal,
-    //     ];
-    // }
+      $searches = explode("_", $category);
 
-    // $data = [
-    //   'target'    =>  $target,
-    //   'achieved'  =>  $achieved,
-    // ];
+
+      // Total orders of a month
+      $ordersOfMonth = Order::where('user_id', '=', $request->userId)
+        ->with('order_details')
+        ->whereMonth('created_at', $request->month)
+        ->where('order_type', '=', 'Sales')
+        ->where('is_active', '=', 1)
+        ->get();
+
+      // Achieved of a month
+      foreach ($ordersOfMonth as $order) {
+        foreach ($order->order_details as $orderDetail) {
+          foreach ($searches as $search) {
+            if (str_contains($orderDetail->sku->name, strtoupper($search))) {
+              $achieved += $orderDetail->value;
+            }
+          }
+        }
+      }
+
+      $achievedDatas[] = [
+        'store_name'  =>  $user->name,
+        'target'  =>  $target,
+        'target_category' =>  $category,
+        'achieved'  =>  $achieved,
+      ];
+    }
+    $achievedDatas[] = [
+      'store_name'  => '-',
+      'target'  =>  '-',
+      'target_category' =>  '-',
+      'achieved'  =>  '-',
+    ];
 
     return response()->json([
       'data'    =>  $achievedDatas,
@@ -407,16 +454,26 @@ class AnalyticsController extends Controller
       ->where('is_active', '=', 1)
       ->get();
 
-    // Total orders of last month
-    $ordersOfLastMonth = Order::where('user_id', '=', $request->userId)
-      ->whereMonth('created_at', $request->month != 1 ? $request->month - 1 : 1)
-      ->where('order_type', '=', 'Sales')
-      ->where('is_active', '=', 1)
-      ->get();
+    if ($request->month == '01') {
+      // Total orders of last month
+      $ordersOfLastMonth = Order::where('user_id', '=', $request->userId)
+        ->whereMonth('created_at', 10)
+        ->where('order_type', '=', 'Sales')
+        ->where('is_active', '=', 1)
+        ->get();
+    } else {
+      // Total orders of last month
+      $ordersOfLastMonth = Order::where('user_id', '=', $request->userId)
+        ->whereMonth('created_at', 10)
+        ->where('order_type', '=', 'Sales')
+        ->where('is_active', '=', 1)
+        ->get();
+    }
+
 
     // Total orders of last 2 month
     $ordersOfLast2Month = Order::where('user_id', '=', $request->userId)
-      ->whereMonth('created_at', $request->month != 2 ? $request->month - 2 : 1)
+      ->whereMonth('created_at', 9)
       ->where('order_type', '=', 'Sales')
       ->where('is_active', '=', 1)
       ->get();

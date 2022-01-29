@@ -316,6 +316,7 @@ Route::resource('sales_orders', 'SalesOrdersController');
 Route::get('daySummary', 'AnalyticsController@daySummary');
 Route::get('kpiReport', 'AnalyticsController@kpiReport');
 Route::get('supervisorKpiReport', 'AnalyticsController@supervisorKpiReport');
+Route::get('focussedKpiReport', 'AnalyticsController@focussedKpiReport');
 Route::get('supervisorFocussedKpiReport', 'AnalyticsController@supervisorFocussedKpiReport');
 Route::get('targetVsAchieved', 'AnalyticsController@targetVsAchieved');
 Route::get('salesTrend', 'AnalyticsController@salesTrend');
