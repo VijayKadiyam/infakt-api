@@ -109,12 +109,11 @@ class UserAttendancesController extends Controller
         }
       }
 
-      $userAttendances = $userAttendances->get();
     }
 
 
 
-    // $userAttendances = $userAttendances->get();
+    $userAttendances = $userAttendances->get();
 
     // else if($request->month && $request->userid) {
     //   $userAttendances = UserAttendance::with('user_attendance_breaks')
