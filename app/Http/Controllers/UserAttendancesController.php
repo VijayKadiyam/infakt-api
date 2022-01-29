@@ -89,8 +89,8 @@ class UserAttendancesController extends Controller
           if ($supervisorUser->id == $userAttendance->user->id) {
             $check = true;
             $userAttendanceData[] = [
-              'store_name'  =>  $userAttendance->user->name ?? '',
-              'ba_name'     =>  $supervisorUser->ba_name ?? '',
+              'store_name'  =>  $userAttendance->user->name ?? '-',
+              'ba_name'     =>  $supervisorUser->ba_name ?? '-',
               'present'     =>  'YES',
               'date'        =>  Carbon::parse($request->date)->format('d-m-Y'),
               'time'        => ($userAttendance->login_time ? $userAttendance->login_time  : '') + ' - ' + ($userAttendance->logout_time ? $userAttendance->logout_time : ''),
