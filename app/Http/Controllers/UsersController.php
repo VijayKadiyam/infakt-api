@@ -196,8 +196,10 @@ class UsersController extends Controller
         ->whereHas('roles', function ($q) use ($role) {
           $q->where('name', '=', $role->name);
         });
-      if($request->status != 'all')
+      if ($request->status != 'all')
         $users = $users->where('active', '=', 1);
+      if ($request->superVisor_id)
+        $users = $users->where('supervisor_id', '=', $request->superVisor_id);
       $users = $users->latest()->get();
     } elseif ($request->batch_no) {
       $users = $request->company->users()

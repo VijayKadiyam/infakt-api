@@ -85,5 +85,7 @@ class CrudeFocusedTarget extends Model
         'tablets',
         'toner',
         'yogurt_for',
+        'rice_range',
+        'almond_range'
     ];
 }

@@ -35,7 +35,7 @@ class UserAttendancesController extends Controller
       ['text'  =>  'DECEMBER', 'value' =>  12],
     ];
 
-    $years = ['2020', '2021'];
+    $years = ['2020', '2021', '2022'];
 
     return response()->json([
       'months'  =>  $months,
@@ -73,6 +73,7 @@ class UserAttendancesController extends Controller
 
     $userAttendanceData = [];
     if ($request->supervisorId) {
+      return $request->supervisorId;
       $supervisorId = $request->supervisorId;
       $supervisorUsers = User::where('supervisor_id', '=', $supervisorId)
         ->get();
@@ -166,8 +167,12 @@ class UserAttendancesController extends Controller
       if ($request->year) {
         $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
       }
+      $supervisorId = request()->supervisorId;
+      if ($supervisorId != '')
+        $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
+          $q->where('supervisor_id', '=', $supervisorId);
+        });
       $userAttendances = $userAttendances->get();
-      // return $userAttendances;
       if (count($userAttendances) != 0) {
         foreach ($userAttendances as $attendance) {
           $startTime = 0;
@@ -493,7 +498,11 @@ class UserAttendancesController extends Controller
     if ($request->year) {
       $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
     }
-
+    $supervisorId = request()->superVisor_id;
+    if ($supervisorId != '')
+      $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
+        $q->where('supervisor_id', '=', $supervisorId);
+      });
     $userAttendances = $userAttendances->get();
 
     $users = [];
@@ -577,6 +586,11 @@ class UserAttendancesController extends Controller
     if ($request->session_type) {
       $userAttendances = $userAttendances->where('session_type', '=', $request->session_type);
     }
+    $supervisorId = request()->superVisor_id;
+    if ($supervisorId != '')
+      $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
+        $q->where('supervisor_id', '=', $supervisorId);
+      });
     $userAttendances = $userAttendances->get();
 
     $users = [];

@@ -92,6 +92,8 @@ Route::post('upload_bill/{id}', 'UploadController@uploadBill');
 Route::post('upload_retailer/{id}', 'UploadController@uploadRetailer');
 Route::post('upload_daily_photo', 'UploadController@uploadDailyPhotos');
 Route::post('upload_daily_photo', 'UploadController@uploadDailyPhotos');
+Route::post('upload_ticket', 'UploadController@uploadTicketImages');
+Route::post('upload_ticket_followup', 'UploadController@uploadTicketFollowupImages');
 
 Route::resource('products', 'ProductsController');
 Route::get('productSkusStocks', 'ProductsController@productSkusStocks');
@@ -442,3 +444,9 @@ Route::resource('customer_data_entries', 'CustomerDataEntriesController');
 // Competitor Data
 Route::get('competitor_datas/masters', 'CompetitorDatasController@masters');
 Route::resource('competitor_datas', 'CompetitorDatasController');
+
+// Ticket
+Route::resource('tickets', 'TicketsController');
+
+// Ticket Followup
+Route::resource('ticket_followups', 'TicketFollowupsController');

@@ -203,9 +203,10 @@ class OrdersController extends Controller
       if ($request->month) {
         $orders = $orders->whereMonth('created_at', '=', $request->month);
       }
-      if ($request->year) {
-        $orders = $orders->whereYear('created_at', '=', $request->year);
-      }
+      $orders = $orders->whereYear('created_at', '=', 2022);
+      // if ($request->year) {
+      //   $orders = $orders->whereYear('created_at', '=', $request->year);
+      // }
       if ($request->orderType) {
         $orders = $orders->where('order_type', '=', $request->orderType);
       }
@@ -217,8 +218,8 @@ class OrdersController extends Controller
         ->whereHas('roles',  function ($q) {
           $q->where('name', '=', 'SUPERVISOR');
         })->orderBy('name')
-      // ->take(1) 
-      ->get();
+        // ->take(1) 
+        ->get();
 
       foreach ($supervisors as $supervisor) {
 
@@ -251,7 +252,7 @@ class OrdersController extends Controller
       }
     }
 
-    if($request->raw == 'YES') {
+    if ($request->raw == 'YES') {
       return response()->json([
         'count'    =>   sizeof($orders),
         'data'     =>  $orders,
@@ -505,10 +506,15 @@ class OrdersController extends Controller
         ->whereHas('roles',  function ($q) {
           $q->where('name', '=', 'SUPERVISOR');
         })->orderBy('name')->get();
+      if ($request->superVisor_id) {
+        $supervisors = $supervisors->where('id', '=', $request->superVisor_id);
+      }
       $Oftake_users = [];
       foreach ($supervisors as $supervisor) {
 
-        $users = User::where('supervisor_id', '=', $supervisor->id)->get();
+        $users = User::with('roles')->where('supervisor_id', '=', $supervisor->id)
+        ->where('active', '=', 1)
+        ->get();
         $offtake_count = 0;
         foreach ($users as $user) {
 

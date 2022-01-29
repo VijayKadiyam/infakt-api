@@ -32,7 +32,7 @@ class CompetitorDatasController extends Controller
             ['text'  =>  'DECEMBER', 'value' =>  12],
         ];
 
-        $years = ['2020', '2021'];
+        $years = ['2020', '2021','2022'];
 
         return response()->json([
             'months'  =>  $months,
@@ -56,7 +56,11 @@ class CompetitorDatasController extends Controller
         if (request()->year) {
             $competitor_datas = $competitor_datas->where('year', '=', request()->year);
         }
-
+        $supervisorId = request()->superVisor_id;
+        if ($supervisorId != '')
+            $competitor_datas = $competitor_datas->whereHas('user',  function ($q) use ($supervisorId) {
+                $q->where('supervisor_id', '=', $supervisorId);
+            });
         $competitor_datas = $competitor_datas->get();
 
         $count = $competitor_datas->count();
