@@ -48,7 +48,7 @@ class FocusedTargetsController extends Controller
             ->whereHas('roles',  function ($q) {
                 $q->where('name', '!=', 'Admin');
                 $q->where('name', '!=', 'Distributor');
-            })->take(10)->get();
+            })->get();
         $targets = [];
         foreach ($users as $user) {
             if ($request->from_month && $request->to_month && $request->year) {
