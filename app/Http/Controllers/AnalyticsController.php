@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use App\ReferencePlan;
 use App\UserAttendance;
 use App\Target;
+use App\FocusedTarget;
 use App\Sale;
 
 class AnalyticsController extends Controller
@@ -153,6 +154,157 @@ class AnalyticsController extends Controller
 
     return response()->json([
       'data'    =>  $data,
+      'success' =>  true
+    ]);
+  }
+
+  public function supervisorKpiReport(Request $request)
+  {
+    $request->validate([
+      'supervisorId'  =>  'required',
+      'month'   =>  'required',
+    ]);
+
+
+    if ($request->supervisorId) {
+      $achievedDatas = [];
+      $supervisorUsers = User::where('supervisor_id', '=', $request->supervisorId)
+        ->get();
+
+      foreach ($supervisorUsers as $supervisorUser) {
+        // Total orders of a month
+        $ordersOfMonth = Order::where('user_id', '=', $supervisorUser->id)
+          ->whereMonth('created_at', $request->month)
+          ->where('order_type', '=', 'Sales')
+          ->where('is_active', '=', 1)
+          ->get();
+
+        // Get target
+        $current = Carbon::now();
+        $currentMonth = $current->month;
+        $currentYear = 2022;
+        // $currentYear = $current->year;
+        $target = Target::where('user_id', '=', $supervisorUser->id)
+          ->where('month', '=', $currentMonth)
+          ->where('year', '=', $currentYear)
+          ->first();
+        $target = $target ? $target->target : 0;
+        $achieved = 0;
+
+        // Achieved of a month
+        foreach ($ordersOfMonth as $order) {
+          $achieved += $order->total;
+        }
+
+        $achievedDatas[] = [
+          'store_name'  =>  $supervisorUser->name,
+          'target'  =>  $target,
+          'achieved'  =>  $achieved,
+        ];
+      }
+    }
+
+
+
+    // Datewise orders
+    // $daysInMonth = Carbon::createFromDate($request->month)->daysInMonth;
+    // for ($i = 1; $i <= $daysInMonth; $i++) {
+    //   $date = 2022 . '-' . $request->month . '-' . sprintf("%02d", $i);
+    //   $ordersOfADateTotal = 0;
+    //   foreach ($ordersOfMonth as $order) {
+    //     $orderDate = Carbon::parse($order->created_at)->format('Y-m-d');
+    //     if ($orderDate == $date)
+    //       $ordersOfADateTotal += $order->total;
+    //   }
+
+    //   if ($ordersOfADateTotal != 0)
+    //     $days[] = [
+    //       'date'    =>  $date,
+    //       'achieved' => $ordersOfADateTotal,
+    //     ];
+    // }
+
+    // $data = [
+    //   'target'    =>  $target,
+    //   'achieved'  =>  $achieved,
+    // ];
+
+    return response()->json([
+      'data'    =>  $achievedDatas,
+      'success' =>  true
+    ]);
+  }
+
+  public function supervisorFocussedKpiReport(Request $request)
+  {
+    $request->validate([
+      'supervisorId'  =>  'required',
+      'month'   =>  'required',
+    ]);
+
+
+    if ($request->supervisorId) {
+      $achievedDatas = [];
+      $supervisorUsers = User::where('supervisor_id', '=', $request->supervisorId)
+        ->get();
+
+      foreach ($supervisorUsers as $supervisorUser) {
+
+
+        // Get target
+        $current = Carbon::now();
+        $currentMonth = $current->month;
+        $currentYear = 2022;
+        // $currentYear = $current->year;
+        $targets = FocusedTarget::where('user_id', '=', $supervisorUser->id)
+          ->where('month', '=', $currentMonth)
+          ->where('year', '=', $currentYear)
+          ->get();
+        foreach ($targets as $target) {
+          $category = $target ? $target->category : '';
+          $target = $target ? $target->target : 0;
+          $achieved = 0;
+
+          $searches = explode("_", $category);
+
+
+          // Total orders of a month
+          $ordersOfMonth = Order::where('user_id', '=', $supervisorUser->id)
+            ->with('order_details')
+            ->whereMonth('created_at', $request->month)
+            ->where('order_type', '=', 'Sales')
+            ->where('is_active', '=', 1)
+            ->get();
+
+          // Achieved of a month
+          foreach ($ordersOfMonth as $order) {
+            foreach ($order->order_details as $orderDetail) {
+              foreach ($searches as $search) {
+                if (str_contains($orderDetail->sku->name, strtoupper($search))) {
+                  $achieved += $orderDetail->value;
+                }
+              }
+            }
+          }
+
+          $achievedDatas[] = [
+            'store_name'  =>  $supervisorUser->name,
+            'target'  =>  $target,
+            'target_category' =>  $category,
+            'achieved'  =>  $achieved,
+          ];
+        }
+        $achievedDatas[] = [
+          'store_name'  => '-',
+          'target'  =>  '-',
+          'target_category' =>  '-',
+          'achieved'  =>  '-',
+        ];
+      }
+    }
+
+    return response()->json([
+      'data'    =>  $achievedDatas,
       'success' =>  true
     ]);
   }

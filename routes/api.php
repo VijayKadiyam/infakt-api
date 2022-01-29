@@ -313,6 +313,8 @@ Route::resource('sales_orders', 'SalesOrdersController');
 
 Route::get('daySummary', 'AnalyticsController@daySummary');
 Route::get('kpiReport', 'AnalyticsController@kpiReport');
+Route::get('supervisorKpiReport', 'AnalyticsController@supervisorKpiReport');
+Route::get('supervisorFocussedKpiReport', 'AnalyticsController@supervisorFocussedKpiReport');
 Route::get('targetVsAchieved', 'AnalyticsController@targetVsAchieved');
 Route::get('salesTrend', 'AnalyticsController@salesTrend');
 Route::get('billedOutlet', 'AnalyticsController@billedOutlet');
@@ -423,6 +425,9 @@ Route::get('crude_focused_targets', 'CrudeFocusedTargetsController@index');
 Route::post('upload_focused_target', 'CrudeFocusedTargetsController@uploadFocusedTarget');
 Route::get('process_focused_target', 'CrudeFocusedTargetsController@processFocusedTarget');
 Route::get('truncate_focused_targets', 'CrudeFocusedTargetsController@truncate');
+Route::get('focused_targets/masters', 'FocusedTargetsController@masters');
+Route::get('focused_targets', 'FocusedTargetsController@search');
+
 
 // Crude Customers
 Route::get('crude_customers', 'CrudeCustomersController@index');

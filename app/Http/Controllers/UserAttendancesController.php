@@ -70,6 +70,8 @@ class UserAttendancesController extends Controller
     if ($request->userId) {
       $userAttendances = $userAttendances->where('user_id', '=', $request->userId);
     }
+
+    $userAttendanceData = [];
     if ($request->supervisorId) {
       $supervisorId = $request->supervisorId;
       $supervisorUsers = User::where('supervisor_id', '=', $supervisorId)
@@ -79,10 +81,37 @@ class UserAttendancesController extends Controller
         $q->where('supervisor_id', '=', $supervisorId);
       });
       $analysis['supervisorLoginUsersCount'] = $userAttendances->count();
+      $analysis['supervisorNotLoginUsersCount'] = $supervisorUsers->count() - $userAttendances->count();
       $analysis['supervisorPercentLoggedIn'] = round(($analysis['supervisorLoginUsersCount'] / $analysis['supervisorUsersCount']) * 100, 2);
+      foreach ($supervisorUsers as $supervisorUser) {
+        $check = false;
+        foreach ($userAttendances->get() as $userAttendance) {
+          if ($supervisorUser->id == $userAttendance->user->id) {
+            $check = true;
+            $userAttendanceData[] = [
+              'store_name'  =>  $userAttendance->user->name,
+              'ba_name'     =>  $supervisorUser->ba_name,
+              'present'     =>  'YES',
+              'date'        =>  Carbon::parse($request->date)->format('d-m-Y'),
+              'time'        =>  $userAttendance->login_time + ' - ' + $userAttendance->logout_time,
+            ];
+          }
+        }
+        if (!$check) {
+          $userAttendanceData[] = [
+            'store_name'  =>  $supervisorUser->name,
+            'ba_name'     =>  $supervisorUser->ba_name,
+            'present'     =>  'NO',
+            'date'        =>  Carbon::parse($request->date)->format('d-m-Y'),
+            'time'        =>  '-',
+          ];
+        }
+      }
+
+      $userAttendances = $userAttendances->get();
     }
 
-    $userAttendances = $userAttendances->get();
+
 
     // $userAttendances = $userAttendances->get();
 
@@ -118,6 +147,7 @@ class UserAttendancesController extends Controller
     return response()->json([
       'data'     =>  $userAttendances,
       'analysis'  =>  $analysis,
+      'userAttendanceData'  =>  $userAttendanceData,
       'success' =>  true
     ], 200);
   }

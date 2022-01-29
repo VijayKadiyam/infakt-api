@@ -45,6 +45,7 @@ class TargetsController extends Controller
 
   public function search(Request $request)
   {
+    ini_set("memory_limit", "-1");
     $users = $request->company->users()->with('roles')
         ->whereHas('roles',  function ($q) {
           $q->where('name', '!=', 'Admin');

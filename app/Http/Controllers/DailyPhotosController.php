@@ -58,10 +58,10 @@ class DailyPhotosController extends Controller
             $dailyPhotos = request()->company->daily_photos()->where('user_id', '=', $user->id);
 
             if ($request->date && $request->month == null && $request->year == null && $request->userId == null) {
-              $dailyPhotos = $dailyPhotos->where('date', '=', $request->date);
+              // $dailyPhotos = $dailyPhotos->where('date', '=', $request->date);
             }
             if ($request->date && $request->month == null && $request->year == null) {
-              $dailyPhotos = $dailyPhotos->where('date', '=', $request->date);
+              // $dailyPhotos = $dailyPhotos->where('date', '=', $request->date);
             }
             if ($request->month) {
               $dailyPhotos = $dailyPhotos->whereMonth('date', '=', $request->month);

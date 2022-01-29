@@ -203,11 +203,16 @@ class UsersController extends Controller
       $users = $request->company->users()
         ->where('batch_no', '=', $request->batch_no)
         ->get();
+    } elseif($request->supervisorId) {
+      $supervisorId = $request->supervisorId;
+      $users = User::where('supervisor_id', '=', $supervisorId)
+        ->get();
     }
     // $count = $users->count();
     return response()->json([
       'data'  =>  $users,
-      'count' =>   $count
+      'count' =>   $count,
+      'success' =>  true,
     ], 200);
   }
 
