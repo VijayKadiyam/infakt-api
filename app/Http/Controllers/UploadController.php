@@ -325,9 +325,9 @@ class UploadController extends Controller
       $imagePath1 = 'tickets/' .  $request->id . '/' . $name;
       Storage::disk('local')->put($imagePath1, file_get_contents($file), 'public');
 
-      $dailyphoto = Ticket::where('id', '=', request()->id)->first();
-      $dailyphoto->image_path1 = $imagePath1;
-      $dailyphoto->update();
+      $Ticket = Ticket::where('id', '=', request()->id)->first();
+      $Ticket->imagepath1 = $imagePath1;
+      $Ticket->update();
     }
     $imagePath2 = '';
     if ($request->hasFile('image_path2')) {
@@ -337,9 +337,9 @@ class UploadController extends Controller
       $imagePath2 = 'tickets/' .  $request->id . '/' . $name;
       Storage::disk('local')->put($imagePath2, file_get_contents($file), 'public');
 
-      $dailyphoto = Ticket::where('id', '=', request()->id)->first();
-      $dailyphoto->image_path2 = $imagePath2;
-      $dailyphoto->update();
+      $Ticket = Ticket::where('id', '=', request()->id)->first();
+      $Ticket->imagepath2 = $imagePath2;
+      $Ticket->update();
     }
     $imagePath3 = '';
     if ($request->hasFile('image_path3')) {
@@ -349,9 +349,9 @@ class UploadController extends Controller
       $imagePath3 = 'tickets/' .  $request->id . '/' . $name;
       Storage::disk('local')->put($imagePath3, file_get_contents($file), 'public');
 
-      $dailyphoto = Ticket::where('id', '=', request()->id)->first();
-      $dailyphoto->image_path3 = $imagePath3;
-      $dailyphoto->update();
+      $Ticket = Ticket::where('id', '=', request()->id)->first();
+      $Ticket->imagepath3 = $imagePath3;
+      $Ticket->update();
     }
     $imagePath4 = '';
     if ($request->hasFile('image_path4')) {
@@ -361,9 +361,9 @@ class UploadController extends Controller
       $imagePath4 = 'tickets/' .  $request->id . '/' . $name;
       Storage::disk('local')->put($imagePath4, file_get_contents($file), 'public');
 
-      $dailyphoto = Ticket::where('id', '=', request()->id)->first();
-      $dailyphoto->image_path4 = $imagePath4;
-      $dailyphoto->update();
+      $Ticket = Ticket::where('id', '=', request()->id)->first();
+      $Ticket->imagepath4 = $imagePath4;
+      $Ticket->update();
     }
     return response()->json([
       'data'  => [

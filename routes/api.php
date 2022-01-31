@@ -447,6 +447,7 @@ Route::get('competitor_datas/masters', 'CompetitorDatasController@masters');
 Route::resource('competitor_datas', 'CompetitorDatasController');
 
 // Ticket
+Route::get('tickets/masters', 'TicketsController@masters');
 Route::resource('tickets', 'TicketsController');
 
 // Ticket Followup

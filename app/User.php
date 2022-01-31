@@ -484,5 +484,10 @@ class User extends Authenticatable
   {
     return $this->reference_plans ? in_array($reference_plans, $this->reference_plans->pluck('id')->toArray()) : false;
   }
+
+  public function tickets()
+  {
+    return $this->hasMany(Ticket::class);
+  }
 }
 
