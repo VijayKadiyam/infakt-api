@@ -15,9 +15,7 @@ class TargetsController extends Controller
 
   public function masters(Request $request)
   {
-    $usersController = new UsersController();
-    $request->request->add(['role_id' => '5']);
-    $usersResponse = $usersController->index($request);
+    
 
     $months = [
       ['text'  =>  'JANUARY', 'value' =>  1],
@@ -35,9 +33,11 @@ class TargetsController extends Controller
     ];
 
     $years = ['2020', '2021', '2022'];
-
+    // $usersController = new UsersController();
+    // $request->request->add(['role_id' => '5']);
+    // $usersResponse = $usersController->index($request);
     return response()->json([
-      'users'   =>  $usersResponse->getData()->data,
+      // 'users'   =>  $usersResponse->getData()->data,
       'months'  =>  $months,
       'years'   =>  $years
     ], 200);
