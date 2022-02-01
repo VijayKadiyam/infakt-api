@@ -513,8 +513,8 @@ class OrdersController extends Controller
       foreach ($supervisors as $supervisor) {
 
         $users = User::with('roles')->where('supervisor_id', '=', $supervisor->id)
-        ->where('active', '=', 1)
-        ->get();
+          ->where('active', '=', 1)
+          ->get();
         $offtake_count = 0;
         foreach ($users as $user) {
 
@@ -549,9 +549,9 @@ class OrdersController extends Controller
         }
       }
     }
-
     return response()->json([
       'data'     =>  $Oftake_users,
+      'count'    =>   sizeof($Oftake_users),
       'success'   =>  true
     ], 200);
   }
