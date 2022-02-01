@@ -57,6 +57,7 @@ class ReferencePlansController extends Controller
         $rfl3m = 0;
         $ordersTaken = 0;
         foreach ($user_reference_plan->reference_plan->retailers as $retailer) {
+          // Current Month
           $orders = Order::where('retailer_id', '=', $retailer->id)
             // ->whereDate('created_at', Carbon::now())
             ->where('order_type', '=', 'Sales')
@@ -77,8 +78,19 @@ class ReferencePlansController extends Controller
             $retailer['l3m']  = $rfmtd;;
             $retailer['is_done'] = 'N';
           }
-          if($retailer->imagepath == null)
-            $retailer->imagepath = '';
+          // Previous Month
+          $orders = Order::where('retailer_id', '=', $retailer->id)
+            // ->whereDate('created_at', Carbon::now())
+            ->where('order_type', '=', 'Sales')
+            ->whereMonth('created_at', Carbon::now()->month - 1)
+            ->with('order_details')
+            ->get();
+          if (sizeof($orders) > 0) {
+            foreach ($orders as $order) {
+              $rfmtd += $order->total;
+            }
+            $retailer['l3m']  = $rfmtd;;
+          }
         }
 
         $user_reference_plan->reference_plan['total_outlets'] = $totalOutlets;
