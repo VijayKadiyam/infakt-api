@@ -148,7 +148,15 @@ class UsersController extends Controller
           // $q->where('name', '!=', 'Admin');
         })
         ->latest()->get();
-    } else if ($request->searchEmp) {
+    } else if ($request->search) {
+      $users = $request->company->users()->with('roles')
+        ->whereHas('roles',  function ($q) {
+          $q->where('name', '!=', 'Admin');
+        })
+        ->where('name', 'LIKE', $request->search . '%')
+        ->latest()->get();
+    } 
+    else if ($request->searchEmp) {
       $users = $request->company->users()->with('roles')
         ->whereHas('roles',  function ($q) {
           $q->where('name', '!=', 'Admin');
