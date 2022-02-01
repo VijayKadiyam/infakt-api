@@ -197,8 +197,9 @@ class OrdersController extends Controller
       $orders = request()->company->orders_list()
         ->where('user_id', '=', $request->userId)
         ->where('is_active', '=', 1);
-      if ($request->date) {
-        $orders = $orders->whereDate('created_at', $request->date);
+      if ($request->from_date && $request->to_date) {
+        $orders = $orders->whereBetween('created_at', [$request->from_date, $request->to_date]);
+        // $orders = $orders->whereDate('created_at', $request->date);
       }
       if ($request->month) {
         $orders = $orders->whereMonth('created_at', '=', $request->month);
