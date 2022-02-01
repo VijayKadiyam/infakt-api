@@ -550,9 +550,9 @@ class OrdersController extends Controller
         }
       }
     }
-
     return response()->json([
       'data'     =>  $Oftake_users,
+      'count'    =>   sizeof($Oftake_users),
       'success'   =>  true
     ], 200);
   }
