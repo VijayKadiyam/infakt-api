@@ -85,24 +85,30 @@ class StocksController extends Controller
       $count = $skus->count();
     }
 
-    $users = $request->company->users()->with('roles')
+
+    $users = $request->company->users();
+    if ($request->user_id) {
+      $users = $users->where('users.id', '=', $request->user_id);
+    }
+    $users = $users->with('roles')
       ->whereHas('roles',  function ($q) {
         $q->where('name', '!=', 'Admin');
-      })->take(10)->get();
+      });
 
+    $users = $users->get();
     foreach ($users as $key => $user) {
 
       if ($user) {
 
         $stocks = [];
         if ($user)
-        $stocks = Stock::whereYear('created_at', Carbon::now())
-        ->whereMonth('created_at', Carbon::now())
-        // ->where('distributor_id', '=', 3050)
-        ->where('distributor_id', '=', $user->distributor_id)
-        ->latest()->get();
+          $stocks = Stock::whereYear('created_at', Carbon::now())
+            ->whereMonth('created_at', Carbon::now())
+            // ->where('distributor_id', '=', 3050)
+            ->where('distributor_id', '=', $user->distributor_id)
+            ->latest()->get();
 
-            // return $stocks;
+        // return $stocks;
         $orders = [];
         if ($user)
           $orders = Order::whereYear('created_at', Carbon::now())

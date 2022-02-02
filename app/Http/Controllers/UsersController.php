@@ -153,8 +153,12 @@ class UsersController extends Controller
         ->whereHas('roles',  function ($q) {
           $q->where('name', '!=', 'Admin');
         })
-        ->where('name', 'LIKE', $request->search . '%')
-        ->latest()->get();
+        ->where('name', 'LIKE', $request->search . '%');
+        if($request->superVisor_id) {
+          $supervisorId = $request->superVisor_id;
+          $users =  $users->where('supervisor_id', '=', $supervisorId);
+        }
+        $users =  $users->latest()->get();
     } 
     else if ($request->searchEmp) {
       $users = $request->company->users()->with('roles')
@@ -230,7 +234,7 @@ class UsersController extends Controller
   {
     $count = 0;
     $users = [];
-
+return $request->superVisor_id;
     $users = $request->company->users();
     if ($request->batch_no) {
       $users = $users
@@ -251,6 +255,11 @@ class UsersController extends Controller
     if ($request->brand) {
       $users = $users
         ->where('brand', 'LIKE', '%' . $request->brand . '%');
+    }
+    if($request->superVisor_id) {
+      $supervisorId = $request->superVisor_id;
+      return $supervisorId;
+      $users =  $users->where('supervisor_id', '=', $supervisorId);
     }
     $users = $users->get();
     $count = $users->count();

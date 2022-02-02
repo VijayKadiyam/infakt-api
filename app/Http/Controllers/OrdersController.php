@@ -194,14 +194,17 @@ class OrdersController extends Controller
     ini_set('max_execution_time', -1);
     $count = 0;
     $orders = [];
-    if ($request->userId) {
+    if ($request->is_offtake_filter=='YES') {
       $orders = request()->company->orders_list()
-        ->where('user_id', '=', $request->userId)
-        ->where('is_active', '=', 1);
-      if ($request->date) {
-        $orders = $orders->whereDate('created_at', $request->date);
+      ->where('is_active', '=', 1);
+      if ($request->userId) {
+        $orders =  $orders->where('user_id', '=', $request->userId);
       }
-      if ($request->month) {
+      if ($request->from_date!='' && $request->to_date!="") {
+        $orders = $orders->whereBetween('created_at', [$request->from_date, $request->to_date]);
+        // $orders = $orders->whereDate('created_at', $request->date);
+      }
+      if ($request->month!="") {
         $orders = $orders->whereMonth('created_at', '=', $request->month);
       }
       $orders = $orders->whereYear('created_at', '=', 2022);
@@ -550,9 +553,9 @@ class OrdersController extends Controller
         }
       }
     }
-
     return response()->json([
       'data'     =>  $Oftake_users,
+      'count'    =>   sizeof($Oftake_users),
       'success'   =>  true
     ], 200);
   }

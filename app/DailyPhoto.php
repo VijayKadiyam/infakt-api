@@ -15,7 +15,7 @@ class DailyPhoto extends Model
     ];
 
     public function user() {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->with('roles');
     }
     
     public function users()
