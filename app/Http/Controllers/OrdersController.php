@@ -193,10 +193,12 @@ class OrdersController extends Controller
   {
     $count = 0;
     $orders = [];
-    if ($request->userId) {
+    if ($request->is_offtake_filter=='YES') {
       $orders = request()->company->orders_list()
-        ->where('user_id', '=', $request->userId)
-        ->where('is_active', '=', 1);
+      ->where('is_active', '=', 1);
+      if ($request->userId) {
+        $orders =  $orders->where('user_id', '=', $request->userId);
+      }
       if ($request->from_date!='' && $request->to_date!="") {
         $orders = $orders->whereBetween('created_at', [$request->from_date, $request->to_date]);
         // $orders = $orders->whereDate('created_at', $request->date);
