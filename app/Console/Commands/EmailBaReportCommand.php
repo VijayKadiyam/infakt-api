@@ -69,12 +69,16 @@ class EmailBaReportCommand extends Command
             if ($supervisor->region == 'NORTH')
                 $rsm = 'rajlakshmi.s@mamaearth.in';
 
+            // $rashi = 'rashi.j@mamaearth.in';
+            // if($supervisor->channel == 'IIA')
+
+
             Mail::to($supervisor->email)
                 ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'anirban.choudhury@pousse.in', $rsm])
                 ->send(new BaReportEmail($todayDate, $name));
-                
+
             $this->info("$count. $name BAs Report Emailed...");
-            
+
             $count++;
         }
     }

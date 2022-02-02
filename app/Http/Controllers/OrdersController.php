@@ -191,6 +191,7 @@ class OrdersController extends Controller
 
   public function offtakes(Request $request)
   {
+    ini_set('max_execution_time', -1);
     $count = 0;
     $orders = [];
     if ($request->userId) {
@@ -513,8 +514,8 @@ class OrdersController extends Controller
       foreach ($supervisors as $supervisor) {
 
         $users = User::with('roles')->where('supervisor_id', '=', $supervisor->id)
-        ->where('active', '=', 1)
-        ->get();
+          ->where('active', '=', 1)
+          ->get();
         $offtake_count = 0;
         foreach ($users as $user) {
 
