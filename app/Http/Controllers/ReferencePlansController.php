@@ -79,6 +79,7 @@ class ReferencePlansController extends Controller
             $retailer['is_done'] = 'N';
           }
           // Previous Month
+          
           $orders = Order::where('retailer_id', '=', $retailer->id)
             // ->whereDate('created_at', Carbon::now())
             ->where('order_type', '=', 'Sales')
