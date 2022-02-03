@@ -11,6 +11,7 @@ use App\Order;
 use Carbon\Carbon;
 use App\UserReferencePlan;
 use App\DailyOrderSummary;
+use App\Company;
 
 class StoreSkuCountsCommand extends Command
 {
@@ -51,7 +52,7 @@ class StoreSkuCountsCommand extends Command
 
         DailyOrderSummary::truncate();
 
-        $skus = request()->company->skus;
+        $skus = Sku::all();
 
         $users = [
             User::find(1516),
@@ -128,7 +129,7 @@ class StoreSkuCountsCommand extends Command
                     $sku['qty'] = $sku['closing_stock'];
 
                     DailyOrderSummary::create([
-                        'company_id'  =>  request()->company->id,
+                        'company_id'  =>  1,
                         'user_id' =>  $user->id,
                         'sku_id'  =>  $sku->id,
                         'opening_stock' =>  $sku['opening_stock'],
