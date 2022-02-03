@@ -23,6 +23,10 @@ class Ticket extends Model
     {
         return $this->belongsTo(Company::class);
     }
+    public function ticketFollowup()
+    {
+        return $this->hasMany(TicketFollowup::class)->with('ticket', 'repliedBy');
+    }
     public function assignedTo()
     {
         return $this->belongsTo(User::class, 'assigned_to_id');

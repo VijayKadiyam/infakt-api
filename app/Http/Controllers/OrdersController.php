@@ -191,6 +191,8 @@ class OrdersController extends Controller
 
   public function offtakes(Request $request)
   {
+    ini_set('max_execution_time', 0);
+
     $count = 0;
     $orders = [];
     if ($request->is_offtake_filter=='YES') {

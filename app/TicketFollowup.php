@@ -21,4 +21,12 @@ class TicketFollowup extends Model
     {
         return $this->belongsTo(Company::class);
     }
+    public function ticket()
+    {
+        return $this->belongsTo(Ticket::class)->with('assignedTo', 'createdBy');
+    }
+    public function repliedBy()
+    {
+        return $this->belongsTo(User::class, 'replied_by_id');
+    }
 }
