@@ -57,27 +57,31 @@ class ReferencePlansController extends Controller
         $rfl3m = 0;
         $ordersTaken = 0;
         foreach ($user_reference_plan->reference_plan->retailers as $retailer) {
+          $retailer['mtd'] = 0;
+          $retailer['l3m']  = 0;;
+          $retailer['is_done'] = 'Y';
+
           // Current Month
-          $orders = Order::where('retailer_id', '=', $retailer->id)
-            // ->whereDate('created_at', Carbon::now())
-            ->where('order_type', '=', 'Sales')
-            ->whereMonth('created_at', Carbon::now()->month)
-            ->with('order_details')
-            ->get();
-          if (sizeof($orders) > 0) {
-            $ordersTaken++;
-            foreach ($orders as $order) {
-              $rfmtd += $order->total;
-              $totalOrderValue += $order->total;
-            }
-            $retailer['mtd'] = $rfmtd;
-            $retailer['l3m']  = $rfmtd;;
-            $retailer['is_done'] = 'Y';
-          } else {
-            $retailer['mtd'] = 0;
-            $retailer['l3m']  = $rfmtd;;
-            $retailer['is_done'] = 'N';
-          }
+          // $orders = Order::where('retailer_id', '=', $retailer->id)
+          //   // ->whereDate('created_at', Carbon::now())
+          //   ->where('order_type', '=', 'Sales')
+          //   ->whereMonth('created_at', Carbon::now()->month)
+          //   ->with('order_details')
+          //   ->get();
+          // if (sizeof($orders) > 0) {
+          //   $ordersTaken++;
+          //   foreach ($orders as $order) {
+          //     $rfmtd += $order->total;
+          //     $totalOrderValue += $order->total;
+          //   }
+          //   $retailer['mtd'] = $rfmtd;
+          //   $retailer['l3m']  = $rfmtd;;
+          //   $retailer['is_done'] = 'Y';
+          // } else {
+          //   $retailer['mtd'] = 0;
+          //   $retailer['l3m']  = $rfmtd;;
+          //   $retailer['is_done'] = 'N';
+          // }
           // Previous Month
           // $orders = Order::where('retailer_id', '=', $retailer->id)
           //   // ->whereDate('created_at', Carbon::now())
@@ -101,21 +105,18 @@ class ReferencePlansController extends Controller
 
         $reference_plans[] = $user_reference_plan->reference_plan;
       }
-    } 
-    else if(request()->search == 'all') 
-    $reference_plans = request()->company->reference_plans;
-    else if(request()->search) {
+    } else if (request()->search == 'all')
+      $reference_plans = request()->company->reference_plans;
+    else if (request()->search) {
       $reference_plans = request()->company->reference_plans()
         ->where('name', 'LIKE', '%' . $request->search . '%')
         ->get();
-    }
-    else if (request()->page && request()->rowsPerPage) {
+    } else if (request()->page && request()->rowsPerPage) {
       $reference_plans = request()->company->reference_plans();
       $count = $reference_plans->count();
       $reference_plans = $reference_plans->paginate(request()->rowsPerPage)->toArray();
       $reference_plans = $reference_plans['data'];
-    }
-    else
+    } else
       $reference_plans = request()->company->reference_plans;
 
     // $count = sizeof($reference_plans);
@@ -198,7 +199,7 @@ class ReferencePlansController extends Controller
       $Distributor['name'] = $beat->name;
       $Distributor['password'] = bcrypt('123456');
       $Distributor['password_backup'] = bcrypt('123456');
-      $Distributor['email'] = str_replace(" ", "", $beat->name).mt_rand(1,9999) . '@distributor';
+      $Distributor['email'] = str_replace(" ", "", $beat->name) . mt_rand(1, 9999) . '@distributor';
       $Distributor = new User($Distributor);
       $Distributor->save();
 
@@ -251,7 +252,7 @@ class ReferencePlansController extends Controller
       }
     }
     return response()->json([
-      'data'=>$AllBeats,
+      'data' => $AllBeats,
       'success'  =>  true
     ], 201);
   }
