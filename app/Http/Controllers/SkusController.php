@@ -189,7 +189,7 @@ class SkusController extends Controller
       $skus = request()->company->skus;
       $count = $skus->count();
     }
-    
+
     $user = User::find($request->userId);
     if ($user) {
       foreach ($skus as $sku) {
@@ -197,13 +197,13 @@ class SkusController extends Controller
           ->where('sku_id', '=', $sku->id)
           ->first();
         if ($dailyOrderSummary) {
-          $sku['qty'] = $dailyOrderSummary->qty;
-          $sku['opening_stock'] = $dailyOrderSummary->opening_stock;
-          $sku['received_stock'] = $dailyOrderSummary->received_stock;
-          $sku['purchase_returned_stock'] = $dailyOrderSummary->purchase_returned_stock;
-          $sku['sales_stock'] = $dailyOrderSummary->sales_stock;
-          $sku['returned_stock'] = $dailyOrderSummary->returned_stock;
-          $sku['closing_stock'] = $dailyOrderSummary->closing_stock;
+          $sku['qty'] = (int) $dailyOrderSummary->qty;
+          $sku['opening_stock'] = (int)$dailyOrderSummary->opening_stock;
+          $sku['received_stock'] = (int)$dailyOrderSummary->received_stock;
+          $sku['purchase_returned_stock'] = (int)$dailyOrderSummary->purchase_returned_stock;
+          $sku['sales_stock'] = (int)$dailyOrderSummary->sales_stock;
+          $sku['returned_stock'] = (int)$dailyOrderSummary->returned_stock;
+          $sku['closing_stock'] = (int)$dailyOrderSummary->closing_stock;
         }
       }
     }
