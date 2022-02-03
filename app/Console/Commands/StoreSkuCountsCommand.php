@@ -54,17 +54,13 @@ class StoreSkuCountsCommand extends Command
 
         $skus = Sku::all();
 
-        $users = [
-            User::find(1516),
-        ];
+        // $users = [
+        //     User::find(1516),
+        // ];
 
-        // $users = $request->company->users()
-        //   ->where('id', '=', 1515)
-        //   ->whereHas('roles', function ($q) {
-        //     $q->where('name', '=', 'BA');
-        //   })
-        //   ->take(1)
-        //   ->get();
+        $users = User::whereHas('roles', function ($q) {
+            $q->where('name', '=', 'BA');
+        })->get();
 
         foreach ($users as $user) {
             if ($user) {
