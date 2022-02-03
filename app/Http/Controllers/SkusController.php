@@ -189,6 +189,7 @@ class SkusController extends Controller
       $skus = request()->company->skus;
       $count = $skus->count();
     }
+    
     $user = User::find($request->userId);
     if ($user) {
       foreach ($skus as $sku) {
