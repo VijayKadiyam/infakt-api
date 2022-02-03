@@ -99,7 +99,7 @@ class SkusController extends Controller
       $orders = [];
       if($user)
         $orders = Order::whereYear('created_at', Carbon::now())
-          ->whereMonth('created_at', Carbon::now())
+          // ->whereMonth('created_at', Carbon::now())
           ->where('distributor_id', '=', $user->distributor_id)
           ->latest()->get();
 
