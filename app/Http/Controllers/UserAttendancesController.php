@@ -108,7 +108,6 @@ class UserAttendancesController extends Controller
           ];
         }
       }
-
     }
 
     $userAttendances = $userAttendances->get();
@@ -155,14 +154,20 @@ class UserAttendancesController extends Controller
     $User_Attendances = [];
     $totalWorkingHrs = 0;
 
-    if ($request->userId) {
+    if ($request->is_attendance_filter == 'YES') {
+
       $userAttendances = request()->company->user_attendances();
-      $userAttendances = $userAttendances->where('user_id', '=', $request->userId);
-      if ($request->month) {
-        $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
+      if ($request->userId) {
+        $userAttendances = $userAttendances->where('user_id', '=', $request->userId);
       }
-      if ($request->year) {
+      if ($request->month != '' && $request->year != '') {
+        // IF Month & Year Filter
+        $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
         $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
+      }
+      if ($request->from_date != '' && $request->to_date != '') {
+        // IF Date Range  Filter
+        $userAttendances = $userAttendances->whereBetween('date', [$request->from_date, $request->to_date]);
       }
       $supervisorId = request()->supervisorId;
       if ($supervisorId != '')
@@ -495,6 +500,9 @@ class UserAttendancesController extends Controller
     if ($request->year) {
       $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
     }
+    if ($request->user_id) {
+      $userAttendances = $userAttendances->where('user_id', '=', $request->user_id);
+    }
     $supervisorId = request()->superVisor_id;
     if ($supervisorId != '')
       $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
@@ -573,7 +581,9 @@ class UserAttendancesController extends Controller
   {
     $analysis = [];
     $userAttendances = request()->company->user_attendances();
-
+    if ($request->user_id) {
+      $userAttendances = $userAttendances->where('user_id', '=', $request->user_id);
+    }
     if ($request->month) {
       $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
     }
