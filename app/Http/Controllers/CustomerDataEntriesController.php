@@ -15,9 +15,9 @@ class CustomerDataEntriesController extends Controller
 
     public function masters(Request $request)
     {
-        $usersController = new UsersController();
-        $request->request->add(['role_id' => '5']);
-        $usersResponse = $usersController->index($request);
+        // $usersController = new UsersController();
+        // $request->request->add(['role_id' => '5']);
+        // $usersResponse = $usersController->index($request);
         $Retailers = Retailer::all();
         $months = [
             ['text'  =>  'JANUARY', 'value' =>  1],
@@ -34,13 +34,13 @@ class CustomerDataEntriesController extends Controller
             ['text'  =>  'DECEMBER', 'value' =>  12],
         ];
 
-        $years = ['2020', '2021'];
+        $years = ['2020', '2021', '2022'];
 
         return response()->json([
             'months'  =>  $months,
             'years'   =>  $years,
             'retailers' => $Retailers,
-            'users'   =>  $usersResponse->getData()->data,
+            // 'users'   =>  $usersResponse->getData()->data,
         ], 200);
     }
 

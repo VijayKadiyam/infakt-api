@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Ticket;
 use App\TicketFollowup;
 use Illuminate\Http\Request;
 
@@ -17,21 +18,21 @@ class TicketFollowupsController extends Controller
          *
        *@
        */
-    public function index()
+    public function index(Ticket $ticket)
     {
         $count = 0;
         if (request()->page && request()->rowsPerPage) {
-            $ticket_followups = request()->company->ticket_followups();
-            $count = $ticket_followups->count();
-            $ticket_followups = $ticket_followups->paginate(request()->rowsPerPage)->toArray();
-            $ticket_followups = $ticket_followups['data'];
+            $ticketFollowup = $ticket->ticketFollowup();
+            $count = $ticketFollowup->count();
+            $ticketFollowup = $ticketFollowup->paginate(request()->rowsPerPage)->toArray();
+            $ticketFollowup = $ticketFollowup['data'];
         } else {
-            $ticket_followups = request()->company->ticket_followups;
-            $count = $ticket_followups->count();
+            $ticketFollowup = $ticket->ticketFollowup;
+            $count = $ticketFollowup->count();
         }
 
         return response()->json([
-            'data'     =>   $ticket_followups,
+            'data'     =>   $ticketFollowup,
             'count'    =>   $count,
             'success'  =>   true
         ], 200);

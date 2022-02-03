@@ -452,3 +452,4 @@ Route::resource('tickets', 'TicketsController');
 
 // Ticket Followup
 Route::resource('ticket_followups', 'TicketFollowupsController');
+Route::resource('tickets/{ticket}/ticket_followups', 'TicketFollowupsController');

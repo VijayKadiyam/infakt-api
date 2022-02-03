@@ -382,48 +382,48 @@ class UploadController extends Controller
       $file = $request->file('image_path1');
       $name = $request->filename ?? 'photo.';
       $name = $name . $file->getClientOriginalExtension();;
-      $imagePath1 = 'ticket-followups/' .  $request->id . '/' . $name;
+      $imagePath1 = 'tickets/' . $request->ticketid .'/'. 'ticket-followups/' .  $request->id . '/' . $name;
       Storage::disk('local')->put($imagePath1, file_get_contents($file), 'public');
 
-      $dailyphoto = TicketFollowup::where('id', '=', request()->id)->first();
-      $dailyphoto->image_path1 = $imagePath1;
-      $dailyphoto->update();
+      $followup = TicketFollowup::where('id', '=', request()->id)->first();
+      $followup->imagepath1 = $imagePath1;
+      $followup->update();
     }
     $imagePath2 = '';
     if ($request->hasFile('image_path2')) {
       $file = $request->file('image_path2');
       $name = $request->filename ?? 'photo.';
       $name = $name . $file->getClientOriginalExtension();;
-      $imagePath2 = 'ticket-followups/' .  $request->id . '/' . $name;
+      $imagePath2 = 'tickets/' . $request->ticketid .'/'. 'ticket-followups/' .  $request->id . '/' . $name;
       Storage::disk('local')->put($imagePath2, file_get_contents($file), 'public');
 
-      $dailyphoto = TicketFollowup::where('id', '=', request()->id)->first();
-      $dailyphoto->image_path2 = $imagePath2;
-      $dailyphoto->update();
+      $followup = TicketFollowup::where('id', '=', request()->id)->first();
+      $followup->imagepath2 = $imagePath2;
+      $followup->update();
     }
     $imagePath3 = '';
     if ($request->hasFile('image_path3')) {
       $file = $request->file('image_path3');
       $name = $request->filename ?? 'photo.';
       $name = $name . $file->getClientOriginalExtension();;
-      $imagePath3 = 'ticket-followups/' .  $request->id . '/' . $name;
+      $imagePath3 = 'tickets/' . $request->ticketid .'/'. 'ticket-followups/' .  $request->id . '/' . $name;
       Storage::disk('local')->put($imagePath3, file_get_contents($file), 'public');
 
-      $dailyphoto = TicketFollowup::where('id', '=', request()->id)->first();
-      $dailyphoto->image_path3 = $imagePath3;
-      $dailyphoto->update();
+      $followup = TicketFollowup::where('id', '=', request()->id)->first();
+      $followup->imagepath3 = $imagePath3;
+      $followup->update();
     }
     $imagePath4 = '';
     if ($request->hasFile('image_path4')) {
       $file = $request->file('image_path4');
       $name = $request->filename ?? 'photo.';
       $name = $name . $file->getClientOriginalExtension();;
-      $imagePath4 = 'ticket-followups/' .  $request->id . '/' . $name;
+      $imagePath4 = 'tickets/' . $request->ticketid .'/'. 'ticket-followups/' .  $request->id . '/' . $name;
       Storage::disk('local')->put($imagePath4, file_get_contents($file), 'public');
 
-      $dailyphoto = TicketFollowup::where('id', '=', request()->id)->first();
-      $dailyphoto->image_path4 = $imagePath4;
-      $dailyphoto->update();
+      $followup = TicketFollowup::where('id', '=', request()->id)->first();
+      $followup->imagepath4 = $imagePath4;
+      $followup->update();
     }
     return response()->json([
       'data'  => [
