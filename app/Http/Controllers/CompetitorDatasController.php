@@ -14,9 +14,9 @@ class CompetitorDatasController extends Controller
 
     public function masters(Request $request)
     {
-        $usersController = new UsersController();
-        $request->request->add(['role_id' => '5']);
-        $usersResponse = $usersController->index($request);
+        // $usersController = new UsersController();
+        // $request->request->add(['role_id' => '5']);
+        // $usersResponse = $usersController->index($request);
         $months = [
             ['text'  =>  'JANUARY', 'value' =>  1],
             ['text'  =>  'FEBRUARY', 'value' =>  2],
@@ -38,7 +38,7 @@ class CompetitorDatasController extends Controller
             'months'  =>  $months,
             'years'   =>  $years,
             // 'retailers' => $Retailers,
-            'users'   =>  $usersResponse->getData()->data,
+            // 'users'   =>  $usersResponse->getData()->data,
         ], 200);
     }
 

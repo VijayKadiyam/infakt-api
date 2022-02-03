@@ -15,9 +15,9 @@ class CustomersController extends Controller
 
     public function masters(Request $request)
     {
-        $usersController = new UsersController();
-        $request->request->add(['role_id' => '5']);
-        $usersResponse = $usersController->index($request);
+        // $usersController = new UsersController();
+        // $request->request->add(['role_id' => '5']);
+        // $usersResponse = $usersController->index($request);
 
         $months = [
             ['text'  =>  'JANUARY', 'value' =>  1],
@@ -39,7 +39,7 @@ class CustomersController extends Controller
         return response()->json([
             'months'  =>  $months,
             'years'   =>  $years,
-            'users'   =>  $usersResponse->getData()->data,
+            // 'users'   =>  $usersResponse->getData()->data,
         ], 200);
     }
 
@@ -103,6 +103,7 @@ class CustomersController extends Controller
             $total_no_of_customers_w1 = 0;
             $total_no_of_billed_customers_w1 = 0;
             $total_more_than_two_w1 = 0;
+            $percent_of_w1 = 0;
 
             $total_no_of_customers_w2 = 0;
             $total_no_of_billed_customers_w2 = 0;
