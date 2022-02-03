@@ -207,13 +207,16 @@ class SkusController extends Controller
       $count = $skus->count();
     }
 
-    $sku['qty'] = '-';
-    $sku['opening_stock'] = '-';
-    $sku['received_stock'] = '-';
-    $sku['purchase_returned_stock'] = '-';
-    $sku['sales_stock'] = '-';
-    $sku['returned_stock'] = '-';
-    $sku['closing_stock'] = '-';
+    foreach ($skus as $sku) {
+      $sku['qty'] = '-';
+      $sku['opening_stock'] = '-';
+      $sku['received_stock'] = '-';
+      $sku['purchase_returned_stock'] = '-';
+      $sku['sales_stock'] = '-';
+      $sku['returned_stock'] = '-';
+      $sku['closing_stock'] = '-';
+    }
+
 
     // $user = User::find($request->userId);
     // if ($user) {
