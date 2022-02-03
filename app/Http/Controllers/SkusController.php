@@ -208,13 +208,13 @@ class SkusController extends Controller
     }
 
     foreach ($skus as $sku) {
-      $sku['qty'] = '10';
-      $sku['opening_stock'] = '-';
-      $sku['received_stock'] = '-';
-      $sku['purchase_returned_stock'] = '-';
-      $sku['sales_stock'] = '-';
-      $sku['returned_stock'] = '-';
-      $sku['closing_stock'] = '-';
+      $sku['qty'] = 10;
+      $sku['opening_stock'] = 10;
+      $sku['received_stock'] = 10;
+      $sku['purchase_returned_stock'] = 10;
+      $sku['sales_stock'] = 10;
+      $sku['returned_stock'] = 10;
+      $sku['closing_stock'] = 10;
     }
 
 
