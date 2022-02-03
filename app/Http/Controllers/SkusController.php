@@ -136,7 +136,6 @@ class SkusController extends Controller
             }
           }
 
-          $sku['qty'] = ($totalQty + $receivedQty - $purchaseReturnedQty - $consumedQty + $returnedQty);
 
           $sku['opening_stock'] = $totalQty;
           $sku['received_stock'] = $receivedQty;
@@ -144,6 +143,7 @@ class SkusController extends Controller
           $sku['sales_stock'] = $consumedQty;
           $sku['returned_stock'] = $returnedQty;
           $sku['closing_stock'] = ($totalQty + $receivedQty - $purchaseReturnedQty - $consumedQty + $returnedQty);
+          $sku['qty'] = $sku['closing_stock'];
 
           DailyOrderSummary::create([
             'company_id'  =>  $request->company->id,
@@ -197,7 +197,7 @@ class SkusController extends Controller
           ->where('sku_id', '=', $sku->id)
           ->first();
         if ($dailyOrderSummary) {
-          $sku['qty'] = (int) $dailyOrderSummary->qty;
+          $sku['qty'] = (int) $dailyOrderSummary->closing_stock;
           $sku['opening_stock'] = (int)$dailyOrderSummary->opening_stock;
           $sku['received_stock'] = (int)$dailyOrderSummary->received_stock;
           $sku['purchase_returned_stock'] = (int)$dailyOrderSummary->purchase_returned_stock;
