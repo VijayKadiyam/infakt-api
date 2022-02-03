@@ -101,6 +101,7 @@ Route::get('sendOrderSMS', 'ProductsController@sendOrderSMS');
 Route::resource('products/{product}/skus', 'SkusController');
 Route::get('skus/masters', 'SkusController@masters');
 Route::get('skus', 'SkusController@getAll');
+Route::get('skus_calculate', 'SkusController@calculate');
 // Route::resource('skus', 'SkusController');
 Route::resource('sku_types', 'SkuTypesController');
 Route::resource('offer_types', 'OfferTypesController');
@@ -453,3 +454,5 @@ Route::resource('tickets', 'TicketsController');
 // Ticket Followup
 Route::resource('ticket_followups', 'TicketFollowupsController');
 Route::resource('tickets/{ticket}/ticket_followups', 'TicketFollowupsController');
+
+Route::resource('daily_order_summaries', 'DailyOrderSummariesController');
