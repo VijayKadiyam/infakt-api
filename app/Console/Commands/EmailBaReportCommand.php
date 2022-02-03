@@ -42,11 +42,13 @@ class EmailBaReportCommand extends Command
     public function handle()
     {
         ini_set('max_execution_time', 0);
+        
         // $todayDate = Carbon::now()->addDays(-1)->format('Y-m-d');
         $todayDate = Carbon::now()->format('Y-m-d');
 
         $this->info('Email Report for Date: ' . $todayDate);
 
+        
         Mail::to('deepika.k@mamaearth.in')
             ->cc(['ac.north@pousse.in', 'kirit.sayani@pousse.in', 'bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'rajlakshmi.s@mamaearth.in'])
             ->send(new BaReportEmail($todayDate));
@@ -69,12 +71,16 @@ class EmailBaReportCommand extends Command
             if ($supervisor->region == 'NORTH')
                 $rsm = 'rajlakshmi.s@mamaearth.in';
 
+            // $rashi = 'rashi.j@mamaearth.in';
+            // if($supervisor->channel == 'IIA')
+
+
             Mail::to($supervisor->email)
                 ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'anirban.choudhury@pousse.in', $rsm])
                 ->send(new BaReportEmail($todayDate, $name));
-                
+
             $this->info("$count. $name BAs Report Emailed...");
-            
+
             $count++;
         }
     }
