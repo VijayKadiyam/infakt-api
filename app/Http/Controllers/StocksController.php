@@ -73,6 +73,7 @@ class StocksController extends Controller
     $count = 0;
     if (request()->page && request()->rowsPerPage) {
       $skus = request()->company->skus();
+
       $count = $skus->count();
       $skus = $skus->paginate(request()->rowsPerPage)->toArray();
       $skus = $skus['data'];
@@ -87,9 +88,11 @@ class StocksController extends Controller
 
 
     $users = $request->company->users();
+
     if ($request->user_id) {
       $users = $users->where('users.id', '=', $request->user_id);
     }
+    
     $users = $users->with('roles')
       ->whereHas('roles',  function ($q) {
         $q->where('name', '!=', 'Admin');
