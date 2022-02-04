@@ -58,7 +58,7 @@ class GenerateBaReportCommand extends Command
 			->whereHas('roles',  function ($q) {
 			$q->where('name', '=', 'SUPERVISOR');
 			})->orderBy('name')
-			// ->take(1) 
+			// ->take(1) u
 			->get();
 		
         $count = 1;
