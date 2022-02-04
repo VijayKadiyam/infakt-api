@@ -396,9 +396,12 @@ class CustomersController extends Controller
         }
 
         // $customers = $customers->get();
-        $count=$customers->count();
-        $customers = $customers->paginate(request()->rowsPerPage)->toArray();
-        $customers = $customers['data'];
+        if (request()->page && request()->rowsPerPage) {
+            $count = $customers->count();
+            $customers = $customers->paginate(request()->rowsPerPage)->toArray();
+            $customers = $customers['data'];
+        }
+
         $total_no_of_customers_w1 = 0;
         $total_no_of_customers_w2 = 0;
         $total_no_of_customers_w3 = 0;
