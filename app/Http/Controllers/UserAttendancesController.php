@@ -149,7 +149,7 @@ class UserAttendancesController extends Controller
     ], 200);
   }
   // user Atteandance for client
-  public function user_attendance(Request $request)
+  public function user_attendance_without_pagination(Request $request)
   {
     $User_Attendances = [];
     $totalWorkingHrs = 0;
@@ -274,6 +274,139 @@ class UserAttendancesController extends Controller
     ], 200);
   }
 
+  // user Atteandance for client
+  public function user_attendance(Request $request)
+  {
+    $User_Attendances = [];
+    $totalWorkingHrs = 0;
+
+    if ($request->is_attendance_filter == 'YES') {
+
+      $userAttendances = request()->company->user_attendances();
+      if ($request->userId) {
+        $userAttendances = $userAttendances->where('user_id', '=', $request->userId);
+      }
+      if ($request->month != '' && $request->year != '') {
+        // IF Month & Year Filter
+        $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
+        $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
+      }
+      if ($request->from_date != '' && $request->to_date != '') {
+        // IF Date Range  Filter
+        $userAttendances = $userAttendances->whereBetween('date', [$request->from_date, $request->to_date]);
+      }
+      $supervisorId = request()->supervisorId;
+      if ($supervisorId != '')
+        $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
+          $q->where('supervisor_id', '=', $supervisorId);
+        });
+      if (request()->page && request()->rowsPerPage) {
+        $count = $userAttendances->count();
+        $userAttendances = $userAttendances->paginate(request()->rowsPerPage)->toArray();
+        $userAttendances = $userAttendances['data'];
+      } else {
+        $userAttendances = $userAttendances->get();
+        $count = $userAttendances->count();
+      }
+      if (count($userAttendances) != 0) {
+        foreach ($userAttendances as $attendance) {
+          $startTime = 0;
+          $finishTime = 0;
+          $finishTimeIn24Hrs = 0;
+          $totalDuration = 0;
+          if ($attendance['logout_time'] == null) {
+            $attendance['logout_time'] = '10:30:00';
+            // $attendance['logout_time'] = '22:30:00';
+            $finishTime = $attendance['logout_time'];
+          }
+          $startTime = Carbon::parse($attendance['login_time']);
+          $logOutTime = Carbon::parse($attendance['logout_time']);
+          $finishTimeIn24Hrs = $logOutTime->modify('+12 hours')->format('H:i:s');
+          $finishTime = Carbon::parse($finishTimeIn24Hrs);
+
+
+          $totalDuration = round($finishTime->diffInSeconds($startTime) / (60 * 60));
+          $totalWorkingHrs = $totalDuration;
+          $attendance['working_time'] = $totalWorkingHrs;
+          $User_Attendances[] = $attendance;
+        }
+      }
+    } else if ($request->supervisorId) {
+      $supervisorId = $request->supervisorId;
+      $userAttendances = request()->company->user_attendances();
+      $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
+        $q->where('supervisor_id', '=', $supervisorId);
+      });
+      if ($request->month) {
+        $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
+      }
+      if ($request->year) {
+        $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
+      }
+      $userAttendances = $userAttendances->get();
+      $User_Attendances = $userAttendances;
+    } else {
+      $supervisors = User::with('roles')
+        ->whereHas('roles',  function ($q) {
+          $q->where('name', '=', 'SUPERVISOR');
+        })->orderBy('name')->get();
+
+      foreach ($supervisors as $supervisor) {
+
+        $users = User::where('supervisor_id', '=', $supervisor->id)->get();
+
+        foreach ($users as $user) {
+
+          $userAttendances = request()->company->user_attendances()->where('user_id', '=', $user->id);
+
+          if ($request->date && $request->month == null && $request->year == null && $request->userId == null) {
+            $userAttendances = $userAttendances->where('date', '=', $request->date);
+          }
+          if ($request->date && $request->month == null && $request->year == null) {
+            $userAttendances = $userAttendances->where('date', '=', $request->date);
+          }
+          if ($request->month) {
+            $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
+          }
+          if ($request->year) {
+            $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
+          }
+          $userAttendances = $userAttendances->get();
+          if (count($userAttendances) != 0) {
+            foreach ($userAttendances as $attendance) {
+              $startTime = 0;
+              $finishTime = 0;
+              $finishTimeIn24Hrs = 0;
+              $totalDuration = 0;
+              if ($attendance->logout_time == null) {
+                $attendance['logout_time'] = '10:30:00';
+                // $attendance['logout_time'] = '22:30:00';
+                $finishTime = $attendance['logout_time'];
+              }
+              $startTime = Carbon::parse($attendance['login_time']);
+              $logOutTime = Carbon::parse($attendance['logout_time']);
+              $finishTimeIn24Hrs = $logOutTime->modify('+12 hours')->format('H:i:s');
+              $finishTime = Carbon::parse($finishTimeIn24Hrs);
+
+
+              $totalDuration = round($finishTime->diffInSeconds($startTime) / (60 * 60));
+              $totalWorkingHrs = $totalDuration;
+              $attendance['working_time'] = $totalWorkingHrs;
+              $User_Attendances[] = $attendance;
+            }
+          }
+        }
+      }
+    }
+
+
+
+    return response()->json([
+      'data'     =>  $User_Attendances,
+      'count' => $count,
+      'success' =>  true
+    ], 200);
+  }
   /*
    * To store a new user attendance
    *
