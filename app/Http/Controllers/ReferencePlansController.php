@@ -57,31 +57,31 @@ class ReferencePlansController extends Controller
         $rfl3m = 0;
         $ordersTaken = 0;
         foreach ($user_reference_plan->reference_plan->retailers as $retailer) {
-          $retailer['mtd'] = 0;
-          $retailer['l3m']  = 0;;
-          $retailer['is_done'] = 'Y';
+          // $retailer['mtd'] = 0;
+          // $retailer['l3m']  = 0;;
+          // $retailer['is_done'] = 'Y';
 
           // Current Month
-          // $orders = Order::where('retailer_id', '=', $retailer->id)
-          //   // ->whereDate('created_at', Carbon::now())
-          //   ->where('order_type', '=', 'Sales')
-          //   ->whereMonth('created_at', Carbon::now()->month)
-          //   ->with('order_details')
-          //   ->get();
-          // if (sizeof($orders) > 0) {
-          //   $ordersTaken++;
-          //   foreach ($orders as $order) {
-          //     $rfmtd += $order->total;
-          //     $totalOrderValue += $order->total;
-          //   }
-          //   $retailer['mtd'] = $rfmtd;
-          //   $retailer['l3m']  = $rfmtd;;
-          //   $retailer['is_done'] = 'Y';
-          // } else {
-          //   $retailer['mtd'] = 0;
-          //   $retailer['l3m']  = $rfmtd;;
-          //   $retailer['is_done'] = 'N';
-          // }
+          $orders = Order::where('retailer_id', '=', $retailer->id)
+            // ->whereDate('created_at', Carbon::now())
+            ->where('order_type', '=', 'Sales')
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->with('order_details')
+            ->get();
+          if (sizeof($orders) > 0) {
+            $ordersTaken++;
+            foreach ($orders as $order) {
+              $rfmtd += $order->total;
+              $totalOrderValue += $order->total;
+            }
+            $retailer['mtd'] = $rfmtd;
+            $retailer['l3m']  = $rfmtd;;
+            $retailer['is_done'] = 'Y';
+          } else {
+            $retailer['mtd'] = 0;
+            $retailer['l3m']  = $rfmtd;;
+            $retailer['is_done'] = 'N';
+          }
           // Previous Month
           // $orders = Order::where('retailer_id', '=', $retailer->id)
           //   // ->whereDate('created_at', Carbon::now())
