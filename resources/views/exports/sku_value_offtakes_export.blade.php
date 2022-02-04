@@ -14,6 +14,8 @@
             <th>Supervisor Name</th>
             @for ($i = 1; $i <= $daysInMonth; $i++) <th>{{ $i }}</th>
                 @endfor
+                <th>Total Value</th>
+                <th>Target Value</th>
         </tr>
     </thead>
     <tbody>
@@ -32,6 +34,11 @@
             <td>{{ $offtake['user']['supervisor_name'] }}</td>
             @for ($i = 1; $i <= $daysInMonth; $i++) <td>{{ $offtake["date$i"] }}</td>
                 @endfor
+                <td>{{ $offtake["totalTodayValue"] }}</td>
+                <td>{{ $offtake['user']['target'] != "Not Found"
+                    ? $offtake['user']['target']['target']
+                    : "0"
+                }} </td>
         </tr>
         @endforeach
     </tbody>
