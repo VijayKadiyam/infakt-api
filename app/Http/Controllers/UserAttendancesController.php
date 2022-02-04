@@ -148,7 +148,7 @@ class UserAttendancesController extends Controller
       'success' =>  true
     ], 200);
   }
-  // user Atteandance for client
+  // user Atteandance Without Pagination for client
   public function user_attendance_without_pagination(Request $request)
   {
     $User_Attendances = [];
@@ -621,8 +621,8 @@ class UserAttendancesController extends Controller
     $client->request('GET', $endpoint);
   }
 
-  // User Attendance Month Wise
-  public function monthly_attendances(Request $request)
+  // User Attendance Month Wise WithOut Pagination
+  public function monthly_attendances_without_pagination(Request $request)
   {
     $analysis = [];
     $userAttendances = request()->company->user_attendances();
@@ -641,6 +641,7 @@ class UserAttendancesController extends Controller
       $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
         $q->where('supervisor_id', '=', $supervisorId);
       });
+
     $userAttendances = $userAttendances->get();
 
     $users = [];
@@ -706,6 +707,102 @@ class UserAttendancesController extends Controller
     // return $users;
     return response()->json([
       'data'     =>  $users,
+      'success' =>  true
+    ], 200);
+  }
+  // User Attendance Month Wise
+  public function monthly_attendances(Request $request)
+  {
+    $analysis = [];
+    $userAttendances = request()->company->user_attendances();
+
+    if ($request->month) {
+      $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
+    }
+    if ($request->year) {
+      $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
+    }
+    if ($request->user_id) {
+      $userAttendances = $userAttendances->where('user_id', '=', $request->user_id);
+    }
+    $supervisorId = request()->superVisor_id;
+    if ($supervisorId != '')
+      $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
+        $q->where('supervisor_id', '=', $supervisorId);
+      });
+
+    if (request()->page && request()->rowsPerPage) {
+      $count = $userAttendances->count();
+      $userAttendances = $userAttendances->paginate(request()->rowsPerPage)->toArray();
+      $userAttendances = $userAttendances['data'];
+    } else {
+      $userAttendances = $userAttendances->get();
+      $count = $userAttendances->count();
+    }
+    $users = [];
+    $user_id_log = [];
+
+    foreach ($userAttendances as $key => $attendance) {
+      $present_count = 0;
+      $weekly_off_count = 0;
+      $leave_count = 0;
+      $user = $attendance['user'];
+      $user_id = $user['id'];
+      unset($attendance['user']);
+      $user_key = array_search($user_id, array_column($users, 'id'));
+      $date = Carbon::parse($attendance['date'])->format('j');
+
+      $is_exist = in_array($user_id, $user_id_log);
+      if (!$user_key && !$is_exist) {
+        $user_id_log[] = $user_id;
+        $day_count = 1;
+        switch ($attendance['session_type']) {
+          case 'PRESENT':
+            $present_count++;
+            break;
+          case 'WEEKLY OFF':
+            $weekly_off_count++;
+            break;
+          case 'LEAVE':
+            $leave_count++;
+            break;
+
+          default:
+            break;
+        }
+        $user['day_count'] = $day_count;
+        $user['present_count'] = $present_count;
+        $user['weekly_off_count'] = $weekly_off_count;
+        $user['leave_count'] = $leave_count;
+        $user['attendances'][$date] = $attendance;
+        $users[] = $user;
+      } else {
+        switch ($attendance['session_type']) {
+          case 'PRESENT':
+            $users[$user_key]["present_count"]++;
+            break;
+          case 'WEEKLY OFF':
+            $users[$user_key]['weekly_off_count']++;
+            break;
+          case 'LEAVE':
+            $users[$user_key]['leave_count']++;
+            break;
+
+          default:
+            #code...
+            break;
+        }
+
+        $day_count = sizeof($users[$user_key]["attendances"]) + 1;
+        $users[$user_key]["attendances"][$date] = $attendance;
+        $users[$user_key]['day_count'] = $day_count;
+        // $users[$user_key]['present_count'] = $present_count;
+      }
+    }
+    // return $users;
+    return response()->json([
+      'data'     =>  $users,
+      'count' => $count,
       'success' =>  true
     ], 200);
   }
