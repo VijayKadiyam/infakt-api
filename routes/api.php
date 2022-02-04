@@ -421,6 +421,7 @@ Route::resource('report_lists', 'ReportListsController');
 
 // Customers
 Route::get('customers/masters', 'CustomersController@masters');
+Route::get('customers/Exceldata', 'CustomersController@index_without_pagination'); // Entire Data Without Pagination
 Route::resource('customers', 'CustomersController');
 
 
