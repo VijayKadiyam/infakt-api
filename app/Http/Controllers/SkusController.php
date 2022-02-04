@@ -204,6 +204,8 @@ class SkusController extends Controller
           $sku['sales_stock'] = (int)$dailyOrderSummary->sales_stock;
           $sku['returned_stock'] = (int)$dailyOrderSummary->returned_stock;
           $sku['closing_stock'] = (int)$dailyOrderSummary->closing_stock;
+        } else {
+          
         }
       }
     }
