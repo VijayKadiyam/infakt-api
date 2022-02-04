@@ -194,17 +194,33 @@ class OrdersController extends Controller
     ini_set('max_execution_time', -1);
     $count = 0;
     $orders = [];
-    if ($request->is_offtake_filter=='YES') {
+    if ($request->userId) {
       $orders = request()->company->orders_list()
-      ->where('is_active', '=', 1);
+        ->where('is_active', '=', 1);
       if ($request->userId) {
         $orders =  $orders->where('user_id', '=', $request->userId);
       }
-      if ($request->from_date!='' && $request->to_date!="") {
+      if ($request->month != "") {
+        $orders = $orders->whereMonth('created_at', '=', $request->month);
+      }
+      $orders = $orders->whereYear('created_at', '=', 2022);
+      if ($request->orderType) {
+        $orders = $orders->where('order_type', '=', $request->orderType);
+      }
+
+      $orders = $orders->get();
+    }
+    else if ($request->is_offtake_filter == 'YES') {
+      $orders = request()->company->orders_list()
+        ->where('is_active', '=', 1);
+      if ($request->userId) {
+        $orders =  $orders->where('user_id', '=', $request->userId);
+      }
+      if ($request->from_date != '' && $request->to_date != "") {
         $orders = $orders->whereBetween('created_at', [$request->from_date, $request->to_date]);
         // $orders = $orders->whereDate('created_at', $request->date);
       }
-      if ($request->month!="") {
+      if ($request->month != "") {
         $orders = $orders->whereMonth('created_at', '=', $request->month);
       }
       $orders = $orders->whereYear('created_at', '=', 2022);
@@ -217,6 +233,7 @@ class OrdersController extends Controller
 
       $orders = $orders->get();
     } else {
+
       $supervisors = User::with('roles')
         ->where('active', '=', 1)
         ->whereHas('roles',  function ($q) {
