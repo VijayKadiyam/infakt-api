@@ -51,23 +51,23 @@ class GenerateBaReportCommand extends Command
 
         Excel::store(new BAReportExport($date), "/reports/$date/BA-Report-$date.xlsx", "local");
 
-        // $this->info('BA Report Generated...');
+        $this->info('BA Report Generated...');
 
-        // $supervisors = User::with('roles')
-		// 	->where('active', '=', 1)
-		// 	->whereHas('roles',  function ($q) {
-		// 	$q->where('name', '=', 'SUPERVISOR');
-		// 	})->orderBy('name')
-		// 	// ->take(1) 
-		// 	->get();
+        $supervisors = User::with('roles')
+			->where('active', '=', 1)
+			->whereHas('roles',  function ($q) {
+			$q->where('name', '=', 'SUPERVISOR');
+			})->orderBy('name')
+			// ->take(1) 
+			->get();
 		
-        // $count = 1;
-		// foreach ($supervisors as $supervisor) {
-		// 	$name = $supervisor->name;
-		// 	Excel::store(new BAReportExport($date, $supervisor->id), "/reports/$date/$name-BAs-Report-$date.xlsx", 'local');
+        $count = 1;
+		foreach ($supervisors as $supervisor) {
+			$name = $supervisor->name;
+			Excel::store(new BAReportExport($date, $supervisor->id), "/reports/$date/$name-BAs-Report-$date.xlsx", 'local');
 
-        //     $this->info("$count. $name BAs Report Generated...");
-        //     $count++;
-		// }
+            $this->info("$count. $name BAs Report Generated...");
+            $count++;
+		}
     }
 }
