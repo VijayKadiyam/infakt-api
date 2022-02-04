@@ -194,7 +194,7 @@ class OrdersController extends Controller
     ini_set('max_execution_time', -1);
     $count = 0;
     $orders = [];
-    if ($request->userId) {
+    if ($request->userId && $request->is_offtake_filter != 'YES') {
       $orders = request()->company->orders_list()
         ->where('is_active', '=', 1);
       if ($request->userId) {
@@ -209,8 +209,7 @@ class OrdersController extends Controller
       }
 
       $orders = $orders->get();
-    }
-    else if ($request->is_offtake_filter == 'YES') {
+    } else if ($request->is_offtake_filter == 'YES') {
       $orders = request()->company->orders_list()
         ->where('is_active', '=', 1);
       if ($request->userId) {
@@ -231,7 +230,13 @@ class OrdersController extends Controller
         $orders = $orders->where('order_type', '=', $request->orderType);
       }
 
-      $orders = $orders->get();
+      if (request()->page && request()->rowsPerPage && request()->isExcel != 'YES') {
+        $count = $orders->count();
+        $orders = $orders->paginate(request()->rowsPerPage)->toArray();
+        $orders = $orders['data'];
+      } else {
+        $orders = $orders->get();
+      }
     } else {
 
       $supervisors = User::with('roles')
@@ -275,7 +280,7 @@ class OrdersController extends Controller
 
     if ($request->raw == 'YES') {
       return response()->json([
-        'count'    =>   sizeof($orders),
+        'count'    =>  $count,
         'data'     =>  $orders,
         'success'   =>  true
       ], 200);
@@ -497,6 +502,7 @@ class OrdersController extends Controller
     // }
 
     return response()->json([
+      'orders_count' => $count,
       'count'    =>   sizeof($finalOrders),
       'data'     =>  $finalOrders,
       'success'   =>  true
