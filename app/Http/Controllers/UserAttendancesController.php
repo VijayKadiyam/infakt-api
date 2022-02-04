@@ -148,8 +148,8 @@ class UserAttendancesController extends Controller
       'success' =>  true
     ], 200);
   }
-  // user Atteandance for client
-  public function user_attendance(Request $request)
+  // user Atteandance Without Pagination for client
+  public function user_attendance_without_pagination(Request $request)
   {
     $User_Attendances = [];
     $totalWorkingHrs = 0;
@@ -274,6 +274,139 @@ class UserAttendancesController extends Controller
     ], 200);
   }
 
+  // user Atteandance for client
+  public function user_attendance(Request $request)
+  {
+    $User_Attendances = [];
+    $totalWorkingHrs = 0;
+
+    if ($request->is_attendance_filter == 'YES') {
+
+      $userAttendances = request()->company->user_attendances();
+      if ($request->userId) {
+        $userAttendances = $userAttendances->where('user_id', '=', $request->userId);
+      }
+      if ($request->month != '' && $request->year != '') {
+        // IF Month & Year Filter
+        $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
+        $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
+      }
+      if ($request->from_date != '' && $request->to_date != '') {
+        // IF Date Range  Filter
+        $userAttendances = $userAttendances->whereBetween('date', [$request->from_date, $request->to_date]);
+      }
+      $supervisorId = request()->supervisorId;
+      if ($supervisorId != '')
+        $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
+          $q->where('supervisor_id', '=', $supervisorId);
+        });
+      if (request()->page && request()->rowsPerPage) {
+        $count = $userAttendances->count();
+        $userAttendances = $userAttendances->paginate(request()->rowsPerPage)->toArray();
+        $userAttendances = $userAttendances['data'];
+      } else {
+        $userAttendances = $userAttendances->get();
+        $count = $userAttendances->count();
+      }
+      if (count($userAttendances) != 0) {
+        foreach ($userAttendances as $attendance) {
+          $startTime = 0;
+          $finishTime = 0;
+          $finishTimeIn24Hrs = 0;
+          $totalDuration = 0;
+          if ($attendance['logout_time'] == null) {
+            $attendance['logout_time'] = '10:30:00';
+            // $attendance['logout_time'] = '22:30:00';
+            $finishTime = $attendance['logout_time'];
+          }
+          $startTime = Carbon::parse($attendance['login_time']);
+          $logOutTime = Carbon::parse($attendance['logout_time']);
+          $finishTimeIn24Hrs = $logOutTime->modify('+12 hours')->format('H:i:s');
+          $finishTime = Carbon::parse($finishTimeIn24Hrs);
+
+
+          $totalDuration = round($finishTime->diffInSeconds($startTime) / (60 * 60));
+          $totalWorkingHrs = $totalDuration;
+          $attendance['working_time'] = $totalWorkingHrs;
+          $User_Attendances[] = $attendance;
+        }
+      }
+    } else if ($request->supervisorId) {
+      $supervisorId = $request->supervisorId;
+      $userAttendances = request()->company->user_attendances();
+      $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
+        $q->where('supervisor_id', '=', $supervisorId);
+      });
+      if ($request->month) {
+        $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
+      }
+      if ($request->year) {
+        $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
+      }
+      $userAttendances = $userAttendances->get();
+      $User_Attendances = $userAttendances;
+    } else {
+      $supervisors = User::with('roles')
+        ->whereHas('roles',  function ($q) {
+          $q->where('name', '=', 'SUPERVISOR');
+        })->orderBy('name')->get();
+
+      foreach ($supervisors as $supervisor) {
+
+        $users = User::where('supervisor_id', '=', $supervisor->id)->get();
+
+        foreach ($users as $user) {
+
+          $userAttendances = request()->company->user_attendances()->where('user_id', '=', $user->id);
+
+          if ($request->date && $request->month == null && $request->year == null && $request->userId == null) {
+            $userAttendances = $userAttendances->where('date', '=', $request->date);
+          }
+          if ($request->date && $request->month == null && $request->year == null) {
+            $userAttendances = $userAttendances->where('date', '=', $request->date);
+          }
+          if ($request->month) {
+            $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
+          }
+          if ($request->year) {
+            $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
+          }
+          $userAttendances = $userAttendances->get();
+          if (count($userAttendances) != 0) {
+            foreach ($userAttendances as $attendance) {
+              $startTime = 0;
+              $finishTime = 0;
+              $finishTimeIn24Hrs = 0;
+              $totalDuration = 0;
+              if ($attendance->logout_time == null) {
+                $attendance['logout_time'] = '10:30:00';
+                // $attendance['logout_time'] = '22:30:00';
+                $finishTime = $attendance['logout_time'];
+              }
+              $startTime = Carbon::parse($attendance['login_time']);
+              $logOutTime = Carbon::parse($attendance['logout_time']);
+              $finishTimeIn24Hrs = $logOutTime->modify('+12 hours')->format('H:i:s');
+              $finishTime = Carbon::parse($finishTimeIn24Hrs);
+
+
+              $totalDuration = round($finishTime->diffInSeconds($startTime) / (60 * 60));
+              $totalWorkingHrs = $totalDuration;
+              $attendance['working_time'] = $totalWorkingHrs;
+              $User_Attendances[] = $attendance;
+            }
+          }
+        }
+      }
+    }
+
+
+
+    return response()->json([
+      'data'     =>  $User_Attendances,
+      'count' => $count,
+      'success' =>  true
+    ], 200);
+  }
   /*
    * To store a new user attendance
    *
@@ -488,8 +621,8 @@ class UserAttendancesController extends Controller
     $client->request('GET', $endpoint);
   }
 
-  // User Attendance Month Wise
-  public function monthly_attendances(Request $request)
+  // User Attendance Month Wise WithOut Pagination
+  public function monthly_attendances_without_pagination(Request $request)
   {
     $analysis = [];
     $userAttendances = request()->company->user_attendances();
@@ -508,6 +641,7 @@ class UserAttendancesController extends Controller
       $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
         $q->where('supervisor_id', '=', $supervisorId);
       });
+
     $userAttendances = $userAttendances->get();
 
     $users = [];
@@ -573,6 +707,102 @@ class UserAttendancesController extends Controller
     // return $users;
     return response()->json([
       'data'     =>  $users,
+      'success' =>  true
+    ], 200);
+  }
+  // User Attendance Month Wise
+  public function monthly_attendances(Request $request)
+  {
+    $analysis = [];
+    $userAttendances = request()->company->user_attendances();
+
+    if ($request->month) {
+      $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
+    }
+    if ($request->year) {
+      $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
+    }
+    if ($request->user_id) {
+      $userAttendances = $userAttendances->where('user_id', '=', $request->user_id);
+    }
+    $supervisorId = request()->superVisor_id;
+    if ($supervisorId != '')
+      $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
+        $q->where('supervisor_id', '=', $supervisorId);
+      });
+
+    if (request()->page && request()->rowsPerPage) {
+      $count = $userAttendances->count();
+      $userAttendances = $userAttendances->paginate(request()->rowsPerPage)->toArray();
+      $userAttendances = $userAttendances['data'];
+    } else {
+      $userAttendances = $userAttendances->get();
+      $count = $userAttendances->count();
+    }
+    $users = [];
+    $user_id_log = [];
+
+    foreach ($userAttendances as $key => $attendance) {
+      $present_count = 0;
+      $weekly_off_count = 0;
+      $leave_count = 0;
+      $user = $attendance['user'];
+      $user_id = $user['id'];
+      unset($attendance['user']);
+      $user_key = array_search($user_id, array_column($users, 'id'));
+      $date = Carbon::parse($attendance['date'])->format('j');
+
+      $is_exist = in_array($user_id, $user_id_log);
+      if (!$user_key && !$is_exist) {
+        $user_id_log[] = $user_id;
+        $day_count = 1;
+        switch ($attendance['session_type']) {
+          case 'PRESENT':
+            $present_count++;
+            break;
+          case 'WEEKLY OFF':
+            $weekly_off_count++;
+            break;
+          case 'LEAVE':
+            $leave_count++;
+            break;
+
+          default:
+            break;
+        }
+        $user['day_count'] = $day_count;
+        $user['present_count'] = $present_count;
+        $user['weekly_off_count'] = $weekly_off_count;
+        $user['leave_count'] = $leave_count;
+        $user['attendances'][$date] = $attendance;
+        $users[] = $user;
+      } else {
+        switch ($attendance['session_type']) {
+          case 'PRESENT':
+            $users[$user_key]["present_count"]++;
+            break;
+          case 'WEEKLY OFF':
+            $users[$user_key]['weekly_off_count']++;
+            break;
+          case 'LEAVE':
+            $users[$user_key]['leave_count']++;
+            break;
+
+          default:
+            #code...
+            break;
+        }
+
+        $day_count = sizeof($users[$user_key]["attendances"]) + 1;
+        $users[$user_key]["attendances"][$date] = $attendance;
+        $users[$user_key]['day_count'] = $day_count;
+        // $users[$user_key]['present_count'] = $present_count;
+      }
+    }
+    // return $users;
+    return response()->json([
+      'data'     =>  $users,
+      'count' => $count,
       'success' =>  true
     ], 200);
   }
