@@ -66,6 +66,10 @@ class OrdersController extends Controller
     if ($request->id == null || $request->id == '') {
       // Save Order
       $order = new Order($request->all());
+      if ($request->date) {
+        $order->timestamps = false;
+        $order->created_at = Carbon::parse($request->date);
+      }
       $request->company->orders_list()->save($order);
 
       // Save Order Details
@@ -137,8 +141,6 @@ class OrdersController extends Controller
         foreach ($differenceOrderDetailIds as $differenceOrderDetailId) {
           $orderDetail = OrderDetail::find($differenceOrderDetailId);
           $orderDetail->delete();
-
-          
         }
 
       // Update Order Details
