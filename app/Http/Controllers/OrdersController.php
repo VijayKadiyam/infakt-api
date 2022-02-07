@@ -75,7 +75,7 @@ class OrdersController extends Controller
           $order->order_details()->save($order_detail);
           $check = 0;
           foreach ($dailyOrderSummaries as $dailyOrderSummary) {
-            if ($dailyOrderSummary->sku_id == $detail->sku_id) {
+            if ($dailyOrderSummary->sku_id == $order_detail->sku_id) {
               $check = 1;
               if ($order->order_type == 'Opening Stock')
                 $dailyOrderSummary->opening_stock += $detail->qty;
