@@ -92,6 +92,30 @@ class OrdersController extends Controller
               break;
             }
           }
+          if ($check == 0) {
+            $dailyOrderSummary = new DailyOrderSummary();
+            $dailyOrderSummary->company_id = 1;
+            $dailyOrderSummary->user_id = $request->user_id;
+            $dailyOrderSummary->sku_id = $order_detail->sku_id;
+            $dailyOrderSummary->opening_stock = 0;
+            $dailyOrderSummary->received_stock = 0;
+            $dailyOrderSummary->purchase_returned_stock = 0;
+            $dailyOrderSummary->sales_stock = 0;
+            $dailyOrderSummary->returned_stock = 0;
+            $dailyOrderSummary->closing_stock = 0;
+            if ($order->order_type == 'Opening Stock')
+              $dailyOrderSummary->opening_stock += $order_detail->qty;
+            if ($order->order_type == 'Stock Received')
+              $dailyOrderSummary->received_stock += $order_detail->qty;
+            if ($order->order_type == 'Purchase Returned')
+              $dailyOrderSummary->purchase_returned_stock += $order_detail->qty;
+            if ($order->order_type == 'Sales')
+              $dailyOrderSummary->sales_stock += $order_detail->qty;
+            if ($order->order_type == 'Stock Returned')
+              $dailyOrderSummary->returned_stock += $order_detail->qty;
+            $dailyOrderSummary->closing_stock = $dailyOrderSummary->opening_stock + $dailyOrderSummary->received_stock - $dailyOrderSummary->purchase_returned_stock - $dailyOrderSummary->sales_stock + $dailyOrderSummary->returned_stock;
+            $dailyOrderSummary->save();
+          }
         }
 
       // ---------------------------------------------------
@@ -113,6 +137,8 @@ class OrdersController extends Controller
         foreach ($differenceOrderDetailIds as $differenceOrderDetailId) {
           $orderDetail = OrderDetail::find($differenceOrderDetailId);
           $orderDetail->delete();
+
+          
         }
 
       // Update Order Details
