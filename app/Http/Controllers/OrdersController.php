@@ -7,6 +7,7 @@ use App\Order;
 use App\OrderDetail;
 use App\User;
 use Carbon\Carbon;
+use App\DailyOrderSummary;
 
 class OrdersController extends Controller
 {
@@ -59,6 +60,9 @@ class OrdersController extends Controller
       'order_details.*.value'   =>  'required',
     ]);
 
+    $dailyOrderSummaries = DailyOrderSummary::where('user_id', '=', $request->user_id)
+      ->get();
+
     if ($request->id == null || $request->id == '') {
       // Save Order
       $order = new Order($request->all());
@@ -69,6 +73,25 @@ class OrdersController extends Controller
         foreach ($request->order_details as $detail) {
           $order_detail = new OrderDetail($detail);
           $order->order_details()->save($order_detail);
+          $check = 0;
+          foreach ($dailyOrderSummaries as $dailyOrderSummary) {
+            if ($dailyOrderSummary->sku_id == $detail->sku_id) {
+              $check = 1;
+              if ($order->order_type == 'Opening Stock')
+                $dailyOrderSummary->opening_stock += $detail->qty;
+              if ($order->order_type == 'Stock Received')
+                $dailyOrderSummary->received_stock += $detail->qty;
+              if ($order->order_type == 'Purchase Returned')
+                $dailyOrderSummary->purchase_returned_stock += $detail->qty;
+              if ($order->order_type == 'Sales')
+                $dailyOrderSummary->sales_stock += $detail->qty;
+              if ($order->order_type == 'Stock Returned')
+                $dailyOrderSummary->returned_stock += $detail->qty;
+              $dailyOrderSummary->closing_stock = $dailyOrderSummary->opening_stock + $dailyOrderSummary->received_stock - $dailyOrderSummary->purchase_returned_stock - $dailyOrderSummary->sales_stock + $dailyOrderSummary->returned_stock;
+              $dailyOrderSummary->update();
+              break;
+            }
+          }
         }
 
       // ---------------------------------------------------
