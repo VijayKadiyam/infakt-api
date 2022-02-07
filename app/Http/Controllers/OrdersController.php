@@ -69,6 +69,7 @@ class OrdersController extends Controller
       if ($request->date) {
         $order->timestamps = false;
         $order->created_at = Carbon::parse($request->date);
+        $order->updated_at = Carbon::parse($request->date);
       }
       $request->company->orders_list()->save($order);
 
