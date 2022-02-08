@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class CrudeFocusedTarget extends Model
 {
     protected $fillable = [
+        'company_id',
         'region',
         'channel',
         'chain_name',
@@ -86,6 +87,7 @@ class CrudeFocusedTarget extends Model
         'toner',
         'yogurt_for',
         'rice_range',
-        'almond_range'
+        'almond_range',
+        'body_lotion_cold_cream',
     ];
 }
