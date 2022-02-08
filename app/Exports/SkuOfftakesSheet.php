@@ -55,7 +55,7 @@ class SkuOfftakesSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
 			->whereHas('roles',  function ($q) {
 				$q->where('name', '=', 'SUPERVISOR');
 			})->orderBy('name');
-		$supervisors = $supervisors->take(5);
+		// $supervisors = $supervisors->take(5);
 
 		$supervisorId = $this->supervisorId;
 		if ($supervisorId != '')
