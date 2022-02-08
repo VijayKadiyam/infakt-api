@@ -97,6 +97,7 @@ class FocusedTargetImport implements ToModel, WithHeadingRow
                 'yogurt_for' => $row['Yogurt For'],
                 'rice_range' => $row['Rice Range'],
                 'almond_range' => $row['Almond Range'],
+                'body_lotion_cold_cream' => $row['Body Lotion Cold Cream'],
             ];
             return new CrudeFocusedTarget($data);
         // }

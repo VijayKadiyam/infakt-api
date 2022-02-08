@@ -27,6 +27,7 @@ class CrudeFocusedTargetsController extends Controller
     public function uploadFocusedTarget(Request $request)
     {
         set_time_limit(0);
+        // return $request->company->id;
         if ($request->hasFile('focusedTargetData')) {
             $file = $request->file('focusedTargetData');
 
@@ -104,6 +105,7 @@ class CrudeFocusedTargetsController extends Controller
             'yogurt_for',
             'rice_range',
             'almond_range',
+            'body_lotion_cold_cream',
         ];
         $focus_target = [];
         foreach ($crude_focused_targets as $column =>  $target) {

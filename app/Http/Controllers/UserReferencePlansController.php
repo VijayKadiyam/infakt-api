@@ -15,10 +15,14 @@ class UserReferencePlansController extends Controller
 
   public function masters(Request $request)
   {
-    $request->request->add(['role_id' => '5']);
-    $usersController = new UsersController();
-    $usersResponse = $usersController->index($request);
-
+    //  $request->request->add(['role_id' => '5']);
+    // $usersController = new UsersController();
+    // $usersResponse = $usersController->index($request);
+    $users = $request->company->users()->with('roles')
+      ->whereHas('roles',  function ($q) {
+        $q->where('roles.id', '=', 5);
+      })->latest()->get();
+    // return $users;
     $referencePlanController = new ReferencePlansController();
     $referencePlanResponse = $referencePlanController->index($request);
 
@@ -60,7 +64,7 @@ class UserReferencePlansController extends Controller
     $weeks = [1, 2, 3, 4];
 
     return response()->json([
-      'users'           =>  $usersResponse->getData()->data,
+      'users'           =>  $users,
       'reference_plans' =>  $referencePlanResponse->getData()->data,
       'days'            =>  $days,
       'weeks'           =>  $weeks
