@@ -33,11 +33,18 @@ class TargetsController extends Controller
     ];
 
     $years = ['2020', '2021', '2022'];
+
     // $usersController = new UsersController();
     // $request->request->add(['role_id' => '5']);
     // $usersResponse = $usersController->index($request);
+
+    $users = $request->company->users()->with('roles')
+      ->whereHas('roles',  function ($q) {
+        $q->where('roles.id', '=', 5);
+      })->latest()->get();
+
     return response()->json([
-      // 'users'   =>  $usersResponse->getData()->data,
+      'users'   =>  $users,
       'months'  =>  $months,
       'years'   =>  $years
     ], 200);
