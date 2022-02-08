@@ -54,18 +54,18 @@ class OfftakeAnalyticsController extends Controller
 		]);
 
 		$daysInMonth = 0;
-		$targets=new Target();
-        if (request()->userid) {
-            $targets=$targets->where('user_id', '=', request()->userid);
-        }
-        if (request()->month) {
-            $targets=$targets->where('month', '=', request()->month);
-        }
-        if (request()->year) {
-            $targets=$targets->where('year', '=', request()->year);
-        }
-        $targets = $targets->get()->toArray();
-		
+		$targets = new Target();
+		if (request()->userid) {
+			$targets = $targets->where('user_id', '=', request()->userid);
+		}
+		if (request()->month) {
+			$targets = $targets->where('month', '=', request()->month);
+		}
+		if (request()->year) {
+			$targets = $targets->where('year', '=', request()->year);
+		}
+		$targets = $targets->get()->toArray();
+
 		$supervisors =
 			User::with('roles')
 			->where('active', '=', 1)
@@ -75,7 +75,6 @@ class OfftakeAnalyticsController extends Controller
 		if ($request->superVisor_id) {
 			$supervisors = $supervisors->where('id', '=', $request->superVisor_id);
 		}
-		// ->take(1)
 		$supervisors = 	$supervisors->get();
 
 		$productsOfftakes = [];
@@ -89,9 +88,9 @@ class OfftakeAnalyticsController extends Controller
 				->get();
 
 			foreach ($users as $user) {
-				$user_target=array_search($user->id, array_column($targets, 'user_id'));
-                $target_key=$user_target!==false?$targets[$user_target]:"Not Found";
-                $user['target']=$target_key;
+				$user_target = array_search($user->id, array_column($targets, 'user_id'));
+				$target_key = $user_target !== false ? $targets[$user_target] : "Not Found";
+				$user['target'] = $target_key;
 				$singleUserData['user'] = $user;
 
 				$ors = request()->company->orders_list()
@@ -116,8 +115,8 @@ class OfftakeAnalyticsController extends Controller
 				if ($request->month == $currentMonth) {
 					$daysInMonth = Carbon::now()->format('d');
 				}
+				$todaysTotalValue = 0;
 				for ($i = 1; $i <= $daysInMonth; $i++) {
-					$todaysTotalValue=0;
 					// To check single day orders
 					$ordersOfADay = [];
 					foreach ($ors as $or) {
@@ -150,8 +149,8 @@ class OfftakeAnalyticsController extends Controller
 							}
 						}
 						$singleUserData['date' . $i] = $totalValue;
-						$todaysTotalValue+=$totalValue;
-						$singleUserData['totalTodayValue']=$todaysTotalValue;
+						$todaysTotalValue += $totalValue;
+						$singleUserData['totalTodayValue'] = $todaysTotalValue;
 					}
 				}
 				$productsOfftakes[] = $singleUserData;

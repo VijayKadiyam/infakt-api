@@ -49,14 +49,14 @@ class SkuValueOfftakesSheet implements FromView, ShouldAutoSize, WithStyles, Wit
 		$daysInMonth = 0;
 
 		$targets = new Target();
-		if (request()->userid) {
-			$targets = $targets->where('user_id', '=', request()->userid);
+		// if (request()->userid) {
+		// 	$targets = $targets->where('user_id', '=', request()->userid);
+		// }
+		if ($month) {
+			$targets = $targets->where('month', '=', $month);
 		}
-		if (request()->month) {
-			$targets = $targets->where('month', '=', request()->month);
-		}
-		if (request()->year) {
-			$targets = $targets->where('year', '=', request()->year);
+		if ($year) {
+			$targets = $targets->where('year', '=', $year);
 		}
 		$targets = $targets->get()->toArray();
 
@@ -113,8 +113,8 @@ class SkuValueOfftakesSheet implements FromView, ShouldAutoSize, WithStyles, Wit
 				if ($month == $currentMonth) {
 					$daysInMonth = Carbon::now()->format('d');
 				}
+				$todaysTotalValue = 0;
 				for ($i = 1; $i <= $daysInMonth; $i++) {
-					$todaysTotalValue = 0;
 
 					// To check single day orders
 					$ordersOfADay = [];
