@@ -17,11 +17,13 @@ class CompetitorDataSheet implements FromView, ShouldAutoSize, WithStyles, WithT
     public $date;
     public $month;
     public $supervisorId;
+    public $region;
 
-    public function __construct($date, $supervisorId)
+    public function __construct($date, $supervisorId, $region)
     {
         $this->month = Carbon::parse($date)->format('M-Y');
         $this->supervisorId = $supervisorId;
+        $this->region = $region;
     }
 
     public function styles(Worksheet $sheet)
@@ -64,13 +66,20 @@ class CompetitorDataSheet implements FromView, ShouldAutoSize, WithStyles, WithT
             $competitor_datas = $competitor_datas->whereHas('user',  function ($q) use ($supervisorId) {
                 $q->where('supervisor_id', '=', $supervisorId);
             });
+
+        $region = $this->region;
+        if ($region) {
+            $competitor_datas = $competitor_datas->whereHas('user',  function ($q) use ($region) {
+                $q->where('region', 'LIKE', '%' . $region . '%');
+            });
+        }
         $competitor_datas = $competitor_datas->get();
 
         $users = [];
         $user_id_log = [];
         foreach ($competitor_datas as $key => $competitor) {
             $user = $competitor->user->toArray();
-            $user_id = $user['id']; 
+            $user_id = $user['id'];
             unset($competitor['user']);
             $user_key = array_search($user_id, array_column($users, 'id'));
             $date = Carbon::parse($competitor->created_at)->format('j');
@@ -82,7 +91,7 @@ class CompetitorDataSheet implements FromView, ShouldAutoSize, WithStyles, WithT
                 // New User Log
                 $user_id_log[] = $user_id;
 
-                $user['w' . $week . '_Biotech'] = 0; 
+                $user['w' . $week . '_Biotech'] = 0;
                 $user['w' . $week . '_Derma_Fique'] = 0;
                 $user['w' . $week . '_Nivea'] = 0;
                 $user['w' . $week . '_Neutrogena'] = 0;
