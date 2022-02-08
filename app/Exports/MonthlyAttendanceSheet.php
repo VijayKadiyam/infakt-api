@@ -17,11 +17,12 @@ class MonthlyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, Wi
 	public $date;
 	public $month;
 	public $supervisorId;
-
-	public function __construct($date, $supervisorId)
+	public $region;
+	public function __construct($date, $supervisorId,$region)
 	{
 		$this->month = Carbon::parse($date)->format('M-Y');
 		$this->supervisorId = $supervisorId;
+		$this->region = $region;
 	}
 
 	public function styles(Worksheet $sheet)
@@ -57,7 +58,13 @@ class MonthlyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, Wi
 			$userAttendances = $userAttendances->whereYear('date', '=', $year);
 
 		// $userAttendances = $userAttendances->take(10);
-
+		$region = $this->region;
+        if ($region) {
+            $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($region) {
+                $q->where('region', 'LIKE', '%' . $region . '%');
+            });
+        }
+		
 		$supervisorId = $this->supervisorId;
 		if ($supervisorId != '')
 			$userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
@@ -80,7 +87,7 @@ class MonthlyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, Wi
 			$is_exist = in_array($user_id, $user_id_log);
 			if (!$user_key && !$is_exist) {
 				$user_id_log[] = $user_id;
-			// if (!$user_key) {
+				// if (!$user_key) {
 				$day_count = 1;
 				switch ($attendance->session_type) {
 					case 'PRESENT':
