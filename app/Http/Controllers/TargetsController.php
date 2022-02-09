@@ -58,7 +58,7 @@ class TargetsController extends Controller
         ->whereHas('roles',  function ($q) {
           $q->where('name', '!=', 'Admin');
           $q->where('name', '!=', 'Distributor');
-        })->take(2)->get();
+        })->get();
     $targets=[];
     foreach($users as $user){
       if ($request->from_month && $request->to_month && $request->year) {
