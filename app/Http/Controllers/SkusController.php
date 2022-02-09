@@ -196,9 +196,10 @@ class SkusController extends Controller
         // ->where('sku_id', '=', $sku->id)
         ->get();
       foreach ($skus as $sku) {
-
+        $isSku = 0;
         foreach ($dailyOrderSummaries as $dailyOrderSummary) {
           if ($dailyOrderSummary->sku_id == $sku->id) {
+            $isSku = 1;
             $sku['qty'] = (int) $dailyOrderSummary->closing_stock;
             $sku['opening_stock'] = (int)$dailyOrderSummary->opening_stock;
             $sku['received_stock'] = (int)$dailyOrderSummary->received_stock;
@@ -207,6 +208,15 @@ class SkusController extends Controller
             $sku['returned_stock'] = (int)$dailyOrderSummary->returned_stock;
             $sku['closing_stock'] = (int)$dailyOrderSummary->closing_stock;
           }
+        }
+        if ($isSku == 0) {
+          $sku['qty'] = 0;
+          $sku['opening_stock'] = 0;
+          $sku['received_stock'] = 0;
+          $sku['purchase_returned_stock'] = 0;
+          $sku['sales_stock'] = 0;
+          $sku['returned_stock'] = 0;
+          $sku['closing_stock'] = 0;
         }
       }
     }
