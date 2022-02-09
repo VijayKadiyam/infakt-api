@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Exports;
 
 use Illuminate\Contracts\View\View;
@@ -14,50 +15,52 @@ use App\User;
 
 class SkuOfftakesSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
 {
-    public $date;
+	public $date;
 	public $supervisorId;
+	public $region;
 
-    public function __construct($date, $supervisorId) 
-    {
-        $this->date = $date;
+	public function __construct($date, $supervisorId, $region)
+	{
+		$this->date = $date;
 		$this->supervisorId = $supervisorId;
-    }
+		$this->region = $region;
+	}
 
-    public function styles(Worksheet $sheet)
-    {
-        return [
-            1    => [
-                'font' => [
-                    'bold' => true,
-                ],
-                'fill' => [
-                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                    'color' => ['argb' => '80FFFF00']
-                ]
-            ],
-        ];
-    }
+	public function styles(Worksheet $sheet)
+	{
+		return [
+			1    => [
+				'font' => [
+					'bold' => true,
+				],
+				'fill' => [
+					'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+					'color' => ['argb' => '80FFFF00']
+				]
+			],
+		];
+	}
 
-    public function view(): View
-    {
-        $date = $this->date;
+	public function view(): View
+	{
+		$date = $this->date;
 		$month =  Carbon::parse($date)->format('m');
 		$year = Carbon::parse($date)->format('Y');
 
 		$daysInMonth = 0;
 
-		$supervisors = 
+		$supervisors =
 			User::with('roles')
-				->where('active', '=', 1)
-				->whereHas('roles',  function ($q) {
-					$q->where('name', '=', 'SUPERVISOR');
-				})->orderBy('name');
-		// $supervisors = $supervisors->take(1);
+			->where('active', '=', 1)
+			->whereHas('roles',  function ($q) {
+				$q->where('name', '=', 'SUPERVISOR');
+			})->orderBy('name');
+		// $supervisors = $supervisors->take(5);
 
 		$supervisorId = $this->supervisorId;
-		if($supervisorId != '')
+		if ($supervisorId != '')
 			$supervisors = $supervisors->where('id', '=', $supervisorId);
-		
+
 		$supervisors = $supervisors->get();
 
 		$productsOfftakes = [];
@@ -67,9 +70,13 @@ class SkuOfftakesSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
 			$singleUserData = [];
 
 			$users = User::where('supervisor_id', '=', $supervisor->id)
-				->where('active', '=', 1)
-				->get();
-
+				->where('active', '=', 1);
+			// ->get();
+			$region = $this->region;
+			if ($region) {
+				$users = $users->where('region', 'LIKE', '%' . $region . '%');
+			}
+			$users = $users->get();
 			foreach ($users as $user) {
 
 				$singleUserData['user'] = $user;
@@ -82,7 +89,7 @@ class SkuOfftakesSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
 					->with('order_details')
 					->whereHas('order_details',  function ($q) {
 						$q->groupBy('sku_id');
-					});	
+					});
 
 				if ($month) {
 					$ors = $ors->whereMonth('created_at', '=', $month);
@@ -94,25 +101,25 @@ class SkuOfftakesSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
 
 				$daysInMonth = Carbon::parse($year . $month . '01')->daysInMonth;
 				$currentMonth = Carbon::now()->format('m');
-				if($month == $currentMonth) {
-					$daysInMonth = Carbon::now()->format('d');	
+				if ($month == $currentMonth) {
+					$daysInMonth = Carbon::now()->format('d');
 				}
-				for($i = 1; $i <= $daysInMonth; $i++) {
+				for ($i = 1; $i <= $daysInMonth; $i++) {
 					// To check single day orders
 					$ordersOfADay = [];
-					foreach($ors as $or) {
+					foreach ($ors as $or) {
 						// var_dump(Carbon::parse($or->created_at)->format('d'));
-						if(Carbon::parse($or->created_at)->format('d') == sprintf("%02d", $i)) {
+						if (Carbon::parse($or->created_at)->format('d') == sprintf("%02d", $i)) {
 							$ordersOfADay[] = $or;
 						}
 					}
 					// End To check single day orders
 
-					
+
 					$skuIDs = [];
-					foreach($ordersOfADay as $order) {
-						foreach($order->order_details as $order_detail) {
-							$skuIDs[] = $order_detail->sku_id; 
+					foreach ($ordersOfADay as $order) {
+						foreach ($order->order_details as $order_detail) {
+							$skuIDs[] = $order_detail->sku_id;
 						}
 					}
 					$uniqueSkuIDs = array_unique($skuIDs);
@@ -135,10 +142,10 @@ class SkuOfftakesSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
 		}
 
 		return view('exports.sku_offtakes_export', compact('productsOfftakes', 'daysInMonth'));
-    }
-    
-    public function title(): string
-    {
-        return 'SKU Offtakes | ' . Carbon::parse($this->date)->format('M-Y');
-    }
+	}
+
+	public function title(): string
+	{
+		return 'SKU Offtakes | ' . Carbon::parse($this->date)->format('M-Y');
+	}
 }

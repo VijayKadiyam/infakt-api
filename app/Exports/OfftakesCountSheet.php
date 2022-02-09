@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Exports;
 
 use Illuminate\Contracts\View\View;
@@ -14,55 +15,63 @@ use App\User;
 
 class OfftakesCountSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
 {
-    public $date;
+	public $date;
 	public $supervisorId;
+	public $region;
 
-    public function __construct($date, $supervisorId) 
-    {
-        $this->date = $date;
+	public function __construct($date, $supervisorId, $region)
+	{
+		$this->date = $date;
 		$this->supervisorId = $supervisorId;
-    }
+		$this->region = $region;
+	}
 
-    public function styles(Worksheet $sheet)
-    {
-        return [
-            1    => [
-                'font' => [
-                    'bold' => true,
-                ],
-                'fill' => [
-                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                    'color' => ['argb' => '80FFFF00']
-                ]
-            ],
-        ];
-    }
+	public function styles(Worksheet $sheet)
+	{
+		return [
+			1    => [
+				'font' => [
+					'bold' => true,
+				],
+				'fill' => [
+					'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+					'color' => ['argb' => '80FFFF00']
+				]
+			],
+		];
+	}
 
-    public function view(): View
-    {
-        $date = $this->date;
-        $month =  Carbon::parse($date)->format('m');
+	public function view(): View
+	{
+		$date = $this->date;
+		$month =  Carbon::parse($date)->format('m');
 		$year = Carbon::parse($date)->format('Y');
 
 		$supervisors = User::with('roles')
 			->where('active', '=', 1)
 			->whereHas('roles',  function ($q) {
-			$q->where('name', '=', 'SUPERVISOR');
+				$q->where('name', '=', 'SUPERVISOR');
 			})->orderBy('name');
-		// $supervisors = $supervisors->take(1);
-		
+		// $supervisors = $supervisors->take(3);
+
 		$supervisorId = $this->supervisorId;
-		if($supervisorId != '')
+		if ($supervisorId != '')
 			$supervisors = $supervisors->where('id', '=', $supervisorId);
-		
+
 		$supervisors = $supervisors->get();
 
 		$Oftake_users = [];
 		foreach ($supervisors as $supervisor) {
 
 			$users = User::where('supervisor_id', '=', $supervisor->id)
-				->where('active', '=', 1)
-				->get();
+				->where('active', '=', 1);
+			// ->get();
+			$region = $this->region;
+			if ($region) {
+				$users = $users->where('region', 'LIKE', '%' . $region . '%');
+			}
+			$users = $users->get();
+			
 			$offtake_count = 0;
 			foreach ($users as $user) {
 
@@ -80,7 +89,7 @@ class OfftakesCountSheet implements FromView, ShouldAutoSize, WithStyles, WithTi
 				$order_date_list = [];
 				if (count($ors) != 0) {
 					foreach ($ors as $key => $order) {
-					$order_date_list[] = Carbon::parse($order->created_at)->format('d');
+						$order_date_list[] = Carbon::parse($order->created_at)->format('d');
 					}
 					$array = array_unique($order_date_list);
 					$offtake_count = sizeof($array);
@@ -92,13 +101,13 @@ class OfftakesCountSheet implements FromView, ShouldAutoSize, WithStyles, WithTi
 		}
 
 		return view('exports.offtakes_count_export', compact('Oftake_users'));
-    }
+	}
 
-    /**
-     * @return string
-     */
-    public function title(): string
-    {
-        return 'Offtakes Count | ' . Carbon::parse($this->date)->format('M-Y');
-    }
+	/**
+	 * @return string
+	 */
+	public function title(): string
+	{
+		return 'Offtakes Count | ' . Carbon::parse($this->date)->format('M-Y');
+	}
 }

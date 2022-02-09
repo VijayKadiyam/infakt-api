@@ -17,11 +17,13 @@ class CustomerDataEntrySheet implements FromView, ShouldAutoSize, WithStyles, Wi
     public $date;
     public $month;
     public $supervisorId;
+    public $region;
 
-    public function __construct($date, $supervisorId)
+    public function __construct($date, $supervisorId, $region)
     {
         $this->month = Carbon::parse($date)->format('M-Y');
         $this->supervisorId = $supervisorId;
+        $this->region = $region;
     }
 
     public function styles(Worksheet $sheet)
@@ -64,6 +66,13 @@ class CustomerDataEntrySheet implements FromView, ShouldAutoSize, WithStyles, Wi
             $customer_data_entries = $customer_data_entries->whereHas('user',  function ($q) use ($supervisorId) {
                 $q->where('supervisor_id', '=', $supervisorId);
             });
+
+        $region = $this->region;
+        if ($region) {
+            $customer_data_entries = $customer_data_entries->whereHas('user',  function ($q) use ($region) {
+                $q->where('region', 'LIKE', '%' . $region . '%');
+            });
+        }
         $customer_data_entries = $customer_data_entries->get();
 
         return view('exports.customer_data_entry_export', compact('customer_data_entries', 'daysInMonth'));

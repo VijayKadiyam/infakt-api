@@ -18,11 +18,13 @@ class SkuValueOfftakesSheet implements FromView, ShouldAutoSize, WithStyles, Wit
 {
 	public $date;
 	public $supervisorId;
+	public $region;
 
-	public function __construct($date, $supervisorId)
+	public function __construct($date, $supervisorId, $region)
 	{
 		$this->date = $date;
 		$this->supervisorId = $supervisorId;
+		$this->region = $region;
 	}
 
 	public function styles(Worksheet $sheet)
@@ -66,7 +68,7 @@ class SkuValueOfftakesSheet implements FromView, ShouldAutoSize, WithStyles, Wit
 			->whereHas('roles',  function ($q) {
 				$q->where('name', '=', 'SUPERVISOR');
 			})->orderBy('name');
-		// $supervisors = $supervisors->take(1);
+		// $supervisors = $supervisors->take(3);
 
 		$supervisorId = $this->supervisorId;
 		if ($supervisorId != '')
@@ -81,8 +83,13 @@ class SkuValueOfftakesSheet implements FromView, ShouldAutoSize, WithStyles, Wit
 			$singleUserData = [];
 
 			$users = User::where('supervisor_id', '=', $supervisor->id)
-				->where('active', '=', 1)
-				->get();
+				->where('active', '=', 1);
+
+			$region = $this->region;
+			if ($region) {
+				$users = $users->where('region', 'LIKE', '%' . $region . '%');
+			}
+			$users = $users->get();
 
 			foreach ($users as $user) {
 				$user_target = array_search($user->id, array_column($targets, 'user_id'));

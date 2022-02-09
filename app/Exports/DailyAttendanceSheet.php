@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Exports;
 
 use Illuminate\Contracts\View\View;
@@ -15,11 +16,13 @@ class DailyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, With
 {
     public $date;
     public $supervisorId;
+    public $region;
 
-    public function __construct($date, $supervisorId) 
+    public function __construct($date, $supervisorId, $region)
     {
         $this->date = $date;
         $this->supervisorId = $supervisorId;
+        $this->region = $region;
     }
 
     public function styles(Worksheet $sheet)
@@ -40,11 +43,17 @@ class DailyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, With
     public function view(): View
     {
         $company = Company::find(1);
-		$userAttendances = $company->user_attendances()
-			->where('date', '=', $this->date);
-        // $userAttendances = $userAttendances->take(10);
+        $userAttendances = $company->user_attendances()
+            ->where('date', '=', $this->date);
+        $userAttendances = $userAttendances->take(10);
+        $region = $this->region;
+        if ($region) {
+            $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($region) {
+                $q->where('region', 'LIKE', '%' . $region . '%');
+            });
+        }
         $supervisorId = $this->supervisorId;
-        if($supervisorId != '')
+        if ($supervisorId != '')
             $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
                 $q->where('supervisor_id', '=', $supervisorId);
             });
