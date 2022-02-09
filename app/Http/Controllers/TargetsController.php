@@ -52,12 +52,13 @@ class TargetsController extends Controller
 
   public function search(Request $request)
   {
+    // return 1;
     ini_set("memory_limit", "-1");
     $users = $request->company->users()->with('roles')
         ->whereHas('roles',  function ($q) {
           $q->where('name', '!=', 'Admin');
           $q->where('name', '!=', 'Distributor');
-        })->get();
+        })->take(2)->get();
     $targets=[];
     foreach($users as $user){
       if ($request->from_month && $request->to_month && $request->year) {
