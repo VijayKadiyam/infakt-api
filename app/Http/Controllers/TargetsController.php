@@ -15,7 +15,6 @@ class TargetsController extends Controller
 
   public function masters(Request $request)
   {
-    
 
     $months = [
       ['text'  =>  'JANUARY', 'value' =>  1],
@@ -55,24 +54,70 @@ class TargetsController extends Controller
     // return 1;
     ini_set("memory_limit", "-1");
     $users = $request->company->users()->with('roles')
-        ->whereHas('roles',  function ($q) {
-          $q->where('name', '!=', 'Admin');
-          $q->where('name', '!=', 'Distributor');
-        })->get();
-    $targets=[];
-    foreach($users as $user){
+      ->whereHas('roles',  function ($q) {
+        $q->where('name', '!=', 'Admin');
+        $q->where('name', '!=', 'Distributor');
+      })->take(10)->get();
+    $targets = [];
+    foreach ($users as $user) {
       if ($request->from_month && $request->to_month && $request->year) {
-          $user['monthly_targets'] = Target::
-          where('user_id', '=', $user->id)
+        $user['monthly_targets'] = Target::where('user_id', '=', $user->id)
           ->whereBetween('month', [$request->from_month, $request->to_month])
-            ->where('year', '=', $request->year)
-            ->get();
-        }
+          ->where('year', '=', $request->year)
+          ->get();
+      }
+      $user['target_id'] = (sizeOf($user['monthly_targets']) != 0) ? $user['monthly_targets'][0]['id'] : '';
+      $user['user_id'] =  $user->id;
       $targets[] = $user;
     }
 
     return response()->json([
       'data'     =>  $targets,
+      'success'   =>  true
+    ], 200);
+  }
+  public function NewSearch(Request $request)
+  {
+    // return 1;
+    ini_set("memory_limit", "-1");
+    if (request()->page && request()->rowsPerPage) {
+      $targets = $request->company->targets();
+      $count = $targets->count();
+      $targets = $targets->paginate(request()->rowsPerPage)->toArray();
+      $targets = $targets['data'];
+    }
+
+    if ($request->from_month && $request->to_month && $request->year) {
+      $targets = $request->company->targets()
+        ->whereBetween('month', [$request->from_month, $request->to_month])
+        ->where('year', '=', $request->year)
+        ->get();
+    } else {
+      $targets = $request->company->targets()->get();
+    }
+
+    // return $targets;
+
+    // $targets = $request->company->targets()->take(10)->get();
+    // $users = $request->company->users()->with('roles')
+    //   ->whereHas('roles',  function ($q) {
+    //     $q->where('name', '!=', 'Admin');
+    //     $q->where('name', '!=', 'Distributor');
+    //   })->take(10)->get();
+    // $targets = [];
+    // foreach ($users as $user) {
+    //   if ($request->from_month && $request->to_month && $request->year) {
+    //     $user['monthly_targets'] = Target::where('user_id', '=', $user->id)
+    //       ->whereBetween('month', [$request->from_month, $request->to_month])
+    //       ->where('year', '=', $request->year)
+    //       ->get();
+    //   }
+    //   $targets[] = $user;
+    // }
+
+    return response()->json([
+      'data'     =>  $targets,
+      'count'     =>  $count,
       'success'   =>  true
     ], 200);
   }
