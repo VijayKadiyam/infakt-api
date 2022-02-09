@@ -197,10 +197,10 @@ class OfftakeAnalyticsController extends Controller
 
 		// Regional Report
 			$regions = [
-				// 'North',
+				'North',
 				'South',
-				// 'East',
-				// 'West',
+				'East',
+				'West',
 			];
 			
 			foreach ($regions as $key => $region) {
