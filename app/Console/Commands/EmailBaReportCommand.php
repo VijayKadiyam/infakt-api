@@ -86,14 +86,14 @@ class EmailBaReportCommand extends Command
 
         // Region wise
         $regions = [
-            'North',
+            // 'North',
             'South',
-            'East',
-            'West',
+            // 'East',
+            // 'West',
         ];
 
         foreach ($regions as $key => $region) {
-            $rsm = 'kvjkumr@gmail.com';
+            $rsm = 'ksohail.sk32@gmail.com';
             // $rsm = 'casilda.r@mamaearth.in';
             // if ($region == 'EAST')
             //     $rsm = 'swarupa.c@mamaearth.in';
