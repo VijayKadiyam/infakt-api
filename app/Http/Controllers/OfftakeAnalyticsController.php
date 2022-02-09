@@ -197,14 +197,14 @@ class OfftakeAnalyticsController extends Controller
 
 		// Regional Report
 			$regions = [
-				'North',
-				// 'South',
+				// 'North',
+				'South',
 				// 'East',
 				// 'West',
 			];
 			
 			foreach ($regions as $key => $region) {
-				return Excel::download(new BAReportExport($date,"",$region), "BA-Report-$date.xlsx");
+				return Excel::download(new BAReportExport($date,"",$region), "$region-BA-Report-$date.xlsx");
 
 				// Excel::store(new BAReportExport($date,'',$region), "/reports/$date/BAs-Report-NORTH-$date.xlsx", 'local');
 			}
