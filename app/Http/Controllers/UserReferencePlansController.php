@@ -15,13 +15,17 @@ class UserReferencePlansController extends Controller
 
   public function masters(Request $request)
   {
+    ini_set('max_execution_time', -1);
+    ini_set('memory_limit', '1000M');
+    set_time_limit(0);
+
     //  $request->request->add(['role_id' => '5']);
     // $usersController = new UsersController();
     // $usersResponse = $usersController->index($request);
     $users = $request->company->users()->with('roles')
       ->whereHas('roles',  function ($q) {
         $q->where('roles.id', '=', 5);
-      })->latest()->get();
+      })->get();
     // return $users;
     $referencePlanController = new ReferencePlansController();
     $referencePlanResponse = $referencePlanController->index($request);
