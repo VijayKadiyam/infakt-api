@@ -43,39 +43,39 @@ class GenerateBaReportCommand extends Command
     {
         ini_set('max_execution_time', 0);
 
-        // $date = Carbon::now()->addDays(-1)->format('Y-m-d');
-        $date = Carbon::now()->format('Y-m-d');
-        // $this->info('Generate Report for Date: ' . $date);
+        $date = Carbon::now()->addDays(-1)->format('Y-m-d');
+        // $date = Carbon::now()->format('Y-m-d');
+        $this->info('Generate Report for Date: ' . $date);
 
-        // // Excel::download(new BAReportExport($date), "BA-Report.xlsx");
+        // Excel::download(new BAReportExport($date), "BA-Report.xlsx");
 
-        // Excel::store(new BAReportExport($date), "/reports/$date/BA-Report-$date.xlsx", "local");
+        Excel::store(new BAReportExport($date), "/reports/$date/BA-Report-$date.xlsx", "local");
 
-        // $this->info('BA Report Generated...');
+        $this->info('BA Report Generated...');
 
-        // $supervisors = User::with('roles')
-		// 	->where('active', '=', 1)
-		// 	->whereHas('roles',  function ($q) {
-		// 	$q->where('name', '=', 'SUPERVISOR');
-		// 	})->orderBy('name')
-		// 	// ->take(1) u
-		// 	->get();
+        $supervisors = User::with('roles')
+			->where('active', '=', 1)
+			->whereHas('roles',  function ($q) {
+			$q->where('name', '=', 'SUPERVISOR');
+			})->orderBy('name')
+			// ->take(1) u
+			->get();
 		
-        // $count = 1;
-		// foreach ($supervisors as $supervisor) {
-		// 	$name = $supervisor->name;
-		// 	Excel::store(new BAReportExport($date, $supervisor->id), "/reports/$date/$name-BAs-Report-$date.xlsx", 'local');
+        $count = 1;
+		foreach ($supervisors as $supervisor) {
+			$name = $supervisor->name;
+			Excel::store(new BAReportExport($date, $supervisor->id), "/reports/$date/$name-BAs-Report-$date.xlsx", 'local');
 
-        //     $this->info("$count. $name BAs Report Generated...");
-        //     $count++;
-		// }
+            $this->info("$count. $name BAs Report Generated...");
+            $count++;
+		}
 
         // Zone Code
         $regions = [
-			// 'North',
+			'North',
 			'South',
-			// 'East',
-			// 'West',
+			'East',
+			'West',
 		];
 		
 		foreach ($regions as $key => $region) {
