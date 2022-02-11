@@ -96,33 +96,36 @@ class CrudeUserMappingsController extends Controller
                     $user['source'] = 'excel';
                     array_push($Conflicts, $user);
                 } else {
+                    $Supervisor_id = '';
+                    if ($user->supervisor_code && $user->supervisor_code != "") {
+                        // fetch Supervisor by Supervisor Code
+                        $Supervisor = User::where('employee_code', "=", $user->supervisor_code)->first();
+                        // // fetch Supervisor by Supervisor name
+                        // $Supervisor = User::where('name', "=", $user->supervisor_name)->first();
+                        if (!$Supervisor) {
+                            // Create Supervisor
+                            $Supervisor_data = [
+                                'name' => $user->supervisor_name,
+                                'employee_code' => $user->supervisor_code,
+                                'active'          =>  1,
+                                'password' => bcrypt('123456'),
+                                'password_backup' => bcrypt('123456'),
+                                'email' => str_replace(" ", "", $user->supervisor_name) . mt_rand(1, 9999) . '@supervisor',
+                                'batch_no' => $Batch->batch_no,
+                                'excel_upload_status' => true,
+                            ];
 
-                    // fetch Supervisor by Supervisor Code
-                    $Supervisor = User::where('employee_code', "=", $user->supervisor_code)->first();
-                    
-                    // // fetch Supervisor by Supervisor name
-                    // $Supervisor = User::where('name', "=", $user->supervisor_name)->first();
-                    if (!$Supervisor) {
-                        // Create Supervisor
-                        $Supervisor_data = [
-                            'name' => $user->supervisor_name,
-                            'employee_code' => $user->supervisor_code,
-                            'active'          =>  1,
-                            'password' => bcrypt('123456'),
-                            'password_backup' => bcrypt('123456'),
-                            'email' => str_replace(" ", "", $user->supervisor_name) . mt_rand(1, 9999) . '@supervisor',
-                            'batch_no' => $Batch->batch_no,
-                            'excel_upload_status' => true,
-                        ];
+                            $Supervisor = new User($Supervisor_data);
+                            $Supervisor->save();
 
-                        $Supervisor = new User($Supervisor_data);
-                        $Supervisor->save();
-
-                        $Supervisor->assignRole(4);
-                        $Supervisor->roles = $Supervisor->roles;
-                        $Supervisor->assignCompany(request()->company->id);
-                        $Supervisor->companies = $Supervisor->companies;
+                            $Supervisor->assignRole(4);
+                            $Supervisor->roles = $Supervisor->roles;
+                            $Supervisor->assignCompany(request()->company->id);
+                            $Supervisor->companies = $Supervisor->companies;
+                        }
+                        $Supervisor_id = $Supervisor->id;
                     }
+
                     if (count($user_array) == 0) {
                         $safe_upload_status = TRUE;
                         // No Data Found 
@@ -147,7 +150,7 @@ class CrudeUserMappingsController extends Controller
                             'rsm' => $user->rsm,
                             'asm' => $user->asm,
                             'supervisor_name' => $user->supervisor_name,
-                            'supervisor_id' => $Supervisor->id,
+                            'supervisor_id' => $Supervisor_id,
                             'store_type' => $user->store_type,
                             'store_status' => $user->store_status,
                             'doj' => $user->doj,
@@ -187,7 +190,7 @@ class CrudeUserMappingsController extends Controller
                             'rsm' => $user->rsm,
                             'asm' => $user->asm,
                             'supervisor_name' => $user->supervisor_name,
-                            'supervisor_id' => $Supervisor->id,
+                            'supervisor_id' => $Supervisor_id,
                             'store_type' => $user->store_type,
                             'store_status' => $user->store_status,
                             'brand' => $user->brand,
@@ -369,33 +372,39 @@ class CrudeUserMappingsController extends Controller
                     $user['source'] = 'excel';
                     array_push($Conflicts, $user);
                 } else {
+                    $Supervisor_id = '';
+                    if ($user->supervisor_code && $user->supervisor_code != "") {
+                        # code...
 
-                    // fetch Supervisor by Supervisor Code
-                    $Supervisor = User::where('employee_code', "=", $user->supervisor_code)->first();
+                        // fetch Supervisor by Supervisor Code
+                        $Supervisor = User::where('employee_code', "=", $user->supervisor_code)->first();
 
-                    // // fetch Supervisor by Supervisor name
-                    // $Supervisor = User::where('name', "=", $user->supervisor_name)->first();
-                    if (!$Supervisor) {
-                        // Create Supervisor
-                        $Supervisor_data = [
-                            'name' => $user->supervisor_name,
-                            'employee_code' => $user->supervisor_code,
-                            'active'          =>  1,
-                            'password' => bcrypt('123456'),
-                            'password_backup' => bcrypt('123456'),
-                            'email' => str_replace(" ", "", $user->supervisor_name) . mt_rand(1, 9999) . '@supervisor',
-                            'batch_no' => $Batch->batch_no,
-                            'excel_upload_status' => true,
-                        ];
+                        // // fetch Supervisor by Supervisor name
+                        // $Supervisor = User::where('name', "=", $user->supervisor_name)->first();
+                        if (!$Supervisor) {
+                            // Create Supervisor
+                            $Supervisor_data = [
+                                'name' => $user->supervisor_name,
+                                'employee_code' => $user->supervisor_code,
+                                'active'          =>  1,
+                                'password' => bcrypt('123456'),
+                                'password_backup' => bcrypt('123456'),
+                                'email' => str_replace(" ", "", $user->supervisor_name) . mt_rand(1, 9999) . '@supervisor',
+                                'batch_no' => $Batch->batch_no,
+                                'excel_upload_status' => true,
+                            ];
 
-                        $Supervisor = new User($Supervisor_data);
-                        $Supervisor->save();
+                            $Supervisor = new User($Supervisor_data);
+                            $Supervisor->save();
 
-                        $Supervisor->assignRole(4);
-                        $Supervisor->roles = $Supervisor->roles;
-                        $Supervisor->assignCompany(request()->company->id);
-                        $Supervisor->companies = $Supervisor->companies;
+                            $Supervisor->assignRole(4);
+                            $Supervisor->roles = $Supervisor->roles;
+                            $Supervisor->assignCompany(request()->company->id);
+                            $Supervisor->companies = $Supervisor->companies;
+                        }
+                        $Supervisor_id = $Supervisor->id;
                     }
+
                     if (count($user_array) == 0) {
                         $safe_upload_status = TRUE;
 
@@ -421,7 +430,7 @@ class CrudeUserMappingsController extends Controller
                             'rsm' => $user->rsm,
                             'asm' => $user->asm,
                             'supervisor_name' => $user->supervisor_name,
-                            'supervisor_id' => $Supervisor->id,
+                            'supervisor_id' => $Supervisor_id,
                             'store_type' => $user->store_type,
                             'store_status' => $user->store_status,
                             'doj' => $user->doj,
@@ -460,7 +469,7 @@ class CrudeUserMappingsController extends Controller
                             'rsm' => $user->rsm,
                             'asm' => $user->asm,
                             'supervisor_name' => $user->supervisor_name,
-                            'supervisor_id' => $Supervisor->id,
+                            'supervisor_id' => $Supervisor_id,
                             'store_type' => $user->store_type,
                             'store_status' => $user->store_status,
                             'brand' => $user->brand,

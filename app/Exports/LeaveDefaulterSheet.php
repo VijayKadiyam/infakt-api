@@ -18,12 +18,14 @@ class LeaveDefaulterSheet implements FromView, ShouldAutoSize, WithStyles, WithT
     public $month;
     public $supervisorId;
     public $region;
+    public $channel;
 
-    public function __construct($date, $supervisorId, $region)
+    public function __construct($date, $supervisorId, $region, $channel)
     {
         $this->month = Carbon::parse($date)->format('M-Y');
         $this->supervisorId = $supervisorId;
         $this->region = $region;
+        $this->channel = $channel;
     }
 
     public function styles(Worksheet $sheet)
@@ -60,11 +62,17 @@ class LeaveDefaulterSheet implements FromView, ShouldAutoSize, WithStyles, WithT
             $userAttendances = $userAttendances->whereYear('date', '=', $year);
 
         $userAttendances = $userAttendances->where('session_type', '=', $session_type);
-        // $userAttendances = $userAttendances->take(10);
+        // $userAttendances = $userAttendances->take(100);
         $region = $this->region;
         if ($region) {
             $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($region) {
                 $q->where('region', 'LIKE', '%' . $region . '%');
+            });
+        }
+        $channel = $this->channel;
+        if ($channel) {
+            $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($channel) {
+                $q->where('channel', 'LIKE', '%' . $channel . '%');
             });
         }
         $supervisorId = $this->supervisorId;
