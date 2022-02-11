@@ -15,13 +15,17 @@ class UserReferencePlansController extends Controller
 
   public function masters(Request $request)
   {
+    ini_set('max_execution_time', 0);
+    // ini_set('memory_limit', '100000M');
+    // set_time_limit(0);
+
     //  $request->request->add(['role_id' => '5']);
     // $usersController = new UsersController();
     // $usersResponse = $usersController->index($request);
-    $users = $request->company->users()->with('roles')
-      ->whereHas('roles',  function ($q) {
-        $q->where('roles.id', '=', 5);
-      })->latest()->get();
+    // $users = $request->company->users()->with('roles')
+    //   ->whereHas('roles',  function ($q) {
+    //     $q->where('roles.id', '=', 5);
+    //   })->get();
     // return $users;
     $referencePlanController = new ReferencePlansController();
     $referencePlanResponse = $referencePlanController->index($request);
@@ -64,7 +68,7 @@ class UserReferencePlansController extends Controller
     $weeks = [1, 2, 3, 4];
 
     return response()->json([
-      'users'           =>  $users,
+      // 'users'           =>  $users,
       'reference_plans' =>  $referencePlanResponse->getData()->data,
       'days'            =>  $days,
       'weeks'           =>  $weeks
@@ -126,8 +130,10 @@ class UserReferencePlansController extends Controller
 
   public function show(UserReferencePlan $userReferencePlan)
   {
+    $user_reference_plans = request()->company->user_reference_plans()
+      ->where('id', '=', $userReferencePlan->id)->get();
     return response()->json([
-      'data'   =>  $userReferencePlan
+      'data'   =>  $user_reference_plans
     ], 200);
   }
 
