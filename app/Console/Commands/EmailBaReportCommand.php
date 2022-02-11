@@ -50,7 +50,7 @@ class EmailBaReportCommand extends Command
 
 
         Mail::to('deepika.k@mamaearth.in')
-            ->cc(['ac.north@pousse.in', 'kirit.sayani@pousse.in', 'bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'rajlakshmi.s@mamaearth.in'])
+            ->cc(['ac.north@pousse.in', 'kirit.sayani@pousse.in', 'bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'jyotisingh21095@gmail.com'])
             ->send(new BaReportEmail($todayDate));
 
         $this->info('BA Report Emailed...');
@@ -65,14 +65,17 @@ class EmailBaReportCommand extends Command
         $count = 1;
         foreach ($supervisors as $supervisor) {
             $name = $supervisor->name;
-            $rsm = 'casilda.r@mamaearth.in';
+            $rsm = 'jyotisingh21095@gmail.com';
             if ($supervisor->region == 'EAST')
                 $rsm = 'swarupa.c@mamaearth.in';
+            if ($supervisor->region == 'WEST')
+                $rsm = 'casilda.r@mamaearth.in';
             if ($supervisor->region == 'NORTH')
                 $rsm = 'rajlakshmi.s@mamaearth.in';
 
+
             Mail::to($supervisor->email)
-                ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', $rsm])
+                ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'jyotisingh21095@gmail.com', $rsm])
                 ->send(new BaReportEmail($todayDate, $name));
 
             $this->info("$count. $name BAs Report Emailed...");
@@ -90,14 +93,26 @@ class EmailBaReportCommand extends Command
 
         foreach ($regions as $key => $region) {
             // $rsm = 'ksohail.sk32@gmail.com';
-            $rsm = 'casilda.r@mamaearth.in';
-            if ($region == 'EAST')
+            $rsm = 'jyotisingh21095@gmail.com';
+            if ($region == 'East')
                 $rsm = 'swarupa.c@mamaearth.in';
-            if ($region == 'NORTH')
+            if ($region == 'West')
+                $rsm = 'casilda.r@mamaearth.in';
+            if ($region == 'North')
                 $rsm = 'rajlakshmi.s@mamaearth.in';
-            Mail::to($rsm)
-                ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'anirban.choudhury@pousse.in'])
-                ->send(new BaReportEmail($todayDate, $region));
+
+            if ($region == 'North')
+                Mail::to($rsm)
+                    ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'jyotisingh21095@gmail.com', 'sunita.mamaearth@yahoo.com'])
+                    ->send(new BaReportEmail($todayDate, $region));
+            else if ($region == 'East')
+                Mail::to($rsm)
+                    ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'jyotisingh21095@gmail.com', 'anirban.choudhury@pousse.in'])
+                    ->send(new BaReportEmail($todayDate, $region));
+            else
+                Mail::to($rsm)
+                    ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'jyotisingh21095@gmail.com'])
+                    ->send(new BaReportEmail($todayDate, $region));
         }
     }
 }
