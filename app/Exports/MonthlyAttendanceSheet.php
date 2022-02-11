@@ -18,11 +18,13 @@ class MonthlyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, Wi
 	public $month;
 	public $supervisorId;
 	public $region;
-	public function __construct($date, $supervisorId,$region)
+	public $channel;
+	public function __construct($date, $supervisorId, $region, $channel)
 	{
 		$this->month = Carbon::parse($date)->format('M-Y');
 		$this->supervisorId = $supervisorId;
 		$this->region = $region;
+		$this->channel = $channel;
 	}
 
 	public function styles(Worksheet $sheet)
@@ -59,12 +61,17 @@ class MonthlyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, Wi
 
 		// $userAttendances = $userAttendances->take(10);
 		$region = $this->region;
-        if ($region) {
-            $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($region) {
-                $q->where('region', 'LIKE', '%' . $region . '%');
-            });
-        }
-		
+		if ($region) {
+			$userAttendances = $userAttendances->whereHas('user',  function ($q) use ($region) {
+				$q->where('region', 'LIKE', '%' . $region . '%');
+			});
+		}
+		$channel = $this->channel;
+		if ($channel) {
+			$userAttendances = $userAttendances->whereHas('user',  function ($q) use ($channel) {
+				$q->where('channel', 'LIKE', '%' . $channel . '%');
+			});
+		}
 		$supervisorId = $this->supervisorId;
 		if ($supervisorId != '')
 			$userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {

@@ -195,18 +195,31 @@ class OfftakeAnalyticsController extends Controller
 		// 	Excel::store(new BAReportExport($date, $supervisor->id), "/reports/$date/$name-BAs-Report-$date.xlsx", 'local');
 		// }
 
-		// Regional Report
-			$regions = [
-				'North',
-				'South',
-				'East',
-				'West',
-			];
-			
-			foreach ($regions as $key => $region) {
-				return Excel::download(new BAReportExport($date,"",$region), "$region-BA-Report-$date.xlsx");
+		// // Regional Report
+		// 	$regions = [
+		// 		'North',
+		// 		'South',
+		// 		'East',
+		// 		'West',
+		// 	];
 
-				// Excel::store(new BAReportExport($date,'',$region), "/reports/$date/BAs-Report-NORTH-$date.xlsx", 'local');
-			}
+		// 	foreach ($regions as $key => $region) {
+		// 		return Excel::download(new BAReportExport($date,"",$region), "$region-BA-Report-$date.xlsx");
+
+		// 		// Excel::store(new BAReportExport($date,'',$region), "/reports/$date/BAs-Report-NORTH-$date.xlsx", 'local');
+		// 	}
+		// Channel Wise Report
+		$channels = [
+			'GT',
+			'MT',
+			'IIA',
+			'ME_CNC',
+		];
+
+		foreach ($channels as $key => $channel) {
+			return Excel::download(new BAReportExport($date, "", "", $channel), "$channel-BA-Report-$date.xlsx");
+
+			// Excel::store(new BAReportExport($date,'',$channel), "/reports/$date/BAs-Report-NORTH-$date.xlsx", 'local');
+		}
 	}
 }
