@@ -50,7 +50,7 @@ class EmailBaReportCommand extends Command
 
 
         Mail::to('deepika.k@mamaearth.in')
-            ->cc(['ac.north@pousse.in', 'kirit.sayani@pousse.in', 'bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'jyotisingh21095@gmail.com'])
+            ->cc(['ac.north@pousse.in', 'kirit.sayani@pousse.in', 'bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in'])
             ->send(new BaReportEmail($todayDate));
 
         $this->info('BA Report Emailed...');
@@ -75,7 +75,7 @@ class EmailBaReportCommand extends Command
 
 
             Mail::to($supervisor->email)
-                ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'jyotisingh21095@gmail.com', $rsm])
+                ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in', $rsm])
                 ->send(new BaReportEmail($todayDate, $name));
 
             $this->info("$count. $name BAs Report Emailed...");
@@ -103,15 +103,15 @@ class EmailBaReportCommand extends Command
 
             if ($region == 'North')
                 Mail::to($rsm)
-                    ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'jyotisingh21095@gmail.com', 'sunita.mamaearth@yahoo.com'])
+                    ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in', 'sunita.mamaearth@yahoo.com'])
                     ->send(new BaReportEmail($todayDate, $region));
             else if ($region == 'East')
                 Mail::to($rsm)
-                    ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'jyotisingh21095@gmail.com', 'anirban.choudhury@pousse.in'])
+                    ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in', 'anirban.choudhury@pousse.in'])
                     ->send(new BaReportEmail($todayDate, $region));
             else
                 Mail::to($rsm)
-                    ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'jyotisingh21095@gmail.com'])
+                    ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in'])
                     ->send(new BaReportEmail($todayDate, $region));
         }
     }
