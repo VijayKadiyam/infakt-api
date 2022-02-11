@@ -12,27 +12,29 @@ class BAReportExport implements WithMultipleSheets
     public $date;
     public $supervisorId;
     public $region;
+    public $channel;
 
-    public function __construct($date, $supervisorId = '', $region = "")
+    public function __construct($date, $supervisorId = '', $region = "", $channel = "")
     {
         $this->date = $date;
         $this->supervisorId = $supervisorId;
         $this->region = $region;
+        $this->channel = $channel;
     }
 
     public function sheets(): array
     {
         $sheets = [];
-        $sheets[] = new DailyAttendanceSheet($this->date, $this->supervisorId, $this->region);
-        $sheets[] = new MonthlyAttendanceSheet($this->date, $this->supervisorId, $this->region);
-        $sheets[] = new SkuOfftakesSheet($this->date, $this->supervisorId, $this->region);
-        $sheets[] = new SkuValueOfftakesSheet($this->date, $this->supervisorId, $this->region);
-        $sheets[] = new OfftakesSheet($this->date, $this->supervisorId, $this->region);
-        $sheets[] = new OfftakesCountSheet($this->date, $this->supervisorId, $this->region);
-        $sheets[] = new LeaveDefaulterSheet($this->date, $this->supervisorId, $this->region);
-        $sheets[] = new CustomerSheet($this->date, $this->supervisorId, $this->region);
-        $sheets[] = new CustomerDataEntrySheet($this->date, $this->supervisorId, $this->region);
-        $sheets[] = new CompetitorDataSheet($this->date, $this->supervisorId, $this->region);
+        $sheets[] = new DailyAttendanceSheet($this->date, $this->supervisorId, $this->region, $this->channel);
+        $sheets[] = new MonthlyAttendanceSheet($this->date, $this->supervisorId, $this->region, $this->channel);
+        $sheets[] = new SkuOfftakesSheet($this->date, $this->supervisorId, $this->region, $this->channel);
+        $sheets[] = new SkuValueOfftakesSheet($this->date, $this->supervisorId, $this->region, $this->channel);
+        $sheets[] = new OfftakesSheet($this->date, $this->supervisorId, $this->region, $this->channel);
+        $sheets[] = new OfftakesCountSheet($this->date, $this->supervisorId, $this->region, $this->channel);
+        $sheets[] = new LeaveDefaulterSheet($this->date, $this->supervisorId, $this->region, $this->channel);
+        $sheets[] = new CustomerSheet($this->date, $this->supervisorId, $this->region, $this->channel);
+        $sheets[] = new CustomerDataEntrySheet($this->date, $this->supervisorId, $this->region, $this->channel);
+        $sheets[] = new CompetitorDataSheet($this->date, $this->supervisorId, $this->region, $this->channel);
 
         return $sheets;
     }

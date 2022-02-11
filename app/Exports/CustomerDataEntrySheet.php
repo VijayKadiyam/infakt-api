@@ -18,12 +18,14 @@ class CustomerDataEntrySheet implements FromView, ShouldAutoSize, WithStyles, Wi
     public $month;
     public $supervisorId;
     public $region;
+    public $channel;
 
-    public function __construct($date, $supervisorId, $region)
+    public function __construct($date, $supervisorId, $region, $channel)
     {
         $this->month = Carbon::parse($date)->format('M-Y');
         $this->supervisorId = $supervisorId;
         $this->region = $region;
+        $this->channel = $channel;
     }
 
     public function styles(Worksheet $sheet)
@@ -71,6 +73,12 @@ class CustomerDataEntrySheet implements FromView, ShouldAutoSize, WithStyles, Wi
         if ($region) {
             $customer_data_entries = $customer_data_entries->whereHas('user',  function ($q) use ($region) {
                 $q->where('region', 'LIKE', '%' . $region . '%');
+            });
+        }
+        $channel = $this->channel;
+        if ($channel) {
+            $customer_data_entries = $customer_data_entries->whereHas('user',  function ($q) use ($channel) {
+                $q->where('channel', 'LIKE', '%' . $channel . '%');
             });
         }
         $customer_data_entries = $customer_data_entries->get();
