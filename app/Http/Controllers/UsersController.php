@@ -154,13 +154,12 @@ class UsersController extends Controller
           $q->where('name', '!=', 'Admin');
         })
         ->where('name', 'LIKE', $request->search . '%');
-        if($request->superVisor_id) {
-          $supervisorId = $request->superVisor_id;
-          $users =  $users->where('supervisor_id', '=', $supervisorId);
-        }
-        $users =  $users->latest()->get();
-    } 
-    else if ($request->searchEmp) {
+      if ($request->superVisor_id) {
+        $supervisorId = $request->superVisor_id;
+        $users =  $users->where('supervisor_id', '=', $supervisorId);
+      }
+      $users =  $users->latest()->get();
+    } else if ($request->searchEmp) {
       $users = $request->company->users()->with('roles')
         ->whereHas('roles',  function ($q) {
           $q->where('name', '!=', 'Admin');
@@ -217,7 +216,7 @@ class UsersController extends Controller
       $users = $request->company->users()
         ->where('batch_no', '=', $request->batch_no)
         ->get();
-    } elseif($request->supervisorId) {
+    } elseif ($request->supervisorId) {
       $supervisorId = $request->supervisorId;
       $users = User::where('supervisor_id', '=', $supervisorId)
         ->get();
@@ -234,7 +233,7 @@ class UsersController extends Controller
   {
     $count = 0;
     $users = [];
-return $request->superVisor_id;
+    // return $request->superVisor_id;
     $users = $request->company->users();
     if ($request->batch_no) {
       $users = $users
@@ -256,9 +255,9 @@ return $request->superVisor_id;
       $users = $users
         ->where('brand', 'LIKE', '%' . $request->brand . '%');
     }
-    if($request->superVisor_id) {
+    if ($request->superVisor_id) {
       $supervisorId = $request->superVisor_id;
-      return $supervisorId;
+      // return $supervisorId;
       $users =  $users->where('supervisor_id', '=', $supervisorId);
     }
     $users = $users->get();
