@@ -481,6 +481,7 @@ class AnalyticsController extends Controller
     $achieved = 0;
     $achievedLast = 0;
     $achievedLast2 = 0;
+    $achievedLast3 = 0;
     $outlets = [];
 
     $beatIds = explode(',', $request->beatIds);
@@ -554,12 +555,25 @@ class AnalyticsController extends Controller
     // foreach ($ordersOfLast2Month as $order) {
     //   $achievedLast2 += $order->total;
     // }
+    // Total achieved in last 3 month
+    $targetLast3 = Target::where('user_id', '=', $request->userId)
+      ->where('month', 11)
+      ->first();
+    if (isset($targetLast3))
+      $achievedLast3 = $targetLast3->achieved;
+    // foreach ($ordersOfLast2Month as $order) {
+    //   $achievedLast2 += $order->total;
+    // }
 
     $data = [
       'last_month'    =>  $achievedLast,
       'current_month' =>  $achieved,
       'outlets'       =>  $outlets,
       'months'        =>  [
+        [
+          'month' =>  $request->month != 3 ? date("F", mktime(0, 0, 0, $request->month - 3, 10)) : 'November',
+          'value' =>  $achievedLast3,
+        ],
         [
           'month' =>  $request->month != 2 ? date("F", mktime(0, 0, 0, $request->month - 2, 10)) : 'December',
           'value' =>  $achievedLast2,
