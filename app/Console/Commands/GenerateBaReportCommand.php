@@ -42,6 +42,7 @@ class GenerateBaReportCommand extends Command
     public function handle()
     {
         ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '-1');
 
         $date = Carbon::now()->addDays(-1)->format('Y-m-d');
         // $date = Carbon::now()->format('Y-m-d');
