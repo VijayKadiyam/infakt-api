@@ -69,7 +69,6 @@ class CustomerSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
         }
         $customers = $customers->get();
 
-
         return view('exports.customer_export', compact('customers'));
     }
 
@@ -78,6 +77,6 @@ class CustomerSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
      */
     public function title(): string
     {
-        return 'Customer | ' .  Carbon::parse($this->date)->format('M-Y');
+        return 'Productivity | ' .  Carbon::parse($this->date)->format('M-Y');
     }
 }
