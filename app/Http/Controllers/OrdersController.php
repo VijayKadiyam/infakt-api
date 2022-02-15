@@ -281,7 +281,6 @@ class OrdersController extends Controller
       if ($request->orderType) {
         $orders = $orders->where('order_type', '=', $request->orderType);
       }
-
       if (request()->page && request()->rowsPerPage) {
         $count = $orders->count();
         $orders = $orders->paginate(request()->rowsPerPage)->toArray();
