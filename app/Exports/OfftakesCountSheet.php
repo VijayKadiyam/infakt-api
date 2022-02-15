@@ -54,7 +54,7 @@ class OfftakesCountSheet implements FromView, ShouldAutoSize, WithStyles, WithTi
 			->whereHas('roles',  function ($q) {
 				$q->where('name', '=', 'SUPERVISOR');
 			})->orderBy('name');
-		// $supervisors = $supervisors->take(3);
+		// $supervisors = $supervisors->take(1);
 
 		$supervisorId = $this->supervisorId;
 		if ($supervisorId != '')

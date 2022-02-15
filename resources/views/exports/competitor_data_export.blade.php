@@ -2,6 +2,7 @@
     <thead>
         <tr>
             <th rowspan="2">Sr. No.</th>
+            <th rowspan="2">Brand</th>
             <th rowspan="2">Region</th>
             <th rowspan="2">Channel</th>
             <th rowspan="2">Chain Name</th>
@@ -51,6 +52,7 @@
         @foreach ($users as $user)
         <tr>
             <td>{{ $loop->index + 1 }}</td>
+            <td>{{ $user['brand'] }}</td>
             <td>{{ $user['region'] }}</td>
             <td>{{ $user['channel'] }}</td>
             <td>{{ $user['chain_name'] }}</td>

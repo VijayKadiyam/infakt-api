@@ -62,7 +62,7 @@ class LeaveDefaulterSheet implements FromView, ShouldAutoSize, WithStyles, WithT
             $userAttendances = $userAttendances->whereYear('date', '=', $year);
 
         $userAttendances = $userAttendances->where('session_type', '=', $session_type);
-        // $userAttendances = $userAttendances->take(100);
+        // $userAttendances = $userAttendances->take(10);
         $region = $this->region;
         if ($region) {
             $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($region) {
@@ -177,6 +177,6 @@ class LeaveDefaulterSheet implements FromView, ShouldAutoSize, WithStyles, WithT
      */
     public function title(): string
     {
-        return 'Leave Defaulter | ' . $this->month;
+        return 'Leave | ' . $this->month;
     }
 }

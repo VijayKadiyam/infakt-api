@@ -3,6 +3,7 @@
         <tr>
             <th>Sr. No.</th>
             <th>Date</th>
+            <th>Brand</th>
             <th>Channel</th>
             <th>Chain Name</th>
             <th>Store Name</th>
@@ -18,6 +19,7 @@
         <tr>
 
             <td>{{ $loop->index + 1 }}</td>
+            <td>{{ $user['user']['brand'] }}</td>
             <td>{{ $user['user']['channel'] }}</td>
             <td>{{ $user['user']['chain_name'] }}</td>
             <td>{{ \Carbon\Carbon::parse($user['created_at'])->format('Y-m-d ')}}</td>

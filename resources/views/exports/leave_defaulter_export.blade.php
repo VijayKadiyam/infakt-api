@@ -2,6 +2,7 @@
     <thead>
         <tr>
             <th>Sr. No.</th>
+            <th>Brand</th>
             <th>Region</th>
             <th>Channel</th>
             <th>Chain Name</th>
@@ -25,6 +26,7 @@
         <tr>
 
             <td>{{ $loop->index + 1 }}</td>
+            <td>{{ $user['brand'] }}</td>
             <td>{{ $user['region'] }}</td>
             <td>{{ $user['channel'] }}</td>
             <td>{{ $user['chain_name'] }}</td>

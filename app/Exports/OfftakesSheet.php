@@ -20,7 +20,7 @@ class OfftakesSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
 	public $region;
 	public $channel;
 
-	public function __construct($date, $supervisorId, $region,$channel)
+	public function __construct($date, $supervisorId, $region, $channel)
 	{
 		$this->date = $date;
 		$this->supervisorId = $supervisorId;
@@ -57,7 +57,7 @@ class OfftakesSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
 				$q->where('name', '=', 'SUPERVISOR');
 			})->orderBy('name');
 
-		// $supervisors = $supervisors->take(3);
+		// $supervisors = $supervisors->take(1);
 
 		$supervisorId = $this->supervisorId;
 		if ($supervisorId != '')
@@ -75,7 +75,7 @@ class OfftakesSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
 			if ($region) {
 				$users = $users->where('region', 'LIKE', '%' . $region . '%');
 			}
-			
+
 			$channel = $this->channel;
 			if ($channel) {
 				$users = $users->where('channel', 'LIKE', '%' . $channel . '%');
@@ -93,10 +93,10 @@ class OfftakesSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
 					->whereHas('order_details',  function ($q) {
 						$q->groupBy('sku_id');
 					});
-				if ($date) {
-					$ors = $ors->whereDate('created_at', $date);
-				}
-				if ($month) {
+				// if ($date) {
+				// 	$ors = $ors->whereDate('created_at', $date);
+				// }
+			if ($month) {
 					$ors = $ors->whereMonth('created_at', '=', $month);
 				}
 				if ($year) {
@@ -114,7 +114,12 @@ class OfftakesSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
 		// retailer_id
 		$finalOrders = [];
 
-		for ($i = 1; $i <= 31; $i++) {
+		$daysInMonth = Carbon::parse($year . $month . '01')->daysInMonth;
+		$currentMonth = Carbon::now()->format('m');
+		if ($month == $currentMonth) {
+			$daysInMonth = Carbon::now()->format('d');
+		}
+		for ($i = 1; $i <= $daysInMonth; $i++) {
 			// To check single day orders
 			$ordersOfADay = [];
 			foreach ($orders as $or) {
@@ -211,6 +216,6 @@ class OfftakesSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
 	 */
 	public function title(): string
 	{
-		return 'Offtakes | ' . Carbon::parse($this->date)->format('d-M-Y');
+		return 'Offtakes | ' . Carbon::parse($this->date)->format('M-Y');
 	}
 }

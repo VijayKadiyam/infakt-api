@@ -47,7 +47,7 @@ class CustomerSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
     public function view(): View
     {
         $company = Company::find(1);
-        $customers = $company->customers()->where('date', '=', $this->date);
+        $customers = $company->customers()->whereMonth('created_at', '=', '02');
 
         $supervisorId = $this->supervisorId;
         if ($supervisorId != '')
@@ -78,6 +78,6 @@ class CustomerSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
      */
     public function title(): string
     {
-        return 'Customer | ' .  Carbon::parse($this->date)->format('d-M-Y');
+        return 'Customer | ' .  Carbon::parse($this->date)->format('M-Y');
     }
 }

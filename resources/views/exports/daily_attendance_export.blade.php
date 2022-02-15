@@ -2,6 +2,7 @@
     <thead>
     <tr>
         <th>Sr. No.</th>
+        <th>Brand</th>
         <th>Region</th>
         <th>Channel</th>
         <th>Chain Name</th>
@@ -25,6 +26,7 @@
         @foreach ($userAttendances as $userAttendance)
         <tr>
             <td>{{ $loop->index + 1 }}</td>
+            <td>{{ $userAttendance->user->brand }}</td>
             <td>{{ $userAttendance->user->region }}</td>
             <td>{{ $userAttendance->user->channel }}</td>
             <td>{{ $userAttendance->user->chain_name }}</td>

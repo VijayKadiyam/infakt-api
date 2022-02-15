@@ -2,6 +2,7 @@
     <thead>
     <tr>
         <th>Sr. No.</th>
+        <th>Brand</th>
         <th>Region</th>
         <th>Channel</th>
         <th>Chain Name</th>
@@ -19,6 +20,7 @@
         @foreach ($Oftake_users as $offtake_user)
         <tr>
             <td>{{ $loop->index + 1 }}</td>
+            <td>{{ $offtake_user['brand'] }}</td>
             <td>{{ $offtake_user['region'] }}</td>
             <td>{{ $offtake_user['channel'] }}</td>
             <td>{{ $offtake_user['chain_name'] }}</td>

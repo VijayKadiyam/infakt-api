@@ -4,6 +4,7 @@
         <th>Sr. No.</th>
         <th>Type</th>
         <th>Date</th>
+        <th>Brand</th>
         <th>Region</th>
         <th>Channel</th>
         <th>Chain Name</th>
@@ -32,6 +33,7 @@
                     Offtake
                 </td>
                 <td>{{ $order['created_at'] }}</td>
+                <td>{{ $order['user']['brand'] }}</td>
                 <td>{{ $order['user']['region'] }}</td>
                 <td>{{ $order['user']['channel'] }}</td>
                 <td>{{ $order['user']['chain_name'] }}</td>
