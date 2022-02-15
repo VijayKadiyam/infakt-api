@@ -561,7 +561,7 @@ class AnalyticsController extends Controller
       'outlets'       =>  $outlets,
       'months'        =>  [
         [
-          'month' =>  $request->month != 2 ? date("F", mktime(0, 0, 0, $request->month - 2, 10)) : 'January',
+          'month' =>  $request->month != 2 ? date("F", mktime(0, 0, 0, $request->month - 2, 10)) : 'December',
           'value' =>  $achievedLast2,
         ],
         [
