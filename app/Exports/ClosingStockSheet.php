@@ -10,6 +10,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
 use App\Company;
+use App\DailyOrderSummary;
 use App\FocusedTarget;
 use App\Order;
 use App\Stock;
@@ -82,106 +83,144 @@ class ClosingStockSheet implements FromView, ShouldAutoSize, WithStyles, WithTit
         if ($supervisorId != '') {
             $users = $users->where('supervisor_id', '=', $supervisorId);
         }
-        $users = $users->get();
+        
+        $users = $users
+            // ->where('employee_code', '=', "W/MUM/0003")
+            // ->orWhere('employee_code', '=', "W/MUM/0005")
+            ->latest()
+            ->get();
 
-        foreach ($users as $key => $user) {
+        $usersSkusData = [];
+
+        foreach ($users as $user) {
             if ($user) {
-                $stocks = [];
-                if ($user)
-                    $stocks = Stock::whereYear('created_at', $year)
-                        ->whereMonth('created_at', $month)
-                        ->where('distributor_id', '=', $user->distributor_id)
-                        ->latest()->get();
-                $orders = [];
-                if ($user)
-                    $orders = Order::whereYear('created_at', $year)
-                        ->where('distributor_id', '=', $user->distributor_id)
-                        ->latest()->get();
+                $dailyOrderSummaries = DailyOrderSummary::where('user_id', '=', $user->id)
+                    // ->where('sku_id', '=', $sku->id)
+                    ->get();
                 foreach ($skus as $sku) {
-                    $sku['mrp_price'] = $sku['price'];
-                    $skuStocks = [];
-                    foreach ($stocks as $stock) {
-                        if ($sku['id'] == $stock['sku_id'])
-                            $skuStocks[] = $stock;
-                    }
-                    $sku['offer_price'] = null;
-                    if (sizeof($skuStocks) > 0) {
-                        if ($sku['offer_id'] != null) {
-                            if ($sku['offer']['offer_type']['name'] == 'FLAT') {
-                                $sku['offer_price'] = $sku['price'] - $sku['offer']['offer'];
-                            }
-                            if ($sku['offer']['offer_type']['name'] == 'PERCENT') {
-                                $sku['offer_price'] = $sku['price'] - ($sku['price'] * $sku['offer']['offer'] / 100);
-                            }
-                        }
-                    }
-                    $totalQty = 0;
-                    foreach ($skuStocks as $stock) {
-                        $totalQty += $stock->qty;
-                    }
-                    $receivedQty = 0;
-                    $purchaseReturnedQty = 0;
-                    $consumedQty = 0;
-                    $returnedQty = 0;
-
-                    foreach ($orders as $order) {
-                        $todayDate = Carbon::parse($this->date)->format('d-m-Y');
-                        // $todayDate = Carbon::now()->format('d-m-Y');
-                        // $todayDate = "15-02-2022";
-                        $orderDate = Carbon::parse($order->created_at)->format('d-m-Y');
-                        if ($orderDate != $todayDate) {
-                            foreach ($order->order_details as $detail) {
-                                if ($detail->sku_id == $sku['id'] && $order->order_type == 'Opening Stock')
-                                    $totalQty += $detail->qty;
-                                if ($detail->sku_id == $sku['id'] && $order->order_type == 'Stock Received')
-                                    $totalQty += $detail->qty;
-                                if ($detail->sku_id == $sku['id'] && $order->order_type == 'Purchase Returned')
-                                    $totalQty -= $detail->qty;
-                                if ($detail->sku_id == $sku['id'] && $order->order_type == 'Sales')
-                                    $totalQty -= $detail->qty;
-                                if ($detail->sku_id == $sku['id'] && $order->order_type == 'Stock Returned')
-                                    $totalQty += $detail->qty;
-                            }
-                        } else {
-                            foreach ($order->order_details as $detail) {
-                                if ($detail->sku_id == $sku['id'] && $order->order_type == 'Opening Stock')
-                                    $totalQty += $detail->qty;
-                                if ($detail->sku_id == $sku['id'] && $order->order_type == 'Stock Received')
-                                    $receivedQty += $detail->qty;
-                                if ($detail->sku_id == $sku['id'] && $order->order_type == 'Purchase Returned')
-                                    $purchaseReturnedQty += $detail->qty;
-                                if ($detail->sku_id == $sku['id'] && $order->order_type == 'Sales')
-                                    $consumedQty += $detail->qty;
-                                if ($detail->sku_id == $sku['id'] && $order->order_type == 'Stock Returned')
-                                    $returnedQty += $detail->qty;
-                            }
-                        }
-                    }
-
-                    $sku['qty'] = ($totalQty + $receivedQty - $purchaseReturnedQty - $consumedQty + $returnedQty);
-                    $sku['opening_stock'] = $totalQty;
-                    $sku['received_stock'] = $receivedQty;
-                    $sku['purchase_returned_stock'] = $purchaseReturnedQty;
-                    $sku['sales_stock'] = $consumedQty;
-                    $sku['returned_stock'] = $returnedQty;
-                    $sku['closing_stock'] = ($totalQty + $receivedQty - $purchaseReturnedQty - $consumedQty + $returnedQty);
                     $sku['user'] = $user;
-                    $asd[] = $sku;
+                    $isSku = 0;
+                    foreach ($dailyOrderSummaries as $dailyOrderSummary) {
+                        if ($dailyOrderSummary->sku_id == $sku->id) {
+                            $isSku = 1;
+                            $sku['qty'] = (int) $dailyOrderSummary->closing_stock;
+                            $sku['opening_stock'] = (int)$dailyOrderSummary->opening_stock;
+                            $sku['received_stock'] = (int)$dailyOrderSummary->received_stock;
+                            $sku['purchase_returned_stock'] = (int)$dailyOrderSummary->purchase_returned_stock;
+                            $sku['sales_stock'] = (int)$dailyOrderSummary->sales_stock;
+                            $sku['returned_stock'] = (int)$dailyOrderSummary->returned_stock;
+                            $sku['closing_stock'] = (int)$dailyOrderSummary->closing_stock;
+                        }
+                    }
+                    if ($isSku == 0) {
+                        $sku['qty'] = 0;
+                        $sku['opening_stock'] = 0;
+                        $sku['received_stock'] = 0;
+                        $sku['purchase_returned_stock'] = 0;
+                        $sku['sales_stock'] = 0;
+                        $sku['returned_stock'] = 0;
+                        $sku['closing_stock'] = 0;
+                    }
                 }
-            }
-        }
-        $skus = $asd;
-        for ($i = 0; $i < sizeof($skus); $i++) {
-            for ($j = $i; $j < sizeof($skus); $j++) {
-                if ($skus[$i]['qty'] < $skus[$j]['qty']) {
-                    $temp = $skus[$i];
-                    $skus[$i] = $skus[$j];
-                    $skus[$j] = $temp;
+                for ($i = 0; $i < sizeof($skus); $i++) {
+                    for ($j = $i; $j < sizeof($skus); $j++) {
+                        if ($skus[$i]['qty'] < $skus[$j]['qty']) {
+                            $temp = $skus[$i];
+                            $skus[$i] = $skus[$j];
+                            $skus[$j] = $temp;
+                        }
+                    }
                 }
+                $usersSkusData[] = array_combine(array_keys($skus->toArray()), $skus->toArray());;
             }
+
+            // if ($user) {
+            //     $stocks = [];
+            //     if ($user)
+            //         $stocks = Stock::whereYear('created_at', $year)
+            //             ->whereMonth('created_at', $month)
+            //             ->where('distributor_id', '=', $user->distributor_id)
+            //             ->latest()->get();
+            //     $orders = [];
+            //     if ($user)
+            //         $orders = Order::whereYear('created_at', $year)
+            //             ->where('distributor_id', '=', $user->distributor_id)
+            //             ->latest()->get();
+            //     foreach ($skus as $sku) {
+            //         $sku['mrp_price'] = $sku['price'];
+            //         $skuStocks = [];
+            //         foreach ($stocks as $stock) {
+            //             if ($sku['id'] == $stock['sku_id'])
+            //                 $skuStocks[] = $stock;
+            //         }
+            //         $sku['offer_price'] = null;
+            //         if (sizeof($skuStocks) > 0) {
+            //             if ($sku['offer_id'] != null) {
+            //                 if ($sku['offer']['offer_type']['name'] == 'FLAT') {
+            //                     $sku['offer_price'] = $sku['price'] - $sku['offer']['offer'];
+            //                 }
+            //                 if ($sku['offer']['offer_type']['name'] == 'PERCENT') {
+            //                     $sku['offer_price'] = $sku['price'] - ($sku['price'] * $sku['offer']['offer'] / 100);
+            //                 }
+            //             }
+            //         }
+            //         $totalQty = 0;
+            //         foreach ($skuStocks as $stock) {
+            //             $totalQty += $stock->qty;
+            //         }
+            //         $receivedQty = 0;
+            //         $purchaseReturnedQty = 0;
+            //         $consumedQty = 0;
+            //         $returnedQty = 0;
+
+            //         foreach ($orders as $order) {
+            //             $todayDate = Carbon::parse($this->date)->format('d-m-Y');
+            //             // $todayDate = Carbon::now()->format('d-m-Y');
+            //             // $todayDate = "15-02-2022";
+            //             $orderDate = Carbon::parse($order->created_at)->format('d-m-Y');
+            //             if ($orderDate != $todayDate) {
+            //                 foreach ($order->order_details as $detail) {
+            //                     if ($detail->sku_id == $sku['id'] && $order->order_type == 'Opening Stock')
+            //                         $totalQty += $detail->qty;
+            //                     if ($detail->sku_id == $sku['id'] && $order->order_type == 'Stock Received')
+            //                         $totalQty += $detail->qty;
+            //                     if ($detail->sku_id == $sku['id'] && $order->order_type == 'Purchase Returned')
+            //                         $totalQty -= $detail->qty;
+            //                     if ($detail->sku_id == $sku['id'] && $order->order_type == 'Sales')
+            //                         $totalQty -= $detail->qty;
+            //                     if ($detail->sku_id == $sku['id'] && $order->order_type == 'Stock Returned')
+            //                         $totalQty += $detail->qty;
+            //                 }
+            //             } else {
+            //                 foreach ($order->order_details as $detail) {
+            //                     if ($detail->sku_id == $sku['id'] && $order->order_type == 'Opening Stock')
+            //                         $totalQty += $detail->qty;
+            //                     if ($detail->sku_id == $sku['id'] && $order->order_type == 'Stock Received')
+            //                         $receivedQty += $detail->qty;
+            //                     if ($detail->sku_id == $sku['id'] && $order->order_type == 'Purchase Returned')
+            //                         $purchaseReturnedQty += $detail->qty;
+            //                     if ($detail->sku_id == $sku['id'] && $order->order_type == 'Sales')
+            //                         $consumedQty += $detail->qty;
+            //                     if ($detail->sku_id == $sku['id'] && $order->order_type == 'Stock Returned')
+            //                         $returnedQty += $detail->qty;
+            //                 }
+            //             }
+            //         }
+
+            //         $sku['qty'] = ($totalQty + $receivedQty - $purchaseReturnedQty - $consumedQty + $returnedQty);
+            //         $sku['opening_stock'] = $totalQty;
+            //         $sku['received_stock'] = $receivedQty;
+            //         $sku['purchase_returned_stock'] = $purchaseReturnedQty;
+            //         $sku['sales_stock'] = $consumedQty;
+            //         $sku['returned_stock'] = $returnedQty;
+            //         $sku['closing_stock'] = ($totalQty + $receivedQty - $purchaseReturnedQty - $consumedQty + $returnedQty);
+            //         $sku['user'] = $user;
+            //         $asd[] = $sku;
+            //     }
+            // }
         }
 
-        return view('exports.closing_stock_export', compact('skus'));
+        return view('exports.closing_stock_export', compact('usersSkusData'));
     }
 
     /**
