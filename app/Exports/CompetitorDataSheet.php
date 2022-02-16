@@ -129,71 +129,71 @@ class CompetitorDataSheet implements FromView, ShouldAutoSize, WithStyles, WithT
             } else {
                 // Update Existing User Log
                 $amount = 0;
-                // $replace  = [",", "-", " ", "."];
-                // if ($competitor->competitor == 'Biotech') {
-                //     if (isset($users[$user_key]['m' . $month . '_Biotech'])) {
-                //         $amount = str_replace($replace, "", $users[$user_key]['m' . $month . '_Biotech']);
-                //     }
-                //     $users[$user_key]['m' . $month . '_Biotech'] = $amount + str_replace($replace, "", $competitor->amount);
-                // }
-                // if ($competitor->competitor == 'Derma Fique') {
-                //     if (isset($users[$user_key]['m' . $month . '_Derma_Fique'])) {
-                //         $amount = str_replace($replace, "", $users[$user_key]['m' . $month . '_Derma_Fique']);
-                //     }
-                //     $users[$user_key]['m' . $month . '_Derma_Fique'] = $amount + str_replace($replace, "", $competitor->amount);
-                // }
-                // if ($competitor->competitor == 'Nivea') {
-                //     if (isset($users[$user_key]['m' . $month . '_Nivea'])) {
-                //         $amount = str_replace($replace, "", $users[$user_key]['m' . $month . '_Nivea']);
-                //     }
-                //     $users[$user_key]['m' . $month . '_Nivea'] = $amount + str_replace($replace, "", $competitor->amount);
-                // }
-                // if ($competitor->competitor == 'Neutrogena') {
-                //     if (isset($users[$user_key]['m' . $month . '_Neutrogena'])) {
-                //         $amount = str_replace($replace, "", $users[$user_key]['m' . $month . '_Neutrogena']);
-                //     }
-                //     $users[$user_key]['m' . $month . '_Neutrogena'] = $amount + str_replace($replace, "", $competitor->amount);
-                // }
-                // if ($competitor->competitor == 'Olay'){
-                //     if (isset($users[$user_key]['m' . $month . '_Olay'])) {
-                //         $amount = str_replace($replace, "", $users[$user_key]['m' . $month . '_Olay']);
-                //     }
-                //     $users[$user_key]['m' . $month . '_Olay'] = $amount + str_replace($replace, "", $competitor->amount);
-                // }
-                // if ($competitor->competitor == 'Plum'){
-                //     if (isset($users[$user_key]['m' . $month . '_Plum'])) {
-                //         $amount = str_replace($replace, "", $users[$user_key]['m' . $month . '_Plum']);
-                //     }
-                //     $users[$user_key]['m' . $month . '_Plum'] = $amount + str_replace($replace, "", $competitor->amount);
-                // }
-                // if ($competitor->competitor == 'Wow'){
-                //     if (isset($users[$user_key]['m' . $month . '_Wow'])) {
-                //         $amount = str_replace($replace, "", $users[$user_key]['m' . $month . '_Wow']);
-                //     }
-                //     $users[$user_key]['m' . $month . '_Wow'] = $amount + str_replace($replace, "", $competitor->amount);
-                // }
                 $replace  = [",", "-", " ", "."];
                 if ($competitor->competitor == 'Bio Tech') {
-                    $users[$user_key]['m' . $month . '_Bio_Tech'] = str_replace($replace, "", $competitor->amount);
+                    if (isset($users[$user_key]['m' . $month . '_Bio_Tech'])) {
+                        $amount = str_replace($replace, "", $users[$user_key]['m' . $month . '_Bio_Tech']);
+                    }
+                    $users[$user_key]['m' . $month . '_Bio_Tech'] = $amount + str_replace($replace, "", $competitor->amount);
                 }
                 if ($competitor->competitor == 'Derma Fique') {
-                    $users[$user_key]['m' . $month . '_Derma_Fique'] =  str_replace($replace, "", $competitor->amount);
+                    if (isset($users[$user_key]['m' . $month . '_Derma_Fique'])) {
+                        $amount = str_replace($replace, "", $users[$user_key]['m' . $month . '_Derma_Fique']);
+                    }
+                    $users[$user_key]['m' . $month . '_Derma_Fique'] = $amount + str_replace($replace, "", $competitor->amount);
                 }
                 if ($competitor->competitor == 'Nivea') {
-                    $users[$user_key]['m' . $month . '_Nivea'] = str_replace($replace, "", $competitor->amount);
+                    if (isset($users[$user_key]['m' . $month . '_Nivea'])) {
+                        $amount = str_replace($replace, "", $users[$user_key]['m' . $month . '_Nivea']);
+                    }
+                    $users[$user_key]['m' . $month . '_Nivea'] = $amount + str_replace($replace, "", $competitor->amount);
                 }
                 if ($competitor->competitor == 'Neutrogena') {
-                    $users[$user_key]['m' . $month . '_Neutrogena'] =  str_replace($replace, "", $competitor->amount);
+                    if (isset($users[$user_key]['m' . $month . '_Neutrogena'])) {
+                        $amount = str_replace($replace, "", $users[$user_key]['m' . $month . '_Neutrogena']);
+                    }
+                    $users[$user_key]['m' . $month . '_Neutrogena'] = $amount + str_replace($replace, "", $competitor->amount);
                 }
-                if ($competitor->competitor == 'Olay') {
-                    $users[$user_key]['m' . $month . '_Olay'] =  str_replace($replace, "", $competitor->amount);
+                if ($competitor->competitor == 'Olay'){
+                    if (isset($users[$user_key]['m' . $month . '_Olay'])) {
+                        $amount = str_replace($replace, "", $users[$user_key]['m' . $month . '_Olay']);
+                    }
+                    $users[$user_key]['m' . $month . '_Olay'] = $amount + str_replace($replace, "", $competitor->amount);
                 }
-                if ($competitor->competitor == 'Plum') {
-                    $users[$user_key]['m' . $month . '_Plum'] =  str_replace($replace, "", $competitor->amount);
+                if ($competitor->competitor == 'Plum'){
+                    if (isset($users[$user_key]['m' . $month . '_Plum'])) {
+                        $amount = str_replace($replace, "", $users[$user_key]['m' . $month . '_Plum']);
+                    }
+                    $users[$user_key]['m' . $month . '_Plum'] = $amount + str_replace($replace, "", $competitor->amount);
                 }
-                if ($competitor->competitor == 'Wow') {
-                    $users[$user_key]['m' . $month . '_Wow'] =  str_replace($replace, "", $competitor->amount);
+                if ($competitor->competitor == 'Wow'){
+                    if (isset($users[$user_key]['m' . $month . '_Wow'])) {
+                        $amount = str_replace($replace, "", $users[$user_key]['m' . $month . '_Wow']);
+                    }
+                    $users[$user_key]['m' . $month . '_Wow'] = $amount + str_replace($replace, "", $competitor->amount);
                 }
+                // $replace  = [",", "-", " ", "."];
+                // if ($competitor->competitor == 'Bio Tech') {
+                //     $users[$user_key]['m' . $month . '_Bio_Tech'] = str_replace($replace, "", $competitor->amount);
+                // }
+                // if ($competitor->competitor == 'Derma Fique') {
+                //     $users[$user_key]['m' . $month . '_Derma_Fique'] =  str_replace($replace, "", $competitor->amount);
+                // }
+                // if ($competitor->competitor == 'Nivea') {
+                //     $users[$user_key]['m' . $month . '_Nivea'] = str_replace($replace, "", $competitor->amount);
+                // }
+                // if ($competitor->competitor == 'Neutrogena') {
+                //     $users[$user_key]['m' . $month . '_Neutrogena'] =  str_replace($replace, "", $competitor->amount);
+                // }
+                // if ($competitor->competitor == 'Olay') {
+                //     $users[$user_key]['m' . $month . '_Olay'] =  str_replace($replace, "", $competitor->amount);
+                // }
+                // if ($competitor->competitor == 'Plum') {
+                //     $users[$user_key]['m' . $month . '_Plum'] =  str_replace($replace, "", $competitor->amount);
+                // }
+                // if ($competitor->competitor == 'Wow') {
+                //     $users[$user_key]['m' . $month . '_Wow'] =  str_replace($replace, "", $competitor->amount);
+                // }
 
                 $users[$user_key]["months"][$month] = $competitor;
             }
