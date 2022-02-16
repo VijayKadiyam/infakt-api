@@ -39,14 +39,16 @@
             <td>{{ $user['supervisor_name'] }}</td>
             @for ($i = 1; $i <= $daysInMonth; $i++) <td>
                 @if (isset($user['attendances'][$i]))
-                <span>{{ $user['attendances'][$i]['session_type'] }}</span>
+                <span>{{$user['attendances'][$i]['session_type'] == "LEAVE" ? $user['attendances'][$i]['session_type']:""}}</span>
+                @else
+                <span>ABSENT</span>
                 @endif
                 </td>
                 @endfor
                 <td>{{ $user['present_count'] }}</td>
                 <td>{{ $user['weekly_off_count'] }}</td>
                 <td>{{ $user['leave_count'] }}</td>
-                <td>{{ $daysInMonth - $user['day_count'] }}</td>
+                <td>{{$user['absent_count']}}</td>
         </tr>
         @endforeach
 
