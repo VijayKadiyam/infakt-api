@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class CompetitorData extends Model
 {
     protected $fillable = [
+        'company_id',
         'user_id',
         'competitor',
         'amount',

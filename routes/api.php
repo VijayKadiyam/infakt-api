@@ -458,3 +458,9 @@ Route::resource('ticket_followups', 'TicketFollowupsController');
 Route::resource('tickets/{ticket}/ticket_followups', 'TicketFollowupsController');
 
 Route::resource('daily_order_summaries', 'DailyOrderSummariesController');
+
+// Crude Competitor Data
+Route::get('crude_competitor_datas', 'CrudeCompetitorDatasController@index');
+Route::post('upload_competitor_data', 'CrudeCompetitorDatasController@uploadCompetitorData');
+Route::get('process_competitor_data', 'CrudeCompetitorDatasController@processCompetitorData');
+Route::get('truncate_competitor_datas', 'CrudeCompetitorDatasController@truncate');
