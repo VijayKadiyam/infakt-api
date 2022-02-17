@@ -26,32 +26,30 @@
         </tr>
     </thead>
     <tbody>
-    @foreach ($usersSkusData as $usersSkus)
-            @foreach ($usersSkus as $sku)
-            <tr>
-                <td>{{ $loop->index + 1 }}</td>
-                <td>{{ $sku['user']['brand'] }}</td>
-                <td>{{ $sku['user']['region'] }}</td>
-                <td>{{ $sku['user']['channel'] }}</td>
-                <td>{{ $sku['user']['chain_name'] }}</td>
-                <td>{{ $sku['user']['city'] }}</td>
-                <td>{{ $sku['user']['state'] }}</td>
-                <td>{{ $sku['user']['employee_code'] }}</td>
-                <td>{{ $sku['user']['name'] }}</td>
-                <td>{{ $sku['user']['ba_name'] }}</td>
-                <td>{{ $sku['user']['pms_emp_id'] }}</td>
-                <td>{{ $sku['user']['supervisor_name'] }}</td>
-                <td>{{ $sku['name'] ?? ""}}</td>
-                <td>{{ $sku['price'] ?? ""}}</td>
-                <td>{{ $sku['hsn_code'] ?? ""}}</td>
-                <td>{{ $sku['opening_stock'] ?? ""}}</td>
-                <td>{{ $sku['received_stock'] ?? ""}}</td>
-                <td>{{ $sku['purchase_returned_stock'] ?? ""}}</td>
-                <td>{{ $sku['sales_stock'] ?? ""}}</td>
-                <td>{{ $sku['returned_stock'] ?? ""}}</td>
-                <td>{{ $sku['closing_stock'] ?? ""}}</td>
-            </tr>
-            @endforeach
+        @foreach ($dailyOrderSummaries as $sku)
+        <tr>
+            <td>{{ $loop->index + 1 }}</td>
+            <td>{{ $sku['user']['brand'] }}</td>
+            <td>{{ $sku['user']['region'] }}</td>
+            <td>{{ $sku['user']['channel'] }}</td>
+            <td>{{ $sku['user']['chain_name'] }}</td>
+            <td>{{ $sku['user']['city'] }}</td>
+            <td>{{ $sku['user']['state'] }}</td>
+            <td>{{ $sku['user']['employee_code'] }}</td>
+            <td>{{ $sku['user']['name'] }}</td>
+            <td>{{ $sku['user']['ba_name'] }}</td>
+            <td>{{ $sku['user']['pms_emp_id'] }}</td>
+            <td>{{ $sku['user']['supervisor_name'] }}</td>
+            <td>{{ $sku['sku']['name'] ?? ""}}</td>
+            <td>{{ $sku['price'] ?? ""}}</td>
+            <td>{{ $sku['hsn_code'] ?? ""}}</td>
+            <td>{{ $sku['opening_stock'] ?? ""}}</td>
+            <td>{{ $sku['received_stock'] ?? ""}}</td>
+            <td>{{ $sku['purchase_returned_stock'] ?? ""}}</td>
+            <td>{{ $sku['sales_stock'] ?? ""}}</td>
+            <td>{{ $sku['returned_stock'] ?? ""}}</td>
+            <td>{{ $sku['closing_stock'] ?? ""}}</td>
+        </tr>
         @endforeach
     </tbody>
 </table>

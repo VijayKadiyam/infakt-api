@@ -503,4 +503,8 @@ class Company extends Model
   {
     return $this->hasMany(CrudeCompetitorData::class);
   }
+  public function daily_order_summaries()
+  {
+    return $this->hasMany(DailyOrderSummary::class)->with('user', 'sku');
+  }
 }
