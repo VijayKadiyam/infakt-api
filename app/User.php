@@ -51,7 +51,7 @@ class User extends Authenticatable
    */
   public function generateToken()
   {
-    if($this->api_token == null)
+    if ($this->api_token == null)
       $this->api_token = str_random(60);
     $this->save();
     return $this;
@@ -388,7 +388,8 @@ class User extends Authenticatable
     return $this->belongsTo(ReferencePlan::class, 'beat_type_id');
   }
 
-  public function supervisor() {
+  public function supervisor()
+  {
     return $this->belongsTo(User::class);
   }
 
@@ -489,5 +490,8 @@ class User extends Authenticatable
   {
     return $this->hasMany(Ticket::class);
   }
+  public function daily_order_summaries()
+  {
+    return $this->hasMany(DailyOrderSummary::class);
+  }
 }
-

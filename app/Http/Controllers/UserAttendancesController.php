@@ -815,12 +815,18 @@ class UserAttendancesController extends Controller
       $userAttendances = $userAttendances->where('user_id', '=', $request->user_id);
     }
     if ($request->month) {
+      $currentMonth = Carbon::now()->format('m');
+
+      $daysInMonth = Carbon::now()->month($request->month)->daysInMonth;
+      if ($request->month == $currentMonth) {
+        $daysInMonth = Carbon::now()->format('d');
+      }
       $userAttendances = $userAttendances->whereMonth('date', '=', $request->month);
     }
     if ($request->year) {
       $userAttendances = $userAttendances->whereYear('date', '=', $request->year);
     }
-    if ($request->session_type) {
+    if ($request->session_type && $request->session_type != "LEAVE") {
       $userAttendances = $userAttendances->where('session_type', '=', $request->session_type);
     }
     $supervisorId = request()->superVisor_id;
@@ -833,6 +839,7 @@ class UserAttendancesController extends Controller
     $users = [];
     $user_id_log = [];
     $defaulters = [];
+    $absent_count = 0;
     foreach ($userAttendances as $key => $attendance) {
       $present_count = 0;
       $weekly_off_count = 0;
@@ -850,6 +857,7 @@ class UserAttendancesController extends Controller
       $is_exist = in_array($user_id, $user_id_log);
       if (!$user_key && !$is_exist) {
         $user_id_log[] = $user_id;
+        $absent_count = 0;
         $day_count = 1;
         switch ($attendance->session_type) {
           case 'PRESENT':
@@ -869,6 +877,7 @@ class UserAttendancesController extends Controller
         $user['present_count'] = $present_count;
         $user['weekly_off_count'] = $weekly_off_count;
         $user['leave_count'] = $leave_count;
+        $user['absent_count'] = $absent_count;
         $user['attendances'][$date] = $attendance;
         $user['is_defaulter'] = $is_defaulter;
         $is_defaulter = 0;
@@ -897,17 +906,29 @@ class UserAttendancesController extends Controller
         $day_count = sizeof($users[$user_key]["attendances"]) + 1;
         $users[$user_key]["attendances"][$date] = $attendance;
         $users[$user_key]['day_count'] = $day_count;
+        $absent_count = $daysInMonth - $day_count;
+        $users[$user_key]['absent_count'] = $absent_count;
+
         $defaulter_user_key = array_search($user_id, array_column($defaulters, 'id'));
-        if ($diff == 1) {
+        if ($request->session_type == "LEAVE" && ($absent_count + $users[$user_key]['leave_count']) >= 2) {
           $is_defaulter = 1;
           if ($previous_log && empty($defaulters[$defaulter_user_key]["attendances"][$previous_date])) {
             $defaulters[$defaulter_user_key]["attendances"][$previous_date] = $previous_log;
           }
           $defaulters[$defaulter_user_key]["attendances"][$date] = $attendance;
+        } else {
+          if ($request->session_type != "LEAVE" && $diff == 1) {
+            $is_defaulter = 1;
+            if ($previous_log && empty($defaulters[$defaulter_user_key]["attendances"][$previous_date])) {
+              $defaulters[$defaulter_user_key]["attendances"][$previous_date] = $previous_log;
+            }
+            $defaulters[$defaulter_user_key]["attendances"][$date] = $attendance;
+          }
         }
         $defaulters[$defaulter_user_key]["is_defaulter"] = $is_defaulter;
         $defaulters[$defaulter_user_key]["present_count"] = $users[$user_key]["present_count"];
         $defaulters[$defaulter_user_key]["leave_count"] = $users[$user_key]["leave_count"];
+        $defaulters[$defaulter_user_key]["absent_count"] = $users[$user_key]["absent_count"];
         $defaulters[$defaulter_user_key]["weekly_off_count"] = $users[$user_key]["weekly_off_count"];
       }
     }
@@ -1030,7 +1051,7 @@ class UserAttendancesController extends Controller
           }
           $defaulters[$defaulter_user_key]["attendances"][$date] = $attendance;
         }
-        if($key>10){
+        if ($key > 10) {
           return $defaulters;
         }
         $defaulters[$defaulter_user_key]["is_defaulter"] = $is_defaulter;
