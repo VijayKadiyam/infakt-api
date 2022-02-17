@@ -214,7 +214,7 @@ class AnalyticsController extends Controller
       }
 
       $achievedDatas[] = [
-        'store_name'  =>  '=',
+        'store_name'  =>  'Total Target',
         'target'  =>  $totalTarget,
         'achieved'  =>  $totalAchieved,
       ];
