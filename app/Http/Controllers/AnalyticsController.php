@@ -173,6 +173,8 @@ class AnalyticsController extends Controller
 
 
     if ($request->supervisorId) {
+      $totalTarget = 0;
+      $totalAchieved = 0;
       $achievedDatas = [];
       $supervisorUsers = User::where('supervisor_id', '=', $request->supervisorId)
         ->get();
@@ -195,11 +197,13 @@ class AnalyticsController extends Controller
           ->where('year', '=', $currentYear)
           ->first();
         $target = $target ? $target->target : 0;
+        $totalTarget += $target;
         $achieved = 0;
 
         // Achieved of a month
         foreach ($ordersOfMonth as $order) {
           $achieved += $order->total;
+          $totalAchieved += $order->total;
         }
 
         $achievedDatas[] = [
@@ -208,6 +212,12 @@ class AnalyticsController extends Controller
           'achieved'  =>  $achieved,
         ];
       }
+
+      $achievedDatas[] = [
+        'store_name'  =>  '=',
+        'target'  =>  $totalTarget,
+        'achieved'  =>  $totalAchieved,
+      ];
     }
 
     return response()->json([
