@@ -13,10 +13,10 @@
             <th rowspan="2">BA Name</th>
             <th rowspan="2">PMS EMP ID</th>
             <th rowspan="2">Supervisor Name</th>
-            <th colspan="6">Week 1</th>
-            <th colspan="6">Week 2</th>
+            <th colspan="7">Jan 2022</th>
+            <!-- <th colspan="6">Week 2</th>
             <th colspan="6">Week 3</th>
-            <th colspan="6">Week 4</th>
+            <th colspan="6">Week 4</th> -->
         </tr>
         <tr>
             <th>Bio Tech</th>
@@ -25,27 +25,8 @@
             <th>Neutrogena</th>
             <th>Olay</th>
             <th>Plum</th>
+            <th>Wow</th>
 
-            <th>Bio Tech</th>
-            <th>Derma Fique</th>
-            <th>Nivea</th>
-            <th>Neutrogena</th>
-            <th>Olay</th>
-            <th>Plum</th>
-
-            <th>Bio Tech</th>
-            <th>Derma Fique</th>
-            <th>Nivea</th>
-            <th>Neutrogena</th>
-            <th>Olay</th>
-            <th>Plum</th>
-
-            <th>Bio Tech</th>
-            <th>Derma Fique</th>
-            <th>Nivea</th>
-            <th>Neutrogena</th>
-            <th>Olay</th>
-            <th>Plum</th>
         </tr>
     </thead>
     <tbody>
@@ -63,30 +44,13 @@
             <td>{{ $user['ba_name'] }}</td>
             <td>{{ $user['pms_emp_id'] }}</td>
             <td>{{ $user['supervisor_name'] }}</td>
-            <td>{{ $user['w1_Biotech'] ?? '0'}}</td>
-            <td>{{ $user['w1_Derma_Fique'] ?? '0'}}</td>
-            <td>{{ $user['w1_Nivea'] ?? '0'}}</td>
-            <td>{{ $user['w1_Neutrogena'] ?? '0'}}</td>
-            <td>{{ $user['w1_Olay'] ?? '0'}}</td>
-            <td>{{ $user['w1_Plum'] ?? '0'}}</td>
-            <td>{{ $user['w2_Biotech'] ?? '0'}}</td>
-            <td>{{ $user['w2_Derma_Fique'] ?? '0'}}</td>
-            <td>{{ $user['w2_Nivea'] ?? '0'}}</td>
-            <td>{{ $user['w2_Neutrogena'] ?? '0'}}</td>
-            <td>{{ $user['w2_Olay'] ?? '0'}}</td>
-            <td>{{ $user['w2_Plum'] ?? '0'}}</td>
-            <td>{{ $user['w3_Biotech'] ?? '0'}}</td>
-            <td>{{ $user['w3_Derma_Fique'] ?? '0'}}</td>
-            <td>{{ $user['w3_Nivea'] ?? '0'}}</td>
-            <td>{{ $user['w3_Neutrogena'] ?? '0'}}</td>
-            <td>{{ $user['w3_Olay'] ?? '0'}}</td>
-            <td>{{ $user['w3_Plum'] ?? '0'}}</td>
-            <td>{{ $user['w4_Biotech'] ?? '0'}}</td>
-            <td>{{ $user['w4_Derma_Fique'] ?? '0'}}</td>
-            <td>{{ $user['w4_Nivea'] ?? '0'}}</td>
-            <td>{{ $user['w4_Neutrogena'] ?? '0'}}</td>
-            <td>{{ $user['w4_Olay'] ?? '0'}}</td>
-            <td>{{ $user['w4_Plum'] ?? '0'}}</td>
+            <td>{{ $user['m1_Bio_Tech'] ?? '0'}}</td>
+            <td>{{ $user['m1_Derma_Fique'] ?? '0'}}</td>
+            <td>{{ $user['m1_Nivea'] ?? '0'}}</td>
+            <td>{{ $user['m1_Neutrogena'] ?? '0'}}</td>
+            <td>{{ $user['m1_Olay'] ?? '0'}}</td>
+            <td>{{ $user['m1_Plum'] ?? '0'}}</td>
+            <td>{{ $user['m1_Wow'] ?? '0'}}</td>
 
         </tr>
         @endforeach

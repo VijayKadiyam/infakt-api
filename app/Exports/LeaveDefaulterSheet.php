@@ -61,7 +61,7 @@ class LeaveDefaulterSheet implements FromView, ShouldAutoSize, WithStyles, WithT
         if ($year)
             $userAttendances = $userAttendances->whereYear('date', '=', $year);
 
-        $userAttendances = $userAttendances->where('session_type', '=', $session_type);
+        // $userAttendances = $userAttendances->where('session_type', '=', $session_type);
         // $userAttendances = $userAttendances->take(10);
         $region = $this->region;
         if ($region) {
@@ -85,6 +85,7 @@ class LeaveDefaulterSheet implements FromView, ShouldAutoSize, WithStyles, WithT
         $users = [];
         $user_id_log = [];
         $defaulters = [];
+        $absent_count = 0;
         foreach ($userAttendances as $key => $attendance) {
             $present_count = 0;
             $weekly_off_count = 0;
@@ -103,6 +104,8 @@ class LeaveDefaulterSheet implements FromView, ShouldAutoSize, WithStyles, WithT
             if (!$user_key && !$is_exist) {
                 $user_id_log[] = $user_id;
                 $day_count = 1;
+                $absent_count = 0;
+
                 switch ($attendance->session_type) {
                     case 'PRESENT':
                         $present_count++;
@@ -120,6 +123,7 @@ class LeaveDefaulterSheet implements FromView, ShouldAutoSize, WithStyles, WithT
                 $user['present_count'] = $present_count;
                 $user['weekly_off_count'] = $weekly_off_count;
                 $user['leave_count'] = $leave_count;
+                $user['absent_count'] = $absent_count;
                 $user['attendances'][$date] = $attendance;
                 $user['is_defaulter'] = $is_defaulter;
                 $is_defaulter = 0;
@@ -147,10 +151,13 @@ class LeaveDefaulterSheet implements FromView, ShouldAutoSize, WithStyles, WithT
                 $day_count = sizeof($users[$user_key]["attendances"]) + 1;
                 $users[$user_key]["attendances"][$date] = $attendance;
                 $users[$user_key]['day_count'] = $day_count;
-
+                $absent_count = $daysInMonth - $day_count;
+                $users[$user_key]['absent_count'] = $absent_count;
                 $defaulter_user_key = array_search($user_id, array_column($defaulters, 'id'));
-                if ($diff == 1) {
+                // if ($diff == 1) {
+                if (($absent_count + $users[$user_key]['leave_count'])>= 2) {
                     $is_defaulter = 1;
+                    // $users[$defaulter_user_key]["is_defaulter"] = $is_defaulter;
                     if ($previous_log && empty($defaulters[$defaulter_user_key]["attendances"][$previous_date])) {
                         $defaulters[$defaulter_user_key]["attendances"][$previous_date] = $previous_log;
                     }
@@ -159,6 +166,7 @@ class LeaveDefaulterSheet implements FromView, ShouldAutoSize, WithStyles, WithT
                 $defaulters[$defaulter_user_key]["is_defaulter"] = $is_defaulter;
                 $defaulters[$defaulter_user_key]["present_count"] = $users[$user_key]["present_count"];
                 $defaulters[$defaulter_user_key]["leave_count"] = $users[$user_key]["leave_count"];
+                $defaulters[$defaulter_user_key]["absent_count"] = $users[$user_key]["absent_count"];
                 $defaulters[$defaulter_user_key]["weekly_off_count"] = $users[$user_key]["weekly_off_count"];
             }
         }

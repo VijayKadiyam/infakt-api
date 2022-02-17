@@ -499,4 +499,8 @@ class Company extends Model
   {
     return $this->hasMany(TicketFollowup::class);
   }
+  public function crude_competitor_datas()
+  {
+    return $this->hasMany(CrudeCompetitorData::class);
+  }
 }
