@@ -941,7 +941,8 @@ class AnalyticsController extends Controller
             'date'    =>  $userAttendance->date,
             // 'status'  =>  '>=8.5 Hrs',
             'status'  =>  $userAttendance->session_type,
-            'color'   =>  '#108108',
+            'color'   =>  '#392897',
+            // 'color'   =>  '#108108',
           ];
           $attendances[] = [
             'date'    =>  $userAttendance->date,
