@@ -180,17 +180,16 @@ class OfftakeAnalyticsController extends Controller
 		$date = Carbon::parse($date)->format('Y-m-d');
 
 		$count = 0;
-		// $dailyOrderSummaries = $company->daily_order_summaries()
-		// ->where('user_id', 3314)
-		// ->orWhere('user_id', 3009)
-		// ->orWhere('user_id', 2857)
-		// ->whereDate('created_at', '=', $date)
-		// ->latest();
-
-		// $dailyOrderSummaries = $dailyOrderSummaries->get();
+		$dailyOrderSummaries = $company->daily_order_summaries()
+			// ->where('user_id', 3314)
+			// ->orWhere('user_id', 3009)
+			// ->orWhere('user_id', 2857)
+			->whereDate('created_at', '=', $date)
+			->latest();
+		$dailyOrderSummaries = $dailyOrderSummaries->get();
 
 		$skus = $company->skus()
-			->take(10)
+			->take(1)
 			->get();
 
 		$users = User::whereHas('roles', function ($q) {
@@ -207,14 +206,20 @@ class OfftakeAnalyticsController extends Controller
 		foreach ($skus as $sku) {
 			$skuUsers = [];
 			$userDailyOrderSummaries = [];
-			$dailyOrderSummaries = $company->daily_order_summaries()
-				->whereDate('created_at', '=', $date)
-				->where('sku_id', '=', $sku->id)
-				->latest()
-				->get();
+			$skuDOS = [];
+			foreach ($dailyOrderSummaries as $dailyOrderSummary) {
+				if ($dailyOrderSummary->sku_id == $sku->id) {
+					$skuDOS[] = $dailyOrderSummary;
+				}
+			}
+			// $dailyOrderSummaries = $company->daily_order_summaries()
+			// 	->whereDate('created_at', '=', $date)
+			// 	->where('sku_id', '=', $sku->id)
+			// 	->latest()
+			// 	->get();
 			foreach ($users as $user) {
-				foreach($dailyOrderSummaries as $dailyOrderSummary) {
-					if($dailyOrderSummary->user_id == $user->id) {
+				foreach ($skuDOS as $dailyOrderSummary) {
+					if ($dailyOrderSummary->user_id == $user->id) {
 						$userDailyOrderSummaries[] = $dailyOrderSummary;
 					}
 				}

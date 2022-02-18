@@ -1,14 +1,64 @@
 <table>
   <thead>
     <tr>
-      <th rowspan="2">Sr. No.</th>
-      <th rowspan="2">Category</th>
-      <th rowspan="2">Sub Category</th>
-      <th rowspan="2">SKU Name</th>
-      <th rowspan="2">Price</th>
-      <th rowspan="2">HSN Code</th>
+      <th rowspan="12">Sr. No.</th>
+      <th rowspan="12">Category</th>
+      <th rowspan="12">Sub Category</th>
+      <th rowspan="12">SKU Name</th>
+      <th rowspan="12">Price</th>
+      <th rowspan="12">HSN Code</th>
+      @foreach ($skus[0]->userDailyOrderSummaries as $userDailyOrderSummary)
+        <th colspan="6">{{ $userDailyOrderSummary['user']['region'] }}</th>
+      @endforeach
+    </tr>
+    <tr>
+      @foreach ($skus[0]->userDailyOrderSummaries as $userDailyOrderSummary)
+      <th colspan="6">{{ $userDailyOrderSummary['user']['brand'] }}</th>
+      @endforeach
+    </tr>
+    <tr>
+      @foreach ($skus[0]->userDailyOrderSummaries as $userDailyOrderSummary)
+      <th colspan="6">{{ $userDailyOrderSummary['user']['channel'] }}</th>
+      @endforeach
+    </tr>
+    <tr>
+      @foreach ($skus[0]->userDailyOrderSummaries as $userDailyOrderSummary)
+      <th colspan="6">{{ $userDailyOrderSummary['user']['chain_name'] }}</th>
+      @endforeach
+    </tr>
+    <tr>
+      @foreach ($skus[0]->userDailyOrderSummaries as $userDailyOrderSummary)
+      <th colspan="6">{{ $userDailyOrderSummary['user']['city'] }}</th>
+      @endforeach
+    </tr>
+    <tr>
+      @foreach ($skus[0]->userDailyOrderSummaries as $userDailyOrderSummary)
+      <th colspan="6">{{ $userDailyOrderSummary['user']['state'] }}</th>
+      @endforeach
+    </tr>
+    <tr>
+      @foreach ($skus[0]->userDailyOrderSummaries as $userDailyOrderSummary)
+      <th colspan="6">{{ $userDailyOrderSummary['user']['employee_code'] }}</th>
+      @endforeach
+    </tr>
+    <tr>
       @foreach ($skus[0]->userDailyOrderSummaries as $userDailyOrderSummary)
       <th colspan="6">{{ $userDailyOrderSummary['user']['name'] }}</th>
+      @endforeach
+    </tr>
+    <tr>
+      @foreach ($skus[0]->userDailyOrderSummaries as $userDailyOrderSummary)
+      <th colspan="6">{{ $userDailyOrderSummary['user']['ba_name'] }}</th>
+      @endforeach
+    </tr>
+    <tr>
+      @foreach ($skus[0]->userDailyOrderSummaries as $userDailyOrderSummary)
+      <th colspan="6">{{ $userDailyOrderSummary['user']['pms_emp_id'] }}</th>
+      @endforeach
+    </tr>
+    <tr>
+      @foreach ($skus[0]->userDailyOrderSummaries as $userDailyOrderSummary)
+      <th colspan="6">{{ $userDailyOrderSummary['user']['supervisor_name'] }}</th>
       @endforeach
     </tr>
     <tr>
