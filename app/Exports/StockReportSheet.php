@@ -149,6 +149,6 @@ class StockReportSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
      */
     public function title(): string
     {
-        return "Stock Reports | " . Carbon::parse($this->date)->format('d-M-Y');
+        return "Stock Reports | " . Carbon::parse($this->date)->format('M-Y');
     }
 }
