@@ -15,6 +15,7 @@ use App\FocusedTarget;
 use App\Order;
 use App\Stock;
 use App\Target;
+use App\User;
 use Carbon\Carbon;
 
 class ClosingStockSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
@@ -225,50 +226,66 @@ class ClosingStockSheet implements FromView, ShouldAutoSize, WithStyles, WithTit
 
     //     return view('exports.closing_stock_export', compact('usersSkusData'));
     // }
+
     public function view(): View
     {
         ini_set('max_execution_time', 0);
-        ini_set('memory_limit', '-1');
+		ini_set('memory_limit', '-1');
 
-        $asd = [];
-        $company = Company::find(1);
+		$asd = [];
+		$company = Company::find(1);
 
-        $currentMonth = Carbon::now()->format('m');
-        $month =  Carbon::parse($this->date)->format('m');
-        $year = Carbon::parse($this->date)->format('Y');
-        $date = Carbon::parse($this->date)->format('Y-m-d');
+		$date = Carbon::now()->format('Y-m-d');
 
-        $count = 0;
-        $dailyOrderSummaries = $company->daily_order_summaries()
-            // ->where('user_id', 3314)->orwhere('user_id', 3009)->orwhere('user_id', 2857)
-            ->whereDate('created_at', '=', $date)
-            ->latest()
-            ->orderBy('closing_stock', 'DESC');
+		$currentMonth = Carbon::now()->format('m');
+		$month =  Carbon::parse($date)->format('m');
+		$year = Carbon::parse($date)->format('Y');
+		$date = Carbon::parse($date)->format('Y-m-d');
 
-        // $region = $this->region;
+		$count = 0;
+		// $dailyOrderSummaries = $company->daily_order_summaries()
+		// ->where('user_id', 3314)
+		// ->orWhere('user_id', 3009)
+		// ->orWhere('user_id', 2857)
+		// ->whereDate('created_at', '=', $date)
+		// ->latest();
 
-        // if ($region) {
-        //     $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($region) {
-        //         $q->where('region', 'LIKE', '%' . $region . '%');
-        //     });
-        // }
+		// $dailyOrderSummaries = $dailyOrderSummaries->get();
 
-        // $channel = $this->channel;
-        // if ($channel) {
-        //     $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($channel) {
-        //         $q->where('channel', 'LIKE', '%' . $channel . '%');
-        //     });
-        // }
-        
-        // $supervisorId = $this->supervisorId;
-        // if ($supervisorId != '')
-        //     $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($supervisorId) {
-        //         $q->where('supervisor_id', '=', $supervisorId);
-        //     });
-        
-        $dailyOrderSummaries = $dailyOrderSummaries->get();
+		$skus = $company->skus()
+			// ->take(10)
+			->get();
 
-        return view('exports.closing_stock_export', compact('dailyOrderSummaries'));
+		$users = User::whereHas('roles', function ($q) {
+			$q->where('name', '=', 'BA');
+		})
+			->where('active', '=', 1)
+			// ->take(2)
+			->get();
+
+		// $d =  $dailyOrderSummaries
+		// 	->where('user_id', '=', $users[0]->id)
+		// 	->get();
+
+		foreach ($skus as $sku) {
+			$skuUsers = [];
+			$userDailyOrderSummaries = [];
+			$dailyOrderSummaries = $company->daily_order_summaries()
+				->whereDate('created_at', '=', $date)
+				->where('sku_id', '=', $sku->id)
+				->latest()
+				->get();
+			foreach ($users as $user) {
+				foreach($dailyOrderSummaries as $dailyOrderSummary) {
+					if($dailyOrderSummary->user_id == $user->id) {
+						$userDailyOrderSummaries[] = $dailyOrderSummary;
+					}
+				}
+			}
+			$sku['userDailyOrderSummaries'] = $userDailyOrderSummaries;
+		}
+
+        return view('exports.closing_stock_export1', compact('skus'));
     }
 
     /**
