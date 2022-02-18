@@ -1,12 +1,12 @@
 <table>
   <thead>
     <tr>
-      <th rowspan="2">Sr. No.</th>
-      <th rowspan="2">Category</th>
-      <th rowspan="2">Sub Category</th>
-      <th rowspan="2">SKU Name</th>
-      <th rowspan="2">Price</th>
-      <th rowspan="2">HSN Code</th>
+      <th>Sr. No.</th>
+      <th>Category</th>
+      <th>Sub Category</th>
+      <th>SKU Name</th>
+      <th>Price</th>
+      <th>HSN Code</th>
       @foreach ($skus[0]->userDailyOrderSummaries as $userDailyOrderSummary)
       <th colspan="6">{{ $userDailyOrderSummary['user']['name'] }}</th>
       @endforeach
