@@ -62,9 +62,9 @@ class StockReportSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
         $date = Carbon::parse($this->date)->format('Y-m-d');
 
         $count = 0;
-        $dailyOrderSummaries = $company->daily_order_summaries();
-        // ->where('user_id', 3314)
-        // ->where('user_id', 3314)->orwhere('user_id', 3009)
+        $dailyOrderSummaries = $company->daily_order_summaries()
+            // ->where('user_id', 3314)
+            ->where('user_id', 3314)->orwhere('user_id', 3009);
         // ->orwhere('user_id', 2857)
         // ->whereDate('created_at', '=', $date)
         // ->latest()
@@ -90,7 +90,10 @@ class StockReportSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
         $dailyOrderSummaries = $dailyOrderSummaries->get();
         $total_opening_stocks = 0;
         $total_closing_stocks = 0;
-
+        $total_received_stock = 0;
+        $total_purchase_returned_stock = 0;
+        $total_sales_stock = 0;
+        $total_returned_stock = 0;
         $users = [];
         foreach ($dailyOrderSummaries as $key => $dos) {
             $user = $dos->user->toArray();
@@ -104,18 +107,35 @@ class StockReportSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
                 $sku_price = $sku->price;
                 $opening_stock = $dos->opening_stock;
                 $closing_stock = $dos->closing_stock;
+                $received_stock = $dos->received_stock;
+                $purchase_returned_stock = $dos->purchase_returned_stock;
+                $sales_stock = $dos->sales_stock;
+                $returned_stock = $dos->returned_stock;
+
                 $total_opening_stocks = $opening_stock * $sku_price;
                 $total_closing_stocks = $closing_stock * $sku_price;
+                $total_received_stock = $received_stock * $sku_price;
+                $total_purchase_returned_stock = $purchase_returned_stock * $sku_price;
+                $total_sales_stock = $sales_stock * $sku_price;
+                $total_returned_stock = $returned_stock * $sku_price;
                 $user_key = array_search($user_id, array_column($users, 'id'));
                 if (!is_int($user_key)) {
                     // Insert
                     $user['total_opening_stocks'] = $total_opening_stocks;
                     $user['total_closing_stocks'] = $total_closing_stocks;
+                    $user['total_received_stock'] = $total_received_stock;
+                    $user['total_purchase_returned_stock'] = $total_purchase_returned_stock;
+                    $user['total_sales_stock'] = $total_sales_stock;
+                    $user['total_returned_stock'] = $total_returned_stock;
                     $users[] = $user;
                 } else {
                     // Update
                     $users[$user_key]['total_opening_stocks'] += $total_opening_stocks;
                     $users[$user_key]['total_closing_stocks'] += $total_closing_stocks;
+                    $users[$user_key]['total_received_stock'] += $total_received_stock;
+                    $users[$user_key]['total_purchase_returned_stock'] += $total_purchase_returned_stock;
+                    $users[$user_key]['total_sales_stock'] += $total_sales_stock;
+                    $users[$user_key]['total_returned_stock'] += $total_returned_stock;
                 }
             }
         }
@@ -127,10 +147,6 @@ class StockReportSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
      */
     public function title(): string
     {
-        if ($this->region) {
-            return $this->region . "'s Closing Stock | " . Carbon::parse($this->date)->format('d-M-Y');
-        } else {
-            return "Closing Stock | " . Carbon::parse($this->date)->format('d-M-Y');
-        }
+        return "Stock Reports | " . Carbon::parse($this->date)->format('d-M-Y');
     }
 }
