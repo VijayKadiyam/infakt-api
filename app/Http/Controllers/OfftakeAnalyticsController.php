@@ -169,9 +169,10 @@ class OfftakeAnalyticsController extends Controller
 		ini_set('max_execution_time', 0);
 		ini_set('memory_limit', '-1');
 
-		$date = Carbon::now()->addDays(-1)->format('Y-m-d');
-
+		$asd = [];
 		$company = Company::find(1);
+
+		$date = Carbon::now()->format('Y-m-d');
 
 		$currentMonth = Carbon::now()->format('m');
 		$month =  Carbon::parse($date)->format('m');
@@ -179,52 +180,27 @@ class OfftakeAnalyticsController extends Controller
 		$date = Carbon::parse($date)->format('Y-m-d');
 
 		$count = 0;
-
 		$dailyOrderSummaries = $company->daily_order_summaries()
-			// ->where('user_id', 3314)
-			->where('user_id', 3009)
-			// ->orwhere('user_id', 2857)
+			->where('user_id', 3314)
+			->orWhere('user_id', 3009)
+			->orWhere('user_id', 2857)
 			->latest();
 
 		$dailyOrderSummaries = $dailyOrderSummaries->get();
 
-		// return response()->json([
-		// 	'data'	=> $dailyOrderSummaries
-		// ]);
+		$skus = $company->skus;
 
-		$total_opening_stocks = 0;
-		$total_closing_stocks = 0;
-		$users = [];
-
-		foreach ($dailyOrderSummaries as $key => $dos) {
-			$user = $dos->user->toArray();
-			unset($dos['user']);
-			$user_id = $user['id'];
-
-			$sku = $dos->sku;
-			unset($dos['sku']);
-
-			$sku_price = $sku->price;
-			$opening_stock = $dos->opening_stock;
-			$closing_stock = $dos->closing_stock;
-			$total_opening_stocks = $opening_stock * $sku_price;
-			$total_closing_stocks = $closing_stock * $sku_price;
-			$user_key = array_search($user_id, array_column($users, 'id'));
-			if (!is_int($user_key)) {
-				// Insert
-				$user['total_opening_stocks'] = $total_opening_stocks;
-				$user['total_closing_stocks'] = $total_closing_stocks;
-				$users[] = $user;
-			} else {
-				// Update
-				$users[$user_key]['total_opening_stocks'] += $total_opening_stocks;
-				$users[$user_key]['total_closing_stocks'] += $total_closing_stocks;
+		foreach($skus as $sku) {
+			$sku['dailyOrderSummaries'] = [];
+			foreach($dailyOrderSummaries as $dailyOrderSummary) {
+				if($dailyOrderSummary->sku_id == $sku->id) {
+					$sku['dailyOrderSummaries'][] = $dailyOrderSummary;
+				}
 			}
 		}
 
-		// return Excel::download(new BAReportExport($date, "", "", ""), "BA-Report.xlsx");
+		return view('exports.closing_stock_export1', compact('skus'));
 
-		return view('exports.stock_report_export', compact('users')); 
 
 		ini_set('max_execution_time', 10000);
 

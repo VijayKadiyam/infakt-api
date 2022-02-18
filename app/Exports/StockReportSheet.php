@@ -63,12 +63,12 @@ class StockReportSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
 
         $count = 0;
         $dailyOrderSummaries = $company->daily_order_summaries();
-            // ->where('user_id', 3314)
-            // ->where('user_id', 3314)->orwhere('user_id', 3009)
-            // ->orwhere('user_id', 2857)
-            // ->whereDate('created_at', '=', $date)
-            // ->latest()
-            // ->orderBy('closing_stock', 'DESC');
+        // ->where('user_id', 3314)
+        // ->where('user_id', 3314)->orwhere('user_id', 3009)
+        // ->orwhere('user_id', 2857)
+        // ->whereDate('created_at', '=', $date)
+        // ->latest()
+        // ->orderBy('closing_stock', 'DESC');
         // $region = $this->region;
         // if ($region) {
         //     $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($region) {
@@ -90,31 +90,33 @@ class StockReportSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
         $dailyOrderSummaries = $dailyOrderSummaries->get();
         $total_opening_stocks = 0;
         $total_closing_stocks = 0;
-        
+
         $users = [];
         foreach ($dailyOrderSummaries as $key => $dos) {
             $user = $dos->user->toArray();
-            unset($dos['user']);
-            $user_id = $user['id'];
+            if ($user['active'] == 1) {
+                unset($dos['user']);
+                $user_id = $user['id'];
 
-            $sku = $dos->sku;
-            unset($dos['sku']);
+                $sku = $dos->sku;
+                unset($dos['sku']);
 
-            $sku_price = $sku->price;
-            $opening_stock = $dos->opening_stock;
-            $closing_stock = $dos->closing_stock;
-            $total_opening_stocks = $opening_stock * $sku_price;
-            $total_closing_stocks = $closing_stock * $sku_price;
-            $user_key = array_search($user_id, array_column($users, 'id'));
-            if (!is_int($user_key)) {
-                // Insert
-                $user['total_opening_stocks'] = $total_opening_stocks;
-                $user['total_closing_stocks'] = $total_closing_stocks;
-                $users[] = $user;
-            } else {
-                // Update
-                $users[$user_key]['total_opening_stocks'] += $total_opening_stocks;
-                $users[$user_key]['total_closing_stocks'] += $total_closing_stocks;
+                $sku_price = $sku->price;
+                $opening_stock = $dos->opening_stock;
+                $closing_stock = $dos->closing_stock;
+                $total_opening_stocks = $opening_stock * $sku_price;
+                $total_closing_stocks = $closing_stock * $sku_price;
+                $user_key = array_search($user_id, array_column($users, 'id'));
+                if (!is_int($user_key)) {
+                    // Insert
+                    $user['total_opening_stocks'] = $total_opening_stocks;
+                    $user['total_closing_stocks'] = $total_closing_stocks;
+                    $users[] = $user;
+                } else {
+                    // Update
+                    $users[$user_key]['total_opening_stocks'] += $total_opening_stocks;
+                    $users[$user_key]['total_closing_stocks'] += $total_closing_stocks;
+                }
             }
         }
         return view('exports.stock_report_export', compact('users'));

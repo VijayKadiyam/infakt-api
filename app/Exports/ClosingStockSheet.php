@@ -244,23 +244,28 @@ class ClosingStockSheet implements FromView, ShouldAutoSize, WithStyles, WithTit
             ->whereDate('created_at', '=', $date)
             ->latest()
             ->orderBy('closing_stock', 'DESC');
+
         // $region = $this->region;
+
         // if ($region) {
         //     $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($region) {
         //         $q->where('region', 'LIKE', '%' . $region . '%');
         //     });
         // }
+
         // $channel = $this->channel;
         // if ($channel) {
         //     $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($channel) {
         //         $q->where('channel', 'LIKE', '%' . $channel . '%');
         //     });
         // }
+        
         // $supervisorId = $this->supervisorId;
         // if ($supervisorId != '')
         //     $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($supervisorId) {
         //         $q->where('supervisor_id', '=', $supervisorId);
         //     });
+        
         $dailyOrderSummaries = $dailyOrderSummaries->get();
 
         return view('exports.closing_stock_export', compact('dailyOrderSummaries'));
