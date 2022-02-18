@@ -11,6 +11,7 @@
         <th>Store Code</th>
         <th>Store Name</th>
         <th>BA Name</th>
+            <th>PMS EMP ID</th>
         <th>Supervisor Name</th>
         <th>Date</th>
         <th>Login Status</th>
@@ -35,6 +36,7 @@
             <td>{{ $userAttendance->user->employee_code }}</td>
             <td>{{ $userAttendance->user->name }}</td>
             <td>{{ $userAttendance->user->ba_name }}</td>
+            <td>{{ $userAttendance->user->pms_emp_id }}</td>
             <td>{{ $userAttendance->user->supervisor_name }}</td>
             <td>{{ $userAttendance->date }}</td>
             <td>{{ $userAttendance->session_type }}</td>
