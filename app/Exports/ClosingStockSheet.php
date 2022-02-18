@@ -226,7 +226,7 @@ class ClosingStockSheet implements FromView, ShouldAutoSize, WithStyles, WithTit
 
     //     return view('exports.closing_stock_export', compact('usersSkusData'));
     // }
-    
+
     public function view(): View
     {
         ini_set('max_execution_time', 0);
@@ -285,7 +285,7 @@ class ClosingStockSheet implements FromView, ShouldAutoSize, WithStyles, WithTit
 			$sku['userDailyOrderSummaries'] = $userDailyOrderSummaries;
 		}
 
-        return view('exports.closing_stock_export', compact('skus'));
+        return view('exports.closing_stock_export1', compact('skus'));
     }
 
     /**
