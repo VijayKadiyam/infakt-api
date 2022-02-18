@@ -41,8 +41,8 @@
             <td>{{ $sku['user']['pms_emp_id'] }}</td>
             <td>{{ $sku['user']['supervisor_name'] }}</td>
             <td>{{ $sku['sku']['name'] ?? ""}}</td>
-            <td>{{ $sku['price'] ?? ""}}</td>
-            <td>{{ $sku['hsn_code'] ?? ""}}</td>
+            <td>{{ $sku['sku']['price'] ?? ""}}</td>
+            <td>{{ $sku['sku']['hsn_code'] ?? ""}}</td>
             <td>{{ $sku['opening_stock'] ?? ""}}</td>
             <td>{{ $sku['received_stock'] ?? ""}}</td>
             <td>{{ $sku['purchase_returned_stock'] ?? ""}}</td>

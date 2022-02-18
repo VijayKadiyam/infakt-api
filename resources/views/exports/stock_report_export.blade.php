@@ -14,6 +14,10 @@
             <th>PMS EMP ID</th>
             <th>Supervisor Name</th>
             <th>Opening Stocks value</th>
+            <th>Received Stocks value</th>
+            <th>Stocks Returned value</th>
+            <th>Offtake value</th>
+            <th>Offtake Returned value</th>
             <th>Closing Stocks value</th>
 
         </tr>
@@ -34,6 +38,10 @@
             <td>{{ $user['pms_emp_id'] }}</td>
             <td>{{ $user['supervisor_name'] }}</td>
             <td>{{ $user['total_opening_stocks'] ?? ""}}</td>
+            <td>{{ $user['total_received_stock'] ?? ""}}</td>
+            <td>{{ $user['total_purchase_returned_stock'] ?? ""}}</td>
+            <td>{{ $user['total_sales_stock'] ?? ""}}</td>
+            <td>{{ $user['total_returned_stock'] ?? ""}}</td>
             <td>{{ $user['total_closing_stocks'] ?? ""}}</td>
         </tr>
         @endforeach
