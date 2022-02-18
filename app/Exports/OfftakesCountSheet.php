@@ -12,6 +12,7 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 use App\Company;
 use Carbon\Carbon;
 use App\User;
+use App\UserAttendance;
 
 class OfftakesCountSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
 {
@@ -85,12 +86,18 @@ class OfftakesCountSheet implements FromView, ShouldAutoSize, WithStyles, WithTi
 				$ors = $company->orders_list()
 					->where('user_id', '=', $user->id)
 					->where('is_active', '=', 1);
+				$present_Days = UserAttendance::where('user_id', '=', $user->id)
+					->where('session_type', '=', 'PRESENT');
 				if ($month) {
+					$present_Days = $present_Days->whereMonth('date', '=', $month);
 					$ors = $ors->whereMonth('created_at', '=', $month);
 				}
 				if ($year) {
+					$present_Days = $present_Days->whereYear('date', '=', $year);
 					$ors = $ors->whereYear('created_at', '=', $year);
 				}
+				$present_Days = $present_Days->get();
+				$present_Days_count = $present_Days->count();
 				$ors = $ors->get();
 				$order_date_list = [];
 				if (count($ors) != 0) {
@@ -102,6 +109,7 @@ class OfftakesCountSheet implements FromView, ShouldAutoSize, WithStyles, WithTi
 				}
 
 				$user['Offtake_count'] = $offtake_count;
+				$user['present_days_count'] = $present_Days_count;
 				$Oftake_users[] = $user;
 			}
 		}
