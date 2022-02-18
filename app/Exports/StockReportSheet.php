@@ -62,9 +62,9 @@ class StockReportSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
         $date = Carbon::parse($this->date)->format('Y-m-d');
 
         $count = 0;
-        $dailyOrderSummaries = $company->daily_order_summaries()
+        $dailyOrderSummaries = $company->daily_order_summaries();
             // ->where('user_id', 3314)
-            ->where('user_id', 3314)->orwhere('user_id', 3009);
+            // ->where('user_id', 3314)->orwhere('user_id', 3009);
         // ->orwhere('user_id', 2857)
         // ->whereDate('created_at', '=', $date)
         // ->latest()
@@ -88,6 +88,7 @@ class StockReportSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
         //     });
 
         $dailyOrderSummaries = $dailyOrderSummaries->get();
+
         $total_opening_stocks = 0;
         $total_closing_stocks = 0;
         $total_received_stock = 0;
@@ -95,6 +96,7 @@ class StockReportSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
         $total_sales_stock = 0;
         $total_returned_stock = 0;
         $users = [];
+
         foreach ($dailyOrderSummaries as $key => $dos) {
             $user = $dos->user->toArray();
             if ($user['active'] == 1) {
