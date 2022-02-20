@@ -186,7 +186,14 @@ class SkusController extends Controller
         ->where('name', 'LIKE', '%' . $request->search . '%')
         ->get();
     } else {
-      $skus = request()->company->skus;
+      $skus = request()->company->skus();
+      if($request->userId) {
+        $user = User::find($request->userId);
+        if($user) {
+          $skus = $skus->where('main_category', 'LIKE', $user->brand);
+        }
+      }
+      $skus = $skus->get();
       $count = $skus->count();
     }
 
