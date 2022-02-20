@@ -72,7 +72,7 @@
       @endforeach
     </tr>
     <tr>
-      <th></th>
+      <th>HSN Code</th>
       @foreach ($skus[0]->userDailyOrderSummaries as $userDailyOrderSummary)
       <th>OPENING</th>
       <th>RECEIVED</th>

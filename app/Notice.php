@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Notice extends Model
 {
   protected $fillable = [
-    'name', 'title', 'description', 'imagepath', 'link', 'channel'
+    'name', 'title', 'description', 'imagepath', 'link', 'channel', 'brand'
   ];
 
   public function company()
