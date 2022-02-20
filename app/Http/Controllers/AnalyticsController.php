@@ -351,6 +351,7 @@ class AnalyticsController extends Controller
             'target'  =>  $target,
             'target_category' =>  $category,
             'achieved'  =>  $achieved,
+            'percent' => $target == 0 ? 0 : ($achieved * 100) / $target,
           ];
         }
         $achievedDatas[] = [
@@ -358,6 +359,7 @@ class AnalyticsController extends Controller
           'target'  =>  '-',
           'target_category' =>  '-',
           'achieved'  =>  '-',
+          'percent'   =>  '-'
         ];
       }
     }
