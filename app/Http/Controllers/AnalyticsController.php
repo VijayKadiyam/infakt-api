@@ -359,7 +359,7 @@ class AnalyticsController extends Controller
           'target'  =>  '-',
           'target_category' =>  '-',
           'achieved'  =>  '-',
-          'percent'   =>  '0'
+          'percent'   =>  0
         ];
       }
     }
