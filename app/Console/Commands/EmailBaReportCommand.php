@@ -43,8 +43,8 @@ class EmailBaReportCommand extends Command
     {
         ini_set('max_execution_time', 0);
 
-        $todayDate = Carbon::now()->addDays(-1)->format('Y-m-d');
-        // $todayDate = Carbon::now()->format('Y-m-d');
+        // $todayDate = Carbon::now()->addDays(-1)->format('Y-m-d');
+        $todayDate = Carbon::now()->format('Y-m-d');
 
         $this->info('Email Report for Date: ' . $todayDate);
 
