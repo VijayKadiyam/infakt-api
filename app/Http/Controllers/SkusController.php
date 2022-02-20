@@ -190,7 +190,9 @@ class SkusController extends Controller
       if($request->userId) {
         $user = User::find($request->userId);
         if(strtolower($user->brand) == 'derma') {
-          $skus = $skus->where('main_category', 'LIKE', $user->brand);
+          $skus = $skus->where('main_category', 'LIKE', 'Derma');
+        } else {
+          $skus = $skus->where('main_category', '!=', 'Derma');
         }
       }
       $skus = $skus->get();
