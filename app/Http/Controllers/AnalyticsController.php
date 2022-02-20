@@ -210,14 +210,16 @@ class AnalyticsController extends Controller
           'store_name'  =>  $supervisorUser->name,
           'target'  =>  $target,
           'achieved'  =>  $achieved,
+          'percent' => ($achieved * 100) / $target,
         ];
       }
 
-      $achievedDatas[] = [
+      array_unshift($achievedDatas, [
         'store_name'  =>  'Total Target',
         'target'  =>  $totalTarget,
         'achieved'  =>  $totalAchieved,
-      ];
+        'percent' => ($totalAchieved * 100) / $totalTarget,
+      ]);
     }
 
     return response()->json([
