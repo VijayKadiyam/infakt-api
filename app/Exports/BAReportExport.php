@@ -36,12 +36,12 @@ class BAReportExport implements WithMultipleSheets
         $sheets[] = new CustomerDataEntrySheet($this->date, $this->supervisorId, $this->region, $this->channel);
         $sheets[] = new CompetitorDataSheet($this->date, $this->supervisorId, $this->region, $this->channel);
         // $sheets[] = new FocusedTargetSheet($this->date, $this->supervisorId, $this->region, $this->channel);
-        $sheets[] = new ClosingStockSheet($this->date, $this->supervisorId, "North", $this->channel);
+        // $sheets[] = new ClosingStockSheet($this->date, $this->supervisorId, "North", $this->channel);
         // $sheets[] = new ClosingStockSheet($this->date, $this->supervisorId, "South", $this->channel);
         // $sheets[] = new ClosingStockSheet($this->date, $this->supervisorId, "East", $this->channel);
         // $sheets[] = new ClosingStockSheet($this->date, $this->supervisorId, "West", $this->channel);
         // $sheets[] = new ClosingStockSheet($this->date, $this->supervisorId, $this->region, $this->channel);
-        $sheets[] = new StockReportSheet($this->date, $this->supervisorId, $this->region, $this->channel);
+        // $sheets[] = new StockReportSheet($this->date, $this->supervisorId, $this->region, $this->channel);
 
         return $sheets;
     }
