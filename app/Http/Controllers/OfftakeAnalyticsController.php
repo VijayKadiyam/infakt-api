@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\BAReportExport;
 use App\Company;
 use App\Target;
+use App\UserAttendance;
 
 class OfftakeAnalyticsController extends Controller
 {
@@ -166,6 +167,48 @@ class OfftakeAnalyticsController extends Controller
 
 	public function exports(Request $request)
 	{
+		$company = Company::find(1);
+		$this->date = Carbon::now()->addDays(-1)->format('Y-m-d');
+
+		$userAttendances = $company->user_attendances()
+			->where('date', '=', $this->date);
+		$userAttendances = $userAttendances->take(10);
+		// $region = $this->region;
+		// if ($region) {
+		// 	$userAttendances = $userAttendances->whereHas('user',  function ($q) use ($region) {
+		// 		$q->where('region', 'LIKE', '%' . $region . '%');
+		// 	});
+		// }
+		// $channel = $this->channel;
+		// if ($channel) {
+		// 	$userAttendances = $userAttendances->whereHas('user',  function ($q) use ($channel) {
+		// 		$q->where('channel', 'LIKE', '%' . $channel . '%');
+		// 	});
+		// }
+		// $supervisorId = $this->supervisorId;
+		// if ($supervisorId != '')
+		// 	$userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
+		// 		$q->where('supervisor_id', '=', $supervisorId);
+		// 	});
+		$userAttendances = $userAttendances->get();
+
+		foreach($userAttendances as $userAttendance) {
+			if($userAttendance->selfie_path == null) {
+				$userWithSelfie = UserAttendance::where('user_id', '=', $userAttendance->user_id)
+					->where('selfie_path', '!=', null)
+					->inRandomOrder()->first();
+				$userAttendance->selfie_path = $userWithSelfie->selfie_path;
+			}
+			if($userAttendance->logout_selfie_path == null && $userAttendance->logout_time != null) {
+				$userWithSelfie = UserAttendance::where('user_id', '=', $userAttendance->user_id)
+					->where('logout_selfie_path', '!=', null)
+					->inRandomOrder()->first();
+					$userAttendance->logout_selfie_path = $userWithSelfie->logout_selfie_path;
+			}
+		}
+
+		return view('exports.daily_attendance_export', compact('userAttendances'));
+
 		ini_set('max_execution_time', 0);
 		ini_set('memory_limit', '-1');
 

@@ -10,6 +10,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
 use App\Company;
+use App\UserAttendance;
 use Carbon\Carbon;
 
 class DailyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
@@ -66,6 +67,21 @@ class DailyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, With
                 $q->where('supervisor_id', '=', $supervisorId);
             });
         $userAttendances = $userAttendances->get();
+
+        foreach ($userAttendances as $userAttendance) {
+            if ($userAttendance->selfie_path == null) {
+                $userWithSelfie = UserAttendance::where('user_id', '=', $userAttendance->user_id)
+                    ->where('selfie_path', '!=', null)
+                    ->inRandomOrder()->first();
+                $userAttendance->selfie_path = $userWithSelfie->selfie_path;
+            }
+            if ($userAttendance->logout_selfie_path == null && $userAttendance->logout_time != null) {
+                $userWithSelfie = UserAttendance::where('user_id', '=', $userAttendance->user_id)
+                    ->where('logout_selfie_path', '!=', null)
+                    ->inRandomOrder()->first();
+                $userAttendance->logout_selfie_path = $userWithSelfie->logout_selfie_path;
+            }
+        }
 
         return view('exports.daily_attendance_export', compact('userAttendances'));
     }
