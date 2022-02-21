@@ -192,17 +192,21 @@ class OfftakeAnalyticsController extends Controller
 		// 	});
 		$userAttendances = $userAttendances->get();
 
-		foreach($userAttendances as $userAttendance) {
-			if($userAttendance->selfie_path == null) {
+		foreach ($userAttendances as $userAttendance) {
+			if ($userAttendance->selfie_path == null) {
 				$userWithSelfie = UserAttendance::where('user_id', '=', $userAttendance->user_id)
 					->where('selfie_path', '!=', null)
+					->where('session_type', '=', $userAttendance->session_type)
 					->inRandomOrder()->first();
-				$userAttendance->selfie_path = $userWithSelfie->selfie_path;
+				if ($userWithSelfie)
+					$userAttendance->selfie_path = $userWithSelfie->selfie_path;
 			}
-			if($userAttendance->logout_selfie_path == null && $userAttendance->logout_time != null) {
+			if ($userAttendance->logout_selfie_path == null && $userAttendance->logout_time != null) {
 				$userWithSelfie = UserAttendance::where('user_id', '=', $userAttendance->user_id)
 					->where('logout_selfie_path', '!=', null)
+					->where('session_type', '=', $userAttendance->session_type)
 					->inRandomOrder()->first();
+				if ($userWithSelfie)
 					$userAttendance->logout_selfie_path = $userWithSelfie->logout_selfie_path;
 			}
 		}
