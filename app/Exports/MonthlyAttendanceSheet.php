@@ -116,23 +116,25 @@ class MonthlyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, Wi
 				$user['attendances'][$date] = $attendance;
 				$users[] = $user;
 			} else {
-				switch ($attendance->session_type) {
-					case 'PRESENT':
-						$users[$user_key]["present_count"]++;
-						break;
-					case 'WEEKLY OFF':
-						$users[$user_key]['weekly_off_count']++;
-						break;
-					case 'LEAVE':
-						$users[$user_key]['leave_count']++;
-						break;
-					default:
-						break;
-				}
+				if (!isset($users[$user_key]["attendances"][$date])) {
+					switch ($attendance->session_type) {
+						case 'PRESENT':
+							$users[$user_key]["present_count"]++;
+							break;
+						case 'WEEKLY OFF':
+							$users[$user_key]['weekly_off_count']++;
+							break;
+						case 'LEAVE':
+							$users[$user_key]['leave_count']++;
+							break;
+						default:
+							break;
+					}
 
-				$day_count = sizeof($users[$user_key]["attendances"]) + 1;
-				$users[$user_key]["attendances"][$date] = $attendance;
-				$users[$user_key]['day_count'] = $day_count;
+					$day_count = sizeof($users[$user_key]["attendances"]) + 1;
+					$users[$user_key]["attendances"][$date] = $attendance;
+					$users[$user_key]['day_count'] = $day_count;
+				}
 			}
 		}
 
