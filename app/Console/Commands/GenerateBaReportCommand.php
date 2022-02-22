@@ -54,35 +54,35 @@ class GenerateBaReportCommand extends Command
 
         $this->info('BA Report Generated...');
 
-        // $supervisors = User::with('roles')
-		// 	->where('active', '=', 1)
-		// 	->whereHas('roles',  function ($q) {
-		// 	$q->where('name', '=', 'SUPERVISOR');
-		// 	})->orderBy('name')
-		// 	// ->take(1) u
-		// 	->get();
+        $supervisors = User::with('roles')
+			->where('active', '=', 1)
+			->whereHas('roles',  function ($q) {
+			$q->where('name', '=', 'SUPERVISOR');
+			})->orderBy('name')
+			// ->take(1) u
+			->get();
 		
-        // $count = 1;
-		// foreach ($supervisors as $supervisor) {
-		// 	$name = $supervisor->name;
-		// 	Excel::store(new BAReportExport($date, $supervisor->id), "/reports/$date/$name-BAs-Report-$date.xlsx", 'local');
+        $count = 1;
+		foreach ($supervisors as $supervisor) {
+			$name = $supervisor->name;
+			Excel::store(new BAReportExport($date, $supervisor->id), "/reports/$date/$name-BAs-Report-$date.xlsx", 'local');
 
-        //     $this->info("$count. $name BAs Report Generated...");
-        //     $count++;
-		// }
+            $this->info("$count. $name BAs Report Generated...");
+            $count++;
+		}
 
-        // // Zone Code
-        // $regions = [
-		// 	'North',
-		// 	'South',
-		// 	'East',
-		// 	'West',
-		// ];
+        // Zone Code
+        $regions = [
+			'North',
+			'South',
+			'East',
+			'West',
+		];
 		
-		// foreach ($regions as $key => $region) {
-		// 	// return Excel::download(new BAReportExport($date,"",$region), "BA-Report-$date.xlsx");
-		// 	Excel::store(new BAReportExport($date,'',$region), "/reports/$date/$region-BAs-Report-$date.xlsx", 'local');
-		// }
+		foreach ($regions as $key => $region) {
+			// return Excel::download(new BAReportExport($date,"",$region), "BA-Report-$date.xlsx");
+			Excel::store(new BAReportExport($date,'',$region), "/reports/$date/$region-BAs-Report-$date.xlsx", 'local');
+		}
 
     }
 }
