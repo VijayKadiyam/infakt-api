@@ -309,6 +309,7 @@ Route::post('delete_order/{id}', 'OrdersController@deleteOrder');
 Route::post('delete_order_detail/{id}', 'OrdersController@deleteOrderDetail');
 Route::get('deleteMultipleOrders', 'OrdersController@deleteMultipleOrders');
 Route::resource('orders', 'OrdersController');
+Route::get('offtakes/masters', 'OrdersController@masters');
 Route::get('offtakes', 'OrdersController@offtakes');
 Route::get('offtake_exports', 'OrdersController@offtake_without_pagination');
 Route::get('offtake_reports/daily_offtake_counts', 'OrdersController@daily_offtake_counts');
