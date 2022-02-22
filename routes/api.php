@@ -42,8 +42,9 @@ Route::resource('permission_role', 'PermissionRoleController');
 Route::get('users/count', 'UsersController@countUsers');
 Route::get('users/masters', 'UsersController@masters');
 Route::get('users/search', 'UsersController@search');
-Route::resource('users', 'UsersController');
+Route::get('users/search_by_role', 'UsersController@searchByRole');
 Route::patch('users/{user}/uniqueID', 'UsersController@checkOrUpdateUniqueID');
+Route::resource('users', 'UsersController');
 
 Route::resource('companies', 'CompaniesController');
 Route::resource('company_user', 'CompanyUserController');
