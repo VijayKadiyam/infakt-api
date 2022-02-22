@@ -88,14 +88,14 @@ class UserAttendancesController extends Controller
         foreach ($userAttendances->get() as $userAttendance) {
           if ($supervisorUser->id == $userAttendance->user->id) {
             $check = true;
-            $userAttendanceData[] = [
+            array_unshift($userAttendanceData, [
               'store_name'  =>  $userAttendance->user->name ?? '-',
               'ba_name'     =>  $supervisorUser->ba_name ?? '-',
               'present'     =>  'YES',
               'date'        =>  Carbon::parse($request->date)->format('d-m-Y'),
               'time'        => ($userAttendance->login_time ? $userAttendance->login_time  : '') . ' - ' . ($userAttendance->logout_time ? $userAttendance->logout_time : ''),
               // 'time'        => '-'
-            ];
+            ]);
           }
         }
         if (!$check) {

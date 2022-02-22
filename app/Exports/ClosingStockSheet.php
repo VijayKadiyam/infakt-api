@@ -247,8 +247,9 @@ class ClosingStockSheet implements FromView, ShouldAutoSize, WithStyles, WithTit
             // ->where('user_id', 3314)
             // ->orWhere('user_id', 3009)
             // ->orWhere('user_id', 2857)
-            ->whereDate('created_at', '=', $date)
+            // ->whereDate('created_at', '=', $date)
             ->latest();
+            
         $dailyOrderSummaries = $dailyOrderSummaries->get();
 
         $skus = $company->skus()

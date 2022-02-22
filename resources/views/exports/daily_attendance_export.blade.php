@@ -1,27 +1,27 @@
 <table>
     <thead>
-    <tr>
-        <th>Sr. No.</th>
-        <th>Brand</th>
-        <th>Region</th>
-        <th>Channel</th>
-        <th>Chain Name</th>
-        <th>City</th>
-        <th>State</th>
-        <th>Store Code</th>
-        <th>Store Name</th>
-        <th>BA Name</th>
+        <tr>
+            <th>Sr. No.</th>
+            <th>Brand</th>
+            <th>Region</th>
+            <th>Channel</th>
+            <th>Chain Name</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Store Code</th>
+            <th>Store Name</th>
+            <th>BA Name</th>
             <th>PMS EMP ID</th>
-        <th>Supervisor Name</th>
-        <th>Date</th>
-        <th>Login Status</th>
-        <th>Login Time</th>
-        <th>Logout Time</th>
-        <th>Login Selfie</th>
-        <th>Logout Selfie</th>
-        <th>Login Address</th>
-        <th>Logout Address</th>
-    </tr>
+            <th>Supervisor Name</th>
+            <th>Date</th>
+            <th>Login Status</th>
+            <th>Login Time</th>
+            <th>Logout Time</th>
+            <th>Login Selfie</th>
+            <th>Logout Selfie</th>
+            <th>Login Address</th>
+            <th>Logout Address</th>
+        </tr>
     </thead>
     <tbody>
         @foreach ($userAttendances as $userAttendance)
@@ -48,13 +48,15 @@
                 </a>
             </td>
             <td>
+                @if($userAttendance->logout_selfie_path != null)
                 <a target="_blank" href="{{ env('BASE_URL') }}storage/{{ $userAttendance->logout_selfie_path }}">
                     Click to view Image
                 </a>
+                @endif
             </td>
             <td>{{ $userAttendance->login_address }}</td>
             <td>{{ $userAttendance->logout_address }}</td>
-        </tr>    
+        </tr>
         @endforeach
     </tbody>
 </table>

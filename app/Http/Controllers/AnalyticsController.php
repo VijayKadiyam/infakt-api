@@ -210,14 +210,16 @@ class AnalyticsController extends Controller
           'store_name'  =>  $supervisorUser->name,
           'target'  =>  $target,
           'achieved'  =>  $achieved,
+          'percent' => $target == 0 ? 0 : ($achieved * 100) / $target,
         ];
       }
 
-      $achievedDatas[] = [
+      array_unshift($achievedDatas, [
         'store_name'  =>  'Total Target',
         'target'  =>  $totalTarget,
         'achieved'  =>  $totalAchieved,
-      ];
+        'percent' => $totalTarget == 0 ? 0 : ($totalAchieved * 100) / $totalTarget,
+      ]);
     }
 
     return response()->json([
@@ -349,6 +351,7 @@ class AnalyticsController extends Controller
             'target'  =>  $target,
             'target_category' =>  $category,
             'achieved'  =>  $achieved,
+            'percent' => $target == 0 ? 0 : ($achieved * 100) / $target,
           ];
         }
         $achievedDatas[] = [
@@ -356,6 +359,7 @@ class AnalyticsController extends Controller
           'target'  =>  '-',
           'target_category' =>  '-',
           'achieved'  =>  '-',
+          'percent'   =>  0
         ];
       }
     }
