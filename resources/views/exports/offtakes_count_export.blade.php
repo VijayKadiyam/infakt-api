@@ -14,6 +14,7 @@
         <th>PMS EMP ID</th>
         <th>Supervisor Name</th>
         <th>No Of Offtake days</th>
+        <th>No Of Present days</th>
     </tr>
     </thead>
     <tbody>
@@ -32,6 +33,7 @@
             <td>{{ $offtake_user['pms_emp_id'] }}</td>
             <td>{{ $offtake_user['supervisor_name'] }}</td>
             <td>{{ $offtake_user['Offtake_count'] }}</td>
+            <td>{{ $offtake_user['present_days_count'] }}</td>
         </tr>
         @endforeach
     </tbody>

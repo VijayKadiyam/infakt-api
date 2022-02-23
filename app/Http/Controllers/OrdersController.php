@@ -17,6 +17,59 @@ class OrdersController extends Controller
       ->except(['generateInvoice']);
   }
 
+  public function masters(Request $request)
+  {
+
+    $supervisorsController = new UsersController();
+    $request->request->add(['role_id' => 4]);
+    $supervisorsResponse = $supervisorsController->index($request);
+
+    $regions = [
+      'NORTH',
+      'EAST',
+      'WEST',
+      'SOUTH',
+      'CENTRAL'
+    ];
+
+    $brands = [
+      'MamaEarth',
+      'Derma'
+    ];
+    $channels = [
+      'GT',
+      'MT',
+      'MT - CNC',
+      'IIA',
+    ];
+    $chain_names = [
+      'GT',
+      'Big Bazar',
+      'Dmart',
+      'Guardian',
+      'H&G',
+      'Lee Merche',
+      'LuLu',
+      'Metro CNC',
+      'More Retail',
+      'MT',
+      'Reliance',
+      'Spencer',
+      'Walmart',
+      'Lifestyle',
+      'INCS',
+      'Ximivogue',
+      'Shopper Stop'
+    ];
+
+    return response()->json([
+      'supervisors'           =>  $supervisorsResponse->getData()->data,
+      'regions'               =>  $regions,
+      'brands'               =>  $brands,
+      'channels'               =>  $channels,
+      'chain_names'               =>  $chain_names,
+    ], 200);
+  }
   public function index(Request $request)
   {
     $count = 0;
@@ -268,8 +321,9 @@ class OrdersController extends Controller
         $orders =  $orders->where('user_id', '=', $request->userId);
       }
       if ($request->from_date != '' && $request->to_date != "") {
-        $orders = $orders->whereBetween('created_at', [$request->from_date, $request->to_date]);
-        // $orders = $orders->whereDate('created_at', $request->date);
+        // $orders = $orders->whereBetween('created_at', [$request->from_date, $request->to_date]);
+        $orders = $orders->whereDate('created_at', '>=', $request->from_date)
+          ->whereDate('created_at', '<=', $request->to_date);
       }
       if ($request->month != "") {
         $orders = $orders->whereMonth('created_at', '=', $request->month);
@@ -281,6 +335,31 @@ class OrdersController extends Controller
       if ($request->orderType) {
         $orders = $orders->where('order_type', '=', $request->orderType);
       }
+      if ($request->supervisor_id != '' && $request->supervisor_id != 'null') {
+        $supervisor_id = $request->supervisor_id;
+        $orders = $orders->whereHas('user',  function ($q) use ($supervisor_id) {
+          $q->where('supervisor_id', 'LIKE', '%' . $supervisor_id . '%');
+        });
+      }
+      if ($request->brand != '' && $request->brand != 'null') {
+        $brand = $request->brand;
+        $orders = $orders->whereHas('user',  function ($q) use ($brand) {
+          $q->where('brand', 'LIKE', '%' . $brand . '%');
+        });
+      }
+      if ($request->region != "" && $request->region != 'null') {
+        $region = $request->region;
+        $orders = $orders->whereHas('user',  function ($q) use ($region) {
+          $q->where('region', 'LIKE', '%' . $region . '%');
+        });
+      }
+      if ($request->channel!="" && $request->channel!="null") {
+        $channel = $request->channel;
+        $orders = $orders->whereHas('user',  function ($q) use ($channel) {
+          $q->where('channel', 'LIKE', '%' . $channel . '%');
+        });
+      }
+      // return $orders=$orders->toSql();
       if (request()->page && request()->rowsPerPage) {
         $count = $orders->count();
         $orders = $orders->paginate(request()->rowsPerPage)->toArray();
@@ -584,8 +663,10 @@ class OrdersController extends Controller
         $orders =  $orders->where('user_id', '=', $request->userId);
       }
       if ($request->from_date != '' && $request->to_date != "") {
-        $orders = $orders->whereBetween('created_at', [$request->from_date, $request->to_date]);
+        // $orders = $orders->whereBetween('created_at', [$request->from_date, $request->to_date]);
         // $orders = $orders->whereDate('created_at', $request->date);
+        $orders = $orders->whereDate('created_at', '>=', $request->from_date)
+          ->whereDate('created_at', '<=', $request->to_date);
       }
       if ($request->month != "") {
         $orders = $orders->whereMonth('created_at', '=', $request->month);
