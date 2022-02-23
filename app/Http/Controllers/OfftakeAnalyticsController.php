@@ -38,14 +38,62 @@ class OfftakeAnalyticsController extends Controller
 
 		$years = ['2020', '2021', '2022'];
 
+		$supervisorsController = new UsersController();
+		$request->request->add(['role_id' => 4]);
+		$supervisorsResponse = $supervisorsController->index($request);
+
+		$regions = [
+			'NORTH',
+			'EAST',
+			'WEST',
+			'SOUTH',
+			'CENTRAL'
+		];
+
+		$brands = [
+			'MamaEarth',
+			'Derma'
+		];
+		$channels = [
+			'GT',
+			'MT',
+			'MT - CNC',
+			'IIA',
+		];
+		$chain_names = [
+			'GT',
+			'Big Bazar',
+			'Dmart',
+			'Guardian',
+			'H&G',
+			'Lee Merche',
+			'LuLu',
+			'Metro CNC',
+			'More Retail',
+			'MT',
+			'Reliance',
+			'Spencer',
+			'Walmart',
+			'Lifestyle',
+			'INCS',
+			'Ximivogue',
+			'Shopper Stop'
+		];
+
 		return response()->json([
 			'months'  =>  $months,
 			'years'   =>  $years,
+			'supervisors'           =>  $supervisorsResponse->getData()->data,
+			'regions'               =>  $regions,
+			'brands'               =>  $brands,
+			'channels'               =>  $channels,
+			'chain_names'               =>  $chain_names,
 		], 200);
 	}
 
 	public function noOrValueOfReports(Request $request)
 	{
+		ini_set('max_execution_time', 0);
 		ini_set("memory_limit", "-1");
 
 		$request->validate([
@@ -76,7 +124,7 @@ class OfftakeAnalyticsController extends Controller
 		if ($request->superVisor_id) {
 			$supervisors = $supervisors->where('id', '=', $request->superVisor_id);
 		}
-		$supervisors = 	$supervisors->get();
+		$supervisors = 	$supervisors->take(5)->get();
 
 		$productsOfftakes = [];
 
@@ -85,8 +133,23 @@ class OfftakeAnalyticsController extends Controller
 			$singleUserData = [];
 
 			$users = User::where('supervisor_id', '=', $supervisor->id)
-				->where('active', '=', 1)
-				->get();
+				->where('active', '=', 1);
+
+			if ($request->brand) {
+				$brand = $request->brand;
+				$users = $users->where('brand', 'LIKE', '%' . $brand . '%');
+			}
+			if ($request->region) {
+				$region = $request->region;
+				$users = $users->where('region', 'LIKE', '%' . $region . '%');
+			}
+
+			if ($request->channel) {
+				$channel = $request->channel;
+				$users = $users->where('channel', 'LIKE', '%' . $channel . '%');
+			}
+
+			$users = $users->get();
 
 			foreach ($users as $user) {
 				$user_target = array_search($user->id, array_column($targets, 'user_id'));
