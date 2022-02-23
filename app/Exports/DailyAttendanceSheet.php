@@ -73,6 +73,7 @@ class DailyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, With
                 $userWithSelfie = UserAttendance::where('user_id', '=', $userAttendance->user_id)
                     ->where('selfie_path', '!=', null)
                     ->where('session_type', '=', $userAttendance->session_type)
+                    ->whereMonth('created_at', '=', '2')
                     ->inRandomOrder()->first();
                 if ($userWithSelfie)
                     $userAttendance->selfie_path = $userWithSelfie->selfie_path;
@@ -81,6 +82,7 @@ class DailyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, With
                 $userWithSelfie = UserAttendance::where('user_id', '=', $userAttendance->user_id)
                     ->where('logout_selfie_path', '!=', null)
                     ->where('session_type', '=', $userAttendance->session_type)
+                    ->whereMonth('created_at', '=', '2')
                     ->inRandomOrder()->first();
                 if ($userWithSelfie)
                     $userAttendance->logout_selfie_path = $userWithSelfie->logout_selfie_path;
