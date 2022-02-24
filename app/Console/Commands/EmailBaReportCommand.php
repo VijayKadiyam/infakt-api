@@ -125,7 +125,7 @@ class EmailBaReportCommand extends Command
 
         foreach ($channels as $key => $channel) {
             if ($channel == 'IIA')
-                Mail::to('kvjkumr@gmail.com')
+                Mail::to('rashi.j@mamaearth.in')
                     ->cc(['kvjkumr@gmail.com'])
                     ->send(new BaReportEmail($todayDate, $channel));
         }
