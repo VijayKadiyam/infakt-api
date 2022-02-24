@@ -8,6 +8,7 @@ use App\OrderDetail;
 use App\User;
 use Carbon\Carbon;
 use App\DailyOrderSummary;
+use App\UserAttendance;
 
 class OrdersController extends Controller
 {
@@ -353,7 +354,7 @@ class OrdersController extends Controller
           $q->where('region', 'LIKE', '%' . $region . '%');
         });
       }
-      if ($request->channel!="" && $request->channel!="null") {
+      if ($request->channel != "" && $request->channel != "null") {
         $channel = $request->channel;
         $orders = $orders->whereHas('user',  function ($q) use ($channel) {
           $q->where('channel', 'LIKE', '%' . $channel . '%');
@@ -952,6 +953,8 @@ class OrdersController extends Controller
 
   public function daily_offtake_counts(Request $request)
   {
+    ini_set('max_execution_time', 0);
+    ini_set("memory_limit", "-1");
     $count = 0;
     $orders = [];
     if ($request->userId) {
@@ -973,16 +976,31 @@ class OrdersController extends Controller
       $supervisors = User::with('roles')
         ->whereHas('roles',  function ($q) {
           $q->where('name', '=', 'SUPERVISOR');
-        })->orderBy('name')->get();
+        })->orderBy('name');
       if ($request->superVisor_id) {
         $supervisors = $supervisors->where('id', '=', $request->superVisor_id);
       }
+      $supervisors = $supervisors->get();
       $Oftake_users = [];
       foreach ($supervisors as $supervisor) {
 
         $users = User::with('roles')->where('supervisor_id', '=', $supervisor->id)
-          ->where('active', '=', 1)
-          ->get();
+          ->where('active', '=', 1);
+        if ($request->brand) {
+          $brand = $request->brand;
+          $users = $users->where('brand', 'LIKE', '%' . $brand . '%');
+        }
+        if ($request->region) {
+          $region = $request->region;
+          $users = $users->where('region', 'LIKE', '%' . $region . '%');
+        }
+
+        if ($request->channel) {
+          $channel = $request->channel;
+          $users = $users->where('channel', 'LIKE', '%' . $channel . '%');
+        }
+
+        $users = $users->get();
         $offtake_count = 0;
         foreach ($users as $user) {
 
@@ -993,15 +1011,22 @@ class OrdersController extends Controller
           // ->whereHas('order_details',  function ($q) {
           //   $q->groupBy('sku_id');
           // });
+          $present_Days = UserAttendance::where('user_id', '=', $user->id)
+            ->where('session_type', '=', 'PRESENT');
           if ($request->month) {
+            $present_Days = $present_Days->whereMonth('date', '=', $request->month);
             $ors = $ors->whereMonth('created_at', '=', $request->month);
           }
           if ($request->year) {
+            $present_Days = $present_Days->whereYear('date', '=', $request->year);
             $ors = $ors->whereYear('created_at', '=', $request->year);
           }
-          // $ors = $ors->groupBy(function ($date) {
-          //   return Carbon::parse($date->created_at)->format('D'); // grouping by years
-          // })->get();
+          $present_Days = $present_Days->get()->groupBy(function ($date) {
+            return Carbon::parse($date->created_at)->format('Y-m-d'); // grouping by days
+          });
+          // $present_Days = $present_Days->get();
+          $present_Days_count = $present_Days->count();
+
           $ors = $ors->get();
           $order_date_list = [];
           if (count($ors) != 0) {
@@ -1013,6 +1038,7 @@ class OrdersController extends Controller
           }
 
           $user['Offtake_count'] = $offtake_count;
+          $user['present_days_count'] = $present_Days_count;
           $Oftake_users[] = $user;
         }
       }
