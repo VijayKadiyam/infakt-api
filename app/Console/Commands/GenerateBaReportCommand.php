@@ -48,40 +48,52 @@ class GenerateBaReportCommand extends Command
         // $date = Carbon::now()->format('Y-m-d');
         $this->info('Generate Report for Date: ' . $date);
 
-        // Excel::download(new BAReportExport($date), "BA-Report.xlsx");
+        // // Excel::download(new BAReportExport($date), "BA-Report.xlsx");
 
-        $supervisors = User::with('roles')
-			->where('active', '=', 1)
-			->whereHas('roles',  function ($q) {
-			$q->where('name', '=', 'SUPERVISOR');
-			})->orderBy('name')
-			// ->take(1) u
-			->get();
-		
-        $count = 1;
-		foreach ($supervisors as $supervisor) {
-			$name = $supervisor->name;
-			Excel::store(new BAReportExport($date, $supervisor->id), "/reports/$date/$name-BAs-Report-$date.xlsx", 'local');
+        // Excel::store(new BAReportExport($date), "/reports/$date/BA-Report-$date.xlsx", "local");
 
-            $this->info("$count. $name BAs Report Generated...");
-            $count++;
-		}
+        // $this->info('BA Report Generated...');
 
-        // Zone Code
-        $regions = [
-			'North',
-			'South',
-			'East',
-			'West',
-		];
-		
-		foreach ($regions as $key => $region) {
-			// return Excel::download(new BAReportExport($date,"",$region), "BA-Report-$date.xlsx");
-			Excel::store(new BAReportExport($date,'',$region), "/reports/$date/$region-BAs-Report-$date.xlsx", 'local');
-		}
+        // $supervisors = User::with('roles')
+        //     ->where('active', '=', 1)
+        //     ->whereHas('roles',  function ($q) {
+        //         $q->where('name', '=', 'SUPERVISOR');
+        //     })->orderBy('name')
+        //     // ->take(1) u
+        //     ->get();
 
-        Excel::store(new BAReportExport($date), "/reports/$date/BA-Report-$date.xlsx", "local");
+        // $count = 1;
+        // foreach ($supervisors as $supervisor) {
+        //     $name = $supervisor->name;
+        //     Excel::store(new BAReportExport($date, $supervisor->id), "/reports/$date/$name-BAs-Report-$date.xlsx", 'local');
 
-        $this->info('BA Report Generated...');
+        //     $this->info("$count. $name BAs Report Generated...");
+        //     $count++;
+        // }
+
+        // // Zone Code
+        // $regions = [
+        //     'North',
+        //     'South',
+        //     'East',
+        //     'West',
+        // ];
+
+        // foreach ($regions as $region) {
+        //     // return Excel::download(new BAReportExport($date,"",$region), "BA-Report-$date.xlsx");
+        //     Excel::store(new BAReportExport($date, '', $region), "/reports/$date/$region-BAs-Report-$date.xlsx", 'local');
+        // }
+
+        // Channel Wise Report
+        $channels = [
+            'IIA',
+            'GT',
+            'MT',
+            'ME_CNC',
+        ];
+
+        foreach ($channels as $key => $channel) {
+            return Excel::store(new BAReportExport($date, "", "", $channel), "$channel-BA-Report-$date.xlsx");
+        }
     }
 }
