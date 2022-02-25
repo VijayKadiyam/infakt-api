@@ -228,7 +228,7 @@ class OfftakeAnalyticsController extends Controller
 		]);
 	}
 
-	public function exports(Request $request)
+	public function exports1(Request $request)
 	{
 		$company = Company::find(1);
 		$this->date = Carbon::now()->addDays(-1)->format('Y-m-d');
@@ -402,4 +402,67 @@ class OfftakeAnalyticsController extends Controller
 			// Excel::store(new BAReportExport($date,'',$channel), "/reports/$date/BAs-Report-NORTH-$date.xlsx", 'local');
 		}
 	}
+	public function exports(Request $request)
+	{
+		$company = Company::find(1);
+		$this->date = Carbon::now()->addDays(-1)->format('Y-m-d');
+
+		ini_set('max_execution_time', 10000);
+
+		$date = $request->date;
+
+		// return Carbon::parse($date)->format('d-M-Y');
+		// return view('exports.daily_attendance_export', compact('userAttendances'));
+
+		// return response()->json([
+		// 	'data'	=>	Excel::store(new BAReportExport($date), "/reports/$date/BA-Report-$date.xlsx", 'local'),
+		// ]);
+		// return Excel::download(new BAReportExport($date, 1757), 'BA-Report.xlsx');
+		return Excel::download(new BAReportExport($date, "", "", ""), "BA-Report.xlsx");
+
+		// Excel::store(new BAReportExport($date), "/reports/$date/BA-Report-$date.xlsx", "local");
+
+
+		// $supervisors = User::with('roles')
+		// 	->where('active', '=', 1)
+		// 	->whereHas('roles',  function ($q) {
+		// 		$q->where('name', '=', 'SUPERVISOR');
+		// 	})->orderBy('name')
+		// 	// ->take(1)
+		// 	->get();
+
+		// foreach ($supervisors as $supervisor) {
+		// 	$name = $supervisor->name;
+		// 	Excel::store(new BAReportExport($date, $supervisor->id), "/reports/$date/$name-BAs-Report-$date.xlsx", 'local');
+		// }
+
+		// // Regional Report
+		// 	$regions = [
+		// 		'North',
+		// 		'South',
+		// 		'East',
+		// 		'West',
+		// 	];
+
+		// 	foreach ($regions as $key => $region) {
+		// 		return Excel::download(new BAReportExport($date,"",$region), "$region-BA-Report-$date.xlsx");
+
+		// 		// Excel::store(new BAReportExport($date,'',$region), "/reports/$date/BAs-Report-NORTH-$date.xlsx", 'local');
+		// 	}
+		// Channel Wise Report
+		// $channels = [
+		// 	'GT',
+		// 	'MT',
+		// 	'IIA',
+		// 	'ME_CNC',
+		// ];
+
+		// foreach ($channels as $key => $channel) {
+		// 	return Excel::download(new BAReportExport($date, "", "", $channel), "$channel-BA-Report-$date.xlsx");
+
+		// 	// Excel::store(new BAReportExport($date,'',$channel), "/reports/$date/BAs-Report-NORTH-$date.xlsx", 'local');
+		// }
+	}
+
+	
 }

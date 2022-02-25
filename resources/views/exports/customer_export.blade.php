@@ -23,8 +23,8 @@
         @foreach ($customers as $user)
         <tr>
             <td>{{ $loop->index + 1 }}</td>
-            <td>{{ $user['user']['brand'] }}</td>
-            <td>{{ $user['user']['region'] }}</td>
+            <td>{{ ucwords(strtolower($user['user']['brand'])) }}</td>
+            <td>{{ ucwords(strtolower($user['user']['region'])) }}</td>
             <td>{{ $user['user']['channel'] }}</td>
             <td>{{ $user['user']['chain_name'] }}</td>
             <td>{{ $user['user']['city'] }}</td>

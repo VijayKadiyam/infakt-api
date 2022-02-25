@@ -22,8 +22,8 @@
         @foreach ($productsOfftakes as $offtake)
         <tr> 
             <td>{{ $loop->index + 1 }}</td>
-            <td>{{ $offtake['user']['brand'] }}</td>
-            <td>{{ $offtake['user']['region'] }}</td>
+            <td>{{ ucwords(strtolower($offtake['user']['brand'])) }}</td>
+            <td>{{ ucwords(strtolower($offtake['user']['region'])) }}</td>
             <td>{{ $offtake['user']['channel'] }}</td>
             <td>{{ $offtake['user']['chain_name'] }}</td>
             <td>{{ $offtake['user']['city'] }}</td>

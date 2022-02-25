@@ -234,7 +234,13 @@ class UsersController extends Controller
     $count = 0;
     $users = [];
     // return $request->superVisor_id;
-    $users = $request->company->users();
+    $users = request()->company->users();
+    if (request()->page && request()->rowsPerPage) {
+      $users = request()->company->users();
+      $count = $users->count();
+      $users = $users->paginate(request()->rowsPerPage)->toArray();
+      $users = $users['data'];
+    }
     if ($request->batch_no) {
       $users = $users
         ->where('batch_no', '=', $request->batch_no);
@@ -260,8 +266,81 @@ class UsersController extends Controller
       // return $supervisorId;
       $users =  $users->where('supervisor_id', '=', $supervisorId);
     }
-    $users = $users->get();
-    $count = $users->count();
+    $users = $users->paginate(request()->rowsPerPage)->toArray();
+    $users = $users['data'];
+    return response()->json([
+      'data'     =>  $users,
+      'count' =>   $count,
+      'success'   =>  true
+    ], 200);
+  }
+
+  public function searchByRole(Request $request)
+  {
+    ini_set('max_execution_time', -1);
+    ini_set('memory_limit', '1000M');
+    set_time_limit(0);
+    $count = 0;
+    $users = [];
+
+    if ($request->role_id && request()->page && request()->rowsPerPage) {
+      $role = Role::find($request->role_id);
+      $users = $request->company->allUsers()
+        ->whereHas('roles', function ($q) use ($role) {
+          $q->where('name', '=', $role->name);
+        });
+      if ($request->status != 'all')
+        $users = $users->where('active', '=', 1);
+      if ($request->superVisor_id)
+        $users = $users->where('supervisor_id', '=', $request->superVisor_id);
+      $users = $users->paginate(request()->rowsPerPage)->toArray();
+      $users = $users['data'];
+    }
+    if ($request->ToExcel == "YES") {
+      // return 'yees';
+      $role = Role::find($request->role_id);
+      $users = $request->company->allUsers()
+        ->whereHas('roles', function ($q) use ($role) {
+          $q->where('name', '=', $role->name);
+        });
+      if ($request->status != 'all') {
+        $users = $users->where('active', '=', 1);
+      }
+      if ($request->superVisor_id) {
+        $users = $users->where('supervisor_id', '=', $request->superVisor_id);
+      }
+      $users = $users->get();
+      // return $users;
+    } else {
+      $users = $request->company->users();
+      if ($request->batch_no) {
+        $users = $users
+          ->where('batch_no', '=', $request->batch_no);
+      }
+      if ($request->region) {
+        $users = $users
+          ->where('region', 'LIKE', '%' . $request->region . '%');
+      }
+      if ($request->channel) {
+        $users = $users
+          ->where('channel', 'LIKE', '%' . $request->channel . '%');
+      }
+      if ($request->chain_name) {
+        $users = $users
+          ->where('chain_name', 'LIKE', '%' . $request->chain_name . '%');
+      }
+      if ($request->brand) {
+        $users = $users
+          ->where('brand', 'LIKE', '%' . $request->brand . '%');
+      }
+      if ($request->superVisor_id) {
+        $supervisorId = $request->superVisor_id;
+        // return $supervisorId;
+        $users =  $users->where('supervisor_id', '=', $supervisorId);
+      }
+      $users = $users->get();
+      $count = $users->count();
+    }
     return response()->json([
       'data'     =>  $users,
       'count' =>   $count,

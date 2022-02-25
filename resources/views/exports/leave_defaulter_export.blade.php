@@ -18,6 +18,11 @@
                 <th>Total Present Days</th>
                 <th>Total Weekly Off Days</th>
                 <th>Total Leaves</th>
+                <th>Total Meetings Days</th>
+                <th>Total Market Closed Days</th>
+                <th>Total Half Days</th>
+                <th>Total Holidays</th>
+                <th>Total Work From Home Days</th>
                 <th>Total Absent Days</th>
         </tr>
     </thead>
@@ -26,8 +31,8 @@
         <tr>
 
             <td>{{ $loop->index + 1 }}</td>
-            <td>{{ $user['brand'] }}</td>
-            <td>{{ $user['region'] }}</td>
+            <td>{{ ucwords(strtolower($user['brand'])) }}</td>
+            <td>{{ ucwords(strtolower($user['region'])) }}</td>
             <td>{{ $user['channel'] }}</td>
             <td>{{ $user['chain_name'] }}</td>
             <td>{{ $user['city'] }}</td>
@@ -48,6 +53,11 @@
                 <td>{{ $user['present_count'] }}</td>
                 <td>{{ $user['weekly_off_count'] }}</td>
                 <td>{{ $user['leave_count'] }}</td>
+                <td>{{ $user['meeting_count'] }}</td>
+                <td>{{ $user['market_closed_count'] }}</td>
+                <td>{{ $user['half_day_count'] }}</td>
+                <td>{{ $user['holiday_count'] }}</td>
+                <td>{{ $user['work_from_home_count'] }}</td>
                 <td>{{$user['absent_count']}}</td>
         </tr>
         @endforeach
