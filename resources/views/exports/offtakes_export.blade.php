@@ -33,8 +33,8 @@
                     Offtake
                 </td>
                 <td>{{ $order['created_at'] }}</td>
-                <td>{{ $order['user']['brand'] }}</td>
-                <td>{{ $order['user']['region'] }}</td>
+                <td>{{ ucwords(strtolower($order['user']['brand'])) }}</td>
+                <td>{{ ucwords(strtolower($order['user']['region'])) }}</td>
                 <td>{{ $order['user']['channel'] }}</td>
                 <td>{{ $order['user']['chain_name'] }}</td>
                 <td>{{ $order['user']['city'] }}</td>

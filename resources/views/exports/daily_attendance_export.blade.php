@@ -27,8 +27,8 @@
         @foreach ($userAttendances as $userAttendance)
         <tr>
             <td>{{ $loop->index + 1 }}</td>
-            <td>{{ $userAttendance->user->brand }}</td>
-            <td>{{ $userAttendance->user->region }}</td>
+            <td>{{ ucwords(strtolower($userAttendance->user->brand)) }}</td>
+            <td>{{ ucwords(strtolower($userAttendance->user->region)) }}</td>
             <td>{{ $userAttendance->user->channel }}</td>
             <td>{{ $userAttendance->user->chain_name }}</td>
             <td>{{ $userAttendance->user->city }}</td>

@@ -21,8 +21,8 @@
         @foreach ($Oftake_users as $offtake_user)
         <tr>
             <td>{{ $loop->index + 1 }}</td>
-            <td>{{ $offtake_user['brand'] }}</td>
-            <td>{{ $offtake_user['region'] }}</td>
+            <td>{{ ucwords(strtolower($offtake_user['brand'])) }}</td>
+            <td>{{ ucwords(strtolower($offtake_user['region'])) }}</td>
             <td>{{ $offtake_user['channel'] }}</td>
             <td>{{ $offtake_user['chain_name'] }}</td>
             <td>{{ $offtake_user['city'] }}</td>
