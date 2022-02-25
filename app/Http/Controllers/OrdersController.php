@@ -115,6 +115,7 @@ class OrdersController extends Controller
     ]);
 
     $dailyOrderSummaries = DailyOrderSummary::where('user_id', '=', $request->user_id)
+      // ->latest()
       ->get();
 
     if ($request->id == null || $request->id == '') {
@@ -134,7 +135,7 @@ class OrdersController extends Controller
           $order->order_details()->save($order_detail);
           $check = 0;
           foreach ($dailyOrderSummaries as $dailyOrderSummary) {
-            if ($dailyOrderSummary->sku_id == $order_detail->sku_id) {
+            if ($dailyOrderSummary->sku_id == $order_detail->sku_id && $check != 1) {
               $check = 1;
               if ($order->order_type == 'Opening Stock')
                 $dailyOrderSummary->opening_stock += $order_detail->qty;
