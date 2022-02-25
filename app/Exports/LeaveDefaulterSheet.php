@@ -90,6 +90,11 @@ class LeaveDefaulterSheet implements FromView, ShouldAutoSize, WithStyles, WithT
             $present_count = 0;
             $weekly_off_count = 0;
             $leave_count = 0;
+            $meeting_count = 0;
+            $market_closed_count = 0;
+            $half_day_count = 0;
+            $holiday_count = 0;
+            $work_from_home_count = 0;
             $diff = 0;
             $user = $attendance->user->toArray();
             $user_id = $user['id'];
@@ -116,6 +121,21 @@ class LeaveDefaulterSheet implements FromView, ShouldAutoSize, WithStyles, WithT
                     case 'LEAVE':
                         $leave_count++;
                         break;
+                    case 'MEETING':
+                        $meeting_count++;
+                        break;
+                    case 'MARKET CLOSED':
+                        $market_closed_count++;
+                        break;
+                    case 'HALF DAY':
+                        $half_day_count++;
+                        break;
+                    case 'HOLIDAY':
+                        $holiday_count++;
+                        break;
+                    case 'WORK FROM HOME':
+                        $work_from_home_count++;
+                        break;
                     default:
                         break;
                 }
@@ -123,6 +143,11 @@ class LeaveDefaulterSheet implements FromView, ShouldAutoSize, WithStyles, WithT
                 $user['present_count'] = $present_count;
                 $user['weekly_off_count'] = $weekly_off_count;
                 $user['leave_count'] = $leave_count;
+                $user['meeting_count'] = $meeting_count;
+                $user['market_closed_count'] = $market_closed_count;
+                $user['half_day_count'] = $half_day_count;
+                $user['holiday_count'] = $holiday_count;
+                $user['work_from_home_count'] = $work_from_home_count;
                 $user['absent_count'] = $absent_count;
                 $user['attendances'][$date] = $attendance;
                 $user['is_defaulter'] = $is_defaulter;
@@ -131,43 +156,61 @@ class LeaveDefaulterSheet implements FromView, ShouldAutoSize, WithStyles, WithT
                 $users[] = $user;
                 $defaulters[] = $user;
             } else {
-                $previous_log = end($users[$user_key]['attendances']);
-                $previous_date = Carbon::parse($previous_log['date'])->format('j');
-                $diff = $date - $previous_date;
-                switch ($attendance->session_type) {
-                    case 'PRESENT':
-                        $users[$user_key]["present_count"]++;
-                        break;
-                    case 'WEEKLY OFF':
-                        $users[$user_key]['weekly_off_count']++;
-                        break;
-                    case 'LEAVE':
-                        $users[$user_key]['leave_count']++;
-                        break;
-                    default:
-                        break;
-                }
+                if (!isset($users[$user_key]["attendances"][$date])) {
 
-                $day_count = sizeof($users[$user_key]["attendances"]) + 1;
-                $users[$user_key]["attendances"][$date] = $attendance;
-                $users[$user_key]['day_count'] = $day_count;
-                $absent_count = $daysInMonth - $day_count;
-                $users[$user_key]['absent_count'] = $absent_count;
-                $defaulter_user_key = array_search($user_id, array_column($defaulters, 'id'));
-                // if ($diff == 1) {
-                if (($absent_count + $users[$user_key]['leave_count'])>= 2) {
-                    $is_defaulter = 1;
-                    // $users[$defaulter_user_key]["is_defaulter"] = $is_defaulter;
-                    if ($previous_log && empty($defaulters[$defaulter_user_key]["attendances"][$previous_date])) {
-                        $defaulters[$defaulter_user_key]["attendances"][$previous_date] = $previous_log;
+                    $previous_log = end($users[$user_key]['attendances']);
+                    $previous_date = Carbon::parse($previous_log['date'])->format('j');
+                    $diff = $date - $previous_date;
+                    switch ($attendance->session_type) {
+                        case 'PRESENT':
+                            $users[$user_key]["present_count"]++;
+                            break;
+                        case 'WEEKLY OFF':
+                            $users[$user_key]['weekly_off_count']++;
+                            break;
+                        case 'LEAVE':
+                            $users[$user_key]['leave_count']++;
+                            break;
+                        case 'MEETING':
+                            $users[$user_key]['meeting_count']++;
+                            break;
+                        case 'MARKET CLOSED':
+                            $users[$user_key]['market_closed_count']++;
+                            break;
+                        case 'HALF DAY':
+                            $users[$user_key]['half_day_count']++;
+                            break;
+                        case 'HOLIDAY':
+                            $users[$user_key]['holiday_count']++;
+                            break;
+                        case 'WORK FROM HOME':
+                            $users[$user_key]['work_from_home_count']++;
+                            break;
+                        default:
+                            break;
                     }
-                    $defaulters[$defaulter_user_key]["attendances"][$date] = $attendance;
+
+                    $day_count = sizeof($users[$user_key]["attendances"]) + 1;
+                    $users[$user_key]["attendances"][$date] = $attendance;
+                    $users[$user_key]['day_count'] = $day_count;
+                    $absent_count = $daysInMonth - $day_count;
+                    $users[$user_key]['absent_count'] = $absent_count;
+                    $defaulter_user_key = array_search($user_id, array_column($defaulters, 'id'));
+                    // if ($diff == 1) {
+                    if (($absent_count + $users[$user_key]['leave_count']) >= 2) {
+                        $is_defaulter = 1;
+                        // $users[$defaulter_user_key]["is_defaulter"] = $is_defaulter;
+                        if ($previous_log && empty($defaulters[$defaulter_user_key]["attendances"][$previous_date])) {
+                            $defaulters[$defaulter_user_key]["attendances"][$previous_date] = $previous_log;
+                        }
+                        $defaulters[$defaulter_user_key]["attendances"][$date] = $attendance;
+                    }
+                    $defaulters[$defaulter_user_key]["is_defaulter"] = $is_defaulter;
+                    $defaulters[$defaulter_user_key]["present_count"] = $users[$user_key]["present_count"];
+                    $defaulters[$defaulter_user_key]["leave_count"] = $users[$user_key]["leave_count"];
+                    $defaulters[$defaulter_user_key]["absent_count"] = $users[$user_key]["absent_count"];
+                    $defaulters[$defaulter_user_key]["weekly_off_count"] = $users[$user_key]["weekly_off_count"];
                 }
-                $defaulters[$defaulter_user_key]["is_defaulter"] = $is_defaulter;
-                $defaulters[$defaulter_user_key]["present_count"] = $users[$user_key]["present_count"];
-                $defaulters[$defaulter_user_key]["leave_count"] = $users[$user_key]["leave_count"];
-                $defaulters[$defaulter_user_key]["absent_count"] = $users[$user_key]["absent_count"];
-                $defaulters[$defaulter_user_key]["weekly_off_count"] = $users[$user_key]["weekly_off_count"];
             }
         }
 
