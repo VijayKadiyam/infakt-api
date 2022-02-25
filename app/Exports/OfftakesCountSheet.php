@@ -96,7 +96,10 @@ class OfftakesCountSheet implements FromView, ShouldAutoSize, WithStyles, WithTi
 					$present_Days = $present_Days->whereYear('date', '=', $year);
 					$ors = $ors->whereYear('created_at', '=', $year);
 				}
-				$present_Days = $present_Days->get();
+				$present_Days = $present_Days->get()->groupBy(function ($date) {
+					return Carbon::parse($date->created_at)->format('Y-m-d'); // grouping by days
+				});
+				// $present_Days = $present_Days->get();
 				$present_Days_count = $present_Days->count();
 				$ors = $ors->get();
 				$order_date_list = [];
