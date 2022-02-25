@@ -203,11 +203,12 @@ class SkusController extends Controller
     if ($user) {
       $dailyOrderSummaries = DailyOrderSummary::where('user_id', '=', $user->id)
         // ->where('sku_id', '=', $sku->id)
+        // ->latest()
         ->get();
       foreach ($skus as $sku) {
         $isSku = 0;
         foreach ($dailyOrderSummaries as $dailyOrderSummary) {
-          if ($dailyOrderSummary->sku_id == $sku->id) {
+          if ($dailyOrderSummary->sku_id == $sku->id && $isSku != 1) {
             $isSku = 1;
             $sku['qty'] = (int) $dailyOrderSummary->closing_stock;
             $sku['opening_stock'] = (int)$dailyOrderSummary->opening_stock;
