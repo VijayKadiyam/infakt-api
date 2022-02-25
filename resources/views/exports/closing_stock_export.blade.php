@@ -29,8 +29,8 @@
         @foreach ($dailyOrderSummaries as $sku)
         <tr>
             <td>{{ $loop->index + 1 }}</td>
-            <td>{{ $sku['user']['brand'] }}</td>
-            <td>{{ $sku['user']['region'] }}</td>
+            <td>{{ ucwords(strtolower($sku['user']['brand'])) }}</td>
+            <td>{{ ucwords(strtolower($sku['user']['region'])) }}</td>
             <td>{{ $sku['user']['channel'] }}</td>
             <td>{{ $sku['user']['chain_name'] }}</td>
             <td>{{ $sku['user']['city'] }}</td>
