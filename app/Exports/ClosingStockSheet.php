@@ -253,7 +253,7 @@ class ClosingStockSheet implements FromView, ShouldAutoSize, WithStyles, WithTit
 		$dailyOrderSummaries = $dailyOrderSummaries->get();
 
 		$skus = $company->skus()
-			->take(2)
+			// ->take(2)
 			->get();
 
 		$users = User::whereHas('roles', function ($q) {
@@ -261,7 +261,7 @@ class ClosingStockSheet implements FromView, ShouldAutoSize, WithStyles, WithTit
 		})
 			->where('active', '=', 1)
 			// ->where('id', 3314)
-			->take(1)
+			// ->take(1)
 			->get();
 
 		// return response()->json([
