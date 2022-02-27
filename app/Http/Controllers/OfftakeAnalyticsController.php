@@ -548,32 +548,37 @@ class OfftakeAnalyticsController extends Controller
 				$user_key = array_search($user_id, array_column($users, 'id'));
 				if (!is_int($user_key)) {
 					// Insert
-					$user['total_opening_stocks'] = abs($total_opening_stocks);
-					$user['total_closing_stocks'] = abs($total_closing_stocks);
-					$user['total_received_stock'] = abs($total_received_stock);
-					$user['total_purchase_returned_stock'] = abs($total_purchase_returned_stock);
-					$user['total_sales_stock'] = abs($total_sales_stock);
-					$user['total_returned_stock'] = abs($total_returned_stock);
+					$user['total_opening_stocks'] = $total_opening_stocks;
+					$user['total_closing_stocks'] = $total_closing_stocks;
+					$user['total_received_stock'] = $total_received_stock;
+					$user['total_purchase_returned_stock'] = $total_purchase_returned_stock;
+					$user['total_sales_stock'] = $total_sales_stock;
+					$user['total_returned_stock'] = $total_returned_stock;
 					$users[] = $user;
 				} else {
 					// Update
-					// $users[$user_key]['total_opening_stocks'] = $total_opening_stocks;
-					// $users[$user_key]['total_closing_stocks'] = $total_closing_stocks;
-					// $users[$user_key]['total_received_stock'] = $total_received_stock;
-					// $users[$user_key]['total_purchase_returned_stock'] = $total_purchase_returned_stock;
-					// $users[$user_key]['total_sales_stock'] = $total_sales_stock;
-					// $users[$user_key]['total_returned_stock'] = $total_returned_stock;
 
-					// $users[$user_key]['total_opening_stocks'] += $total_opening_stocks;
-					// $users[$user_key]['total_closing_stocks'] += $total_closing_stocks;
-					// $users[$user_key]['total_received_stock'] += $total_received_stock;
-					// $users[$user_key]['total_purchase_returned_stock'] += $total_purchase_returned_stock;
-					// $users[$user_key]['total_sales_stock'] += $total_sales_stock;
-					// $users[$user_key]['total_returned_stock'] += $total_returned_stock;
+					$users[$user_key]['total_opening_stocks'] += $total_opening_stocks;
+					$users[$user_key]['total_closing_stocks'] += $total_closing_stocks;
+					$users[$user_key]['total_received_stock'] += $total_received_stock;
+					$users[$user_key]['total_purchase_returned_stock'] += $total_purchase_returned_stock;
+					$users[$user_key]['total_sales_stock'] += $total_sales_stock;
+					$users[$user_key]['total_returned_stock'] += $total_returned_stock;
 				}
 			}
 		}
-		return view('exports.stock_report_export', compact('users'));
+
+		$allUsers = [];
+		foreach ($users as $user) {
+			$user['total_opening_stocks'] = round(abs($user['total_opening_stocks'] / 2));
+			$user['total_closing_stocks'] = round(abs($user['total_closing_stocks'] / 2));
+			$user['total_received_stock'] = round(abs($user['total_received_stock']  / 2));
+			$user['total_purchase_returned_stock'] = round(abs($user['total_purchase_returned_stock'] / 2));
+			$user['total_sales_stock'] = round(abs($user['total_sales_stock'] / 2));
+			$allUsers[] = $user;
+		}
+
+		return view('exports.stock_report_export', compact('allUsers'));
 
 		ini_set('max_execution_time', 0);
 		ini_set('memory_limit', '-1');

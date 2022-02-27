@@ -63,8 +63,8 @@ class StockReportSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
 
         $count = 0;
         $dailyOrderSummaries = $company->daily_order_summaries();
-            // ->where('user_id', 3314)
-            // ->where('user_id', 3314)->orwhere('user_id', 3009);
+        // ->where('user_id', 3314)
+        // ->where('user_id', 3314)->orwhere('user_id', 3009);
         // ->orwhere('user_id', 2857)
         // ->whereDate('created_at', '=', $date)
         // ->latest()
@@ -125,31 +125,35 @@ class StockReportSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
                 if (!is_int($user_key)) {
                     // Insert
                     $user['total_opening_stocks'] = abs($total_opening_stocks);
-					$user['total_closing_stocks'] = abs($total_closing_stocks);
-					$user['total_received_stock'] = abs($total_received_stock);
-					$user['total_purchase_returned_stock'] = abs($total_purchase_returned_stock);
-					$user['total_sales_stock'] = abs($total_sales_stock);
-					$user['total_returned_stock'] = abs($total_returned_stock);
+                    $user['total_closing_stocks'] = abs($total_closing_stocks);
+                    $user['total_received_stock'] = abs($total_received_stock);
+                    $user['total_purchase_returned_stock'] = abs($total_purchase_returned_stock);
+                    $user['total_sales_stock'] = abs($total_sales_stock);
+                    $user['total_returned_stock'] = abs($total_returned_stock);
                     $users[] = $user;
                 } else {
                     // Update
-                    // $users[$user_key]['total_opening_stocks'] = $total_opening_stocks;
-                    // $users[$user_key]['total_closing_stocks'] = $total_closing_stocks;
-                    // $users[$user_key]['total_received_stock'] = $total_received_stock;
-                    // $users[$user_key]['total_purchase_returned_stock'] = $total_purchase_returned_stock;
-                    // $users[$user_key]['total_sales_stock'] = $total_sales_stock;
-                    // $users[$user_key]['total_returned_stock'] = $total_returned_stock;
-                    
-                    // $users[$user_key]['total_opening_stocks'] += $total_opening_stocks;
-                    // $users[$user_key]['total_closing_stocks'] += $total_closing_stocks;
-                    // $users[$user_key]['total_received_stock'] += $total_received_stock;
-                    // $users[$user_key]['total_purchase_returned_stock'] += $total_purchase_returned_stock;
-                    // $users[$user_key]['total_sales_stock'] += $total_sales_stock;
-                    // $users[$user_key]['total_returned_stock'] += $total_returned_stock;
+                    $users[$user_key]['total_opening_stocks'] += $total_opening_stocks;
+                    $users[$user_key]['total_closing_stocks'] += $total_closing_stocks;
+                    $users[$user_key]['total_received_stock'] += $total_received_stock;
+                    $users[$user_key]['total_purchase_returned_stock'] += $total_purchase_returned_stock;
+                    $users[$user_key]['total_sales_stock'] += $total_sales_stock;
+                    $users[$user_key]['total_returned_stock'] += $total_returned_stock;
                 }
             }
         }
-        return view('exports.stock_report_export', compact('users'));
+
+        $allUsers = [];
+        foreach ($users as $user) {
+            $user['total_opening_stocks'] = round(abs($user['total_opening_stocks'] / 2));
+            $user['total_closing_stocks'] = round(abs($user['total_closing_stocks'] / 2));
+            $user['total_received_stock'] = round(abs($user['total_received_stock']  / 2));
+            $user['total_purchase_returned_stock'] = round(abs($user['total_purchase_returned_stock'] / 2));
+            $user['total_sales_stock'] = round(abs($user['total_sales_stock'] / 2));
+            $allUsers[] = $user;
+        }
+
+        return view('exports.stock_report_export', compact('allUsers'));
     }
 
     /**

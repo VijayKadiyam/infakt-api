@@ -23,7 +23,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach ($users as $user)
+        @foreach ($allUsers as $user)
         <tr>
             <td>{{ $loop->index + 1 }}</td>
             <td>{{ ucwords(strtolower($user['brand'])) }}</td>
