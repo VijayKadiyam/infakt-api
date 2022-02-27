@@ -230,71 +230,88 @@ class ClosingStockSheet implements FromView, ShouldAutoSize, WithStyles, WithTit
     public function view(): View
     {
         ini_set('max_execution_time', 0);
-		ini_set('memory_limit', '-1');
+        ini_set('memory_limit', '-1');
 
-		$asd = [];
-		$company = Company::find(1);
+        $asd = [];
+        $company = Company::find(1);
 
-		$date = Carbon::now()->format('Y-m-d');
+        $date = Carbon::now()->format('Y-m-d');
 
-		$currentMonth = Carbon::now()->format('m');
-		$month =  Carbon::parse($date)->format('m');
-		$year = Carbon::parse($date)->format('Y');
-		$date = Carbon::parse($date)->format('Y-m-d');
+        $currentMonth = Carbon::now()->format('m');
+        $month =  Carbon::parse($date)->format('m');
+        $year = Carbon::parse($date)->format('Y');
+        $date = Carbon::parse($date)->format('Y-m-d');
 
-		$count = 0;
-		$dailyOrderSummaries = $company->daily_order_summaries();
-			// ->where('user_id', 3314);
-		// ->orWhere('user_id', 3009)
-		// ->orWhere('user_id', 2857)
-		// ->whereDate('created_at', '=', $date)
-		// ->latest();
+        $count = 0;
+        $dailyOrderSummaries = $company->daily_order_summaries();
 
-		$dailyOrderSummaries = $dailyOrderSummaries->get();
+        $region = $this->region;
+        if ($region) {
+            $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($region) {
+                $q->where('region', 'LIKE', '%' . $region . '%');
+            });
+        }
+        $channel = $this->channel;
+        if ($channel) {
+            $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($channel) {
+                $q->where('channel', 'LIKE', '%' . $channel . '%');
+            });
+        }
+        $supervisorId = $this->supervisorId;
+        if ($supervisorId != '')
+            $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($supervisorId) {
+                $q->where('supervisor_id', '=', $supervisorId);
+            });
 
-		$skus = $company->skus()
-			// ->take(2)
-			->get();
+        $dailyOrderSummaries = $dailyOrderSummaries->get();
 
-		$users = User::whereHas('roles', function ($q) {
-			$q->where('name', '=', 'BA');
-		})
-			->where('active', '=', 1)
-			// ->where('id', 3314)
-			// ->take(1)
-			->get();
+        $skus = $company->skus()
+            // ->take(2)
+            ->get();
 
-		// return response()->json([
-		// 	'data'	=>	$users,
-		// ]);
+        $users = User::whereHas('roles', function ($q) {
+            $q->where('name', '=', 'BA');
+        })
+            ->where('active', '=', 1);
 
-		// $d =  $dailyOrderSummaries
-		// 	->where('user_id', '=', $users[0]->id)
-		// 	->get();
+        $region = $this->region;
+        if ($region) {
+            $users = $users->where('region', 'LIKE', '%' . $region . '%');
+        }
+        $channel = $this->channel;
+        if ($channel) {
+            $users = $users->where('channel', 'LIKE', '%' . $channel . '%');
+        }
+        $supervisorId = $this->supervisorId;
+        if ($supervisorId != '')
+            $users = $users->where('supervisor_id', '=', $supervisorId);
 
-		foreach ($skus as $sku) {
-			$skuUsers = [];
-			$userDailyOrderSummaries = [];
-			$skuDOS = [];
-			foreach ($dailyOrderSummaries as $dailyOrderSummary) {
-				if ($dailyOrderSummary->sku_id == $sku->id) {
-					$skuDOS[] = $dailyOrderSummary;
-					// break;
-				}
-			}
-			foreach ($users as $user) {
-				$check = 0;
-				foreach ($skuDOS as $dailyOrderSummary) {
-					if ($dailyOrderSummary->user_id == $user->id && $check != 1) {
-						$check = 1;
-						$userDailyOrderSummaries[] = $dailyOrderSummary;
-					}
-				}
-			}
-			$sku['userDailyOrderSummaries'] = $userDailyOrderSummaries;
-		}
+        $users = $users
+            // ->take(1)
+            ->get();
 
-		return view('exports.closing_stock_export1', compact('skus'));
+        foreach ($skus as $sku) {
+            $skuUsers = [];
+            $userDailyOrderSummaries = [];
+            $skuDOS = [];
+            foreach ($dailyOrderSummaries as $dailyOrderSummary) {
+                if ($dailyOrderSummary->sku_id == $sku->id) {
+                    $skuDOS[] = $dailyOrderSummary;
+                }
+            }
+            foreach ($users as $user) {
+                $check = 0;
+                foreach ($skuDOS as $dailyOrderSummary) {
+                    if ($dailyOrderSummary->user_id == $user->id && $check != 1) {
+                        $check = 1;
+                        $userDailyOrderSummaries[] = $dailyOrderSummary;
+                    }
+                }
+            }
+            $sku['userDailyOrderSummaries'] = $userDailyOrderSummaries;
+        }
+
+        return view('exports.closing_stock_export1', compact('skus'));
     }
 
     /**

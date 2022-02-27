@@ -43,18 +43,11 @@ class EmailBaReportCommand extends Command
     {
         ini_set('max_execution_time', 0);
 
-        $todayDate = Carbon::now()->addDays(-1)->format('Y-m-d');
-        // $todayDate = Carbon::now()->format('Y-m-d');
+        // $todayDate = Carbon::now()->addDays(-1)->format('Y-m-d');
+        $todayDate = Carbon::now()->format('Y-m-d');
 
         $this->info('Email Report for Date: ' . $todayDate);
-
-
-        Mail::to('deepika.k@mamaearth.in')
-            ->cc(['ac.north@pousse.in', 'kirit.sayani@pousse.in', 'bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in'])
-            ->send(new BaReportEmail($todayDate));
-
-        $this->info('BA Report Emailed...');
-
+        
         $supervisors = User::with('roles')
             ->where('active', '=', 1)
             ->whereHas('roles',  function ($q) {
@@ -82,6 +75,13 @@ class EmailBaReportCommand extends Command
 
             $count++;
         }
+
+        // Compelete BA Report
+        Mail::to('deepika.k@mamaearth.in')
+            ->cc(['ac.north@pousse.in', 'kirit.sayani@pousse.in', 'bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in'])
+            ->send(new BaReportEmail($todayDate));
+
+        $this->info('BA Report Emailed...');
 
         // Region wise
         $regions = [

@@ -93,12 +93,12 @@
       <td>{{ $sku->price }}</td>
       <td>{{ $sku->hsn_code }}</td>
       @foreach ($sku->userDailyOrderSummaries as $userDailyOrderSummary)
-      <td>{{ $userDailyOrderSummary['opening_stock'] }}</td>
-      <td>{{ $userDailyOrderSummary['received_stock'] }}</td>
-      <td>{{ $userDailyOrderSummary['purchase_returned_stock'] }}</td>
-      <td>{{ $userDailyOrderSummary['sales_stock'] }}</td>
-      <td>{{ $userDailyOrderSummary['returned_stock'] }}</td>
-      <td>{{ $userDailyOrderSummary['closing_stock'] }}</td>
+      <td>{{ abs($userDailyOrderSummary['opening_stock']) }}</td>
+      <td>{{ abs($userDailyOrderSummary['received_stock']) }}</td>
+      <td>{{ abs($userDailyOrderSummary['purchase_returned_stock']) }}</td>
+      <td>{{ abs($userDailyOrderSummary['sales_stock']) }}</td>
+      <td>{{ abs($userDailyOrderSummary['returned_stock']) }}</td>
+      <td>{{ abs($userDailyOrderSummary['closing_stock']) }}</td>
       @endforeach
     </tr>
     @endforeach

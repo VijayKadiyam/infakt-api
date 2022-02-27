@@ -69,24 +69,25 @@ class StockReportSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
         // ->whereDate('created_at', '=', $date)
         // ->latest()
         // ->orderBy('closing_stock', 'DESC');
-        // $region = $this->region;
-        // if ($region) {
-        //     $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($region) {
-        //         $q->where('region', 'LIKE', '%' . $region . '%');
-        //     });
-        // }
-        // $channel = $this->channel;
-        // if ($channel) {
-        //     $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($channel) {
-        //         $q->where('channel', 'LIKE', '%' . $channel . '%');
-        //     });
-        // }
-        // $supervisorId = $this->supervisorId;
-        // if ($supervisorId != '')
-        //     $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($supervisorId) {
-        //         $q->where('supervisor_id', '=', $supervisorId);
-        //     });
+        $region = $this->region;
+        if ($region) {
+            $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($region) {
+                $q->where('region', 'LIKE', '%' . $region . '%');
+            });
+        }
+        $channel = $this->channel;
+        if ($channel) {
+            $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($channel) {
+                $q->where('channel', 'LIKE', '%' . $channel . '%');
+            });
+        }
+        $supervisorId = $this->supervisorId;
+        if ($supervisorId != '')
+            $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($supervisorId) {
+                $q->where('supervisor_id', '=', $supervisorId);
+            });
 
+        // $dailyOrderSummaries = $dailyOrderSummaries->take(20000);
         $dailyOrderSummaries = $dailyOrderSummaries->get();
 
         $total_opening_stocks = 0;
@@ -123,21 +124,28 @@ class StockReportSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
                 $user_key = array_search($user_id, array_column($users, 'id'));
                 if (!is_int($user_key)) {
                     // Insert
-                    $user['total_opening_stocks'] = $total_opening_stocks;
-                    $user['total_closing_stocks'] = $total_closing_stocks;
-                    $user['total_received_stock'] = $total_received_stock;
-                    $user['total_purchase_returned_stock'] = $total_purchase_returned_stock;
-                    $user['total_sales_stock'] = $total_sales_stock;
-                    $user['total_returned_stock'] = $total_returned_stock;
+                    $user['total_opening_stocks'] = abs($total_opening_stocks);
+					$user['total_closing_stocks'] = abs($total_closing_stocks);
+					$user['total_received_stock'] = abs($total_received_stock);
+					$user['total_purchase_returned_stock'] = abs($total_purchase_returned_stock);
+					$user['total_sales_stock'] = abs($total_sales_stock);
+					$user['total_returned_stock'] = abs($total_returned_stock);
                     $users[] = $user;
                 } else {
                     // Update
-                    $users[$user_key]['total_opening_stocks'] += $total_opening_stocks;
-                    $users[$user_key]['total_closing_stocks'] += $total_closing_stocks;
-                    $users[$user_key]['total_received_stock'] += $total_received_stock;
-                    $users[$user_key]['total_purchase_returned_stock'] += $total_purchase_returned_stock;
-                    $users[$user_key]['total_sales_stock'] += $total_sales_stock;
-                    $users[$user_key]['total_returned_stock'] += $total_returned_stock;
+                    // $users[$user_key]['total_opening_stocks'] = $total_opening_stocks;
+                    // $users[$user_key]['total_closing_stocks'] = $total_closing_stocks;
+                    // $users[$user_key]['total_received_stock'] = $total_received_stock;
+                    // $users[$user_key]['total_purchase_returned_stock'] = $total_purchase_returned_stock;
+                    // $users[$user_key]['total_sales_stock'] = $total_sales_stock;
+                    // $users[$user_key]['total_returned_stock'] = $total_returned_stock;
+                    
+                    // $users[$user_key]['total_opening_stocks'] += $total_opening_stocks;
+                    // $users[$user_key]['total_closing_stocks'] += $total_closing_stocks;
+                    // $users[$user_key]['total_received_stock'] += $total_received_stock;
+                    // $users[$user_key]['total_purchase_returned_stock'] += $total_purchase_returned_stock;
+                    // $users[$user_key]['total_sales_stock'] += $total_sales_stock;
+                    // $users[$user_key]['total_returned_stock'] += $total_returned_stock;
                 }
             }
         }
