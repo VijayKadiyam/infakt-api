@@ -43,8 +43,8 @@ class EmailBaReportCommand extends Command
     {
         ini_set('max_execution_time', 0);
 
-        // $todayDate = Carbon::now()->addDays(-1)->format('Y-m-d');
-        $todayDate = Carbon::now()->format('Y-m-d');
+        $todayDate = Carbon::now()->addDays(-1)->format('Y-m-d');
+        // $todayDate = Carbon::now()->format('Y-m-d');
 
         $this->info('Email Report for Date: ' . $todayDate);
         
@@ -76,58 +76,58 @@ class EmailBaReportCommand extends Command
             $count++;
         }
 
-        // Compelete BA Report
-        Mail::to('deepika.k@mamaearth.in')
-            ->cc(['ac.north@pousse.in', 'kirit.sayani@pousse.in', 'bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in'])
-            ->send(new BaReportEmail($todayDate));
+        // // Compelete BA Report
+        // Mail::to('deepika.k@mamaearth.in')
+        //     ->cc(['ac.north@pousse.in', 'kirit.sayani@pousse.in', 'bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in'])
+        //     ->send(new BaReportEmail($todayDate));
 
-        $this->info('BA Report Emailed...');
+        // $this->info('BA Report Emailed...');
 
-        // Region wise
-        $regions = [
-            'North',
-            'South',
-            'East',
-            'West',
-        ];
+        // // Region wise
+        // $regions = [
+        //     'North',
+        //     'South',
+        //     'East',
+        //     'West',
+        // ];
 
-        foreach ($regions as $key => $region) {
-            // $rsm = 'ksohail.sk32@gmail.com';
-            $rsm = 'jyotisingh21095@gmail.com';
-            if ($region == 'East')
-                $rsm = 'swarupa.c@mamaearth.in';
-            if ($region == 'West')
-                $rsm = 'casilda.r@mamaearth.in';
-            if ($region == 'North')
-                $rsm = 'rajlakshmi.s@mamaearth.in';
+        // foreach ($regions as $key => $region) {
+        //     // $rsm = 'ksohail.sk32@gmail.com';
+        //     $rsm = 'jyotisingh21095@gmail.com';
+        //     if ($region == 'East')
+        //         $rsm = 'swarupa.c@mamaearth.in';
+        //     if ($region == 'West')
+        //         $rsm = 'casilda.r@mamaearth.in';
+        //     if ($region == 'North')
+        //         $rsm = 'rajlakshmi.s@mamaearth.in';
 
-            if ($region == 'North')
-                Mail::to($rsm)
-                    ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in', 'sunita.mamaearth@yahoo.com'])
-                    ->send(new BaReportEmail($todayDate, $region));
-            else if ($region == 'East')
-                Mail::to($rsm)
-                    ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in', 'anirban.choudhury@pousse.in'])
-                    ->send(new BaReportEmail($todayDate, $region));
-            else
-                Mail::to($rsm)
-                    ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in'])
-                    ->send(new BaReportEmail($todayDate, $region));
-        }
+        //     if ($region == 'North')
+        //         Mail::to($rsm)
+        //             ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in', 'sunita.mamaearth@yahoo.com'])
+        //             ->send(new BaReportEmail($todayDate, $region));
+        //     else if ($region == 'East')
+        //         Mail::to($rsm)
+        //             ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in', 'anirban.choudhury@pousse.in'])
+        //             ->send(new BaReportEmail($todayDate, $region));
+        //     else
+        //         Mail::to($rsm)
+        //             ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in'])
+        //             ->send(new BaReportEmail($todayDate, $region));
+        // }
 
-        // Region wise
-        $channels = [
-            'GT',
-            'MT',
-            'IIA',
-            'ME_CNC',
-        ];
+        // // Region wise
+        // $channels = [
+        //     'GT',
+        //     'MT',
+        //     'IIA',
+        //     'ME_CNC',
+        // ];
 
-        foreach ($channels as $key => $channel) {
-            if ($channel == 'IIA')
-                Mail::to('rashi.j@mamaearth.in')
-                    ->cc(['kvjkumr@gmail.com'])
-                    ->send(new BaReportEmail($todayDate, $channel));
-        }
+        // foreach ($channels as $key => $channel) {
+        //     if ($channel == 'IIA')
+        //         Mail::to('rashi.j@mamaearth.in')
+        //             ->cc(['kvjkumr@gmail.com'])
+        //             ->send(new BaReportEmail($todayDate, $channel));
+        // }
     }
 }
