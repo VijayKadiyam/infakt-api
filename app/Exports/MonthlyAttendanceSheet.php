@@ -22,6 +22,7 @@ class MonthlyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, Wi
 	public function __construct($date, $supervisorId, $region, $channel)
 	{
 		$this->month = Carbon::parse($date)->format('M-Y');
+		$this->date = $date;
 		$this->supervisorId = $supervisorId;
 		$this->region = $region;
 		$this->channel = $channel;
@@ -52,7 +53,7 @@ class MonthlyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, Wi
 		$year = Carbon::parse($this->date)->format('Y');
 		$daysInMonth = Carbon::parse($this->date)->daysInMonth;
 		if ($month == $currentMonth) {
-			$daysInMonth = Carbon::now()->format('d');
+			$daysInMonth = Carbon::parse($this->date)->format('d');
 		}
 		if ($month)
 			$userAttendances = $userAttendances->whereMonth('date', '=', $month);
@@ -95,85 +96,88 @@ class MonthlyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, Wi
 			unset($attendance['user']);
 			$user_key = array_search($user_id, array_column($users, 'id'));
 			$date = Carbon::parse($attendance->date)->format('j');
+			if ($date <= $daysInMonth) {
+				// No Extra days than daysInMonth 
 
-			$is_exist = in_array($user_id, $user_id_log);
-			if (!$user_key && !$is_exist) {
-				$user_id_log[] = $user_id;
-				// if (!$user_key) {
-				$day_count = 1;
-				switch ($attendance->session_type) {
-					case 'PRESENT':
-						$present_count++;
-						break;
-					case 'WEEKLY OFF':
-						$weekly_off_count++;
-						break;
-					case 'LEAVE':
-						$leave_count++;
-						break;
-					case 'MEETING':
-						$meeting_count++;
-						break;
-					case 'MARKET CLOSED':
-						$market_closed_count++;
-						break;
-					case 'HALF DAY':
-						$half_day_count++;
-						break;
-					case 'HOLIDAY':
-						$holiday_count++;
-						break;
-					case 'WORK FROM HOME':
-						$work_from_home_count++;
-						break;
-					default:
-						break;
-				}
-				$user['day_count'] = $day_count;
-				$user['present_count'] = $present_count;
-				$user['weekly_off_count'] = $weekly_off_count;
-				$user['leave_count'] = $leave_count;
-				$user['meeting_count'] = $meeting_count;
-				$user['market_closed_count'] = $market_closed_count;
-				$user['half_day_count'] = $half_day_count;
-				$user['holiday_count'] = $holiday_count;
-				$user['work_from_home_count'] = $work_from_home_count;
-				$user['attendances'][$date] = $attendance;
-				$users[] = $user;
-			} else {
-				if (!isset($users[$user_key]["attendances"][$date])) {
+				$is_exist = in_array($user_id, $user_id_log);
+				if (!$user_key && !$is_exist) {
+					$user_id_log[] = $user_id;
+					// if (!$user_key) {
+					$day_count = 1;
 					switch ($attendance->session_type) {
 						case 'PRESENT':
-							$users[$user_key]["present_count"]++;
+							$present_count++;
 							break;
 						case 'WEEKLY OFF':
-							$users[$user_key]['weekly_off_count']++;
+							$weekly_off_count++;
 							break;
 						case 'LEAVE':
-							$users[$user_key]['leave_count']++;
+							$leave_count++;
 							break;
 						case 'MEETING':
-							$users[$user_key]['meeting_count']++;
+							$meeting_count++;
 							break;
 						case 'MARKET CLOSED':
-							$users[$user_key]['market_closed_count']++;
+							$market_closed_count++;
 							break;
 						case 'HALF DAY':
-							$users[$user_key]['half_day_count']++;
+							$half_day_count++;
 							break;
 						case 'HOLIDAY':
-							$users[$user_key]['holiday_count']++;
+							$holiday_count++;
 							break;
 						case 'WORK FROM HOME':
-							$users[$user_key]['work_from_home_count']++;
+							$work_from_home_count++;
 							break;
 						default:
 							break;
 					}
+					$user['day_count'] = $day_count;
+					$user['present_count'] = $present_count;
+					$user['weekly_off_count'] = $weekly_off_count;
+					$user['leave_count'] = $leave_count;
+					$user['meeting_count'] = $meeting_count;
+					$user['market_closed_count'] = $market_closed_count;
+					$user['half_day_count'] = $half_day_count;
+					$user['holiday_count'] = $holiday_count;
+					$user['work_from_home_count'] = $work_from_home_count;
+					$user['attendances'][$date] = $attendance;
+					$users[] = $user;
+				} else {
+					if (!isset($users[$user_key]["attendances"][$date])) {
+						switch ($attendance->session_type) {
+							case 'PRESENT':
+								$users[$user_key]["present_count"]++;
+								break;
+							case 'WEEKLY OFF':
+								$users[$user_key]['weekly_off_count']++;
+								break;
+							case 'LEAVE':
+								$users[$user_key]['leave_count']++;
+								break;
+							case 'MEETING':
+								$users[$user_key]['meeting_count']++;
+								break;
+							case 'MARKET CLOSED':
+								$users[$user_key]['market_closed_count']++;
+								break;
+							case 'HALF DAY':
+								$users[$user_key]['half_day_count']++;
+								break;
+							case 'HOLIDAY':
+								$users[$user_key]['holiday_count']++;
+								break;
+							case 'WORK FROM HOME':
+								$users[$user_key]['work_from_home_count']++;
+								break;
+							default:
+								break;
+						}
 
-					$day_count = sizeof($users[$user_key]["attendances"]) + 1;
-					$users[$user_key]["attendances"][$date] = $attendance;
-					$users[$user_key]['day_count'] = $day_count;
+						$day_count = sizeof($users[$user_key]["attendances"]) + 1;
+						$users[$user_key]["attendances"][$date] = $attendance;
+						$users[$user_key]['day_count'] = $day_count;
+					}
 				}
 			}
 		}
