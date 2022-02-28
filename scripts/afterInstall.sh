@@ -5,7 +5,6 @@ cd /var/www/vhosts/mamaearth/me-api
 
 sudo chmod -R 777 storage public vendor bootstrap database
 
-
 php /usr/local/bin/composer dump-autoload
 php artisan cache:clear
 
