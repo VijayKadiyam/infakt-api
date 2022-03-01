@@ -50,7 +50,7 @@ class StoreSkuCountsCommand extends Command
 
         ini_set('max_execution_time', 0);
 
-        DailyOrderSummary::truncate();
+        // DailyOrderSummary::truncate();
 
         $skus = Sku::all();
 
@@ -123,6 +123,10 @@ class StoreSkuCountsCommand extends Command
                     $sku['returned_stock'] = $returnedQty;
                     $sku['closing_stock'] = ($totalQty + $receivedQty - $purchaseReturnedQty - $consumedQty + $returnedQty);
                     $sku['qty'] = $sku['closing_stock'];
+
+                    DailyOrderSummary::where('sku_id', '=', $sku->id)
+						->where('user_id', '=', $user->id)
+						->delete();
 
                     DailyOrderSummary::create([
                         'company_id'  =>  1,
