@@ -478,7 +478,7 @@ class AnalyticsController extends Controller
     } else {
       // Total orders of last month
       $ordersOfLastMonth = Order::where('user_id', '=', $request->userId)
-        ->whereMonth('created_at', 10)
+        ->whereMonth('created_at', 02)
         ->where('order_type', '=', 'Sales')
         ->where('is_active', '=', 1)
         ->get();
@@ -552,17 +552,17 @@ class AnalyticsController extends Controller
       $achieved += $order->total;
     }
     // Total achieved in last month
-    $targetLast = Target::where('user_id', '=', $request->userId)
-      ->where('month', $request->month - 1)
-      ->first();
-    if (isset($targetLast))
-      $achievedLast = $targetLast->achieved;
-    // foreach ($ordersOfLastMonth as $order) {
-    //   $achievedLast += $order->total;
-    // }
+    // $targetLast = Target::where('user_id', '=', $request->userId)
+    //   ->where('month', $request->month - 1)
+    //   ->first();
+    // if (isset($targetLast))
+    //   $achievedLast = $targetLast->achieved;
+    foreach ($ordersOfLastMonth as $order) {
+      $achievedLast += $order->total;
+    }
     // Total achieved in last 2 month
     $targetLast2 = Target::where('user_id', '=', $request->userId)
-      ->where('month', 12)
+      ->where('month', $request->month - 2)
       ->first();
     if (isset($targetLast2))
       $achievedLast2 = $targetLast2->achieved;
@@ -571,13 +571,10 @@ class AnalyticsController extends Controller
     // }
     // Total achieved in last 3 month
     $targetLast3 = Target::where('user_id', '=', $request->userId)
-      ->where('month', 11)
+      ->where('month', 12)
       ->first();
     if (isset($targetLast3))
       $achievedLast3 = $targetLast3->achieved;
-    // foreach ($ordersOfLast2Month as $order) {
-    //   $achievedLast2 += $order->total;
-    // }
 
     $data = [
       'last_month'    =>  $achievedLast,
@@ -585,7 +582,7 @@ class AnalyticsController extends Controller
       'outlets'       =>  $outlets,
       'months'        =>  [
         [
-          'month' =>  $request->month != 3 ? date("F", mktime(0, 0, 0, $request->month - 3, 10)) : 'November',
+          'month' =>  $request->month != 3 ? date("F", mktime(0, 0, 0, $request->month - 3, 10)) : 'December',
           'value' =>  $achievedLast3,
         ],
         [
