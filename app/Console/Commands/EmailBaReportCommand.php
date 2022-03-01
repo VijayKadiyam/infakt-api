@@ -46,35 +46,35 @@ class EmailBaReportCommand extends Command
         $todayDate = Carbon::now()->addDays(-1)->format('Y-m-d');
         // $todayDate = Carbon::now()->format('Y-m-d');
 
-        $this->info('Email Report for Date: ' . $todayDate);
+        // $this->info('Email Report for Date: ' . $todayDate);
         
-        $supervisors = User::with('roles')
-            ->where('active', '=', 1)
-            ->whereHas('roles',  function ($q) {
-                $q->where('name', '=', 'SUPERVISOR');
-            })->orderBy('name')
-            // ->take(1)
-            ->get();
-        $count = 1;
-        foreach ($supervisors as $supervisor) {
-            $name = $supervisor->name;
-            $rsm = 'jyotisingh21095@gmail.com';
-            if ($supervisor->region == 'EAST')
-                $rsm = 'swarupa.c@mamaearth.in';
-            if ($supervisor->region == 'WEST')
-                $rsm = 'casilda.r@mamaearth.in';
-            if ($supervisor->region == 'NORTH')
-                $rsm = 'rajlakshmi.s@mamaearth.in';
+        // $supervisors = User::with('roles')
+        //     ->where('active', '=', 1)
+        //     ->whereHas('roles',  function ($q) {
+        //         $q->where('name', '=', 'SUPERVISOR');
+        //     })->orderBy('name')
+        //     // ->take(1)
+        //     ->get();
+        // $count = 1;
+        // foreach ($supervisors as $supervisor) {
+        //     $name = $supervisor->name;
+        //     $rsm = 'jyotisingh21095@gmail.com';
+        //     if ($supervisor->region == 'EAST')
+        //         $rsm = 'swarupa.c@mamaearth.in';
+        //     if ($supervisor->region == 'WEST')
+        //         $rsm = 'casilda.r@mamaearth.in';
+        //     if ($supervisor->region == 'NORTH')
+        //         $rsm = 'rajlakshmi.s@mamaearth.in';
 
 
-            Mail::to($supervisor->email)
-                ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in', $rsm])
-                ->send(new BaReportEmail($todayDate, $name));
+        //     Mail::to($supervisor->email)
+        //         ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in', $rsm])
+        //         ->send(new BaReportEmail($todayDate, $name));
 
-            $this->info("$count. $name BAs Report Emailed...");
+        //     $this->info("$count. $name BAs Report Emailed...");
 
-            $count++;
-        }
+        //     $count++;
+        // }
 
         // // Compelete BA Report
         // Mail::to('deepika.k@mamaearth.in')
@@ -115,19 +115,19 @@ class EmailBaReportCommand extends Command
         //             ->send(new BaReportEmail($todayDate, $region));
         // }
 
-        // // Region wise
-        // $channels = [
-        //     'GT',
-        //     'MT',
-        //     'IIA',
-        //     'ME_CNC',
-        // ];
+        // Region wise
+        $channels = [
+            'GT',
+            'MT',
+            'IIA',
+            'ME_CNC',
+        ];
 
-        // foreach ($channels as $key => $channel) {
-        //     if ($channel == 'IIA')
-        //         Mail::to('rashi.j@mamaearth.in')
-        //             ->cc(['kvjkumr@gmail.com'])
-        //             ->send(new BaReportEmail($todayDate, $channel));
-        // }
+        foreach ($channels as $key => $channel) {
+            if ($channel == 'IIA')
+                Mail::to('rashi.j@mamaearth.in')
+                    ->cc(['kvjkumr@gmail.com'])
+                    ->send(new BaReportEmail($todayDate));
+        }
     }
 }
