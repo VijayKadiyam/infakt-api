@@ -478,7 +478,7 @@ class AnalyticsController extends Controller
     } else {
       // Total orders of last month
       $ordersOfLastMonth = Order::where('user_id', '=', $request->userId)
-        ->whereMonth('created_at', 10)
+        ->whereMonth('created_at', 02)
         ->where('order_type', '=', 'Sales')
         ->where('is_active', '=', 1)
         ->get();
@@ -562,7 +562,7 @@ class AnalyticsController extends Controller
     // }
     // Total achieved in last 2 month
     $targetLast2 = Target::where('user_id', '=', $request->userId)
-      ->where('month', 12)
+      ->where('month', $request->month - 2)
       ->first();
     if (isset($targetLast2))
       $achievedLast2 = $targetLast2->achieved;
@@ -570,11 +570,11 @@ class AnalyticsController extends Controller
     //   $achievedLast2 += $order->total;
     // }
     // Total achieved in last 3 month
-    $targetLast3 = Target::where('user_id', '=', $request->userId)
-      ->where('month', 11)
-      ->first();
-    if (isset($targetLast3))
-      $achievedLast3 = $targetLast3->achieved;
+    // $targetLast3 = Target::where('user_id', '=', $request->userId)
+    //   ->where('month', 11)
+    //   ->first();
+    // if (isset($targetLast3))
+    //   $achievedLast3 = $targetLast3->achieved;
     // foreach ($ordersOfLast2Month as $order) {
     //   $achievedLast2 += $order->total;
     // }
@@ -584,10 +584,10 @@ class AnalyticsController extends Controller
       'current_month' =>  $achieved,
       'outlets'       =>  $outlets,
       'months'        =>  [
-        [
-          'month' =>  $request->month != 3 ? date("F", mktime(0, 0, 0, $request->month - 3, 10)) : 'November',
-          'value' =>  $achievedLast3,
-        ],
+        // [
+        //   'month' =>  $request->month != 3 ? date("F", mktime(0, 0, 0, $request->month - 3, 10)) : 'November',
+        //   'value' =>  $achievedLast3,
+        // ],
         [
           'month' =>  $request->month != 2 ? date("F", mktime(0, 0, 0, $request->month - 2, 10)) : 'December',
           'value' =>  $achievedLast2,
