@@ -66,102 +66,151 @@ class StocksController extends Controller
   //     'count'     => $count
   //   ], 200);
   // }
+  // public function closing_stocks(Request $request)
+  // {
+  //   $asd = [];
+
+  //   // $now = Carbon::now()->format('Y-m-d'); //Closing Stock For todays Log
+  //   $count = 0;
+  //   if (request()->page && request()->rowsPerPage) {
+  //     $skus = request()->company->skus();
+
+  //     $count = $skus->count();
+  //     $skus = $skus->paginate(request()->rowsPerPage)->toArray();
+  //     $skus = $skus['data'];
+  //   } else if (request()->search) {
+  //     $skus = request()->company->skus()
+  //       ->where('name', 'LIKE', '%' . $request->search . '%')
+  //       ->get();
+  //   } else {
+  //     $skus = request()->company->skus;
+  //     $count = $skus->count();
+  //   }
+
+
+  //   $users = $request->company->users();
+
+  //   if ($request->user_id) {
+  //     $users = $users->where('users.id', '=', $request->user_id);
+  //   }
+
+  //   $users = $users->with('roles')
+  //     ->whereHas('roles',  function ($q) {
+  //       $q->where('name', '!=', 'Admin');
+  //     });
+
+  //   $users = $users->get();
+  //   foreach ($users as $key => $user) {
+
+  //     // $user = User::find($request->userId);
+  //     if ($user) {
+  //       $dailyOrderSummaries = DailyOrderSummary::where('user_id', '=', $user->id)
+  //         // ->where('sku_id', '=', $sku->id)
+  //         ->get();
+  //       foreach ($skus as $sku) {
+  //         $isSku = 0;
+  //         foreach ($dailyOrderSummaries as $dailyOrderSummary) {
+  //           if ($dailyOrderSummary->sku_id == $sku->id) {
+  //             $isSku = 1;
+  //             $sku['qty'] = (int) $dailyOrderSummary->closing_stock;
+  //             $sku['opening_stock'] = (int)$dailyOrderSummary->opening_stock;
+  //             $sku['received_stock'] = (int)$dailyOrderSummary->received_stock;
+  //             $sku['purchase_returned_stock'] = (int)$dailyOrderSummary->purchase_returned_stock;
+  //             $sku['sales_stock'] = (int)$dailyOrderSummary->sales_stock;
+  //             $sku['returned_stock'] = (int)$dailyOrderSummary->returned_stock;
+  //             $sku['closing_stock'] = (int)$dailyOrderSummary->closing_stock;
+  //           }
+  //         }
+  //         if ($isSku == 0) {
+  //           $sku['qty'] = 0;
+  //           $sku['opening_stock'] = 0;
+  //           $sku['received_stock'] = 0;
+  //           $sku['purchase_returned_stock'] = 0;
+  //           $sku['sales_stock'] = 0;
+  //           $sku['returned_stock'] = 0;
+  //           $sku['closing_stock'] = 0;
+  //         }
+  //       }
+  //     }
+  //     for ($i = 0; $i < sizeof($skus); $i++) {
+  //       for ($j = $i; $j < sizeof($skus); $j++) {
+  //         if ($skus[$i]['qty'] < $skus[$j]['qty']) {
+  //           $temp = $skus[$i];
+  //           $skus[$i] = $skus[$j];
+  //           $skus[$j] = $temp;
+  //         }
+  //       }
+  //     }
+  //   }
+  //   // $skus = $asd;
+  //   // return $skus;
+  //   // for ($i = 0; $i < sizeof($skus); $i++) {
+  //   //   for ($j = $i; $j < sizeof($skus); $j++) {
+  //   //     if ($skus[$i]['qty'] < $skus[$j]['qty']) {
+  //   //       $temp = $skus[$i];
+  //   //       $skus[$i] = $skus[$j];
+  //   //       $skus[$j] = $temp;
+  //   //     }
+  //   //   }
+  //   // }
+
+
+  //   return response()->json([
+  //     'data'     =>  $skus,
+  //     'count'    =>   $count,
+  //     'success' =>  true,
+  //   ], 200);
+  // }
+  /*
+   * To get all Closing stocks direct From Daily Order Summary
+     *
+   *@
+   */
   public function closing_stocks(Request $request)
   {
-    $asd = [];
-
-    // $now = Carbon::now()->format('Y-m-d'); //Closing Stock For todays Log
+    $now = Carbon::now()->format('Y-m-d'); //Closing Stock For todays Log
     $count = 0;
-    if (request()->page && request()->rowsPerPage) {
-      $skus = request()->company->skus();
+    $dailyOrderSummaries = $request->company->daily_order_summaries()
+      ->whereDate('created_at', '=', $now)
+      ->latest()
+      ->orderBy('closing_stock', 'DESC');
 
-      $count = $skus->count();
-      $skus = $skus->paginate(request()->rowsPerPage)->toArray();
-      $skus = $skus['data'];
-    } else if (request()->search) {
-      $skus = request()->company->skus()
-        ->where('name', 'LIKE', '%' . $request->search . '%')
-        ->get();
-    } else {
-      $skus = request()->company->skus;
-      $count = $skus->count();
+    $region = $request->region;
+    if ($region) {
+      $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($region) {
+        $q->where('region', 'LIKE', '%' . $region . '%');
+      });
     }
-
-
-    $users = $request->company->users();
-
-    if ($request->user_id) {
-      $users = $users->where('users.id', '=', $request->user_id);
+    $channel = $request->channel;
+    if ($channel) {
+      $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($channel) {
+        $q->where('channel', 'LIKE', '%' . $channel . '%');
+      });
     }
-
-    $users = $users->with('roles')
-      ->whereHas('roles',  function ($q) {
-        $q->where('name', '!=', 'Admin');
+    $supervisor_id = $request->supervisor_id;
+    if ($supervisor_id != '')
+      $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($supervisor_id) {
+        $q->where('supervisor_id', '=', $supervisor_id);
+      });
+    $user_id = $request->user_id;
+    if ($user_id != '')
+      $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($user_id) {
+        $q->where('id', '=', $user_id);
       });
 
-    $users = $users->get();
-    foreach ($users as $key => $user) {
-
-      // $user = User::find($request->userId);
-      if ($user) {
-        $dailyOrderSummaries = DailyOrderSummary::where('user_id', '=', $user->id)
-          // ->where('sku_id', '=', $sku->id)
-          ->get();
-        foreach ($skus as $sku) {
-          $isSku = 0;
-          foreach ($dailyOrderSummaries as $dailyOrderSummary) {
-            if ($dailyOrderSummary->sku_id == $sku->id) {
-              $isSku = 1;
-              $sku['qty'] = (int) $dailyOrderSummary->closing_stock;
-              $sku['opening_stock'] = (int)$dailyOrderSummary->opening_stock;
-              $sku['received_stock'] = (int)$dailyOrderSummary->received_stock;
-              $sku['purchase_returned_stock'] = (int)$dailyOrderSummary->purchase_returned_stock;
-              $sku['sales_stock'] = (int)$dailyOrderSummary->sales_stock;
-              $sku['returned_stock'] = (int)$dailyOrderSummary->returned_stock;
-              $sku['closing_stock'] = (int)$dailyOrderSummary->closing_stock;
-            }
-          }
-          if ($isSku == 0) {
-            $sku['qty'] = 0;
-            $sku['opening_stock'] = 0;
-            $sku['received_stock'] = 0;
-            $sku['purchase_returned_stock'] = 0;
-            $sku['sales_stock'] = 0;
-            $sku['returned_stock'] = 0;
-            $sku['closing_stock'] = 0;
-          }
-        }
-      }
-      for ($i = 0; $i < sizeof($skus); $i++) {
-        for ($j = $i; $j < sizeof($skus); $j++) {
-          if ($skus[$i]['qty'] < $skus[$j]['qty']) {
-            $temp = $skus[$i];
-            $skus[$i] = $skus[$j];
-            $skus[$j] = $temp;
-          }
-        }
-      }
+    $count = $dailyOrderSummaries->count();
+    if (request()->page && request()->rowsPerPage) {
+      $dailyOrderSummaries = $dailyOrderSummaries->paginate(request()->rowsPerPage)->toArray();
+      $dailyOrderSummaries = $dailyOrderSummaries['data'];
+    } else {
+      $dailyOrderSummaries = $dailyOrderSummaries->get();
     }
-    // $skus = $asd;
-    // return $skus;
-    // for ($i = 0; $i < sizeof($skus); $i++) {
-    //   for ($j = $i; $j < sizeof($skus); $j++) {
-    //     if ($skus[$i]['qty'] < $skus[$j]['qty']) {
-    //       $temp = $skus[$i];
-    //       $skus[$i] = $skus[$j];
-    //       $skus[$j] = $temp;
-    //     }
-    //   }
-    // }
-
-
     return response()->json([
-      'data'     =>  $skus,
+      'data'     =>  $dailyOrderSummaries,
       'count'    =>   $count,
       'success' =>  true,
     ], 200);
   }
-
   /*
    * To get all stocks of a sku
      *
