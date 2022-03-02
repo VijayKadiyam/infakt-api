@@ -37,10 +37,56 @@ class UserAttendancesController extends Controller
 
     $years = ['2020', '2021', '2022'];
 
+    $supervisorsController = new UsersController();
+    $request->request->add(['role_id' => 4]);
+    $supervisorsResponse = $supervisorsController->index($request);
+
+    $regions = [
+      'NORTH',
+      'EAST',
+      'WEST',
+      'SOUTH',
+      'CENTRAL'
+    ];
+
+    $brands = [
+      'MamaEarth',
+      'Derma'
+    ];
+    $channels = [
+      'GT',
+      'MT',
+      'MT - CNC',
+      'IIA',
+    ];
+    $chain_names = [
+      'GT',
+      'Big Bazar',
+      'Dmart',
+      'Guardian',
+      'H&G',
+      'Lee Merche',
+      'LuLu',
+      'Metro CNC',
+      'More Retail',
+      'MT',
+      'Reliance',
+      'Spencer',
+      'Walmart',
+      'Lifestyle',
+      'INCS',
+      'Ximivogue',
+      'Shopper Stop'
+    ];
     return response()->json([
       'months'  =>  $months,
       'years'   =>  $years,
       'session_types' =>  $sessionTypes,
+      'supervisors'           =>  $supervisorsResponse->getData()->data,
+      'regions'               =>  $regions,
+      'brands'               =>  $brands,
+      'channels'               =>  $channels,
+      'chain_names'               =>  $chain_names,
     ], 200);
   }
 
@@ -295,6 +341,25 @@ class UserAttendancesController extends Controller
         // IF Date Range  Filter
         $userAttendances = $userAttendances->whereBetween('date', [$request->from_date, $request->to_date]);
       }
+      $region = $request->region;
+      if ($region) {
+        $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($region) {
+          $q->where('region', 'LIKE', '%' . $region . '%');
+        });
+      }
+      $channel = $request->channel;
+      if ($channel) {
+        $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($channel) {
+          $q->where('channel', '=', $channel);
+        });
+      }
+      $brand = $request->brand;
+      if ($brand) {
+        $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($brand) {
+          $q->where('brand', 'LIKE', '%' . $brand . '%');
+        });
+      }
+
       $supervisorId = request()->supervisorId;
       if ($supervisorId != '')
         $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
