@@ -187,6 +187,12 @@ class StocksController extends Controller
         $q->where('channel', 'LIKE', '%' . $channel . '%');
       });
     }
+    $brand = $request->brand;
+    if ($brand) {
+      $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($brand) {
+        $q->where('brand', 'LIKE', '%' . $brand . '%');
+      });
+    }
     $supervisor_id = $request->supervisor_id;
     if ($supervisor_id != '')
       $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($supervisor_id) {
