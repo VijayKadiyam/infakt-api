@@ -640,7 +640,9 @@ class OrdersController extends Controller
 
   public function offtake_without_pagination(Request $request)
   {
-    ini_set('max_execution_time', -1);
+    ini_set('max_execution_time', 0);
+    ini_set('memory_limit', -1);
+
     $count = 0;
     $orders = [];
     if ($request->userId && $request->is_offtake_filter != 'YES') {
