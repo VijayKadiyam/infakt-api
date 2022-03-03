@@ -382,6 +382,7 @@ Route::resource('channel_filter_oos', 'ChannelFilterOosController');
 Route::resource('channel_competition_offers', 'ChannelCompetitionOffersController');
 Route::resource('trackers', 'TrackersController');
 
+Route::get('visitors/masters', 'VisitorsController@masters');
 Route::resource('visitors', 'VisitorsController');
 Route::resource('pjps', 'PjpsController');
 Route::resource('pjps/{pjp}/pjp_markets', 'PjpMarketsController');
