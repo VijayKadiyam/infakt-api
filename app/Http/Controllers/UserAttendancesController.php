@@ -701,6 +701,24 @@ class UserAttendancesController extends Controller
     if ($request->user_id) {
       $userAttendances = $userAttendances->where('user_id', '=', $request->user_id);
     }
+    $region = $request->region;
+    if ($region) {
+      $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($region) {
+        $q->where('region', 'LIKE', '%' . $region . '%');
+      });
+    }
+    $channel = $request->channel;
+    if ($channel) {
+      $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($channel) {
+        $q->where('channel', '=', $channel);
+      });
+    }
+    $brand = $request->brand;
+    if ($brand) {
+      $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($brand) {
+        $q->where('brand', 'LIKE', '%' . $brand . '%');
+      });
+    }
     $supervisorId = request()->superVisor_id;
     if ($supervisorId != '')
       $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
@@ -716,6 +734,11 @@ class UserAttendancesController extends Controller
       $present_count = 0;
       $weekly_off_count = 0;
       $leave_count = 0;
+      $meeting_count = 0;
+      $market_closed_count = 0;
+      $half_day_count = 0;
+      $holiday_count = 0;
+      $work_from_home_count = 0;
       $user = $attendance->user->toArray();
       $user_id = $user['id'];
       unset($attendance['user']);
@@ -736,7 +759,21 @@ class UserAttendancesController extends Controller
           case 'LEAVE':
             $leave_count++;
             break;
-
+          case 'MEETING':
+            $meeting_count++;
+            break;
+          case 'MARKET CLOSED':
+            $market_closed_count++;
+            break;
+          case 'HALF DAY':
+            $half_day_count++;
+            break;
+          case 'HOLIDAY':
+            $holiday_count++;
+            break;
+          case 'WORK FROM HOME':
+            $work_from_home_count++;
+            break;
           default:
             break;
         }
@@ -744,29 +781,51 @@ class UserAttendancesController extends Controller
         $user['present_count'] = $present_count;
         $user['weekly_off_count'] = $weekly_off_count;
         $user['leave_count'] = $leave_count;
+        $user['meeting_count'] = $meeting_count;
+        $user['market_closed_count'] = $market_closed_count;
+        $user['half_day_count'] = $half_day_count;
+        $user['holiday_count'] = $holiday_count;
+        $user['work_from_home_count'] = $work_from_home_count;
         $user['attendances'][$date] = $attendance;
         $users[] = $user;
       } else {
-        switch ($attendance->session_type) {
-          case 'PRESENT':
-            $users[$user_key]["present_count"]++;
-            break;
-          case 'WEEKLY OFF':
-            $users[$user_key]['weekly_off_count']++;
-            break;
-          case 'LEAVE':
-            $users[$user_key]['leave_count']++;
-            break;
+        if (!isset($users[$user_key]["attendances"][$date])) {
 
-          default:
-            #code...
-            break;
+          switch ($attendance->session_type) {
+            case 'PRESENT':
+              $users[$user_key]["present_count"]++;
+              break;
+            case 'WEEKLY OFF':
+              $users[$user_key]['weekly_off_count']++;
+              break;
+            case 'LEAVE':
+              $users[$user_key]['leave_count']++;
+              break;
+            case 'MEETING':
+              $users[$user_key]['meeting_count']++;
+              break;
+            case 'MARKET CLOSED':
+              $users[$user_key]['market_closed_count']++;
+              break;
+            case 'HALF DAY':
+              $users[$user_key]['half_day_count']++;
+              break;
+            case 'HOLIDAY':
+              $users[$user_key]['holiday_count']++;
+              break;
+            case 'WORK FROM HOME':
+              $users[$user_key]['work_from_home_count']++;
+              break;
+            default:
+              #code...
+              break;
+          }
+
+          $day_count = sizeof($users[$user_key]["attendances"]) + 1;
+          $users[$user_key]["attendances"][$date] = $attendance;
+          $users[$user_key]['day_count'] = $day_count;
+          // $users[$user_key]['present_count'] = $present_count;
         }
-
-        $day_count = sizeof($users[$user_key]["attendances"]) + 1;
-        $users[$user_key]["attendances"][$date] = $attendance;
-        $users[$user_key]['day_count'] = $day_count;
-        // $users[$user_key]['present_count'] = $present_count;
       }
     }
     // return $users;
