@@ -18,6 +18,9 @@ class FocusedTargetsController extends Controller
     public function masters(Request $request)
     {
 
+        $supervisorsController = new UsersController();
+        $request->request->add(['role_id' => 4]);
+        $supervisorsResponse = $supervisorsController->index($request);
         $months = [
             ['text'  =>  'JANUARY', 'value' =>  1],
             ['text'  =>  'FEBRUARY', 'value' =>  2],
@@ -35,20 +38,83 @@ class FocusedTargetsController extends Controller
 
         $years = ['2020', '2021', '2022'];
 
+        $regions = [
+            'NORTH',
+            'EAST',
+            'WEST',
+            'SOUTH',
+            'CENTRAL'
+        ];
+
+        $brands = [
+            'MamaEarth',
+            'Derma'
+        ];
+        $channels = [
+            'GT',
+            'MT',
+            'MT - CNC',
+            'IIA',
+        ];
+        $chain_names = [
+            'GT',
+            'Big Bazar',
+            'Dmart',
+            'Guardian',
+            'H&G',
+            'Lee Merche',
+            'LuLu',
+            'Metro CNC',
+            'More Retail',
+            'MT',
+            'Reliance',
+            'Spencer',
+            'Walmart',
+            'Lifestyle',
+            'INCS',
+            'Ximivogue',
+            'Shopper Stop'
+        ];
+
         return response()->json([
             'months'  =>  $months,
-            'years'   =>  $years
+            'years'   =>  $years,
+            'regions'               =>  $regions,
+            'brands'               =>  $brands,
+            'channels'               =>  $channels,
+            'supervisors'           =>  $supervisorsResponse->getData()->data,
+            'chain_names'               =>  $chain_names,
         ], 200);
     }
 
     public function search(Request $request)
     {
+        ini_set('max_execution_time', 0);
         ini_set("memory_limit", "-1");
         $users = $request->company->users()->with('roles')
             ->whereHas('roles',  function ($q) {
                 $q->where('name', '!=', 'Admin');
                 $q->where('name', '!=', 'Distributor');
-            })->get();
+            });
+        $region = $request->region;
+        if ($region) {
+            $users = $users->where('region', 'LIKE', '%' . $region . '%');
+        }
+        $brand = $request->brand;
+        if ($brand) {
+            $users = $users->where('brand', 'LIKE', '%' . $brand . '%');
+        }
+
+        $channel = $request->channel;
+        if ($channel) {
+            $users = $users->where('channel', 'LIKE', '%' . $channel . '%');
+        }
+
+        $supervisorId = $request->supervisor_id;
+        if ($supervisorId != '') {
+            $users = $users->where('supervisor_id', '=', $supervisorId);
+        }
+        $users = $users->get();
         $targets = [];
         foreach ($users as $user) {
             if ($request->from_month && $request->to_month && $request->year) {
