@@ -47,7 +47,14 @@ class CustomerSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
     public function view(): View
     {
         $company = Company::find(1);
-        $customers = $company->customers()->whereMonth('created_at', '=', '02');
+        $customers = $company->customers();
+        $month =  Carbon::parse($this->date)->format('m');
+        $year = Carbon::parse($this->date)->format('Y');
+        if ($month)
+            $customers = $customers->whereMonth('created_at', '=', $month);
+        if ($year)
+            $customers = $customers->whereYear('created_at', '=', $year);
+
 
         $supervisorId = $this->supervisorId;
         if ($supervisorId != '')
