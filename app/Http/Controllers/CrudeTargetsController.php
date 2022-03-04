@@ -26,6 +26,8 @@ class CrudeTargetsController extends Controller
 
   public function uploadTarget(Request $request)
   {
+    ini_set('max_execution_time', 0);
+    ini_set("memory_limit", "-1");
     set_time_limit(0);
     if ($request->hasFile('targetData')) {
       $file = $request->file('targetData');
@@ -42,6 +44,8 @@ class CrudeTargetsController extends Controller
 
   public function processTarget(User $user)
   {
+    ini_set('max_execution_time', 0);
+    ini_set("memory_limit", "-1");
     set_time_limit(0);
 
     $crude_targets = CrudeTarget::all();
@@ -54,8 +58,7 @@ class CrudeTargetsController extends Controller
         if (!$us) {
           $target['source'] = 'excel';
           array_push($Conflicts, $target);
-        }
-        else {
+        } else {
           $user_id = $us['id'];
 
           $data = [
@@ -66,10 +69,10 @@ class CrudeTargetsController extends Controller
             // 'target' => $target->target,
             // 'achieved' => $target->achieved,
           ];
-          if($target->target !=''){
+          if ($target->target != '') {
             $data['target'] = $target->target;
           }
-          if($target->achieved !=''){
+          if ($target->achieved != '') {
             $data['achieved'] = $target->achieved;
           }
           $User_target = Target::where('user_id', '=', $user_id)

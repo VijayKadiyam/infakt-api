@@ -51,13 +51,33 @@ class TargetsController extends Controller
 
   public function search(Request $request)
   {
-    // return 1;
+    ini_set('max_execution_time', 0);
     ini_set("memory_limit", "-1");
     $users = $request->company->users()->with('roles')
       ->whereHas('roles',  function ($q) {
         $q->where('name', '!=', 'Admin');
         $q->where('name', '!=', 'Distributor');
-      })->get();
+      });
+    $region = $request->region;
+    if ($region) {
+      $users = $users->where('region', 'LIKE', '%' . $region . '%');
+    }
+    $brand = $request->brand;
+    if ($brand) {
+      $users = $users->where('brand', 'LIKE', '%' . $brand . '%');
+    }
+
+    $channel = $request->channel;
+    if ($channel) {
+      $users = $users->where('channel', 'LIKE', '%' . $channel . '%');
+    }
+
+    $supervisorId = $request->supervisorId;
+    if ($supervisorId != '') {
+      $users = $users->where('supervisor_id', '=', $supervisorId);
+    }
+    $users = $users->get();
+
     $targets = [];
     foreach ($users as $user) {
       if ($request->from_month && $request->to_month && $request->year) {

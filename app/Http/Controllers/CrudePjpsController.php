@@ -28,6 +28,8 @@ class CrudePjpsController extends Controller
 
     public function uploadPjp(Request $request)
     {
+        ini_set('max_execution_time', 0);
+        ini_set("memory_limit", "-1");
         set_time_limit(0);
         if ($request->hasFile('pjpsData')) {
             $file = $request->file('pjpsData');
@@ -44,6 +46,8 @@ class CrudePjpsController extends Controller
 
     public function processPjp()
     {
+        ini_set('max_execution_time', 0);
+        ini_set("memory_limit", "-1");
         set_time_limit(0);
         $crude_pjps = CrudePjp::all();
         $i = 0;
