@@ -83,12 +83,12 @@ class PjpSupervisorsController extends Controller
         ->get();
     }
 
-    // $pjp_supervisors = $pjp_supervisors->jsonserialize();
+    $pjp_supervisors = $pjp_supervisors->jsonserialize();
 
-    // foreach ($pjp_supervisors as $key => $pjp) {
-    //   $explodelocation = explode("#", $pjp_supervisors[$key]['pjp']['location']);
-    //   $pjp_supervisors[$key]['pjp']['location'] = $explodelocation[0];
-    // }
+    foreach ($pjp_supervisors as $key => $pjp) {
+      $explodelocation = explode("#", $pjp_supervisors[$key]['pjp']['location']);
+      $pjp_supervisors[$key]['pjp']['location'] = $explodelocation[0];
+    }
 
     return response()->json([
       'data'     =>  $pjp_supervisors,
