@@ -14,9 +14,9 @@ class CompetitorDatasController extends Controller
 
     public function masters(Request $request)
     {
-        // $usersController = new UsersController();
-        // $request->request->add(['role_id' => '5']);
-        // $usersResponse = $usersController->index($request);
+        $supervisorsController = new UsersController();
+        $request->request->add(['role_id' => 4]);
+        $supervisorsResponse = $supervisorsController->index($request);
         $months = [
             ['text'  =>  'JANUARY', 'value' =>  1],
             ['text'  =>  'FEBRUARY', 'value' =>  2],
@@ -32,17 +32,58 @@ class CompetitorDatasController extends Controller
             ['text'  =>  'DECEMBER', 'value' =>  12],
         ];
 
-        $years = ['2020', '2021','2022'];
+        $years = ['2020', '2021', '2022'];
+
+        $regions = [
+            'NORTH',
+            'EAST',
+            'WEST',
+            'SOUTH',
+            'CENTRAL'
+        ];
+
+        $brands = [
+            'MamaEarth',
+            'Derma'
+        ];
+        $channels = [
+            'GT',
+            'MT',
+            'MT - CNC',
+            'IIA',
+        ];
+        $chain_names = [
+            'GT',
+            'Big Bazar',
+            'Dmart',
+            'Guardian',
+            'H&G',
+            'Lee Merche',
+            'LuLu',
+            'Metro CNC',
+            'More Retail',
+            'MT',
+            'Reliance',
+            'Spencer',
+            'Walmart',
+            'Lifestyle',
+            'INCS',
+            'Ximivogue',
+            'Shopper Stop'
+        ];
 
         return response()->json([
             'months'  =>  $months,
             'years'   =>  $years,
-            // 'retailers' => $Retailers,
-            // 'users'   =>  $usersResponse->getData()->data,
+            'regions'               =>  $regions,
+            'brands'               =>  $brands,
+            'channels'               =>  $channels,
+            'supervisors'           =>  $supervisorsResponse->getData()->data,
+            'chain_names'               =>  $chain_names,
         ], 200);
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $count = 0;
         $competitor_datas = request()->company->competitor_datas();
@@ -56,7 +97,25 @@ class CompetitorDatasController extends Controller
         if (request()->year) {
             $competitor_datas = $competitor_datas->where('year', '=', request()->year);
         }
-        $supervisorId = request()->superVisor_id;
+        $region = $request->region;
+        if ($region) {
+            $competitor_datas = $competitor_datas->whereHas('user',  function ($q) use ($region) {
+                $q->where('region', 'LIKE', '%' . $region . '%');
+            });
+        }
+        $channel = $request->channel;
+        if ($channel) {
+            $competitor_datas = $competitor_datas->whereHas('user',  function ($q) use ($channel) {
+                $q->where('channel', 'LIKE', '%' . $channel . '%');
+            });
+        }
+        $brand = $request->brand;
+        if ($brand) {
+            $competitor_datas = $competitor_datas->whereHas('user',  function ($q) use ($brand) {
+                $q->where('brand', 'LIKE', '%' . $brand . '%');
+            });
+        }
+        $supervisorId = request()->supervisor_id;
         if ($supervisorId != '')
             $competitor_datas = $competitor_datas->whereHas('user',  function ($q) use ($supervisorId) {
                 $q->where('supervisor_id', '=', $supervisorId);
@@ -128,4 +187,3 @@ class CompetitorDatasController extends Controller
         ], 204);
     }
 }
-

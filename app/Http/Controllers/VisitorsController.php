@@ -16,6 +16,77 @@ class VisitorsController extends Controller
         $this->middleware(['auth:api', 'company']);
     }
 
+    public function masters(Request $request)
+    {
+        $supervisorsController = new UsersController();
+        $request->request->add(['role_id' => 4]);
+        $supervisorsResponse = $supervisorsController->index($request);
+        $months = [
+            ['text'  =>  'JANUARY', 'value' =>  1],
+            ['text'  =>  'FEBRUARY', 'value' =>  2],
+            ['text'  =>  'MARCH', 'value' =>  3],
+            ['text'  =>  'APRIL', 'value' =>  4],
+            ['text'  =>  'MAY', 'value' =>  5],
+            ['text'  =>  'JUNE', 'value' =>  6],
+            ['text'  =>  'JULY', 'value' =>  7],
+            ['text'  =>  'AUGUST', 'value' =>  8],
+            ['text'  =>  'SEPTEMBER', 'value' =>  9],
+            ['text'  =>  'OCTOBER', 'value' =>  10],
+            ['text'  =>  'NOVEMBER', 'value' =>  11],
+            ['text'  =>  'DECEMBER', 'value' =>  12],
+        ];
+
+        $years = ['2020', '2021', '2022'];
+
+        $regions = [
+            'NORTH',
+            'EAST',
+            'WEST',
+            'SOUTH',
+            'CENTRAL'
+        ];
+
+        $brands = [
+            'MamaEarth',
+            'Derma'
+        ];
+        $channels = [
+            'GT',
+            'MT',
+            'MT - CNC',
+            'IIA',
+        ];
+        $chain_names = [
+            'GT',
+            'Big Bazar',
+            'Dmart',
+            'Guardian',
+            'H&G',
+            'Lee Merche',
+            'LuLu',
+            'Metro CNC',
+            'More Retail',
+            'MT',
+            'Reliance',
+            'Spencer',
+            'Walmart',
+            'Lifestyle',
+            'INCS',
+            'Ximivogue',
+            'Shopper Stop'
+        ];
+
+        return response()->json([
+            'months'  =>  $months,
+            'years'   =>  $years,
+            'regions'               =>  $regions,
+            'brands'               =>  $brands,
+            'channels'               =>  $channels,
+            'supervisors'           =>  $supervisorsResponse->getData()->data,
+            'chain_names'               =>  $chain_names,
+        ], 200);
+    }
+
     public function index(Request $request)
     {
         $count = 0;
@@ -39,7 +110,31 @@ class VisitorsController extends Controller
             $visitors = request()->company->visitors;
             $count = $visitors->count();
         }
-
+        $visitors = request()->company->visitors();
+        $region = $request->region;
+        if ($region) {
+            $visitors = $visitors->whereHas('user',  function ($q) use ($region) {
+                $q->where('region', 'LIKE', '%' . $region . '%');
+            });
+        }
+        $channel = $request->channel;
+        if ($channel) {
+            $visitors = $visitors->whereHas('user',  function ($q) use ($channel) {
+                $q->where('channel', 'LIKE', '%' . $channel . '%');
+            });
+        }
+        $brand = $request->brand;
+        if ($brand) {
+            $visitors = $visitors->whereHas('user',  function ($q) use ($brand) {
+                $q->where('brand', 'LIKE', '%' . $brand . '%');
+            });
+        }
+        $supervisorId = request()->supervisor_id;
+        if ($supervisorId != '')
+            $visitors = $visitors->whereHas('user',  function ($q) use ($supervisorId) {
+                $q->where('supervisor_id', '=', $supervisorId);
+            });
+        $visitors = $visitors->get();
         return response()->json([
             'data'     =>  $visitors,
             'count'    =>   $count,
