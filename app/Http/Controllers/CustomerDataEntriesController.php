@@ -35,8 +35,54 @@ class CustomerDataEntriesController extends Controller
         ];
 
         $years = ['2020', '2021', '2022'];
+        $supervisorsController = new UsersController();
+        $request->request->add(['role_id' => 4]);
+        $supervisorsResponse = $supervisorsController->index($request);
+
+        $regions = [
+            'NORTH',
+            'EAST',
+            'WEST',
+            'SOUTH',
+            'CENTRAL'
+        ];
+
+        $brands = [
+            'MamaEarth',
+            'Derma'
+        ];
+        $channels = [
+            'GT',
+            'MT',
+            'MT - CNC',
+            'IIA',
+        ];
+        $chain_names = [
+            'GT',
+            'Big Bazar',
+            'Dmart',
+            'Guardian',
+            'H&G',
+            'Lee Merche',
+            'LuLu',
+            'Metro CNC',
+            'More Retail',
+            'MT',
+            'Reliance',
+            'Spencer',
+            'Walmart',
+            'Lifestyle',
+            'INCS',
+            'Ximivogue',
+            'Shopper Stop'
+        ];
 
         return response()->json([
+            'supervisors'           =>  $supervisorsResponse->getData()->data,
+            'regions'               =>  $regions,
+            'brands'               =>  $brands,
+            'channels'               =>  $channels,
+            'chain_names'               =>  $chain_names,
             'months'  =>  $months,
             'years'   =>  $years,
             'retailers' => $Retailers,
@@ -58,6 +104,21 @@ class CustomerDataEntriesController extends Controller
         if (request()->year) {
             $customer_data_entries = $customer_data_entries->whereYear('created_at', '=', request()->year);
         }
+        $brand = request()->brand;
+        if ($brand != '')
+            $customer_data_entries = $customer_data_entries->whereHas('user',  function ($q) use ($brand) {
+                $q->where('brand', '=', $brand);
+            });
+        $region = request()->region;
+        if ($region != '')
+            $customer_data_entries = $customer_data_entries->whereHas('user',  function ($q) use ($region) {
+                $q->where('region', '=', $region);
+            });
+        $channel = request()->channel;
+        if ($channel != '')
+            $customer_data_entries = $customer_data_entries->whereHas('user',  function ($q) use ($channel) {
+                $q->where('channel', '=', $channel);
+            });
         $supervisorId = request()->superVisor_id;
         if ($supervisorId != '')
             $customer_data_entries = $customer_data_entries->whereHas('user',  function ($q) use ($supervisorId) {
@@ -70,7 +131,7 @@ class CustomerDataEntriesController extends Controller
         return response()->json([
             'data'     =>  $customer_data_entries,
             'count'    =>   $count,
-            'success'   =>true,
+            'success'   => true,
         ], 200);
     }
 
