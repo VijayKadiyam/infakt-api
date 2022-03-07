@@ -446,6 +446,11 @@ class UsersController extends Controller
     if ($request->role_id)
       $user->assignRole($request->role_id);
 
+    $user->assignCompany(1);
+
+    // if ($request['company-id'])
+    //   $user->assignCompany($request['company-id']);
+
     $user->roles = $user->roles;
     $user->companies = $user->companies;
     $user->notifications = $user->notifications;
