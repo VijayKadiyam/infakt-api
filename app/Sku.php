@@ -61,4 +61,8 @@ class Sku extends Model
   {
     return $this->hasMany(DailyOrderSummary::class);
   }
+  public function monthly_order_summaries()
+  {
+    return $this->hasMany(MonthlyOrderSummary::class);
+  }
 }

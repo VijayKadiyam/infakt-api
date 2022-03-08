@@ -507,4 +507,8 @@ class Company extends Model
   {
     return $this->hasMany(DailyOrderSummary::class)->with('user', 'sku');
   }
+  public function monthly_order_summaries()
+  {
+    return $this->hasMany(MonthlyOrderSummary::class)->with('user', 'sku');
+  }
 }
