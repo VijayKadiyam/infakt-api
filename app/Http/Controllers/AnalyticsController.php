@@ -210,7 +210,7 @@ class AnalyticsController extends Controller
           'store_name'  =>  $supervisorUser->name,
           'target'  =>  $target,
           'achieved'  =>  $achieved,
-          'percent' => $target == 0 ? 0 : ($achieved * 100) / $target,
+          'percent' => $target == 0 ? 0 : ceil(($achieved * 100) / $target),
         ];
       }
 
@@ -218,7 +218,7 @@ class AnalyticsController extends Controller
         'store_name'  =>  'Total Target',
         'target'  =>  $totalTarget,
         'achieved'  =>  $totalAchieved,
-        'percent' => $totalTarget == 0 ? 0 : ($totalAchieved * 100) / $totalTarget,
+        'percent' => $totalTarget == 0 ? 0 : ceil(($totalAchieved * 100) / $totalTarget),
       ]);
     }
 
