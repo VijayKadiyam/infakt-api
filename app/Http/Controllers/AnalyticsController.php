@@ -331,7 +331,7 @@ class AnalyticsController extends Controller
           $combinedSearch = '';
 
           foreach ($searches as $search) {
-            $combinedSearch = $combinedSearch + ' ' + $search;
+            $combinedSearch = $combinedSearch . ' ' . $search;
           }
 
           $finalSearches = [
