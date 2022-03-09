@@ -9,6 +9,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UserAttendanceMail;
+use App\Order;
 
 class UserAttendancesController extends Controller
 {
@@ -133,6 +134,10 @@ class UserAttendancesController extends Controller
         $check = false;
         foreach ($userAttendances->get() as $userAttendance) {
           if ($supervisorUser->id == $userAttendance->user->id) {
+            $orders = Order::whereYear('created_at', Carbon::now())
+              ->whereDate('created_at', Carbon::now())
+              ->where('distributor_id', '=', $userAttendance->user->distributor_id)
+              ->get();
             $check = true;
             array_unshift($userAttendanceData, [
               'store_name'  =>  $userAttendance->user->name ?? '-',
@@ -140,6 +145,7 @@ class UserAttendancesController extends Controller
               'present'     =>  'YES',
               'date'        =>  Carbon::parse($request->date)->format('d-m-Y'),
               'time'        => ($userAttendance->login_time ? Carbon::parse($userAttendance->login_time)->format('H:i')  : '') . ' - ' . ($userAttendance->logout_time ? Carbon::parse($userAttendance->logout_time)->format('H:i') : ''),
+              'orders_count'  =>  sizeof($orders),
               // 'time'        => '-'
             ]);
           }
@@ -151,6 +157,7 @@ class UserAttendancesController extends Controller
             'present'     =>  'NO',
             'date'        =>  Carbon::parse($request->date)->format('d-m-Y'),
             'time'        =>  '-',
+            'orders_count'  =>  0
           ];
         }
       }
