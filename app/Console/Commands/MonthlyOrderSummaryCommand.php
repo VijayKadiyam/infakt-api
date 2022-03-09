@@ -44,99 +44,101 @@ class MonthlyOrderSummaryCommand extends Command
     {
         ini_set('max_execution_time', 0);
 
-		MonthlyOrderSummary::truncate();
+        MonthlyOrderSummary::truncate();
 
-		$skus = Sku::get();
+        $skus = Sku::get();
 
-		// $users = [
-		// 	User::find(1515),
-		// ];
+        // $users = [
+        // 	User::find(1515),
+        // ];
 
-		$users = User::whereHas('roles', function ($q) {
-			$q->where('name', '=', 'BA');
-		})->get();
+        $users = User::whereHas('roles', function ($q) {
+            $q->where('name', '=', 'BA');
+        })
+            // ->take(1)
+            ->get();
 
-		foreach ($users as $user) {
-			if ($user) {
+        $currentMonth = Carbon::now()->format('m');
+        $previousMonth = $currentMonth - 1;
 
-				$orders = [];
-				if ($user)
-					$orders = Order::whereYear('created_at', Carbon::now())
-						// ->whereMonth('created_at', Carbon::now())
-						->where('distributor_id', '=', $user->distributor_id)
-						->latest()->get();
+        foreach ($users as $user) {
+            if ($user) {
 
-				foreach ($skus as $sku) {
-					$sku['mrp_price'] = $sku->price;
-					$sku['offer_price'] = null;
+                $orders = [];
+                if ($user)
+                    $orders = Order::whereYear('created_at', Carbon::now())
+                        // ->whereMonth('created_at', Carbon::now())
+                        ->where('distributor_id', '=', $user->distributor_id)
+                        ->latest()->get();
 
-					$totalQty = 0;
-					$receivedQty = 0;
-					$purchaseReturnedQty = 0;
-					$consumedQty = 0;
-					$returnedQty = 0;
+                foreach ($skus as $sku) {
+                    $sku['mrp_price'] = $sku->price;
+                    $sku['offer_price'] = null;
 
-					foreach ($orders as $order) {
-						$currentMonth = Carbon::now()->format('m');
-						$previousMonth = $currentMonth - 1;
-						$orderMonth = Carbon::parse($order->created_at)->format('m');
+                    $totalQty = 0;
+                    $receivedQty = 0;
+                    $purchaseReturnedQty = 0;
+                    $consumedQty = 0;
+                    $returnedQty = 0;
 
-						if ($orderMonth != $currentMonth) {
-							if ($orderMonth != $previousMonth) {
-								foreach ($order->order_details as $detail) {
-									if ($detail->sku_id == $sku->id && $order->order_type == 'Opening Stock')
-										$totalQty += $detail->qty;
-									if ($detail->sku_id == $sku->id && $order->order_type == 'Stock Received')
-										$totalQty += $detail->qty;
-									if ($detail->sku_id == $sku->id && $order->order_type == 'Purchase Returned')
-										$totalQty -= $detail->qty;
-									if ($detail->sku_id == $sku->id && $order->order_type == 'Sales')
-										$totalQty -= $detail->qty;
-									if ($detail->sku_id == $sku->id && $order->order_type == 'Stock Returned')
-										$totalQty += $detail->qty;
-								}
-							} else {
-								foreach ($order->order_details as $detail) {
-									if ($detail->sku_id == $sku->id && $order->order_type == 'Opening Stock')
-										$totalQty += $detail->qty;
-									if ($detail->sku_id == $sku->id && $order->order_type == 'Stock Received')
-										$receivedQty += $detail->qty;
-									if ($detail->sku_id == $sku->id && $order->order_type == 'Purchase Returned')
-										$purchaseReturnedQty += $detail->qty;
-									if ($detail->sku_id == $sku->id && $order->order_type == 'Sales')
-										$consumedQty += $detail->qty;
-									if ($detail->sku_id == $sku->id && $order->order_type == 'Stock Returned')
-										$returnedQty += $detail->qty;
-								}
-							}
-						}
-					}
-
-
-					$sku['opening_stock'] = $totalQty;
-					$sku['received_stock'] = $receivedQty;
-					$sku['purchase_returned_stock'] = $purchaseReturnedQty;
-					$sku['sales_stock'] = $consumedQty;
-					$sku['returned_stock'] = $returnedQty;
-					$sku['closing_stock'] = ($totalQty + $receivedQty - $purchaseReturnedQty - $consumedQty + $returnedQty);
-					$sku['qty'] = $sku['closing_stock'];
+                    foreach ($orders as $order) {
+                        $orderMonth = Carbon::parse($order->created_at)->format('m');
+                        if ($orderMonth != $currentMonth) {
+                            if ($orderMonth != $previousMonth) {
+                                foreach ($order->order_details as $detail) {
+                                    if ($detail->sku_id == $sku->id && $order->order_type == 'Opening Stock')
+                                        $totalQty += $detail->qty;
+                                    if ($detail->sku_id == $sku->id && $order->order_type == 'Stock Received')
+                                        $totalQty += $detail->qty;
+                                    if ($detail->sku_id == $sku->id && $order->order_type == 'Purchase Returned')
+                                        $totalQty -= $detail->qty;
+                                    if ($detail->sku_id == $sku->id && $order->order_type == 'Sales')
+                                        $totalQty -= $detail->qty;
+                                    if ($detail->sku_id == $sku->id && $order->order_type == 'Stock Returned')
+                                        $totalQty += $detail->qty;
+                                }
+                            } else {
+                                foreach ($order->order_details as $detail) {
+                                    if ($detail->sku_id == $sku->id && $order->order_type == 'Opening Stock')
+                                        $totalQty += $detail->qty;
+                                    if ($detail->sku_id == $sku->id && $order->order_type == 'Stock Received')
+                                        $receivedQty += $detail->qty;
+                                    if ($detail->sku_id == $sku->id && $order->order_type == 'Purchase Returned')
+                                        $purchaseReturnedQty += $detail->qty;
+                                    if ($detail->sku_id == $sku->id && $order->order_type == 'Sales')
+                                        $consumedQty += $detail->qty;
+                                    if ($detail->sku_id == $sku->id && $order->order_type == 'Stock Returned')
+                                        $returnedQty += $detail->qty;
+                                }
+                            }
+                        }
+                    }
 
 
-					MonthlyOrderSummary::create([
-						'company_id'  =>  1,
-						'user_id' =>  $user->id,
-						'sku_id'  =>  $sku->id,
-						'month'		=>	$previousMonth,
-						'year'		=>	'2022',
-						'opening_stock' =>  $sku['opening_stock'],
-						'received_stock' =>  $sku['received_stock'],
-						'purchase_returned_stock' =>  $sku['purchase_returned_stock'],
-						'sales_stock' =>  $sku['sales_stock'],
-						'returned_stock' =>  $sku['returned_stock'],
-						'closing_stock' =>  $sku['closing_stock'],
-					]);
-				}
-			}
-		}
+                    $sku['opening_stock'] = $totalQty;
+                    $sku['received_stock'] = $receivedQty;
+                    $sku['purchase_returned_stock'] = $purchaseReturnedQty;
+                    $sku['sales_stock'] = $consumedQty;
+                    $sku['returned_stock'] = $returnedQty;
+                    $sku['closing_stock'] = ($totalQty + $receivedQty - $purchaseReturnedQty - $consumedQty + $returnedQty);
+                    $sku['qty'] = $sku['closing_stock'];
+
+
+                    MonthlyOrderSummary::create([
+                        'company_id'  =>  1,
+                        'user_id' =>  $user->id,
+                        'sku_id'  =>  $sku->id,
+                        'month'        =>    $previousMonth,
+                        'year'        =>    '2022',
+                        'opening_stock' =>  $sku['opening_stock'],
+                        'received_stock' =>  $sku['received_stock'],
+                        'purchase_returned_stock' =>  $sku['purchase_returned_stock'],
+                        'sales_stock' =>  $sku['sales_stock'],
+                        'returned_stock' =>  $sku['returned_stock'],
+                        'closing_stock' =>  $sku['closing_stock'],
+                    ]);
+                }
+            }
+        }
     }
 }
