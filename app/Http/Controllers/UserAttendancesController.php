@@ -139,7 +139,7 @@ class UserAttendancesController extends Controller
               'ba_name'     =>  $supervisorUser->ba_name ?? '-',
               'present'     =>  'YES',
               'date'        =>  Carbon::parse($request->date)->format('d-m-Y'),
-              'time'        => ($userAttendance->login_time ? $userAttendance->login_time  : '') . ' - ' . ($userAttendance->logout_time ? $userAttendance->logout_time : ''),
+              'time'        => ($userAttendance->login_time ? Carbon::parse($userAttendance->login_time)->format('H:i')  : '') . ' - ' . ($userAttendance->logout_time ? Carbon::parse($userAttendance->logout_time)->format('H:i') : ''),
               // 'time'        => '-'
             ]);
           }
