@@ -45,6 +45,13 @@ class CrudeFocusedTargetsController extends Controller
 
         $crude_focused_targets = CrudeFocusedTarget::all();
         $category = [
+            'baby_care',
+            'lip_serum',
+            'ubtan_range',
+            'color_range',
+            'hair_range',
+            'baby_range',
+            'color_care',
             'baby', // category
             'baby_Kit',
             'baby_Oil',
