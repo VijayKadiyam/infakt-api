@@ -327,17 +327,21 @@ class AnalyticsController extends Controller
           $target = $target ? $target->target : 0;
           $achieved = 0;
 
+
           $searches = explode("_", $category);
-          $combinedSearch = '';
+          $finalSearches = $searches;
+          if ($category == 'lip_serum') {
 
-          foreach ($searches as $search) {
-            $combinedSearch = $combinedSearch . ' ' . $search;
+            $combinedSearch = '';
+
+            foreach ($searches as $search) {
+              $combinedSearch = $combinedSearch . ' ' . $search;
+            }
+
+            $finalSearches = [
+              $combinedSearch,
+            ];
           }
-
-          $finalSearches = [
-            $combinedSearch,
-          ];
-
 
           // Total orders of a month
           $ordersOfMonth = Order::where('user_id', '=', $supervisorUser->id)
@@ -351,7 +355,7 @@ class AnalyticsController extends Controller
           foreach ($ordersOfMonth as $order) {
             foreach ($order->order_details as $orderDetail) {
               foreach ($finalSearches as $search) {
-                if (str_contains($orderDetail->sku->name, strtoupper($search)) && $search != 'serum') {
+                if (str_contains($orderDetail->sku->name, strtoupper($search)) && $search != 'serum' && $search != 'range') {
                   $achieved += $target < 100 ?  $orderDetail->qty : $orderDetail->value;
                   // $achieved += $orderDetail->value;
                 }
