@@ -89,5 +89,13 @@ class CrudeFocusedTarget extends Model
         'rice_range',
         'almond_range',
         'body_lotion_cold_cream',
+        'baby_care',
+        'lip_serum',
+        'ubtan_range',
+        'color_range',
+        'hair_range',
+        'baby_range',
+        'color_care',
+        
     ];
 }
