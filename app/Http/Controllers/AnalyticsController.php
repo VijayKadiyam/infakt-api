@@ -268,7 +268,8 @@ class AnalyticsController extends Controller
         foreach ($order->order_details as $orderDetail) {
           foreach ($searches as $search) {
             if (str_contains($orderDetail->sku->name, strtoupper($search))) {
-              $achieved += $orderDetail->value;
+              $achieved += $target < 100 ?  $orderDetail->qty : $orderDetail->value;
+              // $achieved += $orderDetail->value;
             }
           }
         }
@@ -342,7 +343,8 @@ class AnalyticsController extends Controller
             foreach ($order->order_details as $orderDetail) {
               foreach ($searches as $search) {
                 if (str_contains($orderDetail->sku->name, strtoupper($search))) {
-                  $achieved += $orderDetail->value;
+                  $achieved += $target < 100 ?  $orderDetail->qty : $orderDetail->value;
+                  // $achieved += $orderDetail->value;
                 }
               }
             }
