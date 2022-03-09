@@ -48,13 +48,13 @@ class MonthlyOrderSummaryCommand extends Command
 
 		$skus = Sku::get();
 
-		// $users = [
-		// 	User::find(1515),
-		// ];
+		$users = [
+			User::find(1515),
+		];
 
-		$users = User::whereHas('roles', function ($q) {
-			$q->where('name', '=', 'BA');
-		})->get();
+		// $users = User::whereHas('roles', function ($q) {
+		// 	$q->where('name', '=', 'BA');
+		// })->get();
 
 		foreach ($users as $user) {
 			if ($user) {
