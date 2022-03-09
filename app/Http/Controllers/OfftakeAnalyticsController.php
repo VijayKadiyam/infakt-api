@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\BAReportExport;
 use App\Company;
 use App\DailyOrderSummary;
+use App\MonthlyOrderSummary;
 use App\Order;
 use App\Sku;
 use App\Target;
@@ -473,14 +474,19 @@ class OfftakeAnalyticsController extends Controller
 	}
 	public function exports(Request $request)
 	{
+		// $currentMonth = Carbon::now()->format('m');
+		// $previousMonthDate = Carbon::parse('01-' . ($currentMonth - 1) . '-2022');
+		// $previousMonthDaysInMonth = $previousMonthDate->daysInMonth;
+		// return $previousMonthDaysInMonth;
+
 		ini_set('max_execution_time', 0);
 
-		// DailyOrderSummary::truncate();
+		MonthlyOrderSummary::truncate();
 
-		$skus = Sku::all();
+		$skus = Sku::get();
 
 		$users = [
-		    User::find(1515),
+			User::find(1515),
 		];
 
 		// $users = User::whereHas('roles', function ($q) {
@@ -508,34 +514,37 @@ class OfftakeAnalyticsController extends Controller
 					$returnedQty = 0;
 
 					foreach ($orders as $order) {
-						$todayDate = Carbon::now()->format('m');
-						$orderDate = Carbon::parse($order->created_at)->format('m');
+						$currentMonth = Carbon::now()->format('m');
+						$previousMonth = $currentMonth - 1;
+						$orderMonth = Carbon::parse($order->created_at)->format('m');
 
-						if ($orderDate != $todayDate) {
-							foreach ($order->order_details as $detail) {
-								if ($detail->sku_id == $sku->id && $order->order_type == 'Opening Stock')
-									$totalQty += $detail->qty;
-								if ($detail->sku_id == $sku->id && $order->order_type == 'Stock Received')
-									$totalQty += $detail->qty;
-								if ($detail->sku_id == $sku->id && $order->order_type == 'Purchase Returned')
-									$totalQty -= $detail->qty;
-								if ($detail->sku_id == $sku->id && $order->order_type == 'Sales')
-									$totalQty -= $detail->qty;
-								if ($detail->sku_id == $sku->id && $order->order_type == 'Stock Returned')
-									$totalQty += $detail->qty;
-							}
-						} else {
-							foreach ($order->order_details as $detail) {
-								if ($detail->sku_id == $sku->id && $order->order_type == 'Opening Stock')
-									$totalQty += $detail->qty;
-								if ($detail->sku_id == $sku->id && $order->order_type == 'Stock Received')
-									$receivedQty += $detail->qty;
-								if ($detail->sku_id == $sku->id && $order->order_type == 'Purchase Returned')
-									$purchaseReturnedQty += $detail->qty;
-								if ($detail->sku_id == $sku->id && $order->order_type == 'Sales')
-									$consumedQty += $detail->qty;
-								if ($detail->sku_id == $sku->id && $order->order_type == 'Stock Returned')
-									$returnedQty += $detail->qty;
+						if ($orderMonth != $currentMonth) {
+							if ($orderMonth != $previousMonth) {
+								foreach ($order->order_details as $detail) {
+									if ($detail->sku_id == $sku->id && $order->order_type == 'Opening Stock')
+										$totalQty += $detail->qty;
+									if ($detail->sku_id == $sku->id && $order->order_type == 'Stock Received')
+										$totalQty += $detail->qty;
+									if ($detail->sku_id == $sku->id && $order->order_type == 'Purchase Returned')
+										$totalQty -= $detail->qty;
+									if ($detail->sku_id == $sku->id && $order->order_type == 'Sales')
+										$totalQty -= $detail->qty;
+									if ($detail->sku_id == $sku->id && $order->order_type == 'Stock Returned')
+										$totalQty += $detail->qty;
+								}
+							} else {
+								foreach ($order->order_details as $detail) {
+									if ($detail->sku_id == $sku->id && $order->order_type == 'Opening Stock')
+										$totalQty += $detail->qty;
+									if ($detail->sku_id == $sku->id && $order->order_type == 'Stock Received')
+										$receivedQty += $detail->qty;
+									if ($detail->sku_id == $sku->id && $order->order_type == 'Purchase Returned')
+										$purchaseReturnedQty += $detail->qty;
+									if ($detail->sku_id == $sku->id && $order->order_type == 'Sales')
+										$consumedQty += $detail->qty;
+									if ($detail->sku_id == $sku->id && $order->order_type == 'Stock Returned')
+										$returnedQty += $detail->qty;
+								}
 							}
 						}
 					}
@@ -549,16 +558,13 @@ class OfftakeAnalyticsController extends Controller
 					$sku['closing_stock'] = ($totalQty + $receivedQty - $purchaseReturnedQty - $consumedQty + $returnedQty);
 					$sku['qty'] = $sku['closing_stock'];
 
-					$dailyOrderSummaries = DailyOrderSummary::where('sku_id', '=', $sku->id)
-						->where('user_id', '=', $user->id)
-						->delete();
 
-					return $dailyOrderSummaries;
-
-					DailyOrderSummary::create([
+					MonthlyOrderSummary::create([
 						'company_id'  =>  1,
 						'user_id' =>  $user->id,
 						'sku_id'  =>  $sku->id,
+						'month'		=>	$previousMonth,
+						'year'		=>	'2022',
 						'opening_stock' =>  $sku['opening_stock'],
 						'received_stock' =>  $sku['received_stock'],
 						'purchase_returned_stock' =>  $sku['purchase_returned_stock'],
@@ -566,11 +572,11 @@ class OfftakeAnalyticsController extends Controller
 						'returned_stock' =>  $sku['returned_stock'],
 						'closing_stock' =>  $sku['closing_stock'],
 					]);
-
-					return 1;
 				}
 			}
 		}
+
+		return 1;
 
 		// Stock Report
 		ini_set('max_execution_time', 0);
