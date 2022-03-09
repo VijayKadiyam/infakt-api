@@ -44,11 +44,16 @@ class GenerateBaReportCommand extends Command
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '-1');
 
-        $date = Carbon::now()->addDays(-1)->format('Y-m-d');
-        // $date = Carbon::now()->format('Y-m-d');
+        // $date = Carbon::now()->addDays(-1)->format('Y-m-d');
+        $date = Carbon::now()->format('Y-m-d');
         $this->info('Generate Report for Date: ' . $date);
 
         // Excel::download(new BAReportExport($date), "BA-Report.xlsx");
+
+        // Copmplete Report
+        Excel::store(new BAReportExport($date), "/reports/$date/BA-Report-$date.xlsx", "local");
+
+        $this->info('BA Report Generated...');
 
         $supervisors = User::with('roles')
             ->where('active', '=', 1)
@@ -66,11 +71,6 @@ class GenerateBaReportCommand extends Command
             $this->info("$count. $name BAs Report Generated...");
             $count++;
         }
-
-        // Copmplete Report
-        Excel::store(new BAReportExport($date), "/reports/$date/BA1-Report-$date.xlsx", "local");
-
-        $this->info('BA Report Generated...');
 
         // Zone Code
         $regions = [
