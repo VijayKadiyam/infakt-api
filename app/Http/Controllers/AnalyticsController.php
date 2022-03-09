@@ -254,6 +254,19 @@ class AnalyticsController extends Controller
 
       $searches = explode("_", $category);
       $finalSearches = $searches;
+      if ($category == 'baby_care') {
+
+        $finalSearches = [];
+
+        $combinedSearch = '';
+
+        foreach ($searches as $search) {
+          $combinedSearch = $combinedSearch . ' ' . $search;
+        }
+
+        $finalSearches[] = $combinedSearch;
+        $finalSearches[] = 'BABIES';
+      }
       if ($category == 'lip_serum') {
 
         $combinedSearch = '';
