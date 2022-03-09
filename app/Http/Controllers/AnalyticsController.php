@@ -328,6 +328,15 @@ class AnalyticsController extends Controller
           $achieved = 0;
 
           $searches = explode("_", $category);
+          $combinedSearch = '';
+
+          foreach ($searches as $search) {
+            $combinedSearch = $combinedSearch + ' ' + $search;
+          }
+
+          $finalSearches = [
+            $combinedSearch,
+          ];
 
 
           // Total orders of a month
@@ -341,7 +350,7 @@ class AnalyticsController extends Controller
           // Achieved of a month
           foreach ($ordersOfMonth as $order) {
             foreach ($order->order_details as $orderDetail) {
-              foreach ($searches as $search) {
+              foreach ($finalSearches as $search) {
                 if (str_contains($orderDetail->sku->name, strtoupper($search)) && $search != 'serum') {
                   $achieved += $target < 100 ?  $orderDetail->qty : $orderDetail->value;
                   // $achieved += $orderDetail->value;
