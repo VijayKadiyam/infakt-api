@@ -29,7 +29,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('email:ba_report')->dailyAt('21:00');
 
         $schedule->command('generate:ba_report')->dailyAt('06:10');
-        $schedule->command('calculate:monthly_order_summary')->dailyAt('11:23');
+        $schedule->command('calculate:monthly_order_summary')->dailyAt('11:29');
         $schedule->command('email:ba_report')->dailyAt('09:30');
 
 
