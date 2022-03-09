@@ -62,6 +62,10 @@ class StoreSkuCountsCommand extends Command
             $q->where('name', '=', 'BA');
         })->get();
 
+        $dailyOrderSummaries = DailyOrderSummary::all();
+
+        return sizeof($dailyOrderSummaries);
+
         foreach ($users as $user) {
             if ($user) {
 
