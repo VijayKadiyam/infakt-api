@@ -267,7 +267,7 @@ class AnalyticsController extends Controller
       foreach ($ordersOfMonth as $order) {
         foreach ($order->order_details as $orderDetail) {
           foreach ($searches as $search) {
-            if (str_contains($orderDetail->sku->name, strtoupper($search))) {
+            if (str_contains($orderDetail->sku->name, strtoupper($search)) && $search != 'serum') {
               $achieved += $target < 100 ?  $orderDetail->qty : $orderDetail->value;
               // $achieved += $orderDetail->value;
             }
