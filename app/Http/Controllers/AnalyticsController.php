@@ -254,7 +254,6 @@ class AnalyticsController extends Controller
 
       $searches = explode("_", $category);
 
-
       // Total orders of a month
       $ordersOfMonth = Order::where('user_id', '=', $request->userId)
         ->with('order_details')
