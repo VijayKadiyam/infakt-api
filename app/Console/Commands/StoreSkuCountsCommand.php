@@ -49,6 +49,7 @@ class StoreSkuCountsCommand extends Command
         $this->line('Start Calculating...');
 
         ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '-1');
 
 		// DailyOrderSummary::truncate();
 
