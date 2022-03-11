@@ -484,7 +484,7 @@ class OfftakeAnalyticsController extends Controller
 		// ];
 
 		// for($i = 1 ; $i <= (sizeof(User::all()) / 100 ) + 1; $i++) {
-		for ($i = 1; $i <= 1 + 1; $i++) {
+		for ($i = 1; $i <= 1; $i++) {
 			$users = User::whereHas('roles', function ($q) {
 				$q->where('name', '=', 'BA');
 			})
@@ -559,7 +559,8 @@ class OfftakeAnalyticsController extends Controller
 
 						foreach ($dailyOrderSummaries as $dailyOrderSummary) {
 							if ($dailyOrderSummary->sku_id == $sku->id && $dailyOrderSummary->user_id == $user->id) {
-								return $dailyOrderSummary;
+								$dailyOrderSummary->delete();
+
 
 								DailyOrderSummary::create([
 									'company_id'  =>  1,
@@ -575,15 +576,16 @@ class OfftakeAnalyticsController extends Controller
 							}
 						}
 
-						return 2;
-
-						return DailyOrderSummary::where('sku_id', '=', $sku->id)
-							->where('user_id', '=', $user->id)
-							->delete();
+						// return DailyOrderSummary::where('sku_id', '=', $sku->id)
+						// 	->where('user_id', '=', $user->id)
+						// 	->delete();
 					}
+
 				}
 			}
 		}
+
+		return 'Done';
 
 
 
