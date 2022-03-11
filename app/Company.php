@@ -493,7 +493,8 @@ class Company extends Model
   }
   public function tickets()
   {
-    return $this->hasMany(Ticket::class)->with('assignedTo', 'createdBy');
+    return $this->hasMany(Ticket::class)->with('assignedTo', 'createdBy')
+      ->with('ticketFollowup');
   }
   public function ticket_followups()
   {
