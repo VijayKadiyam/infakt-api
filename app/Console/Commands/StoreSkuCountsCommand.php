@@ -58,7 +58,8 @@ class StoreSkuCountsCommand extends Command
 		//     User::find(1516),
 		// ];
 
-		for ($i = 1; $i <= 1; $i++) {
+        for($i = 1 ; $i <= (sizeof(User::all()) / 100 ) + 1; $i++) {
+		// for ($i = 1; $i <= 1; $i++) {
 			$users = User::whereHas('roles', function ($q) {
 				$q->where('name', '=', 'BA');
 			})
