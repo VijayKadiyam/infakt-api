@@ -205,12 +205,12 @@ class StocksController extends Controller
       });
 
     $count = $dailyOrderSummaries->count();
-    if (request()->page && request()->rowsPerPage) {
-      $dailyOrderSummaries = $dailyOrderSummaries->paginate(request()->rowsPerPage)->toArray();
-      $dailyOrderSummaries = $dailyOrderSummaries['data'];
-    } else {
+    // if (request()->page && request()->rowsPerPage) {
+    //   $dailyOrderSummaries = $dailyOrderSummaries->paginate(request()->rowsPerPage)->toArray();
+    //   $dailyOrderSummaries = $dailyOrderSummaries['data'];
+    // } else {
       $dailyOrderSummaries = $dailyOrderSummaries->get();
-    }
+    // }
 
 
     for ($i = 0; $i < sizeof($dailyOrderSummaries); $i++) {
