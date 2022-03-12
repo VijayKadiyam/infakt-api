@@ -44,8 +44,8 @@ class GenerateBaReportCommand extends Command
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '-1');
 
-        $date = Carbon::now()->addDays(-1)->format('Y-m-d');
-        // $date = Carbon::now()->format('Y-m-d');
+        // $date = Carbon::now()->addDays(-1)->format('Y-m-d');
+        $date = Carbon::now()->format('Y-m-d');
         $this->info('Generate Report for Date: ' . $date);
 
         // Excel::download(new BAReportExport($date), "BA-Report.xlsx");
@@ -94,7 +94,7 @@ class GenerateBaReportCommand extends Command
         ];
 
         foreach ($channels as $key => $channel) {
-            return Excel::store(new BAReportExport($date, "", "", $channel), "$channel-BA-Report-$date.xlsx");
+            return Excel::store(new BAReportExport($date, "", "", $channel), "/reports/$date/$channel-BA-Report-$date.xlsx");
         }
     }
 }
