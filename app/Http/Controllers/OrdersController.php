@@ -259,12 +259,34 @@ class OrdersController extends Controller
     $order->is_active = 0;
     $order->update();
 
+    $dailyOrderSummaries = DailyOrderSummary::where('user_id', '=', $order->user_id)
+      // ->latest()
+      ->get();
+
     if ($order) {
       $orderDetails = OrderDetail::where('order_id', '=', $order->id)->get();
       foreach ($orderDetails as $orderDetail) {
         $order_Detail = OrderDetail::where('id', '=', $orderDetail->id)->first();
         $order_Detail->is_active = 0;
         $order_Detail->update();
+
+        foreach ($dailyOrderSummaries as $dailyOrderSummary) {
+          if ($dailyOrderSummary->sku_id == $order_Detail->sku_id) {
+            if ($order->order_type == 'Opening Stock')
+              $dailyOrderSummary->opening_stock -= $order_Detail->qty;
+            if ($order->order_type == 'Stock Received')
+              $dailyOrderSummary->received_stock -= $order_Detail->qty;
+            if ($order->order_type == 'Purchase Returned')
+              $dailyOrderSummary->purchase_returned_stock -= $order_Detail->qty;
+            if ($order->order_type == 'Sales')
+              $dailyOrderSummary->sales_stock -= $order_Detail->qty;
+            if ($order->order_type == 'Stock Returned')
+              $dailyOrderSummary->returned_stock -= $order_Detail->qty;
+            $dailyOrderSummary->closing_stock = $dailyOrderSummary->opening_stock + $dailyOrderSummary->received_stock - $dailyOrderSummary->purchase_returned_stock - $dailyOrderSummary->sales_stock + $dailyOrderSummary->returned_stock;
+            $dailyOrderSummary->update();
+            break;
+          }
+        }
       }
     }
     return response()->json([
@@ -277,6 +299,30 @@ class OrdersController extends Controller
     $orderDetails = OrderDetail::where('id', '=', $id)->first();
     $orderDetails->is_active = 0;
     $orderDetails->update();
+
+    $order = Order::find($orderDetails->order_id);
+
+    $dailyOrderSummaries = DailyOrderSummary::where('user_id', '=', $order->user_id)
+      // ->latest()
+      ->get();
+
+    foreach ($dailyOrderSummaries as $dailyOrderSummary) {
+      if ($dailyOrderSummary->sku_id == $orderDetails->sku_id) {
+        if ($order->order_type == 'Opening Stock')
+          $dailyOrderSummary->opening_stock -= $orderDetails->qty;
+        if ($order->order_type == 'Stock Received')
+          $dailyOrderSummary->received_stock -= $orderDetails->qty;
+        if ($order->order_type == 'Purchase Returned')
+          $dailyOrderSummary->purchase_returned_stock -= $orderDetails->qty;
+        if ($order->order_type == 'Sales')
+          $dailyOrderSummary->sales_stock -= $orderDetails->qty;
+        if ($order->order_type == 'Stock Returned')
+          $dailyOrderSummary->returned_stock -= $orderDetails->qty;
+        $dailyOrderSummary->closing_stock = $dailyOrderSummary->opening_stock + $dailyOrderSummary->received_stock - $dailyOrderSummary->purchase_returned_stock - $dailyOrderSummary->sales_stock + $dailyOrderSummary->returned_stock;
+        $dailyOrderSummary->update();
+        break;
+      }
+    }
 
 
     return response()->json([
