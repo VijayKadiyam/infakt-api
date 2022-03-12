@@ -268,7 +268,7 @@ class OrdersController extends Controller
       foreach ($orderDetails as $orderDetail) {
         $order_Detail = OrderDetail::where('id', '=', $orderDetail->id)->first();
 
-        if ($order_Detail != 0)
+        if ($order_Detail->is_active != 0)
           foreach ($dailyOrderSummaries as $dailyOrderSummary) {
             if ($dailyOrderSummary->sku_id == $order_Detail->sku_id) {
               if ($order->order_type == 'Opening Stock')
@@ -300,7 +300,7 @@ class OrdersController extends Controller
   {
     $orderDetails = OrderDetail::where('id', '=', $id)->first();
 
-    if ($orderDetails != 0) {
+    if ($orderDetails->is_active != 0) {
       $order = Order::find($orderDetails->order_id);
 
       $dailyOrderSummaries = DailyOrderSummary::where('user_id', '=', $order->user_id)
