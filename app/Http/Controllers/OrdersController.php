@@ -207,6 +207,28 @@ class OrdersController extends Controller
             $order->order_details()->save($order_detail);
           } else {
             $order_detail = OrderDetail::find($detail['id']);
+
+            $diffQty = $detail['qty'] - $order_detail->qty;
+
+            foreach ($dailyOrderSummaries as $dailyOrderSummary) {
+              if ($dailyOrderSummary->sku_id == $order_detail->sku_id) {
+                $check = 1;
+                if ($order->order_type == 'Opening Stock')
+                  $dailyOrderSummary->opening_stock += $diffQty;
+                if ($order->order_type == 'Stock Received')
+                  $dailyOrderSummary->received_stock += $diffQty;
+                if ($order->order_type == 'Purchase Returned')
+                  $dailyOrderSummary->purchase_returned_stock += $diffQty;
+                if ($order->order_type == 'Sales')
+                  $dailyOrderSummary->sales_stock += $diffQty;
+                if ($order->order_type == 'Stock Returned')
+                  $dailyOrderSummary->returned_stock += $diffQty;
+                $dailyOrderSummary->closing_stock = $dailyOrderSummary->opening_stock + $dailyOrderSummary->received_stock - $dailyOrderSummary->purchase_returned_stock - $dailyOrderSummary->sales_stock + $dailyOrderSummary->returned_stock;
+                $dailyOrderSummary->update();
+                break;
+              }
+            }
+
             $order_detail->update($detail);
           }
         }
