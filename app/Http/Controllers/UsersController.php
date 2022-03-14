@@ -153,7 +153,8 @@ class UsersController extends Controller
         ->whereHas('roles',  function ($q) {
           $q->where('name', '!=', 'Admin');
         })
-        ->where('name', 'LIKE', $request->search . '%');
+        ->where('name', 'LIKE', $request->search . '%')
+        ->orWhere('employee_code', 'LIKE', '%' . $request->search . '%');
       if ($request->superVisor_id) {
         $supervisorId = $request->superVisor_id;
         $users =  $users->where('supervisor_id', '=', $supervisorId);
@@ -169,6 +170,7 @@ class UsersController extends Controller
         ->orWhere('phone', 'LIKE', '%' . $request->searchEmp . '%')
         ->orWhere('employee_code', 'LIKE', '%' . $request->searchEmp . '%')
         ->orWhere('ba_name', 'LIKE', '%' . $request->searchEmp . '%')
+        ->orWhere('employee_code', 'LIKE', '%' . $request->searchEmp . '%')
         ->latest()->get();
     } else if ($request->report) {
       $now = Carbon::now();
@@ -291,12 +293,30 @@ class UsersController extends Controller
         });
       if ($request->status != 'all')
         $users = $users->where('active', '=', 1);
-      if ($request->superVisor_id)
+      if ($request->superVisor_id) {
+
         $users = $users->where('supervisor_id', '=', $request->superVisor_id);
+      }
+      $count = $users->count();
       $users = $users->paginate(request()->rowsPerPage)->toArray();
       $users = $users['data'];
     }
-    if ($request->ToExcel == "YES") {
+    return response()->json([
+      'data'     =>  $users,
+      'count' =>   $count,
+      'success'   =>  true
+    ], 200);
+  }
+
+  public function excelDownload(Request $request)
+  {
+    ini_set('max_execution_time', -1);
+    ini_set('memory_limit', '1000M');
+    set_time_limit(0);
+    $count = 0;
+    $users = [];
+
+    if ($request->role_id) {
       // return 'yees';
       $role = Role::find($request->role_id);
       $users = $request->company->allUsers()
