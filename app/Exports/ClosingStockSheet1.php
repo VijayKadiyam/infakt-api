@@ -69,8 +69,8 @@ class ClosingStockSheet1 implements FromView, ShouldAutoSize, WithStyles, WithTi
         $dailyOrderSummaries = $company->daily_order_summaries()
 		// ->where('user_id', 3314)->orwhere('user_id', 3009)->orwhere('user_id', 2857)
 			// ->whereDate('created_at', '=', $date)
-			->latest()
-			->orderBy('closing_stock', 'DESC');
+			->latest();
+			// ->orderBy('closing_stock', 'DESC');
 
         $region = $this->region;
         if ($region) {

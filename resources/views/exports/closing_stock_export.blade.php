@@ -43,12 +43,12 @@
             <td>{{ $sku['sku']['name'] ?? ""}}</td>
             <td>{{ $sku['sku']['price'] ?? ""}}</td>
             <td>{{ $sku['sku']['hsn_code'] ?? ""}}</td>
-            <td>{{ $sku['opening_stock'] ? abs($sku['opening_stock']) : "" }}</td>
-            <td>{{ $sku['received_stock'] ? abs($sku['received_stock']) :  "" }}</td>
-            <td>{{ $sku['purchase_returned_stock'] ? abs($sku['purchase_returned_stock']) : "" }}</td>
-            <td>{{ $sku['sales_stock'] ? abs($sku['sales_stock']) : "" }}</td>
-            <td>{{ $sku['returned_stock'] ? abs($sku['returned_stock']) : "" }}</td>
-            <td>{{ $sku['closing_stock'] ? abs($sku['closing_stock']) : "" }}</td>
+            <td>{{ $sku['opening_stock'] ? abs($sku['opening_stock']) : 0 }}</td>
+            <td>{{ $sku['received_stock'] ? abs($sku['received_stock']) :  0 }}</td>
+            <td>{{ $sku['purchase_returned_stock'] ? abs($sku['purchase_returned_stock']) : 0 }}</td>
+            <td>{{ $sku['sales_stock'] ? abs($sku['sales_stock']) : 0 }}</td>
+            <td>{{ $sku['returned_stock'] ? abs($sku['returned_stock']) : 0 }}</td>
+            <td>{{ $sku['closing_stock'] ? abs($sku['closing_stock']) : 0 }}</td>
         </tr>
         @endforeach
     </tbody>
