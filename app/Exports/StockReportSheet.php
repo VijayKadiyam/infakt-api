@@ -24,13 +24,16 @@ class StockReportSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
     public $supervisorId;
     public $region;
     public $channel;
-    public function __construct($date, $supervisorId, $region, $channel)
+    public $brand;
+
+    public function __construct($date, $supervisorId, $region, $channel, $brand)
     {
         $this->date = $date;
         $this->supervisorId = $supervisorId;
         $this->region = $region;
         $this->month = Carbon::parse($date)->format('M-Y');
         $this->channel = $channel;
+        $this->brand = $brand;
     }
 
     public function styles(Worksheet $sheet)
@@ -79,6 +82,12 @@ class StockReportSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
         if ($channel) {
             $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($channel) {
                 $q->where('channel', 'LIKE', '%' . $channel . '%');
+            });
+        }
+        $brand = $this->brand;
+        if ($brand) {
+            $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($brand) {
+                $q->where('brand', 'LIKE', '%' . $brand . '%');
             });
         }
         $supervisorId = $this->supervisorId;

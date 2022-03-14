@@ -19,14 +19,16 @@ class CustomerSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
     public $supervisorId;
     public $region;
     public $channel;
+    public $brand;
 
-    public function __construct($date, $supervisorId, $region, $channel)
+    public function __construct($date, $supervisorId, $region, $channel, $brand)
     {
         $this->month = Carbon::parse($date)->format('M-Y');
         $this->date = $date;
         $this->supervisorId = $supervisorId;
         $this->region = $region;
         $this->channel = $channel;
+        $this->brand = $brand;
     }
 
     public function styles(Worksheet $sheet)
@@ -72,6 +74,12 @@ class CustomerSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
         if ($channel) {
             $customers = $customers->whereHas('user',  function ($q) use ($channel) {
                 $q->where('channel', 'LIKE', '%' . $channel . '%');
+            });
+        }
+        $brand = $this->brand;
+        if ($brand) {
+            $customers = $customers->whereHas('user',  function ($q) use ($brand) {
+                $q->where('brand', 'LIKE', '%' . $brand . '%');
             });
         }
         $customers = $customers->get();

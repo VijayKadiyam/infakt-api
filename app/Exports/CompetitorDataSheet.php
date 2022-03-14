@@ -19,14 +19,16 @@ class CompetitorDataSheet implements FromView, ShouldAutoSize, WithStyles, WithT
     public $supervisorId;
     public $region;
     public $channel;
+    public $brand;
 
-    public function __construct($date, $supervisorId, $region, $channel)
+    public function __construct($date, $supervisorId, $region, $channel, $brand)
     {
         $this->date = $date;
         $this->month = Carbon::parse($date)->format('M-Y');
         $this->supervisorId = $supervisorId;
         $this->region = $region;
         $this->channel = $channel;
+        $this->brand = $brand;
     }
 
     public function styles(Worksheet $sheet)
@@ -80,6 +82,12 @@ class CompetitorDataSheet implements FromView, ShouldAutoSize, WithStyles, WithT
         if ($channel) {
             $competitor_datas = $competitor_datas->whereHas('user',  function ($q) use ($channel) {
                 $q->where('channel', 'LIKE', '%' . $channel . '%');
+            });
+        }
+        $brand = $this->brand;
+        if ($brand) {
+            $competitor_datas = $competitor_datas->whereHas('user',  function ($q) use ($brand) {
+                $q->where('brand', 'LIKE', '%' . $brand . '%');
             });
         }
         $competitor_datas = $competitor_datas->get();

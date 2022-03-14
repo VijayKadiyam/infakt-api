@@ -20,13 +20,15 @@ class OfftakesCountSheet implements FromView, ShouldAutoSize, WithStyles, WithTi
 	public $supervisorId;
 	public $region;
 	public $channel;
+	public $brand;
 
-	public function __construct($date, $supervisorId, $region, $channel)
+	public function __construct($date, $supervisorId, $region, $channel, $brand)
 	{
 		$this->date = $date;
 		$this->supervisorId = $supervisorId;
 		$this->region = $region;
 		$this->channel = $channel;
+		$this->brand = $brand;
 	}
 
 	public function styles(Worksheet $sheet)
@@ -57,9 +59,12 @@ class OfftakesCountSheet implements FromView, ShouldAutoSize, WithStyles, WithTi
 			})->orderBy('name');
 		// $supervisors = $supervisors->take(1);
 
+
 		$supervisorId = $this->supervisorId;
-		if ($supervisorId != '')
+		if ($supervisorId != '') {
+
 			$supervisors = $supervisors->where('id', '=', $supervisorId);
+		}
 
 		$supervisors = $supervisors->get();
 
@@ -77,7 +82,11 @@ class OfftakesCountSheet implements FromView, ShouldAutoSize, WithStyles, WithTi
 			if ($channel) {
 				$users = $users->where('channel', 'LIKE', '%' . $channel . '%');
 			}
-			$users = $users->get();
+			$brand = $this->brand;
+			if ($brand) {
+				$users = $users->where('brand', 'LIKE', '%' . $brand . '%');
+			}
+			$users = $users->take(3)->get();
 
 			$offtake_count = 0;
 			foreach ($users as $user) {

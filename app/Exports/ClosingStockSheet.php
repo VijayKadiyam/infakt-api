@@ -25,13 +25,15 @@ class ClosingStockSheet implements FromView, ShouldAutoSize, WithStyles, WithTit
     public $supervisorId;
     public $region;
     public $channel;
-    public function __construct($date, $supervisorId, $region, $channel)
+    public $brand;
+    public function __construct($date, $supervisorId, $region, $channel, $brand)
     {
         $this->date = $date;
         $this->supervisorId = $supervisorId;
         $this->region = $region;
         $this->month = Carbon::parse($date)->format('M-Y');
         $this->channel = $channel;
+        $this->brand = $brand;
     }
 
     public function styles(Worksheet $sheet)
@@ -255,6 +257,12 @@ class ClosingStockSheet implements FromView, ShouldAutoSize, WithStyles, WithTit
         if ($channel) {
             $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($channel) {
                 $q->where('channel', 'LIKE', '%' . $channel . '%');
+            });
+        }
+        $brand = $this->brand;
+        if ($brand) {
+            $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($brand) {
+                $q->where('brand', 'LIKE', '%' . $brand . '%');
             });
         }
         $supervisorId = $this->supervisorId;
