@@ -154,11 +154,11 @@ class StockReportSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
 
         $allUsers = [];
         foreach ($users as $user) {
-            $user['total_opening_stocks'] = round(abs($user['total_opening_stocks'] / 2));
-            $user['total_closing_stocks'] = round(abs($user['total_closing_stocks'] / 2));
-            $user['total_received_stock'] = round(abs($user['total_received_stock']  / 2));
-            $user['total_purchase_returned_stock'] = round(abs($user['total_purchase_returned_stock'] / 2));
-            $user['total_sales_stock'] = round(abs($user['total_sales_stock'] / 2));
+            $user['total_opening_stocks'] = round(abs($user['total_opening_stocks']));
+            $user['total_closing_stocks'] = round(abs($user['total_closing_stocks']));
+            $user['total_received_stock'] = round(abs($user['total_received_stock']));
+            $user['total_purchase_returned_stock'] = round(abs($user['total_purchase_returned_stock']));
+            $user['total_sales_stock'] = round(abs($user['total_sales_stock']));
             $allUsers[] = $user;
         }
 

@@ -50,17 +50,12 @@ class GenerateBaReportCommand extends Command
 
         // Excel::download(new BAReportExport($date), "BA-Report.xlsx");
 
-        // Copmplete Report
-        Excel::store(new BAReportExport($date), "/reports/$date/BA-Report-$date.xlsx", "local");
-
-        $this->info('BA Report Generated...');
-
         $supervisors = User::with('roles')
             ->where('active', '=', 1)
             ->whereHas('roles',  function ($q) {
                 $q->where('name', '=', 'SUPERVISOR');
             })->orderBy('name')
-            // ->take(1) u
+            ->latest()
             ->get();
 
         $count = 1;
@@ -71,6 +66,11 @@ class GenerateBaReportCommand extends Command
             $this->info("$count. $name BAs Report Generated...");
             $count++;
         }
+
+        // Copmplete Report
+        Excel::store(new BAReportExport($date), "/reports/$date/BA-Report-$date.xlsx", "local");
+
+        $this->info('BA Report Generated...');
 
         // Zone Code
         $regions = [
@@ -94,7 +94,7 @@ class GenerateBaReportCommand extends Command
         ];
 
         foreach ($channels as $key => $channel) {
-            return Excel::store(new BAReportExport($date, "", "", $channel), "$channel-BA-Report-$date.xlsx");
+            return Excel::store(new BAReportExport($date, "", "", $channel), "/reports/$date/$channel-BA-Report-$date.xlsx");
         }
     }
 }

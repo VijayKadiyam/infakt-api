@@ -205,12 +205,24 @@ class StocksController extends Controller
       });
 
     $count = $dailyOrderSummaries->count();
-    if (request()->page && request()->rowsPerPage) {
-      $dailyOrderSummaries = $dailyOrderSummaries->paginate(request()->rowsPerPage)->toArray();
-      $dailyOrderSummaries = $dailyOrderSummaries['data'];
-    } else {
+    // if (request()->page && request()->rowsPerPage) {
+    //   $dailyOrderSummaries = $dailyOrderSummaries->paginate(request()->rowsPerPage)->toArray();
+    //   $dailyOrderSummaries = $dailyOrderSummaries['data'];
+    // } else {
       $dailyOrderSummaries = $dailyOrderSummaries->get();
+    // }
+
+
+    for ($i = 0; $i < sizeof($dailyOrderSummaries); $i++) {
+      for ($j = $i; $j < sizeof($dailyOrderSummaries); $j++) {
+        if ($dailyOrderSummaries[$i]['closing_stock'] < $dailyOrderSummaries[$j]['closing_stock']) {
+          $temp = $dailyOrderSummaries[$i];
+          $dailyOrderSummaries[$i] = $dailyOrderSummaries[$j];
+          $dailyOrderSummaries[$j] = $temp;
+        }
+      }
     }
+
     return response()->json([
       'data'     =>  $dailyOrderSummaries,
       'count'    =>   $count,

@@ -49,6 +49,7 @@ class StoreSkuCountsCommand extends Command
         $this->line('Start Calculating...');
 
         ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '-1');
 
         // DailyOrderSummary::truncate();
 
@@ -60,19 +61,18 @@ class StoreSkuCountsCommand extends Command
 
         $users = User::whereHas('roles', function ($q) {
             $q->where('name', '=', 'BA');
-        })->get();
-
-        $dailyOrderSummaries = DailyOrderSummary::all();
-
-        return sizeof($dailyOrderSummaries);
+        })
+            ->get();
 
         foreach ($users as $user) {
             if ($user) {
 
+                // Get previous month closing
+
                 $orders = [];
                 if ($user)
                     $orders = Order::whereYear('created_at', Carbon::now())
-                        // ->whereMonth('created_at', Carbon::now())
+                    //     ->whereMonth('created_at', Carbon::now())
                         ->where('distributor_id', '=', $user->distributor_id)
                         ->latest()->get();
 
@@ -119,7 +119,6 @@ class StoreSkuCountsCommand extends Command
                         }
                     }
 
-
                     $sku['opening_stock'] = $totalQty;
                     $sku['received_stock'] = $receivedQty;
                     $sku['purchase_returned_stock'] = $purchaseReturnedQty;
@@ -127,10 +126,6 @@ class StoreSkuCountsCommand extends Command
                     $sku['returned_stock'] = $returnedQty;
                     $sku['closing_stock'] = ($totalQty + $receivedQty - $purchaseReturnedQty - $consumedQty + $returnedQty);
                     $sku['qty'] = $sku['closing_stock'];
-
-                    DailyOrderSummary::where('sku_id', '=', $sku->id)
-						->where('user_id', '=', $user->id)
-						->delete();
 
                     DailyOrderSummary::create([
                         'company_id'  =>  1,
