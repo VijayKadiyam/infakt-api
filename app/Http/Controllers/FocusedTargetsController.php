@@ -91,6 +91,7 @@ class FocusedTargetsController extends Controller
     {
         ini_set('max_execution_time', 0);
         ini_set("memory_limit", "-1");
+        $count = 0;
         $users = $request->company->users()->with('roles')
             ->whereHas('roles',  function ($q) {
                 $q->where('name', '!=', 'Admin');
@@ -114,11 +115,18 @@ class FocusedTargetsController extends Controller
         if ($supervisorId != '') {
             $users = $users->where('supervisor_id', '=', $supervisorId);
         }
-        $users = $users->get();
+        if (request()->page && request()->rowsPerPage) {
+            $count = $users->count();
+            $users = $users->paginate(request()->rowsPerPage)->toArray();
+            $users = $users['data'];
+        } else {
+
+            $users = $users->take(10)->get();
+        }
         $targets = [];
         foreach ($users as $user) {
             if ($request->from_month && $request->to_month && $request->year) {
-                $user['monthly_targets'] = FocusedTarget::where('user_id', '=', $user->id)
+                $user['monthly_targets'] = FocusedTarget::where('user_id', '=', $user['id'])
                     ->whereBetween('month', [$request->from_month, $request->to_month])
                     ->where('year', '=', $request->year)
                     ->get();
@@ -128,6 +136,7 @@ class FocusedTargetsController extends Controller
 
         return response()->json([
             'data'     =>  $targets,
+            'count'     =>  $count,
             'success'   =>  true
         ], 200);
     }
