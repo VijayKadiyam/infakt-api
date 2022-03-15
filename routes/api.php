@@ -168,7 +168,7 @@ Route::resource('users/{user}/user_references', 'UserReferencesController');
 
 Route::resource('users/{user}/notifications', 'NotificationsController');
 Route::get('targets/masters', 'TargetsController@masters');
-Route::get('targets', 'TargetsController@NewSearch');
+Route::get('targets', 'TargetsController@search');
 Route::resource('users/{user}/targets', 'TargetsController');
 
 Route::post('user_profile_image', 'UserUploadsController@profileImage');
