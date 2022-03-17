@@ -90,7 +90,7 @@ class GenerateBaReportCommand extends Command
         //     'IIA',
         //     'GT',
         //     'MT',
-        //     'ME_CNC',
+        //     'MT_CNC',
         // ];
 
         // foreach ($channels as $key => $channel) {

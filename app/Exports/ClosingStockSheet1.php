@@ -102,6 +102,8 @@ class ClosingStockSheet1 implements FromView, ShouldAutoSize, WithStyles, WithTi
     {
         if ($this->region) {
             return $this->region . "'s Closing Stock | " . Carbon::parse($this->date)->format('d-M-Y');
+        } else if ($this->channel) {
+            return $this->channel . "'s Closing Stock | " . Carbon::parse($this->date)->format('d-M-Y');
         } else {
             return "Closing Stock | " . Carbon::parse($this->date)->format('d-M-Y');
         }
