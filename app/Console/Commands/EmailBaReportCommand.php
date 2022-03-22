@@ -47,7 +47,7 @@ class EmailBaReportCommand extends Command
         // $todayDate = Carbon::now()->format('Y-m-d');
 
         $this->info('Email Report for Date: ' . $todayDate);
-        
+
         $supervisors = User::with('roles')
             ->where('active', '=', 1)
             ->whereHas('roles',  function ($q) {
@@ -83,6 +83,18 @@ class EmailBaReportCommand extends Command
 
         $this->info('BA Report Emailed...');
 
+        // Brand wise
+        $brands = [
+            'Mamaearth',
+            'Derma',
+        ];
+
+        foreach ($brands as $key => $brand) {
+            Mail::to('deepika.k@mamaearth.in')
+                ->cc(['ac.north@pousse.in', 'kirit.sayani@pousse.in', 'bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in'])
+                ->send(new BaReportEmail($todayDate, $brand));
+        }
+
         // Region wise
         $regions = [
             'North',
@@ -115,7 +127,7 @@ class EmailBaReportCommand extends Command
                     ->send(new BaReportEmail($todayDate, $region));
         }
 
-        // Region wise
+        // Channel wise
         $channels = [
             'IIA',
             // 'GT',
