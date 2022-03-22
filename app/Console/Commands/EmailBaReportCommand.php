@@ -58,7 +58,7 @@ class EmailBaReportCommand extends Command
         $count = 1;
         foreach ($supervisors as $supervisor) {
             $name = $supervisor->name;
-            $rsm = 'jyotisingh21095@gmail.com';
+            $rsm = 'nancy.t@mamaearth.in';
             if ($supervisor->region == 'EAST')
                 $rsm = 'swarupa.c@mamaearth.in';
             if ($supervisor->region == 'WEST')
@@ -93,7 +93,7 @@ class EmailBaReportCommand extends Command
 
         foreach ($regions as $key => $region) {
             // $rsm = 'ksohail.sk32@gmail.com';
-            $rsm = 'jyotisingh21095@gmail.com';
+            $rsm = 'nancy.t@mamaearth.in';
             if ($region == 'East')
                 $rsm = 'swarupa.c@mamaearth.in';
             if ($region == 'West')
@@ -104,30 +104,30 @@ class EmailBaReportCommand extends Command
             if ($region == 'North')
                 Mail::to($rsm)
                     ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in', 'sunita.mamaearth@yahoo.com'])
-                    ->send(new BaReportEmail($todayDate));
+                    ->send(new BaReportEmail($todayDate, $region));
             else if ($region == 'East')
                 Mail::to($rsm)
                     ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in', 'anirban.choudhury@pousse.in'])
-                    ->send(new BaReportEmail($todayDate));
+                    ->send(new BaReportEmail($todayDate, $region));
             else
                 Mail::to($rsm)
                     ->cc(['bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in'])
-                    ->send(new BaReportEmail($todayDate));
+                    ->send(new BaReportEmail($todayDate, $region));
         }
 
         // Region wise
         $channels = [
-            'GT',
-            'MT',
             'IIA',
-            'ME_CNC',
+            // 'GT',
+            // 'MT',
+            // 'MT - CNC',
         ];
 
         foreach ($channels as $key => $channel) {
             if ($channel == 'IIA')
                 Mail::to('rashi.j@mamaearth.in')
                     ->cc(['kvjkumr@gmail.com'])
-                    ->send(new BaReportEmail($todayDate));
+                    ->send(new BaReportEmail($todayDate, $channel));
         }
     }
 }
