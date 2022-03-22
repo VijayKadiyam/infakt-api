@@ -51,13 +51,21 @@ class TargetsController extends Controller
 
   public function search(Request $request)
   {
+    // return 1;
     ini_set('max_execution_time', 0);
     ini_set("memory_limit", "-1");
+    $count = 0;
     $users = $request->company->users()->with('roles')
       ->whereHas('roles',  function ($q) {
         $q->where('name', '!=', 'Admin');
         $q->where('name', '!=', 'Distributor');
       });
+
+    // $users = $request->company->users()->with('roles')
+    //   ->whereHas('roles',  function ($q) {
+    //     $q->where('name', '!=', 'Admin');
+    //     $q->where('name', '!=', 'Distributor');
+    //   });
     $region = $request->region;
     if ($region) {
       $users = $users->where('region', 'LIKE', '%' . $region . '%');
@@ -76,26 +84,37 @@ class TargetsController extends Controller
     if ($supervisorId != '') {
       $users = $users->where('supervisor_id', '=', $supervisorId);
     }
-    $users = $users->get();
+    if (request()->page && request()->rowsPerPage) {
+      $count = $users->count();
+      $users = $users->paginate(request()->rowsPerPage)->toArray();
+      $users = $users['data'];
+    } else {
 
+      $users = $users->get();
+    }
+    // return $users;
+    // $users = $users['data'];
     $targets = [];
     foreach ($users as $user) {
       if ($request->from_month && $request->to_month && $request->year) {
-        $user['monthly_targets'] = Target::where('user_id', '=', $user->id)
+        $user['monthly_targets'] = Target::where('user_id', '=', $user['id'])
           ->whereBetween('month', [$request->from_month, $request->to_month])
           ->where('year', '=', $request->year)
           ->get();
       }
       $user['target_id'] = (sizeOf($user['monthly_targets']) != 0) ? $user['monthly_targets'][0]['id'] : '';
-      $user['user_id'] =  $user->id;
+      $user['user_id'] =  $user['id'];
       $targets[] = $user;
+      // return $user['monthly_targets'] ;
     }
 
     return response()->json([
       'data'     =>  $targets,
+      'count'     =>  $count,
       'success'   =>  true
     ], 200);
   }
+
   public function NewSearch(Request $request)
   {
     // return 1;
@@ -110,11 +129,15 @@ class TargetsController extends Controller
     if ($request->from_month && $request->to_month && $request->year) {
       $targets = $request->company->targets()
         ->whereBetween('month', [$request->from_month, $request->to_month])
-        ->where('year', '=', $request->year)
-        ->get();
-    } else {
-      $targets = $request->company->targets()->get();
+        ->where('year', '=', $request->year);
+      $count = $targets->count();
+      $targets = $targets->paginate(request()->rowsPerPage)->toArray();
+      $targets = $targets['data'];
     }
+    // $targets = $targets['data'];
+    // else {
+    //   $targets = $request->company->targets()->get();
+    // }
 
     // return $targets;
 

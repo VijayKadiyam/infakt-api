@@ -557,17 +557,17 @@ class OfftakeAnalyticsController extends Controller
 					$sku['closing_stock'] = ($totalQty + $receivedQty - $purchaseReturnedQty - $consumedQty + $returnedQty);
 					$sku['qty'] = $sku['closing_stock'];
 
-					DailyOrderSummary::create([
-						'company_id'  =>  1,
-						'user_id' =>  $user->id,
-						'sku_id'  =>  $sku->id,
-						'opening_stock' =>  $sku['opening_stock'],
-						'received_stock' =>  $sku['received_stock'],
-						'purchase_returned_stock' =>  $sku['purchase_returned_stock'],
-						'sales_stock' =>  $sku['sales_stock'],
-						'returned_stock' =>  $sku['returned_stock'],
-						'closing_stock' =>  $sku['closing_stock'],
-					]);
+					// DailyOrderSummary::create([
+					// 	'company_id'  =>  1,
+					// 	'user_id' =>  $user->id,
+					// 	'sku_id'  =>  $sku->id,
+					// 	'opening_stock' =>  $sku['opening_stock'],
+					// 	'received_stock' =>  $sku['received_stock'],
+					// 	'purchase_returned_stock' =>  $sku['purchase_returned_stock'],
+					// 	'sales_stock' =>  $sku['sales_stock'],
+					// 	'returned_stock' =>  $sku['returned_stock'],
+					// 	'closing_stock' =>  $sku['closing_stock'],
+					// ]);
 				}
 			}
 		}
@@ -663,19 +663,19 @@ class OfftakeAnalyticsController extends Controller
 					$sku['qty'] = $sku['closing_stock'];
 
 
-					MonthlyOrderSummary::create([
-						'company_id'  =>  1,
-						'user_id' =>  $user->id,
-						'sku_id'  =>  $sku->id,
-						'month'		=>	$previousMonth,
-						'year'		=>	'2022',
-						'opening_stock' =>  $sku['opening_stock'],
-						'received_stock' =>  $sku['received_stock'],
-						'purchase_returned_stock' =>  $sku['purchase_returned_stock'],
-						'sales_stock' =>  $sku['sales_stock'],
-						'returned_stock' =>  $sku['returned_stock'],
-						'closing_stock' =>  $sku['closing_stock'],
-					]);
+					// MonthlyOrderSummary::create([
+					// 	'company_id'  =>  1,
+					// 	'user_id' =>  $user->id,
+					// 	'sku_id'  =>  $sku->id,
+					// 	'month'		=>	$previousMonth,
+					// 	'year'		=>	'2022',
+					// 	'opening_stock' =>  $sku['opening_stock'],
+					// 	'received_stock' =>  $sku['received_stock'],
+					// 	'purchase_returned_stock' =>  $sku['purchase_returned_stock'],
+					// 	'sales_stock' =>  $sku['sales_stock'],
+					// 	'returned_stock' =>  $sku['returned_stock'],
+					// 	'closing_stock' =>  $sku['closing_stock'],
+					// ]);
 				}
 			}
 		}
