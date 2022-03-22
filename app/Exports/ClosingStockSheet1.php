@@ -25,13 +25,14 @@ class ClosingStockSheet1 implements FromView, ShouldAutoSize, WithStyles, WithTi
     public $supervisorId;
     public $region;
     public $channel;
-    public function __construct($date, $supervisorId, $region, $channel)
+    public function __construct($date, $supervisorId, $region, $channel, $brand)
     {
         $this->date = $date;
         $this->supervisorId = $supervisorId;
         $this->region = $region;
         $this->month = Carbon::parse($date)->format('M-Y');
         $this->channel = $channel;
+        $this->brand = $brand;
     }
 
     public function styles(Worksheet $sheet)
@@ -67,10 +68,10 @@ class ClosingStockSheet1 implements FromView, ShouldAutoSize, WithStyles, WithTi
 
         $count = 0;
         $dailyOrderSummaries = $company->daily_order_summaries()
-		// ->where('user_id', 3314)->orwhere('user_id', 3009)->orwhere('user_id', 2857)
-			// ->whereDate('created_at', '=', $date)
-			->latest();
-			// ->orderBy('closing_stock', 'DESC');
+            // ->where('user_id', 3314)->orwhere('user_id', 3009)->orwhere('user_id', 2857)
+            // ->whereDate('created_at', '=', $date)
+            ->latest();
+        // ->orderBy('closing_stock', 'DESC');
 
         $region = $this->region;
         if ($region) {
@@ -82,6 +83,12 @@ class ClosingStockSheet1 implements FromView, ShouldAutoSize, WithStyles, WithTi
         if ($channel) {
             $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($channel) {
                 $q->where('channel', 'LIKE', '%' . $channel . '%');
+            });
+        }
+        $brand = $this->brand;
+        if ($brand) {
+            $dailyOrderSummaries = $dailyOrderSummaries->whereHas('user',  function ($q) use ($brand) {
+                $q->where('brand', 'LIKE', '%' . $brand . '%');
             });
         }
         $supervisorId = $this->supervisorId;
