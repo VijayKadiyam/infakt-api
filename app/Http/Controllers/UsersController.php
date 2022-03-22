@@ -263,9 +263,8 @@ class UsersController extends Controller
       $users = $users
         ->where('brand', 'LIKE', '%' . $request->brand . '%');
     }
-    if ($request->superVisor_id) {
-      $supervisorId = $request->superVisor_id;
-      // return $supervisorId;
+    if ($request->superVisor_id || $request->supervisor_id) {
+      $supervisorId = $request->superVisor_id ? $request->superVisor_id : $request->supervisor_id;
       $users =  $users->where('supervisor_id', '=', $supervisorId);
     }
     $users = $users->paginate(request()->rowsPerPage)->toArray();
