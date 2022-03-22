@@ -19,13 +19,15 @@ class SkuOfftakesSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
 	public $supervisorId;
 	public $region;
 	public $channel;
+	public $brand;
 
-	public function __construct($date, $supervisorId, $region, $channel)
+	public function __construct($date, $supervisorId, $region, $channel, $brand)
 	{
 		$this->date = $date;
 		$this->supervisorId = $supervisorId;
 		$this->region = $region;
 		$this->channel = $channel;
+		$this->brand = $brand;
 	}
 	public function styles(Worksheet $sheet)
 	{
@@ -81,7 +83,12 @@ class SkuOfftakesSheet implements FromView, ShouldAutoSize, WithStyles, WithTitl
 			if ($channel) {
 				$users = $users->where('channel', 'LIKE', '%' . $channel . '%');
 			}
+			$brand = $this->brand;
+			if ($brand) {
+				$users = $users->where('brand', 'LIKE', '%' . $brand . '%');
+			}
 			$users = $users->get();
+
 			foreach ($users as $user) {
 
 				$singleUserData['user'] = $user;

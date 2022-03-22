@@ -13,19 +13,21 @@ class BAReportExport implements WithMultipleSheets
     public $supervisorId;
     public $region;
     public $channel;
+    public $brand;
 
-    public function __construct($date, $supervisorId = '', $region = "", $channel = "")
+    public function __construct($date, $supervisorId = '', $region = "", $channel = "", $brand = "")
     {
         $this->date = $date;
         $this->supervisorId = $supervisorId;
         $this->region = $region;
         $this->channel = $channel;
+        $this->brand = $brand;
     }
 
     public function sheets(): array
     {
         $sheets = [];
-        $sheets[] = new DailyAttendanceSheet($this->date, $this->supervisorId, $this->region, $this->channel);
+$sheets[] = new DailyAttendanceSheet($this->date, $this->supervisorId, $this->region, $this->channel);
         $sheets[] = new MonthlyAttendanceSheet($this->date, $this->supervisorId, $this->region, $this->channel);
         $sheets[] = new SkuOfftakesSheet($this->date, $this->supervisorId, $this->region, $this->channel);
         $sheets[] = new SkuValueOfftakesSheet($this->date, $this->supervisorId, $this->region, $this->channel);

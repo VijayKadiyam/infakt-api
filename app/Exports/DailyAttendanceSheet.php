@@ -19,13 +19,15 @@ class DailyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, With
     public $supervisorId;
     public $region;
     public $channel;
+    public $brand;
 
-    public function __construct($date, $supervisorId, $region, $channel)
+    public function __construct($date, $supervisorId, $region, $channel, $brand)
     {
         $this->date = $date;
         $this->supervisorId = $supervisorId;
         $this->region = $region;
         $this->channel = $channel;
+        $this->brand = $brand;
     }
 
     public function styles(Worksheet $sheet)
@@ -59,6 +61,12 @@ class DailyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, With
         if ($channel) {
             $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($channel) {
                 $q->where('channel', 'LIKE', '%' . $channel . '%');
+            });
+        }
+        $brand = $this->brand;
+        if ($brand) {
+            $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($brand) {
+                $q->where('brand', 'LIKE', '%' . $brand . '%');
             });
         }
         $supervisorId = $this->supervisorId;
@@ -97,6 +105,7 @@ class DailyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, With
      */
     public function title(): string
     {
+        // return 'Attendance | ' . $this->brand;
         return 'Attendance | ' . Carbon::parse($this->date)->format('d-M-Y');
     }
 }

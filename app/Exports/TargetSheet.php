@@ -20,13 +20,16 @@ class TargetSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
     public $supervisorId;
     public $region;
     public $channel;
-    public function __construct($date, $supervisorId, $region, $channel)
+    public $brand;
+
+    public function __construct($date, $supervisorId, $region, $channel, $brand)
     {
         $this->date = $date;
         $this->supervisorId = $supervisorId;
         $this->region = $region;
 		$this->month = Carbon::parse($date)->format('M-Y');
         $this->channel = $channel;
+        $this->brand = $brand;
     }
 
     public function styles(Worksheet $sheet)
@@ -66,6 +69,11 @@ class TargetSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
         $channel = $this->channel;
         if ($channel) {
             $users = $users->where('channel', 'LIKE', '%' . $channel . '%');
+        }
+
+        $brand = $this->brand;
+        if ($brand) {
+            $users = $users->where('brand', 'LIKE', '%' . $brand . '%');
         }
 
         $supervisorId = $this->supervisorId;

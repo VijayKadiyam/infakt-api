@@ -19,13 +19,15 @@ class OfftakesSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
 	public $supervisorId;
 	public $region;
 	public $channel;
+	public $brand;
 
-	public function __construct($date, $supervisorId, $region, $channel)
+	public function __construct($date, $supervisorId, $region, $channel, $brand)
 	{
 		$this->date = $date;
 		$this->supervisorId = $supervisorId;
 		$this->region = $region;
 		$this->channel = $channel;
+		$this->brand = $brand;
 	}
 
 	public function styles(Worksheet $sheet)
