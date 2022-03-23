@@ -76,12 +76,12 @@ class EmailBaReportCommand extends Command
             $count++;
         }
 
-        // Compelete BA Report
-        Mail::to('deepika.k@mamaearth.in')
-            ->cc(['ac.north@pousse.in', 'kirit.sayani@pousse.in', 'bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in'])
-            ->send(new BaReportEmail($todayDate));
+        // // Compelete BA Report
+        // Mail::to('deepika.k@mamaearth.in')
+        //     ->cc(['ac.north@pousse.in', 'kirit.sayani@pousse.in', 'bharat.upreti@pousse.in', 'kvjkumr@gmail.com', 'pc.me@pousse.in'])
+        //     ->send(new BaReportEmail($todayDate));
 
-        $this->info('BA Report Emailed...');
+        // $this->info('BA Report Emailed...');
 
         // Brand wise
         $brands = [

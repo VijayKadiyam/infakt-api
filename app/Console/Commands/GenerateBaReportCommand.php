@@ -74,7 +74,7 @@ class GenerateBaReportCommand extends Command
             'Derma',
         ];
         foreach ($brands as $brand) {
-            Excel::store(new BAReportExport($date, "", "", "", $brand), "/reports/$date/$brand-BA-Report-$date.xlsx", "local");
+            Excel::store(new BAReportExport($date, "", "", "", $brand), "/reports/$date/$brand-BAs-Report-$date.xlsx", "local");
 
             $this->info("$brand BA Report Generated...");
         }
@@ -101,12 +101,12 @@ class GenerateBaReportCommand extends Command
         ];
 
         foreach ($channels as $key => $channel) {
-            return Excel::store(new BAReportExport($date, "", "", $channel), "/reports/$date/$channel-BA-Report-$date.xlsx");
+            return Excel::store(new BAReportExport($date, "", "", $channel), "/reports/$date/$channel-BAs-Report-$date.xlsx");
         }
 
-        // Complete Report
-        Excel::store(new BAReportExport($date), "/reports/$date/BA-Report-$date.xlsx", "local");
+        // // Complete Report
+        // Excel::store(new BAReportExport($date), "/reports/$date/BA-Report-$date.xlsx", "local");
 
-        $this->info('BA Report Generated...');
+        // $this->info('BA Report Generated...');
     }
 }

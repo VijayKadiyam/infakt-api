@@ -38,10 +38,10 @@ class BaReportEmail extends Mailable
         if($supervisorName == '')
             return $this->view('mails.ba_report_mail', compact('todayDate', 'supervisorName'))
             ->from(env('MAIL_USERNAME'), env('MAIL_NAME'))
-            ->subject("BA Report | $todayDate | MamaEarth - AUTO GENERATED");
+            ->subject("BA Report | $todayDate - AUTO GENERATED");
         else
             return $this->view('mails.ba_report_mail', compact('todayDate', 'supervisorName'))
             ->from(env('MAIL_USERNAME'), env('MAIL_NAME'))
-            ->subject("BA Report | $supervisorName | $todayDate | MamaEarth - AUTO GENERATED");
+            ->subject("BA Report | $supervisorName | $todayDate - AUTO GENERATED");
     }
 }
