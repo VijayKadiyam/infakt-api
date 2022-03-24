@@ -791,7 +791,7 @@ class AnalyticsController extends Controller
         }
         $outlets[] = [
           'outlet'    =>  $retailer->name,
-          'achieved'  =>  $retailerTotal + ' ' .  ($target != 0 ? round(($achieved / $target) * 100) . '%' : ''),
+          'achieved'  =>  $retailerTotal,
         ];
       }
     }
@@ -813,7 +813,7 @@ class AnalyticsController extends Controller
 
     $data = [
       'target'    =>  $target,
-      'achieved'  =>  $retailerTotal + ' ' .  ($target != 0 ? round(($achieved / $target) * 100) . '%' : ''),
+      'achieved'  =>  $retailerTotal,
       'percent'   =>  $target != 0 ? round($achieved * 100 / $target) : 0,
       'outlets'   =>  $outlets
     ];
