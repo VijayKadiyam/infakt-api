@@ -948,7 +948,7 @@ class AnalyticsController extends Controller
       $achievedLast3 = $targetLast3->achieved;
 
     $data = [
-      'last_month'    =>  $achievedLast,
+      'last_month'    =>  round(($achievedLast + $achievedLast2 + $achievedLast3) / 3),
       'current_month' =>  $achieved,
       'outlets'       =>  $outlets,
       'months'        =>  [
