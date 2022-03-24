@@ -106,6 +106,7 @@ class VisitorsController extends Controller
                 ->whereMonth('created_at', $request->month);
             $count = $visitors->count();
             $visitors = $visitors->get();
+        }
         // } else {
         //     $visitors = request()->company->visitors;
         //     $count = $visitors->count();
