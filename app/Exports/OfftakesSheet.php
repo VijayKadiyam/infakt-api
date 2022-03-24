@@ -65,7 +65,7 @@ class OfftakesSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
 		if ($supervisorId != '')
 			$supervisors = $supervisors->where('id', '=', $supervisorId);
 
-		$supervisors = $supervisors->take(10)->get();
+		$supervisors = $supervisors->get();
 
 		foreach ($supervisors as $supervisor) {
 
