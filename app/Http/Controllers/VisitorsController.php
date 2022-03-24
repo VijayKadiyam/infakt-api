@@ -106,35 +106,38 @@ class VisitorsController extends Controller
                 ->whereMonth('created_at', $request->month);
             $count = $visitors->count();
             $visitors = $visitors->get();
-        } else {
-            $visitors = request()->company->visitors;
-            $count = $visitors->count();
+        // } else {
+        //     $visitors = request()->company->visitors;
+        //     $count = $visitors->count();
+        // }
+         else {
+            $visitors = request()->company->visitors();
+            $region = $request->region;
+            if ($region) {
+                $visitors = $visitors->whereHas('user',  function ($q) use ($region) {
+                    $q->where('region', 'LIKE', '%' . $region . '%');
+                });
+            }
+            $channel = $request->channel;
+            if ($channel) {
+                $visitors = $visitors->whereHas('user',  function ($q) use ($channel) {
+                    $q->where('channel', 'LIKE', '%' . $channel . '%');
+                });
+            }
+            $brand = $request->brand;
+            if ($brand) {
+                $visitors = $visitors->whereHas('user',  function ($q) use ($brand) {
+                    $q->where('brand', 'LIKE', '%' . $brand . '%');
+                });
+            }
+            $supervisorId = request()->supervisor_id;
+            if ($supervisorId != '')
+                $visitors = $visitors->whereHas('user',  function ($q) use ($supervisorId) {
+                    $q->where('supervisor_id', '=', $supervisorId);
+                });
+            $visitors = $visitors->get();
         }
-        $visitors = request()->company->visitors();
-        $region = $request->region;
-        if ($region) {
-            $visitors = $visitors->whereHas('user',  function ($q) use ($region) {
-                $q->where('region', 'LIKE', '%' . $region . '%');
-            });
-        }
-        $channel = $request->channel;
-        if ($channel) {
-            $visitors = $visitors->whereHas('user',  function ($q) use ($channel) {
-                $q->where('channel', 'LIKE', '%' . $channel . '%');
-            });
-        }
-        $brand = $request->brand;
-        if ($brand) {
-            $visitors = $visitors->whereHas('user',  function ($q) use ($brand) {
-                $q->where('brand', 'LIKE', '%' . $brand . '%');
-            });
-        }
-        $supervisorId = request()->supervisor_id;
-        if ($supervisorId != '')
-            $visitors = $visitors->whereHas('user',  function ($q) use ($supervisorId) {
-                $q->where('supervisor_id', '=', $supervisorId);
-            });
-        $visitors = $visitors->get();
+       
         return response()->json([
             'data'     =>  $visitors,
             'count'    =>   $count,
