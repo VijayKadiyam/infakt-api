@@ -83,6 +83,11 @@ class OfftakesSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
 				$users = $users->where('channel', 'LIKE', '%' . $channel . '%');
 			}
 
+			$brand = $this->brand;
+			if ($brand) {
+				$users = $users->where('brand', 'LIKE', '%' . $brand . '%');
+			}
+
 			$users = $users->get();
 
 			foreach ($users as $user) {
@@ -98,7 +103,7 @@ class OfftakesSheet implements FromView, ShouldAutoSize, WithStyles, WithTitle
 				// if ($date) {
 				// 	$ors = $ors->whereDate('created_at', $date);
 				// }
-			if ($month) {
+				if ($month) {
 					$ors = $ors->whereMonth('created_at', '=', $month);
 				}
 				if ($year) {
