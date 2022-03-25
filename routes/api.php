@@ -419,6 +419,7 @@ Route::resource('pjp_visited_supervisor_expenses', 'PjpVisitedSupervisorExpenses
 Route::get('offtake_reports/masters', 'OfftakeAnalyticsController@masters');
 Route::get('offtake_reports/products', 'OfftakeAnalyticsController@noOrValueOfReports');
 Route::get('exports', 'OfftakeAnalyticsController@exports');
+Route::get('simple_exports', 'OfftakeAnalyticsController@simple_exports');
 
 // Report Lists
 Route::post('report_lists_photos', 'UploadsController@uploadReportListAttchment');
