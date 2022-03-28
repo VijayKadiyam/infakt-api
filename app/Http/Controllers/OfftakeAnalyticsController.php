@@ -471,7 +471,7 @@ class OfftakeAnalyticsController extends Controller
 			// Excel::store(new BAReportExport($date,'',$channel), "/reports/$date/BAs-Report-NORTH-$date.xlsx", 'local');
 		}
 	}
-	public function exports(Request $request)
+	public function exports2(Request $request)
 	{
 		ini_set('max_execution_time', 0);
 
@@ -918,5 +918,16 @@ class OfftakeAnalyticsController extends Controller
 
 		// 	// Excel::store(new BAReportExport($date,'',$channel), "/reports/$date/BAs-Report-NORTH-$date.xlsx", 'local');
 		// }
+	}
+	public function exports(Request $request)
+	{
+		ini_set('max_execution_time', 0);
+
+		ini_set('max_execution_time', 0);
+		ini_set('memory_limit', '-1');
+
+		$date = $request->date;
+
+		return Excel::download(new BAReportExport($date, "", "", "", ""), "BA-Report.xlsx");
 	}
 }
