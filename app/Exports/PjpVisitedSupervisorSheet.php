@@ -84,7 +84,7 @@ class PjpVisitedSupervisorSheet implements FromView, ShouldAutoSize, WithStyles,
         if ($supervisorId != '')
             $supervisors = $supervisors->where('id', '=', $supervisorId);
 
-        $supervisors = $supervisors->take(1)->get();
+        $supervisors = $supervisors->take(2)->get();
 
         foreach ($supervisors as $key => $supervisor) {
             $supervisorId = $supervisor->id;

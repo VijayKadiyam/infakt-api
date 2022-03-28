@@ -928,6 +928,6 @@ class OfftakeAnalyticsController extends Controller
 
 		$date = $request->date;
 
-		return Excel::download(new BAReportExport($date, 674, "", "", ""), "BA-Report.xlsx");
+		return Excel::download(new BAReportExport($date, "", "", "", ""), "BA-Report.xlsx");
 	}
 }
