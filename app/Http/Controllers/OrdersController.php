@@ -236,6 +236,14 @@ class OrdersController extends Controller
       // ---------------------------------------------------
     }
 
+
+    $total = 0;
+    foreach ($order->order_details as $order_detail) {
+      $total += $order_detail->value;
+    }
+    $order->total = $total;
+    $order->update();
+
     $order->order_details = $order->order_details;
 
     return response()->json([
@@ -313,6 +321,14 @@ class OrdersController extends Controller
         $order_Detail->update();
       }
     }
+
+    $total = 0;
+    foreach ($order->order_details as $order_detail) {
+      $total += $order_detail->value;
+    }
+    $order->total = $total;
+    $order->update();
+    
     return response()->json([
       'data'  =>  $order
     ], 200);
@@ -322,9 +338,9 @@ class OrdersController extends Controller
   {
     $orderDetails = OrderDetail::where('id', '=', $id)->first();
 
-    if ($orderDetails->is_active != 0) {
-      $order = Order::find($orderDetails->order_id);
+    $order = Order::find($orderDetails->order_id);
 
+    if ($orderDetails->is_active != 0) {
       $dailyOrderSummaries = DailyOrderSummary::where('user_id', '=', $order->user_id)
         // ->latest()
         ->get();
@@ -348,9 +364,15 @@ class OrdersController extends Controller
       }
     }
 
-
     $orderDetails->is_active = 0;
     $orderDetails->update();
+
+    $total = 0;
+    foreach ($order->order_details as $order_detail) {
+      $total += $order_detail->value;
+    }
+    $order->total = $total;
+    $order->update();
 
 
     return response()->json([
