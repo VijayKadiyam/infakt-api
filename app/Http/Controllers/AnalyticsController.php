@@ -466,13 +466,13 @@ class AnalyticsController extends Controller
         'percent' => $target == 0 ? 0 : ceil(($achieved * 100) / $target),
       ];
     }
-    $achievedDatas[] = [
-      'store_name'  => '-',
-      'target'  =>  '-',
-      'target_category' =>  '-',
-      'achieved'  =>  '-',
-      'percent' =>  '-',
-    ];
+    // $achievedDatas[] = [
+    //   'store_name'  => '-',
+    //   'target'  =>  '-',
+    //   'target_category' =>  '-',
+    //   'achieved'  =>  '-',
+    //   'percent' =>  '-',
+    // ];
 
     return response()->json([
       'data'    =>  $achievedDatas,
