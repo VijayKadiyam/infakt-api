@@ -49,6 +49,7 @@ class BAReportExport implements WithMultipleSheets
         }
         // $sheets[] = new ClosingStockSheet($this->date, $this->supervisorId, $this->region, $this->channel, $this->brand);
         $sheets[] = new StockReportSheet($this->date, $this->supervisorId, $this->region, $this->channel, $this->brand);
+        // $sheets[] = new PjpVisitedSupervisorSheet($this->date, $this->supervisorId, $this->region, $this->channel, $this->brand);
         return $sheets;
     }
 }
