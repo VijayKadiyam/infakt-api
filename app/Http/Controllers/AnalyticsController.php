@@ -105,7 +105,7 @@ class AnalyticsController extends Controller
     // Total orders of a month
     $ordersOfMonth = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month)
-      ->whereIn('order_type', '=', ['Sales', 'Stock Received'])
+      ->where('order_type', '=', 'Sales')
       // ->orWhere('order_type', '=', 'Stock Received')
       ->where('is_active', '=', 1)
       ->get();
