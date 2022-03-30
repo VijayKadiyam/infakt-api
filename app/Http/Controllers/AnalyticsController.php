@@ -753,6 +753,7 @@ class AnalyticsController extends Controller
     $ordersOfMonth = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month)
       ->where('order_type', '=', 'Sales')
+      ->orWhere('order_type', '=', 'Stock Returned')
       ->where('is_active', '=', 1)
       ->get();
 
@@ -808,12 +809,15 @@ class AnalyticsController extends Controller
     }
     // Total achieved in a month
     foreach ($ordersOfMonth as $order) {
-      $achieved += $order->total;
+      if ($order->order_type == 'Sales')
+        $achieved += $order->total;
+      else
+        $achieved -= $order->total;
     }
 
     $data = [
       'target'    =>  $target,
-      'achieved'  =>  $retailerTotal,
+      'achieved'  =>  $achieved,
       'percent'   =>  $target != 0 ? round($achieved * 100 / $target) : 0,
       'outlets'   =>  $outlets
     ];
