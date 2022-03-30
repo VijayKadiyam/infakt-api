@@ -106,6 +106,7 @@ class AnalyticsController extends Controller
     $ordersOfMonth = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month)
       ->where('order_type', '=', 'Sales')
+      ->orWhere('order_type', '=', 'Stock Received')
       ->where('is_active', '=', 1)
       ->get();
 
@@ -134,8 +135,12 @@ class AnalyticsController extends Controller
       $ordersOfADateTotal = 0;
       foreach ($ordersOfMonth as $order) {
         $orderDate = Carbon::parse($order->created_at)->format('Y-m-d');
-        if ($orderDate == $date)
-          $ordersOfADateTotal += $order->total;
+        if ($orderDate == $date) {
+          if ($order->order_type == 'Sales')
+            $ordersOfADateTotal += $order->total;
+          else
+            $ordersOfADateTotal -= $order->total;
+        }
       }
 
       if ($ordersOfADateTotal != 0)
