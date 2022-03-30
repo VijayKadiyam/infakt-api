@@ -190,7 +190,7 @@ class AnalyticsController extends Controller
         // Total orders of a month
         $ordersOfMonth = Order::where('user_id', '=', $supervisorUser->id)
           ->whereMonth('created_at', $request->month)
-          ->where('order_type', '=', 'Sales')
+          ->whereIn('order_type', ['Sales', 'Stock Received'])
           ->where('is_active', '=', 1)
           ->get();
 
@@ -209,8 +209,13 @@ class AnalyticsController extends Controller
 
         // Achieved of a month
         foreach ($ordersOfMonth as $order) {
-          $achieved += $order->total;
-          $totalAchieved += $order->total;
+          if ($order->order_type == 'Sales') {
+            $achieved += $order->total;
+            $totalAchieved += $order->total;
+          } else {
+            $achieved -= $order->total;
+            $totalAchieved -= $order->total;
+          }
         }
 
         $achievedDatas[] = [
@@ -449,7 +454,7 @@ class AnalyticsController extends Controller
       $ordersOfMonth = Order::where('user_id', '=', $request->userId)
         ->with('order_details')
         ->whereMonth('created_at', $request->month)
-        ->where('order_type', '=', 'Sales')
+        ->whereIn('order_type', ['Sales', 'Stock Received'])
         ->where('is_active', '=', 1)
         ->get();
 
@@ -458,7 +463,10 @@ class AnalyticsController extends Controller
         foreach ($order->order_details as $orderDetail) {
           foreach ($finalSearches as $search) {
             if (str_contains($orderDetail->sku->hsn_code, strtoupper($search))) {
-              $achieved += $target < 100 ?  $orderDetail->qty : $orderDetail->value;
+              if ($order->order_type == 'Sales')
+                $achieved += $target < 100 ?  $orderDetail->qty : $orderDetail->value;
+              else
+                $achieved -= $target < 100 ?  $orderDetail->qty : $orderDetail->value;
               // $achieved += $orderDetail->value;
             }
           }
