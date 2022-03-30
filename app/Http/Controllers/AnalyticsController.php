@@ -125,7 +125,10 @@ class AnalyticsController extends Controller
 
     // Achieved of a month
     foreach ($ordersOfMonth as $order) {
-      $achieved += $order->total;
+      if ($order->order_type == 'Sales')
+        $achieved += $order->total;
+      else
+        $achieved -= $order->total;
     }
 
     // Datewise orders
