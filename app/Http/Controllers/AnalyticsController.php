@@ -190,7 +190,7 @@ class AnalyticsController extends Controller
         // Total orders of a month
         $ordersOfMonth = Order::where('user_id', '=', $supervisorUser->id)
           ->whereMonth('created_at', $request->month)
-          ->whereIn('order_type', ['Sales', 'Stock Received'])
+          ->whereIn('order_type', ['Sales'])
           ->where('is_active', '=', 1)
           ->get();
 
@@ -454,7 +454,7 @@ class AnalyticsController extends Controller
       $ordersOfMonth = Order::where('user_id', '=', $request->userId)
         ->with('order_details')
         ->whereMonth('created_at', $request->month)
-        ->whereIn('order_type', ['Sales', 'Stock Received'])
+        ->whereIn('order_type', ['Sales'])
         ->where('is_active', '=', 1)
         ->get();
 
