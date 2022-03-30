@@ -106,7 +106,9 @@ class AnalyticsController extends Controller
     $ordersOfMonth = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month)
       ->where('is_active', '=', 1)
-      ->whereIn('order_type', ['Sales'])
+      // ->whereIn('order_type', ['Sales'])
+      // ->whereIn('order_type', ['Stock Returned'])
+      ->whereIn('order_type', ['Sales', 'Stock Returned'])
       ->get();
 
     // Get target
@@ -190,7 +192,7 @@ class AnalyticsController extends Controller
         // Total orders of a month
         $ordersOfMonth = Order::where('user_id', '=', $supervisorUser->id)
           ->whereMonth('created_at', $request->month)
-          ->whereIn('order_type', ['Sales'])
+          ->whereIn('order_type', ['Sales', 'Stock Returned'])
           ->where('is_active', '=', 1)
           ->get();
 
@@ -454,7 +456,7 @@ class AnalyticsController extends Controller
       $ordersOfMonth = Order::where('user_id', '=', $request->userId)
         ->with('order_details')
         ->whereMonth('created_at', $request->month)
-        ->whereIn('order_type', ['Sales'])
+        ->whereIn('order_type', ['Sales', 'Stock Returned'])
         ->where('is_active', '=', 1)
         ->get();
 
@@ -716,7 +718,7 @@ class AnalyticsController extends Controller
           $ordersOfMonth = Order::where('user_id', '=', $supervisorUser->id)
             ->with('order_details')
             ->whereMonth('created_at', $request->month)
-            ->where('order_type', '=', 'Sales')
+            ->whereIn('order_type', ['Sales', 'Stock Returned'])
             ->where('is_active', '=', 1)
             ->get();
 
@@ -725,8 +727,10 @@ class AnalyticsController extends Controller
             foreach ($order->order_details as $orderDetail) {
               foreach ($finalSearches as $search) {
                 if (str_contains($orderDetail->sku->hsn_code, strtoupper($search))) {
-                  $achieved += $target < 100 ?  $orderDetail->qty : $orderDetail->value;
-                  // $achieved += $orderDetail->value;
+                  if ($order->order_type == 'Sales')
+                    $achieved += $target < 100 ?  $orderDetail->qty : $orderDetail->value;
+                  else
+                    $achieved -= $target < 100 ?  $orderDetail->qty : $orderDetail->value;
                 }
               }
             }
@@ -767,7 +771,7 @@ class AnalyticsController extends Controller
     // Total orders of a month
     $ordersOfMonth = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month)
-      ->whereIn('order_type', ['Sales', 'Stock Received'])
+      ->whereIn('order_type', ['Sales', 'Stock Returned'])
       ->where('is_active', '=', 1)
       ->get();
 
@@ -853,7 +857,7 @@ class AnalyticsController extends Controller
     // Total orders of this month
     $ordersOfMonth = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month)
-      ->whereIn('order_type', ['Sales', 'Stock Received'])
+      ->whereIn('order_type', ['Sales', 'Stock Returned'])
       ->where('is_active', '=', 1)
       ->get();
 
@@ -861,14 +865,14 @@ class AnalyticsController extends Controller
       // Total orders of last month
       $ordersOfLastMonth = Order::where('user_id', '=', $request->userId)
         ->whereMonth('created_at', 10)
-        ->whereIn('order_type', ['Sales', 'Stock Received'])
+        ->whereIn('order_type', ['Sales', 'Stock Returned'])
         ->where('is_active', '=', 1)
         ->get();
     } else {
       // Total orders of last month
       $ordersOfLastMonth = Order::where('user_id', '=', $request->userId)
         ->whereMonth('created_at', 02)
-        ->whereIn('order_type', ['Sales', 'Stock Received'])
+        ->whereIn('order_type', ['Sales', 'Stock Returned'])
         ->where('is_active', '=', 1)
         ->get();
     }
@@ -877,7 +881,7 @@ class AnalyticsController extends Controller
     // Total orders of last 2 month
     $ordersOfLast2Month = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', 9)
-      ->whereIn('order_type', ['Sales', 'Stock Received'])
+      ->whereIn('order_type', ['Sales', 'Stock Returned'])
       ->where('is_active', '=', 1)
       ->get();
 
