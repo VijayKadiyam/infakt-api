@@ -141,6 +141,7 @@ class CompetitorDatasController extends Controller
             'user_id'    =>  'required'
         ]);
         $competitor_data = new CompetitorData($request->all());
+        $competitor_data->month = '3';
         $request->company->competitor_datas()->save($competitor_data);
 
         return response()->json([
@@ -155,7 +156,6 @@ class CompetitorDatasController extends Controller
        */
     public function show(CompetitorData $competitor_data)
     {
-        $competitor_data->month = '3';
         
         return response()->json([
             'data'   =>  $competitor_data
