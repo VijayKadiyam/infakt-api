@@ -410,7 +410,7 @@ class OrdersController extends Controller
       $orders = $orders->whereYear('created_at', '=', 2022);
       $openingOrders = [];
       if ($request->orderType) {
-        if ($request->orderType == 'Opening Stock') {
+        if ($request->orderType == 'Opening Stock' && $request->month != 1 && $request->month != 2) {
           $order = new Order();
           $order->id = 1;
           $order->created_at = Carbon::now()->startOfMonth();
@@ -432,7 +432,7 @@ class OrdersController extends Controller
         } else
           $orders = $orders->where('order_type', '=', $request->orderType);
       }
-      if ($request->orderType != 'Opening Stock')
+      if ($request->orderType != 'Opening Stock' || $request->month == 1 || $request->month == 2)
         $orders = $orders->get();
       else
         $orders = $openingOrders;
