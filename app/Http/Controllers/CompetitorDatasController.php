@@ -155,6 +155,8 @@ class CompetitorDatasController extends Controller
        */
     public function show(CompetitorData $competitor_data)
     {
+        $competitor_data->month = '3';
+        
         return response()->json([
             'data'   =>  $competitor_data
         ], 200);
