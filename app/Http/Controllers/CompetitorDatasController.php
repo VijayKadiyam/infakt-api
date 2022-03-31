@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\CompetitorData;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CompetitorDatasController extends Controller
@@ -141,7 +142,7 @@ class CompetitorDatasController extends Controller
             'user_id'    =>  'required'
         ]);
         $competitor_data = new CompetitorData($request->all());
-        $competitor_data->month = '3';
+        $competitor_data->month = Carbon::now()->month;
         $request->company->competitor_datas()->save($competitor_data);
 
         return response()->json([
