@@ -416,6 +416,7 @@ class OrdersController extends Controller
           $order->created_at = Carbon::now()->startOfMonth();
           $order->total = 0;
           $dailyOrderSummaries = DailyOrderSummary::where('user_id', '=', $request->userId)
+            ->orderBy('opening_stock', 'DESC')
             ->get();
           $orderDetails = [];
           foreach ($dailyOrderSummaries as $dailyOrderSummary) {
