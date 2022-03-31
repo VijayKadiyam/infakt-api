@@ -412,6 +412,7 @@ class OrdersController extends Controller
       if ($request->orderType) {
         if ($request->orderType == 'Opening Stock') {
           $order = new Order();
+          $order->id = 1;
           $order->created_at = Carbon::now()->startOfMonth();
           $order->total = 0;
           $dailyOrderSummaries = DailyOrderSummary::where('user_id', '=', $request->userId)
