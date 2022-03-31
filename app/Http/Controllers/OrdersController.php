@@ -420,7 +420,7 @@ class OrdersController extends Controller
           foreach ($dailyOrderSummaries as $dailyOrderSummary) {
             $orderDetail = new OrderDetail();
             $orderDetail->sku = $dailyOrderSummary->sku;
-            $orderDetail->qty = $dailyOrderSummary->opening_stock;
+            $orderDetail->qty = 10;
             $orderDetail->value = $dailyOrderSummary->opening_stock * $dailyOrderSummary->sku->price;
             $order->total += $orderDetail->value;
             $orderDetails[] = $orderDetail;
