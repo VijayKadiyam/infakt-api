@@ -120,7 +120,7 @@ class CompetitorDatasController extends Controller
             $competitor_datas = $competitor_datas->whereHas('user',  function ($q) use ($supervisorId) {
                 $q->where('supervisor_id', '=', $supervisorId);
             });
-        $competitor_datas = $competitor_datas->get();
+        $competitor_datas = $competitor_datas->latest()->get();
 
         $count = $competitor_datas->count();
         return response()->json([
