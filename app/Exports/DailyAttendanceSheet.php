@@ -50,7 +50,7 @@ class DailyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, With
         $company = Company::find(1);
         $userAttendances = $company->user_attendances()
             ->where('date', '=', $this->date);
-        // $userAttendances = $userAttendances->take(10);
+        // $userAttendances = $userAttendances->take(20);
         $region = $this->region;
         if ($region) {
             $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($region) {
@@ -74,7 +74,8 @@ class DailyAttendanceSheet implements FromView, ShouldAutoSize, WithStyles, With
             $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
                 $q->where('supervisor_id', '=', $supervisorId);
             });
-        $userAttendances = $userAttendances->get();
+        $userAttendances = $userAttendances->groupBy('user_id')->get();
+        // $userAttendances = $userAttendances->groupBy('user_attendances.user_id')->get();
 
         foreach ($userAttendances as $userAttendance) {
             if ($userAttendance->selfie_path == null) {

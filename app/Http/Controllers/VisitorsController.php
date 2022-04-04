@@ -90,17 +90,8 @@ class VisitorsController extends Controller
     public function index(Request $request)
     {
         $count = 0;
-        if (request()->page && request()->rowsPerPage) {
-            $visitors = request()->company->visitors();
-            $supervisorId = request()->superVisor_id;
-            if ($supervisorId != '')
-                $visitors = $visitors->whereHas('user',  function ($q) use ($supervisorId) {
-                    $q->where('supervisor_id', '=', $supervisorId);
-                });
-            $count = $visitors->count();
-            $visitors = $visitors->paginate(request()->rowsPerPage)->toArray();
-            $visitors = $visitors['data'];
-        } else if ($request->retailerId && $request->month) {
+
+        if ($request->retailerId && $request->month) {
             $visitors = request()->company->visitors()
                 ->where('retailer_id', '=', $request->retailerId)
                 ->whereMonth('created_at', $request->month);
@@ -111,7 +102,7 @@ class VisitorsController extends Controller
         //     $visitors = request()->company->visitors;
         //     $count = $visitors->count();
         // }
-         else {
+        else {
             $visitors = request()->company->visitors();
             $region = $request->region;
             if ($region) {
@@ -136,9 +127,16 @@ class VisitorsController extends Controller
                 $visitors = $visitors->whereHas('user',  function ($q) use ($supervisorId) {
                     $q->where('supervisor_id', '=', $supervisorId);
                 });
-            $visitors = $visitors->get();
+
+            $count = $visitors->count();
+            if (request()->page && request()->rowsPerPage) {
+                $visitors = $visitors->paginate(request()->rowsPerPage)->toArray();
+                $visitors = $visitors['data'];
+            } else {
+                $visitors = $visitors->get();
+            }
         }
-       
+
         return response()->json([
             'data'     =>  $visitors,
             'count'    =>   $count,
