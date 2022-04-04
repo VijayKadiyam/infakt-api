@@ -13,12 +13,15 @@
             <th rowspan="2">BA Name</th>
             <th rowspan="2">PMS EMP ID</th>
             <th rowspan="2">Supervisor Name</th>
-            <th colspan="7">Jan 2022</th>
+            @foreach($months as $month)
+            <th colspan="7">{{ date("F", mktime(0, 0, 0, $month, 1)) }} 2022</th>
+            @endforeach
             <!-- <th colspan="6">Week 2</th>
             <th colspan="6">Week 3</th>
             <th colspan="6">Week 4</th> -->
         </tr>
         <tr>
+            @foreach($months as $month)
             <th>Bio Tech</th>
             <th>Derma Fique</th>
             <th>Nivea</th>
@@ -26,6 +29,7 @@
             <th>Olay</th>
             <th>Plum</th>
             <th>Wow</th>
+            @endforeach
 
         </tr>
     </thead>
@@ -44,14 +48,15 @@
             <td>{{ $user['ba_name'] }}</td>
             <td>{{ $user['pms_emp_id'] }}</td>
             <td>{{ $user['supervisor_name'] }}</td>
-            <td>{{ $user['m1_Bio_Tech'] ?? '0'}}</td>
-            <td>{{ $user['m1_Derma_Fique'] ?? '0'}}</td>
-            <td>{{ $user['m1_Nivea'] ?? '0'}}</td>
-            <td>{{ $user['m1_Neutrogena'] ?? '0'}}</td>
-            <td>{{ $user['m1_Olay'] ?? '0'}}</td>
-            <td>{{ $user['m1_Plum'] ?? '0'}}</td>
-            <td>{{ $user['m1_Wow'] ?? '0'}}</td>
-
+            @foreach($months as $month)
+            <td>{{ $user['m' . $month . '_Bio_Tech'] ?? '0'}}</td>
+            <td>{{ $user['m' . $month . '_Derma_Fique'] ?? '0'}}</td>
+            <td>{{ $user['m' . $month . '_Nivea'] ?? '0'}}</td>
+            <td>{{ $user['m' . $month . '_Neutrogena'] ?? '0'}}</td>
+            <td>{{ $user['m' . $month . '_Olay'] ?? '0'}}</td>
+            <td>{{ $user['m' . $month . '_Plum'] ?? '0'}}</td>
+            <td>{{ $user['m' . $month . '_Wow'] ?? '0'}}</td>
+            @endforeach
         </tr>
         @endforeach
 

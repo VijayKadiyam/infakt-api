@@ -53,6 +53,10 @@ class CompetitorDataSheet implements FromView, ShouldAutoSize, WithStyles, WithT
 
         $currentMonth = Carbon::now()->format('m');
         $month =  Carbon::parse($this->date)->format('m');
+        $months=[];
+        for ($i=1; $i <= $month; $i++) { 
+            $months[$i]=$i;
+        }
         $year = Carbon::parse($this->date)->format('Y');
         $daysInMonth = Carbon::parse($this->date)->daysInMonth;
         if ($month == $currentMonth) {
@@ -206,7 +210,7 @@ class CompetitorDataSheet implements FromView, ShouldAutoSize, WithStyles, WithT
                 $users[$user_key]["months"][$month] = $competitor;
             }
         }
-        return view('exports.competitor_data_export', compact('users', 'daysInMonth'));
+        return view('exports.competitor_data_export', compact('users', 'months'));
         // return view('exports.competitor_data_export', compact('competitor_datas', 'daysInMonth'));
     }
 
