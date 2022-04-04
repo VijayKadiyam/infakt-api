@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\CompetitorData;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CompetitorDatasController extends Controller
@@ -120,7 +121,7 @@ class CompetitorDatasController extends Controller
             $competitor_datas = $competitor_datas->whereHas('user',  function ($q) use ($supervisorId) {
                 $q->where('supervisor_id', '=', $supervisorId);
             });
-        $competitor_datas = $competitor_datas->get();
+        $competitor_datas = $competitor_datas->latest()->get();
 
         $count = $competitor_datas->count();
         return response()->json([
@@ -141,6 +142,7 @@ class CompetitorDatasController extends Controller
             'user_id'    =>  'required'
         ]);
         $competitor_data = new CompetitorData($request->all());
+        $competitor_data->month = Carbon::now()->month;
         $request->company->competitor_datas()->save($competitor_data);
 
         return response()->json([
@@ -155,6 +157,7 @@ class CompetitorDatasController extends Controller
        */
     public function show(CompetitorData $competitor_data)
     {
+        
         return response()->json([
             'data'   =>  $competitor_data
         ], 200);

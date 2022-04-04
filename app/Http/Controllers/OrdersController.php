@@ -8,6 +8,7 @@ use App\OrderDetail;
 use App\User;
 use Carbon\Carbon;
 use App\DailyOrderSummary;
+use App\Sku;
 use App\UserAttendance;
 
 class OrdersController extends Controller
@@ -328,7 +329,7 @@ class OrdersController extends Controller
     }
     $order->total = $total;
     $order->update();
-    
+
     return response()->json([
       'data'  =>  $order
     ], 200);
@@ -407,11 +408,34 @@ class OrdersController extends Controller
         $orders = $orders->whereMonth('created_at', '=', $request->month);
       }
       $orders = $orders->whereYear('created_at', '=', 2022);
+      $openingOrders = [];
       if ($request->orderType) {
-        $orders = $orders->where('order_type', '=', $request->orderType);
+        if ($request->orderType == 'Opening Stock' && $request->month != 1 && $request->month != 2) {
+          $order = new Order();
+          $order->id = 1;
+          $order->created_at = Carbon::now()->startOfMonth();
+          $order->total = 0;
+          $dailyOrderSummaries = DailyOrderSummary::where('user_id', '=', $request->userId)
+            ->orderBy('opening_stock', 'DESC')
+            ->get();
+          $orderDetails = [];
+          foreach ($dailyOrderSummaries as $dailyOrderSummary) {
+            $orderDetail = new OrderDetail();
+            $orderDetail->sku = $dailyOrderSummary->sku;
+            $orderDetail->qty = (int)$dailyOrderSummary->opening_stock;
+            $orderDetail->value = $dailyOrderSummary->opening_stock * $dailyOrderSummary->sku->price;
+            $order->total += $orderDetail->value;
+            $orderDetails[] = $orderDetail;
+          }
+          $order->order_details = $orderDetails;
+          $openingOrders = [$order];
+        } else
+          $orders = $orders->where('order_type', '=', $request->orderType);
       }
-
-      $orders = $orders->get();
+      if ($request->orderType != 'Opening Stock' || $request->month == 1 || $request->month == 2)
+        $orders = $orders->get();
+      else
+        $orders = $openingOrders;
     } else if ($request->is_offtake_filter == 'YES') {
       $orders = request()->company->orders_list()
         ->where('is_active', '=', 1);

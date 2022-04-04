@@ -23,6 +23,6 @@ class DailyOrderSummary extends Model
     public function sku()
     {
         return $this->belongsTo(Sku::class)
-            ->with('product');
+            ->with('product', 'offer');
     }
 }

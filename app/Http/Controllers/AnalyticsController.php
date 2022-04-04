@@ -105,8 +105,10 @@ class AnalyticsController extends Controller
     // Total orders of a month
     $ordersOfMonth = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month)
-      ->where('order_type', '=', 'Sales')
       ->where('is_active', '=', 1)
+      // ->whereIn('order_type', ['Sales'])
+      // ->whereIn('order_type', ['Stock Returned'])
+      ->whereIn('order_type', ['Sales', 'Stock Returned'])
       ->get();
 
     // Get target
@@ -124,7 +126,10 @@ class AnalyticsController extends Controller
 
     // Achieved of a month
     foreach ($ordersOfMonth as $order) {
-      $achieved += $order->total;
+      if ($order->order_type == 'Sales')
+        $achieved += $order->total;
+      else
+        $achieved -= $order->total;
     }
 
     // Datewise orders
@@ -134,8 +139,12 @@ class AnalyticsController extends Controller
       $ordersOfADateTotal = 0;
       foreach ($ordersOfMonth as $order) {
         $orderDate = Carbon::parse($order->created_at)->format('Y-m-d');
-        if ($orderDate == $date)
-          $ordersOfADateTotal += $order->total;
+        if ($orderDate == $date) {
+          if ($order->order_type == 'Sales')
+            $ordersOfADateTotal += $order->total;
+          else
+            $ordersOfADateTotal -= $order->total;
+        }
       }
 
       if ($ordersOfADateTotal != 0)
@@ -183,7 +192,7 @@ class AnalyticsController extends Controller
         // Total orders of a month
         $ordersOfMonth = Order::where('user_id', '=', $supervisorUser->id)
           ->whereMonth('created_at', $request->month)
-          ->where('order_type', '=', 'Sales')
+          ->whereIn('order_type', ['Sales', 'Stock Returned'])
           ->where('is_active', '=', 1)
           ->get();
 
@@ -202,8 +211,13 @@ class AnalyticsController extends Controller
 
         // Achieved of a month
         foreach ($ordersOfMonth as $order) {
-          $achieved += $order->total;
-          $totalAchieved += $order->total;
+          if ($order->order_type == 'Sales') {
+            $achieved += $order->total;
+            $totalAchieved += $order->total;
+          } else {
+            $achieved -= $order->total;
+            $totalAchieved -= $order->total;
+          }
         }
 
         $achievedDatas[] = [
@@ -442,7 +456,7 @@ class AnalyticsController extends Controller
       $ordersOfMonth = Order::where('user_id', '=', $request->userId)
         ->with('order_details')
         ->whereMonth('created_at', $request->month)
-        ->where('order_type', '=', 'Sales')
+        ->whereIn('order_type', ['Sales', 'Stock Returned'])
         ->where('is_active', '=', 1)
         ->get();
 
@@ -451,7 +465,10 @@ class AnalyticsController extends Controller
         foreach ($order->order_details as $orderDetail) {
           foreach ($finalSearches as $search) {
             if (str_contains($orderDetail->sku->hsn_code, strtoupper($search))) {
-              $achieved += $target < 100 ?  $orderDetail->qty : $orderDetail->value;
+              if ($order->order_type == 'Sales')
+                $achieved += $target < 100 ?  $orderDetail->qty : $orderDetail->value;
+              else
+                $achieved -= $target < 100 ?  $orderDetail->qty : $orderDetail->value;
               // $achieved += $orderDetail->value;
             }
           }
@@ -466,13 +483,13 @@ class AnalyticsController extends Controller
         'percent' => $target == 0 ? 0 : ceil(($achieved * 100) / $target),
       ];
     }
-    $achievedDatas[] = [
-      'store_name'  => '-',
-      'target'  =>  '-',
-      'target_category' =>  '-',
-      'achieved'  =>  '-',
-      'percent' =>  '-',
-    ];
+    // $achievedDatas[] = [
+    //   'store_name'  => '-',
+    //   'target'  =>  '-',
+    //   'target_category' =>  '-',
+    //   'achieved'  =>  '-',
+    //   'percent' =>  '-',
+    // ];
 
     return response()->json([
       'data'    =>  $achievedDatas,
@@ -701,7 +718,7 @@ class AnalyticsController extends Controller
           $ordersOfMonth = Order::where('user_id', '=', $supervisorUser->id)
             ->with('order_details')
             ->whereMonth('created_at', $request->month)
-            ->where('order_type', '=', 'Sales')
+            ->whereIn('order_type', ['Sales', 'Stock Returned'])
             ->where('is_active', '=', 1)
             ->get();
 
@@ -710,8 +727,10 @@ class AnalyticsController extends Controller
             foreach ($order->order_details as $orderDetail) {
               foreach ($finalSearches as $search) {
                 if (str_contains($orderDetail->sku->hsn_code, strtoupper($search))) {
-                  $achieved += $target < 100 ?  $orderDetail->qty : $orderDetail->value;
-                  // $achieved += $orderDetail->value;
+                  if ($order->order_type == 'Sales')
+                    $achieved += $target < 100 ?  $orderDetail->qty : $orderDetail->value;
+                  else
+                    $achieved -= $target < 100 ?  $orderDetail->qty : $orderDetail->value;
                 }
               }
             }
@@ -752,7 +771,7 @@ class AnalyticsController extends Controller
     // Total orders of a month
     $ordersOfMonth = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month)
-      ->where('order_type', '=', 'Sales')
+      ->whereIn('order_type', ['Sales', 'Stock Returned'])
       ->where('is_active', '=', 1)
       ->get();
 
@@ -808,12 +827,15 @@ class AnalyticsController extends Controller
     }
     // Total achieved in a month
     foreach ($ordersOfMonth as $order) {
-      $achieved += $order->total;
+      if ($order->order_type == 'Sales')
+        $achieved += $order->total;
+      else
+        $achieved -= $order->total;
     }
 
     $data = [
       'target'    =>  $target,
-      'achieved'  =>  $retailerTotal,
+      'achieved'  =>  $achieved,
       'percent'   =>  $target != 0 ? round($achieved * 100 / $target) : 0,
       'outlets'   =>  $outlets
     ];
@@ -835,31 +857,22 @@ class AnalyticsController extends Controller
     // Total orders of this month
     $ordersOfMonth = Order::where('user_id', '=', $request->userId)
       ->whereMonth('created_at', $request->month)
-      ->where('order_type', '=', 'Sales')
+      ->whereIn('order_type', ['Sales', 'Stock Returned'])
       ->where('is_active', '=', 1)
       ->get();
 
-    if ($request->month == '01') {
-      // Total orders of last month
-      $ordersOfLastMonth = Order::where('user_id', '=', $request->userId)
-        ->whereMonth('created_at', 10)
-        ->where('order_type', '=', 'Sales')
-        ->where('is_active', '=', 1)
-        ->get();
-    } else {
-      // Total orders of last month
-      $ordersOfLastMonth = Order::where('user_id', '=', $request->userId)
-        ->whereMonth('created_at', 02)
-        ->where('order_type', '=', 'Sales')
-        ->where('is_active', '=', 1)
-        ->get();
-    }
+    // Total orders of last month
+    $ordersOfLastMonth = Order::where('user_id', '=', $request->userId)
+      ->whereMonth('created_at', 03)
+      ->whereIn('order_type', ['Sales', 'Stock Returned'])
+      ->where('is_active', '=', 1)
+      ->get();
 
 
     // Total orders of last 2 month
     $ordersOfLast2Month = Order::where('user_id', '=', $request->userId)
-      ->whereMonth('created_at', 9)
-      ->where('order_type', '=', 'Sales')
+      ->whereMonth('created_at', 02)
+      ->whereIn('order_type', ['Sales', 'Stock Returned'])
       ->where('is_active', '=', 1)
       ->get();
 
@@ -920,26 +933,25 @@ class AnalyticsController extends Controller
     }
     // Total achieved in a month
     foreach ($ordersOfMonth as $order) {
-      $achieved += $order->total;
+      if ($order->order_type == 'Sales')
+        $achieved += $order->total;
+      else
+        $achieved -= $order->total;
     }
-    // Total achieved in last month
-    // $targetLast = Target::where('user_id', '=', $request->userId)
-    //   ->where('month', $request->month - 1)
-    //   ->first();
-    // if (isset($targetLast))
-    //   $achievedLast = $targetLast->achieved;
+    
     foreach ($ordersOfLastMonth as $order) {
-      $achievedLast += $order->total;
+      if ($order->order_type == 'Sales')
+        $achievedLast += $order->total;
+      else
+        $achievedLast -= $order->total;
     }
     // Total achieved in last 2 month
-    $targetLast2 = Target::where('user_id', '=', $request->userId)
-      ->where('month', $request->month - 2)
-      ->first();
-    if (isset($targetLast2))
-      $achievedLast2 = $targetLast2->achieved;
-    // foreach ($ordersOfLast2Month as $order) {
-    //   $achievedLast2 += $order->total;
-    // }
+    foreach ($ordersOfLast2Month as $order) {
+      if ($order->order_type == 'Sales')
+        $achievedLast2 += $order->total;
+      else
+        $achievedLast2 -= $order->total;
+    }
     // Total achieved in last 3 month
     $targetLast3 = Target::where('user_id', '=', $request->userId)
       ->where('month', 12)
