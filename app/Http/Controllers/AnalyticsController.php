@@ -886,40 +886,40 @@ class AnalyticsController extends Controller
 
     // Reference Plans in this month
     $referencePlans = [];
-    foreach ($beatIds as $beatId) {
-      $beat = ReferencePlan::where('id', '=', $beatId)
-        ->with('retailers')
-        ->first();
-      if ($beat)
-        $referencePlans[] = $beat;
-    }
+    // foreach ($beatIds as $beatId) {
+    //   $beat = ReferencePlan::where('id', '=', $beatId)
+    //     ->with('retailers')
+    //     ->first();
+    //   if ($beat)
+    //     $referencePlans[] = $beat;
+    // }
 
-    // return response()->json([
-    //   'data'  =>  $referencePlans
-    // ]);
+    // // return response()->json([
+    // //   'data'  =>  $referencePlans
+    // // ]);
 
-    // Outlet wise total in this month
-    foreach ($referencePlans as $referencePlan) {
-      foreach ($referencePlan->retailers as $retailer) {
-        $retailerTotal = 0;
-        $retailerLastTotal = 0;
-        foreach ($ordersOfMonth as $order) {
-          if ($order->retailer->id == $retailer->id) {
-            $retailerTotal += $order->total;
-          }
-        }
-        foreach ($ordersOfLastMonth as $order) {
-          if ($order->retailer->id == $retailer->id) {
-            $retailerLastTotal += $order->total;
-          }
-        }
-        $outlets[] = [
-          'outlet'        =>  $retailer->name,
-          'current_month' =>  $retailerTotal,
-          'last_month'    =>  $retailerLastTotal,
-        ];
-      }
-    }
+    // // Outlet wise total in this month
+    // foreach ($referencePlans as $referencePlan) {
+    //   foreach ($referencePlan->retailers as $retailer) {
+    //     $retailerTotal = 0;
+    //     $retailerLastTotal = 0;
+    //     foreach ($ordersOfMonth as $order) {
+    //       if ($order->retailer->id == $retailer->id) {
+    //         $retailerTotal += $order->total;
+    //       }
+    //     }
+    //     foreach ($ordersOfLastMonth as $order) {
+    //       if ($order->retailer->id == $retailer->id) {
+    //         $retailerLastTotal += $order->total;
+    //       }
+    //     }
+    //     $outlets[] = [
+    //       'outlet'        =>  $retailer->name,
+    //       'current_month' =>  $retailerTotal,
+    //       'last_month'    =>  $retailerLastTotal,
+    //     ];
+    //   }
+    // }
 
     // Outlets in ascending order
     for ($i = 0; $i < sizeof($outlets); $i++) {
