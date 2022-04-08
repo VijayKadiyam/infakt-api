@@ -954,7 +954,7 @@ class AnalyticsController extends Controller
     }
     // Total achieved in last 3 month
     $targetLast3 = Target::where('user_id', '=', $request->userId)
-      ->where('month', 12)
+      ->where('month', 1)
       ->first();
     if (isset($targetLast3))
       $achievedLast3 = $targetLast3->achieved;
