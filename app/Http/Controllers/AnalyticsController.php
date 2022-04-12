@@ -429,7 +429,7 @@ class AnalyticsController extends Controller
         ];
       }
 
-      if ($category == 'body_wash' || $category == 'baby_range') {
+      if ($category == 'body_wash') {
         $finalSearches = [
           '8906087776116',
           '8906087774761',
@@ -798,7 +798,7 @@ class AnalyticsController extends Controller
             ];
           }
 
-          if ($category == 'body_wash' || $category == 'baby_range') {
+          if ($category == 'body_wash') {
             $finalSearches = [
               '8906087776116',
               '8906087774761',
