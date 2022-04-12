@@ -429,7 +429,7 @@ class AnalyticsController extends Controller
         ];
       }
 
-      if ($category == 'body_wash') {
+      if ($category == 'body_wash' || $category == 'baby_range') {
         $finalSearches = [
           '8906087776116',
           '8906087774761',
@@ -442,6 +442,14 @@ class AnalyticsController extends Controller
           '8906087775010',
           '8906087775034',
           '8906087775003',
+          '8906087773542',
+          '8906087771067',
+          '8906087772842',
+          '8906087772828',
+          '8906087772804',
+          '8906087772798',
+          '8906087772750',
+          '8906087772743',
         ];
       }
 
@@ -472,6 +480,27 @@ class AnalyticsController extends Controller
           '8906087776918',
           '8906087777212',
           '8906087778233',
+        ];
+      }
+
+      if ($category == 'facewash') {
+        $finalSearches = [
+          '8906087772583',
+          '8906087775539',
+          '8906087774259',
+          '8906087775188',
+          '8906087775317',
+          '8906087775614',
+          '8906087775621',
+          '8906087775638',
+          '8906087776369',
+          '8906087773924',
+          '8906087772859',
+          '8906087774617',
+          '8906087773115',
+          '8906087778233',
+          '8906087778240',
+          '8906087777762',
         ];
       }
 
@@ -753,7 +782,7 @@ class AnalyticsController extends Controller
               '8906087777519',
             ];
           }
-    
+
           if ($category == 'aqua_range') {
             $finalSearches = [
               '8906087776000',
@@ -762,14 +791,14 @@ class AnalyticsController extends Controller
               '8906087776413',
             ];
           }
-    
+
           if ($category == 'ultra_spf50_80ml') {
             $finalSearches = [
               '8906087771333',
             ];
           }
-    
-          if ($category == 'body_wash') {
+
+          if ($category == 'body_wash' || $category == 'baby_range') {
             $finalSearches = [
               '8906087776116',
               '8906087774761',
@@ -782,9 +811,17 @@ class AnalyticsController extends Controller
               '8906087775010',
               '8906087775034',
               '8906087775003',
+              '8906087773542',
+              '8906087771067',
+              '8906087772842',
+              '8906087772828',
+              '8906087772804',
+              '8906087772798',
+              '8906087772750',
+              '8906087772743',
             ];
           }
-    
+
           if ($category == 'ubtan_range') {
             $finalSearches = [
               '8906087773818',
@@ -814,7 +851,28 @@ class AnalyticsController extends Controller
               '8906087778233',
             ];
           }
-    
+
+          if ($category == 'facewash') {
+            $finalSearches = [
+              '8906087772583',
+              '8906087775539',
+              '8906087774259',
+              '8906087775188',
+              '8906087775317',
+              '8906087775614',
+              '8906087775621',
+              '8906087775638',
+              '8906087776369',
+              '8906087773924',
+              '8906087772859',
+              '8906087774617',
+              '8906087773115',
+              '8906087778233',
+              '8906087778240',
+              '8906087777762',
+            ];
+          }
+
           if ($category == 'color_range' || $category == 'color_care') {
             $finalSearches = [
               '8906087770930',
@@ -830,7 +888,7 @@ class AnalyticsController extends Controller
               '8906087776772',
             ];
           }
-    
+
           if ($category == 'hair_range') {
             $finalSearches = [
               '8906087771821',
