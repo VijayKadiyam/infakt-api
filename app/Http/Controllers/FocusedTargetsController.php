@@ -214,6 +214,19 @@ class FocusedTargetsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $msg = '';
+        $focusedTarget = FocusedTarget::where('id', '=', $id);
+        $focusedTarget->delete();
+
+        if ($focusedTarget) {
+            $msg = "Delete Successfully";
+        }else{
+            $msg = "Delete Failed";
+        }
+
+        return response()->json([
+            'data'     =>  $msg,
+            'success'   =>  true
+        ], 205);
     }
 }

@@ -439,6 +439,7 @@ Route::get('truncate_focused_targets', 'CrudeFocusedTargetsController@truncate')
 Route::get('focused_targets/masters', 'FocusedTargetsController@masters');
 Route::get('focused_targets', 'FocusedTargetsController@search');
 
+Route::delete('focused_targets/{id}', 'FocusedTargetsController@destroy');
 
 // Crude Customers
 Route::get('crude_customers', 'CrudeCustomersController@index');
