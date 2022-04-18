@@ -45,6 +45,7 @@ class CrudeFocusedTargetsController extends Controller
 
         $crude_focused_targets = CrudeFocusedTarget::all();
         $category = [
+            // category
             'baby_care',
             'lip_serum',
             'ubtan_range',
@@ -52,7 +53,7 @@ class CrudeFocusedTargetsController extends Controller
             'hair_range',
             'baby_range',
             'color_care',
-            'baby', // category
+            'baby', 
             'baby_Kit',
             'baby_Oil',
             'bath_salt',
@@ -113,6 +114,11 @@ class CrudeFocusedTargetsController extends Controller
             'rice_range',
             'almond_range',
             'body_lotion_cold_cream',
+            'tea_tree_range',
+            'charcoal_range',
+            'lipstick',
+            'aqua_range',
+            'ultra_spf50_80ml',
         ];
         $focus_target = [];
         foreach ($crude_focused_targets as $column =>  $target) {

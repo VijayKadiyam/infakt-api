@@ -96,6 +96,10 @@ class CrudeFocusedTarget extends Model
         'hair_range',
         'baby_range',
         'color_care',
-        
+        'tea_tree_range',
+        'charcoal_range',
+        'lipstick',
+        'aqua_range',
+        'ultra_spf50_80ml',
     ];
 }
