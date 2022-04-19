@@ -72,6 +72,8 @@ Route::get('user_attendances/masters', 'UserAttendancesController@masters');
 Route::get('user_attendances/user_attendance', 'UserAttendancesController@user_attendance');
 Route::get('user_attendances/monthly_attendances', 'UserAttendancesController@monthly_attendances');
 Route::get('user_attendances/defaulters', 'UserAttendancesController@defaulters');
+Route::get('user_attendances/gt_attendances', 'UserAttendancesController@gt_attendances');
+Route::get('user_attendances/other_channel_attendances', 'UserAttendancesController@other_channel_attendances');
 Route::resource('user_attendances', 'UserAttendancesController');
 Route::resource('user_attendances/{user_attendance}/user_attendance_breaks', 'UserAttendanceBreaksController');
 Route::resource('user_applications', 'UserApplicationsController');

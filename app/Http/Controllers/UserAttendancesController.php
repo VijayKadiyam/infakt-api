@@ -1269,4 +1269,540 @@ class UserAttendancesController extends Controller
       'success' =>  true
     ], 200);
   }
+  // GT Channel Attendance
+  public function gt_attendances(Request $request)
+  {
+    ini_set('max_execution_time', 0);
+    ini_set('memory_limit', -1);
+    $now = Carbon::now()->format('Y-m-d');
+    $users = request()->company->users();
+    if ($request->channel) {
+      $users = $users
+        ->where('channel', 'LIKE', '%' . $request->channel . '%');
+    }
+    $users = $users->get();
+    $userAttendances = request()->company->user_attendances();
+
+    $channel = $request->channel;
+    if ($channel) {
+      $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($channel) {
+        $q->where('channel', '=', $channel);
+      });
+    }
+    // $supervisorId = request()->superVisor_id;
+    // if ($supervisorId != '')
+    //   $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
+    //     $q->where('supervisor_id', '=', $supervisorId);
+    //   });
+    $userAttendances = $userAttendances->where('date', $now);
+
+    $userAttendances = $userAttendances->get();
+    $count = $userAttendances->count();
+    // return $userAttendances;
+    $gt_attandances = [];
+    $total_North_App_id = 0;
+    $total_South_App_id = 0;
+    $total_East_App_id = 0;
+    $total_West_App_id = 0;
+
+    $Active_North_Ba_Count = 0;
+    $Active_South_Ba_Count = 0;
+    $Active_East_Ba_Count = 0;
+    $Active_West_Ba_Count = 0;
+    foreach ($users as $key => $user) {
+      $region = str_replace(" ", "", $user['region']);
+
+      switch ($region) {
+        case 'North':
+          $total_North_App_id++;
+          if ($user['active'] == true) {
+            $Active_North_Ba_Count++;
+          }
+          break;
+        case 'South':
+          $total_South_App_id++;
+          if ($user['active'] == true) {
+            $Active_South_Ba_Count++;
+          }
+          break;
+        case 'East':
+          $total_East_App_id++;
+          if ($user['active'] == true) {
+            $Active_East_Ba_Count++;
+          }
+          break;
+        case 'West':
+          $total_West_App_id++;
+          if ($user['active'] == true) {
+            $Active_West_Ba_Count++;
+          }
+          break;
+
+        default:
+          # code...
+          break;
+      }
+    }
+
+
+    $North_present_count = 0;
+    $North_weekly_off_count = 0;
+    $North_leave_count = 0;
+    $North_meeting_count = 0;
+    $North_market_closed_count = 0;
+    $North_half_day_count = 0;
+    $North_holiday_count = 0;
+    $North_work_from_home_count = 0;
+
+    $South_present_count = 0;
+    $South_weekly_off_count = 0;
+    $South_leave_count = 0;
+    $South_meeting_count = 0;
+    $South_market_closed_count = 0;
+    $South_half_day_count = 0;
+    $South_holiday_count = 0;
+    $South_work_from_home_count = 0;
+
+    $East_present_count = 0;
+    $East_weekly_off_count = 0;
+    $East_leave_count = 0;
+    $East_meeting_count = 0;
+    $East_market_closed_count = 0;
+    $East_half_day_count = 0;
+    $East_holiday_count = 0;
+    $East_work_from_home_count = 0;
+
+    $West_present_count = 0;
+    $West_weekly_off_count = 0;
+    $West_leave_count = 0;
+    $West_meeting_count = 0;
+    $West_market_closed_count = 0;
+    $West_half_day_count = 0;
+    $West_holiday_count = 0;
+    $West_work_from_home_count = 0;
+    foreach ($userAttendances as $key => $attendance) {
+      $user = $attendance['user'];
+      $region = str_replace(" ", "", $user['region']);
+
+      switch ($region) {
+        case 'North':
+
+          switch ($attendance->session_type) {
+            case 'PRESENT':
+              $North_present_count++;
+              break;
+            case 'WEEKLY OFF':
+              $North_weekly_off_count++;
+              break;
+            case 'LEAVE':
+              $North_leave_count++;
+              break;
+            case 'MEETING':
+              $North_meeting_count++;
+              break;
+            case 'MARKET CLOSED':
+              $North_market_closed_count++;
+              break;
+            case 'HALF DAY':
+              $North_half_day_count++;
+              break;
+            case 'HOLIDAY':
+              $North_holiday_count++;
+              break;
+            case 'WORK FROM HOME':
+              $North_work_from_home_count++;
+              break;
+            default:
+              break;
+          }
+          // $North_Present = $attendance['session_type'] == 'PRESENT' ? $North_Present + 1 : $North_Present;
+          break;
+        case 'South':
+
+          switch ($attendance->session_type) {
+            case 'PRESENT':
+              $South_present_count++;
+              break;
+            case 'WEEKLY OFF':
+              $South_weekly_off_count++;
+              break;
+            case 'LEAVE':
+              $South_leave_count++;
+              break;
+            case 'MEETING':
+              $South_meeting_count++;
+              break;
+            case 'MARKET CLOSED':
+              $South_market_closed_count++;
+              break;
+            case 'HALF DAY':
+              $South_half_day_count++;
+              break;
+            case 'HOLIDAY':
+              $South_holiday_count++;
+              break;
+            case 'WORK FROM HOME':
+              $South_work_from_home_count++;
+              break;
+            default:
+              break;
+          }
+          break;
+        case 'East':
+
+          switch ($attendance->session_type) {
+            case 'PRESENT':
+              $East_present_count++;
+              break;
+            case 'WEEKLY OFF':
+              $East_weekly_off_count++;
+              break;
+            case 'LEAVE':
+              $East_leave_count++;
+              break;
+            case 'MEETING':
+              $East_meeting_count++;
+              break;
+            case 'MARKET CLOSED':
+              $East_market_closed_count++;
+              break;
+            case 'HALF DAY':
+              $East_half_day_count++;
+              break;
+            case 'HOLIDAY':
+              $East_holiday_count++;
+              break;
+            case 'WORK FROM HOME':
+              $East_work_from_home_count++;
+              break;
+            default:
+              break;
+          }
+          break;
+        case 'West':
+
+          switch ($attendance->session_type) {
+            case 'PRESENT':
+              $West_present_count++;
+              break;
+            case 'WEEKLY OFF':
+              $West_weekly_off_count++;
+              break;
+            case 'LEAVE':
+              $West_leave_count++;
+              break;
+            case 'MEETING':
+              $West_meeting_count++;
+              break;
+            case 'MARKET CLOSED':
+              $West_market_closed_count++;
+              break;
+            case 'HALF DAY':
+              $West_half_day_count++;
+              break;
+            case 'HOLIDAY':
+              $West_holiday_count++;
+              break;
+            case 'WORK FROM HOME':
+              $West_work_from_home_count++;
+              break;
+            default:
+              break;
+          }
+          break;
+
+        default:
+          # code...
+          break;
+      }
+    }
+
+    $gt_attandances['North'] = [
+      'total_App_id' => $total_North_App_id,
+      'Active_Ba_Count' => $Active_North_Ba_Count,
+      'present_count' => $North_present_count,
+      'weekly_off_count' => $North_weekly_off_count,
+      'leave_count' => $North_leave_count,
+      'meeting_count' => $North_meeting_count,
+      'market_closed_count' => $North_market_closed_count,
+      'half_day_count' => $North_half_day_count,
+      'holiday_count' => $North_holiday_count,
+      'work_from_home_count' => $North_work_from_home_count,
+      'gap' => $Active_North_Ba_Count - ($North_present_count
+        + $North_weekly_off_count
+        + $North_leave_count
+        + $North_meeting_count
+        + $North_market_closed_count
+        + $North_half_day_count
+        + $North_holiday_count
+        + $North_work_from_home_count)
+    ];
+    $gt_attandances['South'] = [
+      'total_App_id' => $total_South_App_id,
+      'Active_Ba_Count' => $Active_South_Ba_Count,
+      'present_count' => $South_present_count,
+      'weekly_off_count' => $South_weekly_off_count,
+      'leave_count' => $South_leave_count,
+      'meeting_count' => $South_meeting_count,
+      'market_closed_count' => $South_market_closed_count,
+      'half_day_count' => $South_half_day_count,
+      'holiday_count' => $South_holiday_count,
+      'work_from_home_count' => $South_work_from_home_count,
+      'gap' => $Active_South_Ba_Count - ($South_present_count
+        + $South_weekly_off_count
+        + $South_leave_count
+        + $South_meeting_count
+        + $South_market_closed_count
+        + $South_half_day_count
+        + $South_holiday_count
+        + $South_work_from_home_count)
+    ];
+    $gt_attandances['East'] = [
+      'total_App_id' => $total_East_App_id,
+      'Active_Ba_Count' => $Active_East_Ba_Count,
+      'present_count' => $East_present_count,
+      'weekly_off_count' => $East_weekly_off_count,
+      'leave_count' => $East_leave_count,
+      'meeting_count' => $East_meeting_count,
+      'market_closed_count' => $East_market_closed_count,
+      'half_day_count' => $East_half_day_count,
+      'holiday_count' => $East_holiday_count,
+      'work_from_home_count' => $East_work_from_home_count,
+      'gap' => $Active_East_Ba_Count - ($East_present_count
+        + $East_weekly_off_count
+        + $East_leave_count
+        + $East_meeting_count
+        + $East_market_closed_count
+        + $East_half_day_count
+        + $East_holiday_count
+        + $East_work_from_home_count)
+    ];
+    $gt_attandances['West'] = [
+      'total_App_id' => $total_West_App_id,
+      'Active_Ba_Count' => $Active_West_Ba_Count,
+      'present_count' => $West_present_count,
+      'weekly_off_count' => $West_weekly_off_count,
+      'leave_count' => $West_leave_count,
+      'meeting_count' => $West_meeting_count,
+      'market_closed_count' => $West_market_closed_count,
+      'half_day_count' => $West_half_day_count,
+      'holiday_count' => $West_holiday_count,
+      'work_from_home_count' => $West_work_from_home_count,
+      'gap' => $Active_West_Ba_Count - ($West_present_count
+        + $West_weekly_off_count
+        + $West_leave_count
+        + $West_meeting_count
+        + $West_market_closed_count
+        + $West_half_day_count
+        + $West_holiday_count
+        + $West_work_from_home_count)
+    ];
+
+    return response()->json([
+      'data'     =>  $gt_attandances,
+      'count' => $count,
+      'success' =>  true
+    ], 200);
+  }
+  // Other Channel Attendance
+  public function other_channel_attendances(Request $request)
+  {
+    ini_set('max_execution_time', 0);
+    ini_set('memory_limit', -1);
+    $now = Carbon::now()->format('Y-m-d');
+    $users = request()->company->users();
+    if ($request->channel) {
+      $users = $users
+        ->where('channel', '=', $request->channel);
+    }
+    $users = $users->get();
+    $userAttendances = request()->company->user_attendances();
+
+    $channel = $request->channel;
+    if ($channel) {
+      $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($channel) {
+        $q->where('channel', '=', $channel);
+      });
+    }
+    $userAttendances = $userAttendances->where('date', $now);
+
+    $userAttendances = $userAttendances->get();
+    $count = $userAttendances->count();
+    $other_channel_attandances = [];
+    $Channel_Chains = [];
+    foreach ($users as $key => $user) {
+      $chain_name = strtoupper(str_replace(" ", "", $user['chain_name']));
+      $total_name = 'total_' . $chain_name . '_App_id';
+      $Active_name = 'Active_' . $chain_name . '_Ba_Count';
+      if (!in_array($chain_name, $Channel_Chains)) {
+        $Channel_Chains[] = $chain_name;
+        $$total_name = 1;
+        $$Active_name = 1;
+      } else {
+        $$total_name = $$total_name + 1;
+        $$Active_name = $$Active_name + 1;
+      }
+      // $Total[$total_name] = $$total_name;
+      // $Active[$Active_name] = $$Active_name;
+    }
+    // return $Total;
+    foreach ($userAttendances as $key => $attendance) {
+      $user = $attendance['user'];
+      $chain_name = strtoupper(str_replace(" ", "", $user['chain_name']));
+
+      foreach ($Channel_Chains as $key => $chain) {
+        if ($chain == $chain_name) {
+          // chain=H&G
+          $present_name = $chain . '_present_count';
+          // present_name= H&G_present_count
+          if (!isset($$present_name)) {
+            $$present_name =  0;
+          }
+          $weekly_off_name = $chain . '_weekly_off_count';
+          // weekly_off_name= H&G_weekly_off_count
+          if (!isset($$weekly_off_name)) {
+            $$weekly_off_name =  0;
+          }
+          $leave_name = $chain . '_leave_count';
+          // leave_name= H&G_leave_count
+          if (!isset($$leave_name)) {
+            $$leave_name =  0;
+          }
+          $meeting_name = $chain . '_meeting_count';
+          // meeting_name= H&G_meeting_count
+          if (!isset($$meeting_name)) {
+            $$meeting_name =  0;
+          }
+          $market_closed_name = $chain . '_market_closed_count';
+          // market_closed_name= H&G_market_closed_count
+          if (!isset($$market_closed_name)) {
+            $$market_closed_name =  0;
+          }
+          $half_day_name = $chain . '_half_day_count';
+          // half_day_name= H&G_half_day_count
+          if (!isset($$half_day_name)) {
+            $$half_day_name =  0;
+          }
+          $holiday_name = $chain . '_holiday_count';
+          // holiday_name= H&G_holiday_count
+          if (!isset($$holiday_name)) {
+            $$holiday_name =  0;
+          }
+          $work_from_home_name = $chain . '_work_from_home_count';
+          // work_from_home_name= H&G_work_from_home_count
+          if (!isset($$work_from_home_name)) {
+            $$work_from_home_name =  0;
+          }
+          switch ($attendance->session_type) {
+            case 'PRESENT':
+              $$present_name = $$present_name ? $$present_name + 1 : 1;
+              break;
+            case 'WEEKLY OFF':
+              $$weekly_off_name = $$weekly_off_name ? $$weekly_off_name + 1 : 1;
+              // $North_weekly_off_count++;
+              break;
+            case 'LEAVE':
+              // $North_leave_count++;
+              $$leave_name = $$leave_name ? $$leave_name + 1 : 1;
+              break;
+            case 'MEETING':
+              $$meeting_name = $$meeting_name ? $$meeting_name + 1 : 1;
+              // $North_meeting_count++;
+              break;
+            case 'MARKET CLOSED':
+              $$market_closed_name = $$market_closed_name ? $$market_closed_name + 1 : 1;
+              // $North_market_closed_count++;
+              break;
+            case 'HALF DAY':
+              $$half_day_name = $$half_day_name ? $$half_day_name + 1 : 1;
+              // $North_half_day_count++;
+              break;
+            case 'HOLIDAY':
+              $$holiday_name = $$holiday_name ? $$holiday_name + 1 : 1;
+              // $North_holiday_count++;
+              break;
+            case 'WORK FROM HOME':
+              $$work_from_home_name = $$work_from_home_name ? $$work_from_home_name + 1 : 1;
+              // $North_work_from_home_count++;
+              break;
+            default:
+              break;
+          }
+        }
+      }
+    }
+    // return $$present_name;
+
+    foreach ($Channel_Chains as $key => $chain) {
+      $total_name = 'total_' . $chain . '_App_id';
+      $Active_name = 'Active_' . $chain. '_Ba_Count';
+      $present_name = $chain . '_present_count';
+      // present_name= H&G_present_count
+      if (!isset($$present_name)) {
+        $$present_name =  0;
+      }
+      $weekly_off_name = $chain . '_weekly_off_count';
+      // weekly_off_name= H&G_weekly_off_count
+      if (!isset($$weekly_off_name)) {
+        $$weekly_off_name =  0;
+      }
+      $leave_name = $chain . '_leave_count';
+      // leave_name= H&G_leave_count
+      if (!isset($$leave_name)) {
+        $$leave_name =  0;
+      }
+      $meeting_name = $chain . '_meeting_count';
+      // meeting_name= H&G_meeting_count
+      if (!isset($$meeting_name)) {
+        $$meeting_name =  0;
+      }
+      $market_closed_name = $chain . '_market_closed_count';
+      // market_closed_name= H&G_market_closed_count
+      if (!isset($$market_closed_name)) {
+        $$market_closed_name =  0;
+      }
+      $half_day_name = $chain . '_half_day_count';
+      // half_day_name= H&G_half_day_count
+      if (!isset($$half_day_name)) {
+        $$half_day_name =  0;
+      }
+      $holiday_name = $chain . '_holiday_count';
+      // holiday_name= H&G_holiday_count
+      if (!isset($$holiday_name)) {
+        $$holiday_name =  0;
+      }
+      $work_from_home_name = $chain . '_work_from_home_count';
+      // work_from_home_name= H&G_work_from_home_count
+      if (!isset($$work_from_home_name)) {
+        $$work_from_home_name =  0;
+      }
+
+      $other_channel_attandances[$chain] = [
+        'total_App_id' => $$total_name,
+        'Active_Ba_Count' => $$Active_name,
+        'present_count' => $$present_name,
+        'weekly_off_count' => $$weekly_off_name,
+        'leave_count' => $$leave_name,
+        'meeting_count' => $$meeting_name,
+        'market_closed_count' => $$market_closed_name,
+        'half_day_count' => $$half_day_name,
+        'holiday_count' => $$holiday_name,
+        'work_from_home_count' => $$work_from_home_name,
+        'gap' => $$Active_name - ($$present_name
+          + $$weekly_off_name
+          + $$leave_name
+          + $$meeting_name
+          + $$market_closed_name
+          + $$half_day_name
+          + $$holiday_name
+          + $$work_from_home_name)
+      ];
+    }
+
+    return response()->json([
+      'data'     =>  $other_channel_attandances,
+      'count' => $count,
+      'success' =>  true
+    ], 200);
+  }
 }
