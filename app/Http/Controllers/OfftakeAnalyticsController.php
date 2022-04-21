@@ -1280,7 +1280,7 @@ class OfftakeAnalyticsController extends Controller
 				$q->where('name', '!=', 'DISTRIBUTOR');
 			});
 		$users = $users->with('supervisor');
-		$users = $users->take(250)->get();
+		$users = $users->get();
 		$productsOfftakes = [];
 		$Supervisor_list = [];
 		foreach ($users as $user) {
@@ -1483,6 +1483,237 @@ class OfftakeAnalyticsController extends Controller
 			$Final_Report['MT_CNC']['Bottom_Supervisor'] = array_slice($Bottom_MT_CNC, 0, 5);
 			$Final_Report['IIA']['Top_Supervisor'] = array_slice($IIA_Supervisors, 0, 5);;
 			$Final_Report['IIA']['Bottom_Supervisor'] = array_slice($Bottom_IIA, 0, 5);
+		}
+
+		return response()->json([
+			'data'     =>  $Final_Report,
+			'count' => sizeof($Final_Report),
+			'success' =>  true
+		], 200);
+	}
+	public function Top_ASM_report(Request $request)
+	{
+		ini_set('max_execution_time', 0);
+		ini_set('memory_limit', -1);
+		$now = Carbon::now()->format('Y-m-d');
+		$month =  Carbon::parse($now)->format('m');
+		$year =  Carbon::parse($now)->format('Y');
+
+		$type = $request->type;
+		$users = request()->company->users()->with('roles')
+			->whereHas('roles',  function ($q) {
+				$q->where('name', '!=', 'Admin');
+				$q->where('name', '!=', 'DISTRIBUTOR');
+			});
+		$users = $users->get();
+		$productsOfftakes = [];
+		$ASM_list = [];
+		foreach ($users as $user) {
+			$singleUserData['user'] = $user;
+			$asm = strtoupper(str_replace(" ", "", $user->asm));
+			if ($asm != "" && $asm != "DEMO") {
+				$ors = $request->company->orders_list()
+					->where('order_type', '=', 'Sales')
+					->where('user_id', '=', $user->id)
+					->where('is_active', '=', 1)
+					->with('order_details')
+					->whereHas('order_details',  function ($q) {
+						$q->groupBy('sku_id');
+					});
+
+				if ($month) {
+					$ors = $ors->whereMonth('created_at', '=', $month);
+				}
+				if ($year) {
+					$ors = $ors->whereYear('created_at', '=', $year);
+				}
+				$ors = $ors->get();
+
+				$daysInMonth = Carbon::parse($year . $month . '01')->daysInMonth;
+				$currentMonth = Carbon::now()->format('m');
+				if ($month == $currentMonth) {
+					$daysInMonth = Carbon::now()->format('d');
+				}
+				$todaysTotalValue = 0;
+				for ($i = 1; $i <= $daysInMonth; $i++) {
+
+					// To check single day orders
+					$ordersOfADay = [];
+					foreach ($ors as $or) {
+						// var_dump(Carbon::parse($or->created_at)->format('d'));
+						if (Carbon::parse($or->created_at)->format('d') == sprintf("%02d", $i)) {
+							$ordersOfADay[] = $or;
+						}
+					}
+					// End To check single day orders
+					$totalValue = 0;
+					foreach ($ordersOfADay as $order) {
+						foreach ($order->order_details as $order_detail) {
+							$totalValue += $order_detail->value;
+						}
+					}
+					// $singleUserData['date' . $i] = $totalValue;
+					$todaysTotalValue += $totalValue;
+					$singleUserData['totalTodayValue'] = $todaysTotalValue;
+				}
+				$abc = str_replace(" ", "", $asm);
+				$total_name = 'total_' . $abc . '_value';
+				$ba_count = 'total_' . $abc . '_BA_count';
+				if (!in_array($asm, $ASM_list)) {
+					// Initial
+					$ASM_list[] = $asm;
+					$$ba_count = 1;
+					$$total_name = $todaysTotalValue;
+				} else {
+					// Existing
+					$$ba_count++;
+					$$total_name += $todaysTotalValue;
+				}
+				$Total_list[$asm] = [
+					'total_value' => $$total_name,
+					'Ba_count' => $$ba_count,
+					'region' => strtoupper(str_replace(" ", "", $user->region)),
+					'channel' => str_replace(" ", "", $user->channel),
+					'name' => $asm,
+				];
+				$productsOfftakes[] = $singleUserData;
+			}
+		}
+		// return $Total_list;
+		if ($type == 1) {
+			// Filter Type Region
+			$North_ASMs = [];
+			$South_ASMs = [];
+			$East_ASMs = [];
+			$West_ASMs = [];
+			foreach ($Total_list as $key => $asm) {
+				if ($asm['region']) {
+					$average = $asm['total_value'] / $asm['Ba_count'];
+					$asm['average'] = $average;
+
+					switch ($asm['region']) {
+						case 'NORTH':
+							$North_ASMs[] = $asm;
+							break;
+						case 'SOUTH':
+							$South_ASMs[] = $asm;
+							break;
+						case 'EAST':
+							$East_ASMs[] = $asm;
+							break;
+						case 'WEST':
+							$West_ASMs[] = $asm;
+							break;
+						default:
+							break;
+					}
+				}
+			}
+			// Top Five
+			$Bottom_North = $North_ASMs;
+			usort($North_ASMs, function ($a, $b) {
+				return $b['total_value'] - $a['total_value'];
+			});
+			$Bottom_South = $South_ASMs;
+			usort($South_ASMs, function ($a, $b) {
+				return $b['total_value'] - $a['total_value'];
+			});
+			$Bottom_East = $East_ASMs;
+			usort($East_ASMs, function ($a, $b) {
+				return $b['total_value'] - $a['total_value'];
+			});
+			$Bottom_West = $West_ASMs;
+			usort($West_ASMs, function ($a, $b) {
+				return $b['total_value'] - $a['total_value'];
+			});
+			// Bottom 5
+			usort($Bottom_North, function ($a, $b) {
+				return $a['total_value'] - $b['total_value'];
+			});
+			usort($Bottom_South, function ($a, $b) {
+				return $a['total_value'] - $b['total_value'];
+			});
+			usort($Bottom_East, function ($a, $b) {
+				return $a['total_value'] - $b['total_value'];
+			});
+			usort($Bottom_West, function ($a, $b) {
+				return $a['total_value'] - $b['total_value'];
+			});
+			$Final_Report = [];
+			$Final_Report['North']['Top_ASM'] = array_slice($North_ASMs, 0, 5);;
+			$Final_Report['North']['Bottom_ASM'] = array_slice($Bottom_North, 0, 5);
+			$Final_Report['South']['Top_ASM'] = array_slice($South_ASMs, 0, 5);;
+			$Final_Report['South']['Bottom_ASM'] = array_slice($Bottom_South, 0, 5);
+			$Final_Report['East']['Top_ASM'] = array_slice($East_ASMs, 0, 5);;
+			$Final_Report['East']['Bottom_ASM'] = array_slice($Bottom_East, 0, 5);
+			$Final_Report['West']['Top_ASM'] = array_slice($West_ASMs, 0, 5);;
+			$Final_Report['West']['Bottom_ASM'] = array_slice($Bottom_West, 0, 5);
+		} else {
+			// Filter Type Channel
+			foreach ($Total_list as $key => $asm) {
+				if ($asm['channel']) {
+					$average = $asm['total_value'] / $asm['Ba_count'];
+					$asm['average'] = $average;
+					switch ($asm['channel']) {
+						case 'GT':
+							$GT_ASMs[] = $asm;
+							break;
+						case 'MT':
+							$MT_ASMs[] = $asm;
+							break;
+						case 'MT-CNC':
+							$MT_CNC_ASMs[] = $asm;
+							break;
+						case 'IIA':
+							$IIA_ASMs[] = $asm;
+							break;
+						default:
+							break;
+					}
+				}
+			}
+			// Top Five
+			$Bottom_GT = $GT_ASMs;
+			usort($GT_ASMs, function ($a, $b) {
+				return $b['total_value'] - $a['total_value'];
+			});
+
+			$Bottom_MT = $MT_ASMs;
+			usort($MT_ASMs, function ($a, $b) {
+				return $b['total_value'] - $a['total_value'];
+			});
+
+			$Bottom_MT_CNC = $MT_CNC_ASMs;
+			usort($MT_CNC_ASMs, function ($a, $b) {
+				return $b['total_value'] - $a['total_value'];
+			});
+
+			$Bottom_IIA = $IIA_ASMs;
+			usort($IIA_ASMs, function ($a, $b) {
+				return $b['total_value'] - $a['total_value'];
+			});
+			// Bottom 5
+			usort($Bottom_GT, function ($a, $b) {
+				return $a['total_value'] - $b['total_value'];
+			});
+			usort($Bottom_MT, function ($a, $b) {
+				return $a['total_value'] - $b['total_value'];
+			});
+			usort($Bottom_MT_CNC, function ($a, $b) {
+				return $a['total_value'] - $b['total_value'];
+			});
+			usort($Bottom_IIA, function ($a, $b) {
+				return $a['total_value'] - $b['total_value'];
+			});
+			$Final_Report = [];
+			$Final_Report['GT']['Top_ASM'] = array_slice($GT_ASMs, 0, 5);;
+			$Final_Report['GT']['Bottom_ASM'] = array_slice($Bottom_GT, 0, 5);
+			$Final_Report['MT']['Top_ASM'] = array_slice($MT_ASMs, 0, 5);;
+			$Final_Report['MT']['Bottom_ASM'] = array_slice($Bottom_MT, 0, 5);
+			$Final_Report['MT_CNC']['Top_ASM'] = array_slice($MT_CNC_ASMs, 0, 5);;
+			$Final_Report['MT_CNC']['Bottom_ASM'] = array_slice($Bottom_MT_CNC, 0, 5);
+			$Final_Report['IIA']['Top_ASM'] = array_slice($IIA_ASMs, 0, 5);;
+			$Final_Report['IIA']['Bottom_ASM'] = array_slice($Bottom_IIA, 0, 5);
 		}
 
 		return response()->json([
