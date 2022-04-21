@@ -930,4 +930,292 @@ class OfftakeAnalyticsController extends Controller
 
 		return Excel::download(new BAReportExport($date, "", "", "", ""), "BA-Report.xlsx");
 	}
+
+	public function category_wise_report()
+	{
+		ini_set('max_execution_time', 0);
+		ini_set('memory_limit', -1);
+		$now = Carbon::now()->format('Y-m-d');
+	}
+	public function TVA_report(Request $request)
+	{
+		ini_set('max_execution_time', 0);
+		ini_set('memory_limit', -1);
+		$now = Carbon::now()->format('Y-m-d');
+		$month =  Carbon::parse($now)->format('m');
+		$year =  Carbon::parse($now)->format('Y');
+
+		$type = $request->type;
+		$users = request()->company->users()->with('roles')
+			->whereHas('roles',  function ($q) {
+				$q->where('name', '!=', 'Admin');
+				$q->where('name', '!=', 'DISTRIBUTOR');
+			});
+		$users = $users->with(
+			[
+				'targets' => fn ($q) => $q->where(['month' => $month, 'year' => $year])
+			]
+		);
+		$users = $users->get();
+		if ($type == 1) {
+			// Filter Type Region
+			$total_North_App_id = 0;
+			$total_South_App_id = 0;
+			$total_East_App_id = 0;
+			$total_West_App_id = 0;
+
+			$total_North_Target = 0;
+			$total_South_Target = 0;
+			$total_East_Target = 0;
+			$total_West_Target = 0;
+
+			$total_North_Achieved = 0;
+			$total_South_Achieved = 0;
+			$total_East_Achieved = 0;
+			$total_West_Achieved = 0;
+
+			$Active_North_Ba_Count = 0;
+			$Active_South_Ba_Count = 0;
+			$Active_East_Ba_Count = 0;
+			$Active_West_Ba_Count = 0;
+
+			foreach ($users as $key => $user) {
+				$region = str_replace(" ", "", $user['region']);
+				$target = sizeOf($user->targets) ? $user->targets[0]->target : 0;
+				$achieved = sizeOf($user->targets) ? $user->targets[0]->achieved : 0;
+				switch ($region) {
+					case 'North':
+						$total_North_App_id++;
+						if ($user['active'] == true) {
+							$Active_North_Ba_Count++;
+						}
+						if ($target) {
+							$total_North_Target += $target;
+							$total_North_Achieved += $achieved;
+						}
+						break;
+					case 'South':
+						$total_South_App_id++;
+						if ($user['active'] == true) {
+							$Active_South_Ba_Count++;
+						}
+						if ($target) {
+							$total_South_Target += $target;
+							$total_South_Achieved += $achieved;
+						}
+						break;
+					case 'East':
+						$total_East_App_id++;
+						if ($user['active'] == true) {
+							$Active_East_Ba_Count++;
+						}
+						if ($target) {
+							$total_East_Target += $target;
+							$total_East_Achieved += $achieved;
+						}
+						break;
+					case 'West':
+						$total_West_App_id++;
+						if ($user['active'] == true) {
+							$Active_West_Ba_Count++;
+						}
+						if ($target) {
+							$total_West_Target += $target;
+							$total_West_Achieved += $achieved;
+						}
+						break;
+
+					default:
+						# code...
+						break;
+				}
+			}
+
+			$TVA_report['North'] = [
+				'Store_Count' => $total_North_App_id,
+				'Target' => $total_North_Target,
+				'Achieved' => $total_North_Achieved,
+				'Achieved_percentage' =>  $total_North_Achieved / $total_North_Target * 100,
+			];
+			$TVA_report['South'] = [
+				'Store_Count' => $total_South_App_id,
+				'Target' => $total_South_Target,
+				'Achieved' => $total_South_Achieved,
+				'Achieved_percentage' =>  $total_South_Achieved / $total_South_Target * 100,
+
+			];
+			$TVA_report['East'] = [
+				'Store_Count' => $total_East_App_id,
+				'Target' => $total_East_Target,
+				'Achieved' => $total_East_Achieved,
+				'Achieved_percentage' =>  $total_East_Achieved / $total_East_Target * 100,
+
+			];
+			$TVA_report['West'] = [
+				'Store_Count' => $total_West_App_id,
+				'Target' => $total_West_Target,
+				'Achieved' => $total_West_Achieved,
+				'Achieved_percentage' =>  $total_West_Achieved / $total_West_Target * 100,
+
+			];
+		} elseif ($type == 2) {
+			// Filter Type Channel
+			$total_GT_App_id = 0;
+			$total_MT_App_id = 0;
+			$total_MT_CNC_App_id = 0;
+			$total_IIA_App_id = 0;
+
+			$total_GT_Target = 0;
+			$total_MT_Target = 0;
+			$total_MT_CNC_Target = 0;
+			$total_IIA_Target = 0;
+
+			$total_GT_Achieved = 0;
+			$total_MT_Achieved = 0;
+			$total_MT_CNC_Achieved = 0;
+			$total_IIA_Achieved = 0;
+
+			$Active_GT_Ba_Count = 0;
+			$Active_MT_Ba_Count = 0;
+			$Active_MT_CNC_Ba_Count = 0;
+			$Active_IIA_Ba_Count = 0;
+			foreach ($users as $key => $user) {
+				$channel = str_replace(" ", "", $user['channel']);
+				$target = sizeOf($user->targets) ? $user->targets[0]->target : 0;
+				$achieved = sizeOf($user->targets) ? $user->targets[0]->achieved : 0;
+				switch ($channel) {
+					case 'GT':
+						$total_GT_App_id++;
+						if ($user['active'] == true) {
+							$Active_GT_Ba_Count++;
+						}
+						if ($target) {
+							$total_GT_Target += $target;
+							$total_GT_Achieved += $achieved;
+						}
+						break;
+					case 'MT':
+						$total_MT_App_id++;
+						if ($user['active'] == true) {
+							$Active_MT_Ba_Count++;
+						}
+						if ($target) {
+							$total_MT_Target += $target;
+							$total_MT_Achieved += $achieved;
+						}
+						break;
+					case 'MT-CNC':
+						$total_MT_CNC_App_id++;
+						if ($user['active'] == true) {
+							$Active_MT_CNC_Ba_Count++;
+						}
+						if ($target) {
+							$total_MT_CNC_Target += $target;
+							$total_MT_CNC_Achieved += $achieved;
+						}
+						break;
+					case 'IIA':
+						$total_IIA_App_id++;
+						if ($user['active'] == true) {
+							$Active_IIA_Ba_Count++;
+						}
+						if ($target) {
+							$total_IIA_Target += $target;
+							$total_IIA_Achieved += $achieved;
+						}
+						break;
+
+					default:
+						# code...
+						break;
+				}
+			}
+			$TVA_report['GT'] = [
+				'Store_Count' => $total_GT_App_id,
+				'Target' => $total_GT_Target,
+				'Achieved' => $total_GT_Achieved,
+				'Achieved_percentage' =>  $total_GT_Achieved / $total_GT_Target * 100,
+			];
+			$TVA_report['MT'] = [
+				'Store_Count' => $total_MT_App_id,
+				'Target' => $total_MT_Target,
+				'Achieved' => $total_MT_Achieved,
+				'Achieved_percentage' =>  $total_MT_Achieved / $total_MT_Target * 100,
+
+			];
+			$TVA_report['MT - CNC'] = [
+				'Store_Count' => $total_MT_CNC_App_id,
+				'Target' => $total_MT_CNC_Target,
+				'Achieved' => $total_MT_CNC_Achieved,
+				'Achieved_percentage' =>  $total_MT_CNC_Achieved / $total_MT_CNC_Target * 100,
+
+			];
+			$TVA_report['IIA'] = [
+				'Store_Count' => $total_IIA_App_id,
+				'Target' => $total_IIA_Target,
+				'Achieved' => $total_IIA_Achieved,
+				'Achieved_percentage' =>  $total_IIA_Achieved / $total_IIA_Target * 100,
+
+			];
+		} else {
+			// Filter Type ASM
+			$ASM_list = [];
+			foreach ($users as $key => $user) {
+				$asm = strtoupper(str_replace(" ", "", $user['asm']));
+				if ($asm != "" && $asm != "DEMO") {
+					$total_name = 'total_' . $asm . '_App_id';
+					$target_name = 'total_' . $asm . '_Target';
+					$achieved_name = 'total_' . $asm . '_Achieved';
+					$Active_name = 'Active_' . $asm . '_Ba_Count';
+					$target = sizeOf($user->targets) ? $user->targets[0]->target : 0;
+					$achieved = sizeOf($user->targets) ? $user->targets[0]->achieved : 0;
+					if (!in_array($asm, $ASM_list)) {
+						// Initial
+						$ASM_list[] = $asm;
+						$$total_name = 1;
+						$$Active_name = 1;
+						if ($target) {
+							$$target_name = $target;
+							$$achieved_name = $achieved;
+						} else {
+							$$target_name = 0;
+							$$achieved_name = 0;
+						}
+					} else {
+						// Existing
+						$$total_name = $$total_name + 1;
+						$$Active_name = $$Active_name + 1;
+						if ($target) {
+							$$target_name = +$target;
+							$$achieved_name = +$achieved;
+						}
+					}
+				}
+			}
+			foreach ($ASM_list as $key => $list) {
+				$total_name = 'total_' . $list . '_App_id';
+				$target_name = 'total_' . $list . '_Target';
+				$achieved_name = 'total_' . $list . '_Achieved';
+				$Active_name = 'Active_' . $list . '_Ba_Count';
+				$TVA_report[$list] = [
+					'Store_Count' => $$total_name,
+					'Target' => $$target_name,
+					'Achieved' => $$achieved_name,
+					// 'Achieved_percentage' =>  $$achieved_name / $$target_name * 100,
+				];
+				if ($$target_name == 0) {
+					$TVA_report[$list]['Achieved_percentage'] = 0;
+				} else {
+					$TVA_report[$list]['Achieved_percentage'] = $$achieved_name / $$target_name * 100;
+				}
+			}
+		}
+
+
+		return response()->json([
+			'data'     =>  $TVA_report,
+			'count' => sizeof($TVA_report),
+			'success' =>  true
+		], 200);
+	}
 }
