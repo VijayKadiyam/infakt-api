@@ -935,7 +935,53 @@ class OfftakeAnalyticsController extends Controller
 	{
 		ini_set('max_execution_time', 0);
 		ini_set('memory_limit', -1);
-		$now = Carbon::now()->format('Y-m-d');
+		$current_month = Carbon::now()->format('m');
+		$orders = request()->company->orders_list()
+			->where(['is_active' => 1, 'order_type' => 'sales'])
+			->with('order_details')
+			->whereHas('order_details',  function ($q) use ($current_month) {
+				$q->with('sku');
+				$q->whereMonth('created_at', '=', $current_month);
+			});
+		$orders = $orders->get();
+		$category_list = [];
+		$total_value = 0;
+		foreach ($orders as $key => $order) {
+			foreach ($order->order_details as $key => $ord) {
+
+				$sku = $ord->sku;
+				$category = $sku->main_category;
+				$value_name = 'total_' . $category . '_value';
+				if (!in_array($category, $category_list)) {
+					// Initial
+					$category_list[] = $category;
+					$$value_name = $ord->value;
+				} else {
+					// Existing
+					$$value_name += $ord->value;
+				}
+
+				$total_value += $ord->value;
+
+				$Final_Report[$category] = [
+					'category' => $category,
+					'value' => $$value_name
+				];
+			}
+		}
+
+		foreach ($Final_Report as $key => $category) {
+			$value = $category['value'];
+			$cate = $category['category'];
+			$contro = ($value / $total_value) * 100;
+
+			$Final_Report[$cate]['contro'] = round($contro, 2);
+		}
+		return response()->json([
+			'data'     =>  $Final_Report,
+			'count' => sizeof($Final_Report),
+			'success' =>  true
+		], 200);
 	}
 	public function TVA_report(Request $request)
 	{
@@ -1186,8 +1232,8 @@ class OfftakeAnalyticsController extends Controller
 						$$total_name = $$total_name + 1;
 						$$Active_name = $$Active_name + 1;
 						if ($target) {
-							$$target_name = +$target;
-							$$achieved_name = +$achieved;
+							$$target_name += $target;
+							$$achieved_name += $achieved;
 						}
 					}
 				}
@@ -1215,6 +1261,233 @@ class OfftakeAnalyticsController extends Controller
 		return response()->json([
 			'data'     =>  $TVA_report,
 			'count' => sizeof($TVA_report),
+			'success' =>  true
+		], 200);
+	}
+
+	public function Top_Supervisor_report(Request $request)
+	{
+		ini_set('max_execution_time', 0);
+		ini_set('memory_limit', -1);
+		$now = Carbon::now()->format('Y-m-d');
+		$month =  Carbon::parse($now)->format('m');
+		$year =  Carbon::parse($now)->format('Y');
+
+		$type = $request->type;
+		$users = request()->company->users()->with('roles')
+			->whereHas('roles',  function ($q) {
+				$q->where('name', '!=', 'Admin');
+				$q->where('name', '!=', 'DISTRIBUTOR');
+			});
+		$users = $users->with('supervisor');
+		$users = $users->take(250)->get();
+		$productsOfftakes = [];
+		$Supervisor_list = [];
+		foreach ($users as $user) {
+			$singleUserData['user'] = $user;
+			if ($user->supervisor) {
+				$supervisor_name =  $user->supervisor->name;
+				$ors = $request->company->orders_list()
+					->where('order_type', '=', 'Sales')
+					->where('user_id', '=', $user->id)
+					->where('is_active', '=', 1)
+					->with('order_details')
+					->whereHas('order_details',  function ($q) {
+						$q->groupBy('sku_id');
+					});
+
+				if ($month) {
+					$ors = $ors->whereMonth('created_at', '=', $month);
+				}
+				if ($year) {
+					$ors = $ors->whereYear('created_at', '=', $year);
+				}
+				$ors = $ors->get();
+
+				$daysInMonth = Carbon::parse($year . $month . '01')->daysInMonth;
+				$currentMonth = Carbon::now()->format('m');
+				if ($month == $currentMonth) {
+					$daysInMonth = Carbon::now()->format('d');
+				}
+				$todaysTotalValue = 0;
+				for ($i = 1; $i <= $daysInMonth; $i++) {
+
+					// To check single day orders
+					$ordersOfADay = [];
+					foreach ($ors as $or) {
+						// var_dump(Carbon::parse($or->created_at)->format('d'));
+						if (Carbon::parse($or->created_at)->format('d') == sprintf("%02d", $i)) {
+							$ordersOfADay[] = $or;
+						}
+					}
+					// End To check single day orders
+					$totalValue = 0;
+					foreach ($ordersOfADay as $order) {
+						foreach ($order->order_details as $order_detail) {
+							$totalValue += $order_detail->value;
+						}
+					}
+					// $singleUserData['date' . $i] = $totalValue;
+					$todaysTotalValue += $totalValue;
+					$singleUserData['totalTodayValue'] = $todaysTotalValue;
+				}
+				$abc = str_replace(" ", "", $supervisor_name);
+				$total_name = 'total_' . $abc . '_value';
+				$ba_count = 'total_' . $abc . '_BA_count';
+				if (!in_array($supervisor_name, $Supervisor_list)) {
+					// Initial
+					$Supervisor_list[] = $supervisor_name;
+					$$ba_count = 1;
+					$$total_name = $todaysTotalValue;
+				} else {
+					// Existing
+					$$ba_count++;
+					$$total_name += $todaysTotalValue;
+				}
+				$Total_list[$supervisor_name] = [
+					'total_value' => $$total_name,
+					'Ba_count' => $$ba_count,
+					'region' => $user->supervisor->region,
+					'channel' => str_replace(" ", "", $user->channel),
+					'name' => $supervisor_name,
+				];
+				$productsOfftakes[] = $singleUserData;
+			}
+		}
+		if ($type == 1) {
+			// Filter Type Region
+			foreach ($Total_list as $key => $supervisor) {
+				if ($supervisor['region']) {
+					$average = $supervisor['total_value'] / $supervisor['Ba_count'];
+					$supervisor['average'] = $average;
+					switch ($supervisor['region']) {
+						case 'NORTH':
+							$North_Supervisors[] = $supervisor;
+							break;
+						case 'SOUTH':
+							$South_Supervisors[] = $supervisor;
+							break;
+						case 'EAST':
+							$East_Supervisors[] = $supervisor;
+							break;
+						case 'WEST':
+							$West_Supervisors[] = $supervisor;
+							break;
+						default:
+							break;
+					}
+				}
+			}
+			// Top Five
+			$Bottom_North = $North_Supervisors;
+			usort($North_Supervisors, function ($a, $b) {
+				return $b['total_value'] - $a['total_value'];
+			});
+			$Bottom_South = $South_Supervisors;
+			usort($South_Supervisors, function ($a, $b) {
+				return $b['total_value'] - $a['total_value'];
+			});
+			$Bottom_East = $East_Supervisors;
+			usort($East_Supervisors, function ($a, $b) {
+				return $b['total_value'] - $a['total_value'];
+			});
+			$Bottom_West = $West_Supervisors;
+			usort($West_Supervisors, function ($a, $b) {
+				return $b['total_value'] - $a['total_value'];
+			});
+			// Bottom 5
+			usort($Bottom_North, function ($a, $b) {
+				return $a['total_value'] - $b['total_value'];
+			});
+			usort($Bottom_South, function ($a, $b) {
+				return $a['total_value'] - $b['total_value'];
+			});
+			usort($Bottom_East, function ($a, $b) {
+				return $a['total_value'] - $b['total_value'];
+			});
+			usort($Bottom_West, function ($a, $b) {
+				return $a['total_value'] - $b['total_value'];
+			});
+			$Final_Report = [];
+			$Final_Report['North']['Top_Supervisor'] = array_slice($North_Supervisors, 0, 5);;
+			$Final_Report['North']['Bottom_Supervisor'] = array_slice($Bottom_North, 0, 5);
+			$Final_Report['South']['Top_Supervisor'] = array_slice($South_Supervisors, 0, 5);;
+			$Final_Report['South']['Bottom_Supervisor'] = array_slice($Bottom_South, 0, 5);
+			$Final_Report['East']['Top_Supervisor'] = array_slice($East_Supervisors, 0, 5);;
+			$Final_Report['East']['Bottom_Supervisor'] = array_slice($Bottom_East, 0, 5);
+			$Final_Report['West']['Top_Supervisor'] = array_slice($West_Supervisors, 0, 5);;
+			$Final_Report['West']['Bottom_Supervisor'] = array_slice($Bottom_West, 0, 5);
+		} else {
+			// Filter Type Channel
+			foreach ($Total_list as $key => $supervisor) {
+				if ($supervisor['channel']) {
+					$average = $supervisor['total_value'] / $supervisor['Ba_count'];
+					$supervisor['average'] = $average;
+					switch ($supervisor['channel']) {
+						case 'GT':
+							$GT_Supervisors[] = $supervisor;
+							break;
+						case 'MT':
+							$MT_Supervisors[] = $supervisor;
+							break;
+						case 'MT-CNC':
+							$MT_CNC_Supervisors[] = $supervisor;
+							break;
+						case 'IIA':
+							$IIA_Supervisors[] = $supervisor;
+							break;
+						default:
+							break;
+					}
+				}
+			}
+			// Top Five
+			$Bottom_GT = $GT_Supervisors;
+			usort($GT_Supervisors, function ($a, $b) {
+				return $b['total_value'] - $a['total_value'];
+			});
+
+			$Bottom_MT = $MT_Supervisors;
+			usort($MT_Supervisors, function ($a, $b) {
+				return $b['total_value'] - $a['total_value'];
+			});
+
+			$Bottom_MT_CNC = $MT_CNC_Supervisors;
+			usort($MT_CNC_Supervisors, function ($a, $b) {
+				return $b['total_value'] - $a['total_value'];
+			});
+
+			$Bottom_IIA = $IIA_Supervisors;
+			usort($IIA_Supervisors, function ($a, $b) {
+				return $b['total_value'] - $a['total_value'];
+			});
+			// Bottom 5
+			usort($Bottom_GT, function ($a, $b) {
+				return $a['total_value'] - $b['total_value'];
+			});
+			usort($Bottom_MT, function ($a, $b) {
+				return $a['total_value'] - $b['total_value'];
+			});
+			usort($Bottom_MT_CNC, function ($a, $b) {
+				return $a['total_value'] - $b['total_value'];
+			});
+			usort($Bottom_IIA, function ($a, $b) {
+				return $a['total_value'] - $b['total_value'];
+			});
+			$Final_Report = [];
+			$Final_Report['GT']['Top_Supervisor'] = array_slice($GT_Supervisors, 0, 5);;
+			$Final_Report['GT']['Bottom_Supervisor'] = array_slice($Bottom_GT, 0, 5);
+			$Final_Report['MT']['Top_Supervisor'] = array_slice($MT_Supervisors, 0, 5);;
+			$Final_Report['MT']['Bottom_Supervisor'] = array_slice($Bottom_MT, 0, 5);
+			$Final_Report['MT_CNC']['Top_Supervisor'] = array_slice($MT_CNC_Supervisors, 0, 5);;
+			$Final_Report['MT_CNC']['Bottom_Supervisor'] = array_slice($Bottom_MT_CNC, 0, 5);
+			$Final_Report['IIA']['Top_Supervisor'] = array_slice($IIA_Supervisors, 0, 5);;
+			$Final_Report['IIA']['Bottom_Supervisor'] = array_slice($Bottom_IIA, 0, 5);
+		}
+
+		return response()->json([
+			'data'     =>  $Final_Report,
+			'count' => sizeof($Final_Report),
 			'success' =>  true
 		], 200);
 	}
