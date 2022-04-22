@@ -1698,7 +1698,7 @@ class UserAttendancesController extends Controller
     $count = $userAttendances->count();
 
     $userAttendances = $userAttendances->toArray();
-
+    // return $userAttendances;
     $other_channel_attandances = [];
     $Channel_Chains = [];
     $Absent_users = [];
@@ -1733,17 +1733,19 @@ class UserAttendancesController extends Controller
         $user['Gap_tag'] = false;
         $user['Absent_tag'] = false;
       }
-      $$Gap_name = 0;
-      $$Absent_name = 0;
       if (!in_array($chain_name, $Channel_Chains)) {
         $Channel_Chains[] = $chain_name;
         $$total_name = 1;
         $$Active_name = 1;
         if ($user['Gap_tag'] == true) {
           $$Gap_name = 1;
+        } else {
+          $$Gap_name = 0;
         }
         if ($user['Absent_tag'] == true) {
           $$Absent_name = 1;
+        } else {
+          $$Absent_name = 0;
         }
       } else {
         $$total_name = $$total_name + 1;
