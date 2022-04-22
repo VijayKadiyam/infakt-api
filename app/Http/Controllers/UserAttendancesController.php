@@ -1275,12 +1275,14 @@ class UserAttendancesController extends Controller
     ini_set('max_execution_time', 0);
     ini_set('memory_limit', -1);
     $now = Carbon::now()->format('Y-m-d');
+    $month =  Carbon::parse($now)->format('m');
+    $year =  Carbon::parse($now)->format('Y');
     $users = request()->company->users();
     if ($request->channel) {
       $users = $users
         ->where('channel', 'LIKE', '%' . $request->channel . '%');
     }
-    $users = $users->take(50)->get();
+    $users = $users->get();
     // return $users;
     $userAttendances = request()->company->user_attendances();
 
@@ -1290,11 +1292,6 @@ class UserAttendancesController extends Controller
         $q->where('channel', '=', $channel);
       });
     }
-    // $supervisorId = request()->superVisor_id;
-    // if ($supervisorId != '')
-    //   $userAttendances = $userAttendances->whereHas('user',  function ($q) use ($supervisorId) {
-    //     $q->where('supervisor_id', '=', $supervisorId);
-    //   });
     $userAttendances = $userAttendances->where('date', $now);
 
     $userAttendances = $userAttendances->get();
@@ -1310,28 +1307,54 @@ class UserAttendancesController extends Controller
     $Active_South_Ba_Count = 0;
     $Active_East_Ba_Count = 0;
     $Active_West_Ba_Count = 0;
-    $abc = [];
+
+    $Gap_North_Ba_Count = 0;
+    $Gap_South_Ba_Count = 0;
+    $Gap_East_Ba_Count = 0;
+    $Gap_West_Ba_Count = 0;
+
+    $Absent_North_Ba_Count = 0;
+    $Absent_South_Ba_Count = 0;
+    $Absent_East_Ba_Count = 0;
+    $Absent_West_Ba_Count = 0;
     $Absent_users = [];
+    $Gap_users = [];
     foreach ($users as $key => $user) {
-      // if (empty($user['user_attendances'])) {
-      //   return $user['id'];
-      // }
-      $user_attendances = $user['user_attendances'];
       $region = str_replace(" ", "", $user['region']);
       $attendance_key = array_search($user->id, array_column($userAttendances, 'user_id'));
       $User_Attendances = $attendance_key !== false ? $userAttendances[$attendance_key] : "Not Found";
       $user['User_Attendances'] = $User_Attendances;
       if ($attendance_key === false) {
         // Find Entire Month
-        $Absent_users[] = $user;
+        $current_month_attendances = $request->company->user_attendances()
+          ->whereMonth('date', $month)
+          ->whereYear('date', $year)
+          ->where('user_id', $user['id'])
+          ->get();
+        if (empty($current_month_attendances)) {
+          // Haven't Punched Once In this Month
+          $user['Gap_tag'] = true;
+          $Gap_users[] = $user;
+        } else {
+          // Absent Only Today
+          $user['Absent_tag'] = true;
+          $Absent_users[] = $user['id'];
+        }
       } else {
+        $user['Gap_tag'] = false;
+        $user['Absent_tag'] = false;
       }
-      $abc[] = $user;
       switch ($region) {
         case 'North':
           $total_North_App_id++;
           if ($user['active'] == true) {
             $Active_North_Ba_Count++;
+          }
+          if ($user['Gap_tag'] == true) {
+            $Gap_North_Ba_Count++;
+          }
+          if ($user['Absent_tag'] == true) {
+            $Absent_North_Ba_Count++;
           }
           break;
         case 'South':
@@ -1339,17 +1362,35 @@ class UserAttendancesController extends Controller
           if ($user['active'] == true) {
             $Active_South_Ba_Count++;
           }
+          if ($user['Gap_tag'] == true) {
+            $Gap_South_Ba_Count++;
+          }
+          if ($user['Absent_tag'] == true) {
+            $Absent_South_Ba_Count++;
+          }
           break;
         case 'East':
           $total_East_App_id++;
           if ($user['active'] == true) {
             $Active_East_Ba_Count++;
           }
+          if ($user['Gap_tag'] == true) {
+            $Gap_East_Ba_Count++;
+          }
+          if ($user['Absent_tag'] == true) {
+            $Absent_East_Ba_Count++;
+          }
           break;
         case 'West':
           $total_West_App_id++;
           if ($user['active'] == true) {
             $Active_West_Ba_Count++;
+          }
+          if ($user['Gap_tag'] == true) {
+            $Gap_West_Ba_Count++;
+          }
+          if ($user['Absent_tag'] == true) {
+            $Absent_West_Ba_Count++;
           }
           break;
 
@@ -1358,7 +1399,6 @@ class UserAttendancesController extends Controller
           break;
       }
     }
-    return $Absent_users;
 
     $North_present_count = 0;
     $North_weekly_off_count = 0;
@@ -1368,7 +1408,6 @@ class UserAttendancesController extends Controller
     $North_half_day_count = 0;
     $North_holiday_count = 0;
     $North_work_from_home_count = 0;
-    $North_absent_count = 0;
 
     $South_present_count = 0;
     $South_weekly_off_count = 0;
@@ -1378,7 +1417,6 @@ class UserAttendancesController extends Controller
     $South_half_day_count = 0;
     $South_holiday_count = 0;
     $South_work_from_home_count = 0;
-    $South_absent_count = 0;
 
     $East_present_count = 0;
     $East_weekly_off_count = 0;
@@ -1388,7 +1426,6 @@ class UserAttendancesController extends Controller
     $East_half_day_count = 0;
     $East_holiday_count = 0;
     $East_work_from_home_count = 0;
-    $East_absent_count = 0;
 
     $West_present_count = 0;
     $West_weekly_off_count = 0;
@@ -1398,7 +1435,6 @@ class UserAttendancesController extends Controller
     $West_half_day_count = 0;
     $West_holiday_count = 0;
     $West_work_from_home_count = 0;
-    $West_absent_count = 0;
 
     $Absent_users = [];
     foreach ($userAttendances as $key => $attendance) {
@@ -1408,7 +1444,7 @@ class UserAttendancesController extends Controller
       switch ($region) {
         case 'North':
 
-          switch ($attendance->session_type) {
+          switch ($attendance['session_type']) {
             case 'PRESENT':
               $North_present_count++;
               break;
@@ -1434,14 +1470,13 @@ class UserAttendancesController extends Controller
               $North_work_from_home_count++;
               break;
             default:
-              $North_absent_count++;
               break;
           }
           // $North_Present = $attendance['session_type'] == 'PRESENT' ? $North_Present + 1 : $North_Present;
           break;
         case 'South':
 
-          switch ($attendance->session_type) {
+          switch ($attendance['session_type']) {
             case 'PRESENT':
               $South_present_count++;
               break;
@@ -1472,7 +1507,7 @@ class UserAttendancesController extends Controller
           break;
         case 'East':
 
-          switch ($attendance->session_type) {
+          switch ($attendance['session_type']) {
             case 'PRESENT':
               $East_present_count++;
               break;
@@ -1503,7 +1538,7 @@ class UserAttendancesController extends Controller
           break;
         case 'West':
 
-          switch ($attendance->session_type) {
+          switch ($attendance['session_type']) {
             case 'PRESENT':
               $West_present_count++;
               break;
@@ -1557,7 +1592,9 @@ class UserAttendancesController extends Controller
         + $North_market_closed_count
         + $North_half_day_count
         + $North_holiday_count
-        + $North_work_from_home_count)
+        + $North_work_from_home_count),
+      'gap_count' => $Gap_North_Ba_Count,
+      'absent_count' => $Absent_North_Ba_Count,
     ];
     $gt_attandances['South'] = [
       'total_App_id' => $total_South_App_id,
@@ -1577,7 +1614,10 @@ class UserAttendancesController extends Controller
         + $South_market_closed_count
         + $South_half_day_count
         + $South_holiday_count
-        + $South_work_from_home_count)
+        + $South_work_from_home_count),
+      'gap_count' => $Gap_South_Ba_Count,
+      'absent_count' => $Absent_South_Ba_Count,
+
     ];
     $gt_attandances['East'] = [
       'total_App_id' => $total_East_App_id,
@@ -1597,7 +1637,9 @@ class UserAttendancesController extends Controller
         + $East_market_closed_count
         + $East_half_day_count
         + $East_holiday_count
-        + $East_work_from_home_count)
+        + $East_work_from_home_count),
+      'gap_count' => $Gap_East_Ba_Count,
+      'absent_count' => $Absent_East_Ba_Count,
     ];
     $gt_attandances['West'] = [
       'total_App_id' => $total_West_App_id,
@@ -1617,7 +1659,9 @@ class UserAttendancesController extends Controller
         + $West_market_closed_count
         + $West_half_day_count
         + $West_holiday_count
-        + $West_work_from_home_count)
+        + $West_work_from_home_count),
+      'gap_count' => $Gap_West_Ba_Count,
+      'absent_count' => $Absent_West_Ba_Count,
     ];
 
     return response()->json([
@@ -1632,6 +1676,8 @@ class UserAttendancesController extends Controller
     ini_set('max_execution_time', 0);
     ini_set('memory_limit', -1);
     $now = Carbon::now()->format('Y-m-d');
+    $month =  Carbon::parse($now)->format('m');
+    $year =  Carbon::parse($now)->format('Y');
     $users = request()->company->users();
     if ($request->channel) {
       $users = $users
@@ -1650,19 +1696,64 @@ class UserAttendancesController extends Controller
 
     $userAttendances = $userAttendances->get();
     $count = $userAttendances->count();
+
+    $userAttendances = $userAttendances->toArray();
+
     $other_channel_attandances = [];
     $Channel_Chains = [];
+    $Absent_users = [];
+    $Gap_users = [];
     foreach ($users as $key => $user) {
       $chain_name = strtoupper(str_replace(" ", "", $user['chain_name']));
       $total_name = 'total_' . $chain_name . '_App_id';
       $Active_name = 'Active_' . $chain_name . '_Ba_Count';
+      $Gap_name = 'Gap_' . $chain_name . '_Ba_Count';
+      $Absent_name = 'Absent_' . $chain_name . '_Ba_Count';
+
+      $attendance_key = array_search($user->id, array_column($userAttendances, 'user_id'));
+      $User_Attendances = $attendance_key !== false ? $userAttendances[$attendance_key] : "Not Found";
+      $user['User_Attendances'] = $User_Attendances;
+      if ($attendance_key === false) {
+        // Find Entire Month
+        $current_month_attendances = $request->company->user_attendances()
+          ->whereMonth('date', $month)
+          ->whereYear('date', $year)
+          ->where('user_id', $user['id'])
+          ->get();
+        if (empty($current_month_attendances)) {
+          // Haven't Punched Once In this Month
+          $user['Gap_tag'] = true;
+          $Gap_users[] = $user;
+        } else {
+          // Absent Only Today
+          $user['Absent_tag'] = true;
+          $Absent_users[] = $user['id'];
+        }
+      } else {
+        $user['Gap_tag'] = false;
+        $user['Absent_tag'] = false;
+      }
+      $$Gap_name = 0;
+      $$Absent_name = 0;
       if (!in_array($chain_name, $Channel_Chains)) {
         $Channel_Chains[] = $chain_name;
         $$total_name = 1;
         $$Active_name = 1;
+        if ($user['Gap_tag'] == true) {
+          $$Gap_name = 1;
+        }
+        if ($user['Absent_tag'] == true) {
+          $$Absent_name = 1;
+        }
       } else {
         $$total_name = $$total_name + 1;
         $$Active_name = $$Active_name + 1;
+        if ($user['Gap_tag'] == true) {
+          $$Gap_name++;
+        }
+        if ($user['Absent_tag'] == true) {
+          $$Absent_name++;
+        }
       }
       // $Total[$total_name] = $$total_name;
       // $Active[$Active_name] = $$Active_name;
@@ -1720,7 +1811,7 @@ class UserAttendancesController extends Controller
           if (!isset($$absent_name)) {
             $$absent_name =  0;
           }
-          switch ($attendance->session_type) {
+          switch ($attendance['session_type']) {
             case 'PRESENT':
               $$present_name = $$present_name ? $$present_name + 1 : 1;
               break;
@@ -1764,6 +1855,8 @@ class UserAttendancesController extends Controller
     foreach ($Channel_Chains as $key => $chain) {
       $total_name = 'total_' . $chain . '_App_id';
       $Active_name = 'Active_' . $chain . '_Ba_Count';
+      $Gap_name = 'Gap_' . $chain . '_Ba_Count';
+      $Absent_name = 'Absent_' . $chain . '_Ba_Count';
       $present_name = $chain . '_present_count';
       // present_name= H&G_present_count
       if (!isset($$present_name)) {
@@ -1823,7 +1916,9 @@ class UserAttendancesController extends Controller
           + $$market_closed_name
           + $$half_day_name
           + $$holiday_name
-          + $$work_from_home_name)
+          + $$work_from_home_name),
+        'gap_count' => $$Gap_name,
+        'absent_count' => $$Absent_name,
       ];
     }
 
