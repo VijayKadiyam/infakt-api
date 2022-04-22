@@ -1722,4 +1722,174 @@ class OfftakeAnalyticsController extends Controller
 			'success' =>  true
 		], 200);
 	}
+
+	public function GT_Top_BAs_report(Request $request)
+	{
+		ini_set('max_execution_time', 0);
+		ini_set('memory_limit', -1);
+		$now = Carbon::now()->format('Y-m-d');
+		$month =  Carbon::parse($now)->format('m');
+		$year =  Carbon::parse($now)->format('Y');
+
+		$users = request()->company->users()->with('roles')
+			->whereHas('roles',  function ($q) {
+				$q->where('name', '!=', 'Admin');
+				$q->where('name', '!=', 'DISTRIBUTOR');
+			});
+		if ($request->channel) {
+			$users = $users
+				->where('channel', '=', $request->channel);
+		}
+		$users = $users->take(30)->get();
+
+		$productsOfftakes = [];
+		// $total_GT_BA_count = 0;
+		$total_GT_value = 0;
+		$total_MT_value = 0;
+		$total_MTCNC_value = 0;
+		$total_IIA_value = 0;
+
+		foreach ($users as $user) {
+			$singleUserData['user'] = $user;
+			$ors = $request->company->orders_list()
+				->where('order_type', '=', 'Sales')
+				->where('user_id', '=', $user->id)
+				->where('is_active', '=', 1)
+				->with('order_details')
+				->whereHas('order_details',  function ($q) {
+					$q->groupBy('sku_id');
+				});
+
+			if ($month) {
+				$ors = $ors->whereMonth('created_at', '=', $month);
+			}
+			if ($year) {
+				$ors = $ors->whereYear('created_at', '=', $year);
+			}
+			$ors = $ors->get();
+
+			$daysInMonth = Carbon::parse($year . $month . '01')->daysInMonth;
+			$currentMonth = Carbon::now()->format('m');
+			if ($month == $currentMonth) {
+				$daysInMonth = Carbon::now()->format('d');
+			}
+			$todaysTotalValue = 0;
+			for ($i = 1; $i <= $daysInMonth; $i++) {
+
+				// To check single day orders
+				$ordersOfADay = [];
+				foreach ($ors as $or) {
+					// var_dump(Carbon::parse($or->created_at)->format('d'));
+					if (Carbon::parse($or->created_at)->format('d') == sprintf("%02d", $i)) {
+						$ordersOfADay[] = $or;
+					}
+				}
+				// End To check single day orders
+				$totalValue = 0;
+				foreach ($ordersOfADay as $order) {
+					foreach ($order->order_details as $order_detail) {
+						$totalValue += $order_detail->value;
+					}
+				}
+				// $singleUserData['date' . $i] = $totalValue;
+				$todaysTotalValue += $totalValue;
+				$singleUserData['totalTodayValue'] = $todaysTotalValue;
+			}
+			$channel = strtoupper(str_replace(" ", "", $user['channel']));
+			$name = strtoupper($user['ba_name']);
+			$total_name = 'total_' . $channel . '_value';
+			$$total_name += $todaysTotalValue;
+			$Total_list[$name] = [
+				'total_value' => $$total_name,
+				'region' => strtoupper(str_replace(" ", "", $user->region)),
+				'channel' => $channel,
+				'name' => $name,
+			];
+			$productsOfftakes[] = $singleUserData;
+		}
+		// Filter Type Channel
+		$GT_BAs = [];
+		$MT_BAs = [];
+		$MT_CNC_BAs = [];
+		$IIA_BAs = [];
+		foreach ($Total_list as $key => $BA) {
+			if ($BA['channel']) {
+				switch ($BA['channel']) {
+					case 'GT':
+						$GT_BAs[] = $BA;
+						break;
+					case 'MT':
+						$MT_BAs[] = $BA;
+						break;
+					case 'MT-CNC':
+						$MT_CNC_BAs[] = $BA;
+						break;
+					case 'IIA':
+						$IIA_BAs[] = $BA;
+						break;
+					default:
+						break;
+				}
+			}
+		}
+		// Top Five
+		$Top_BAs = [];
+		$Bottom_BAs = [];
+		if ($GT_BAs) {
+			$Bottom_GT = $GT_BAs;
+			usort($GT_BAs, function ($a, $b) {
+				return $b['total_value'] - $a['total_value'];
+			});
+			$Top_BAs = $GT_BAs;
+			usort($Bottom_GT, function ($a, $b) {
+				return $a['total_value'] - $b['total_value'];
+			});
+			$Bottom_BAs = $Bottom_GT;
+		}
+		if ($MT_BAs) {
+			$Bottom_MT = $MT_BAs;
+			usort($MT_BAs, function ($a, $b) {
+				return $b['total_value'] - $a['total_value'];
+			});
+			$Top_BAs = $MT_BAs;
+			usort($Bottom_MT, function ($a, $b) {
+				return $a['total_value'] - $b['total_value'];
+			});
+			$Bottom_BAs = $Bottom_MT;
+		}
+		if ($MT_CNC_BAs) {
+			$Bottom_MT_CNC = $MT_CNC_BAs;
+			usort($MT_CNC_BAs, function ($a, $b) {
+				return $b['total_value'] - $a['total_value'];
+			});
+			$Top_BAs = $MT_CNC_BAs;
+			usort($Bottom_MT_CNC, function ($a, $b) {
+				return $a['total_value'] - $b['total_value'];
+			});
+			$Bottom_BAs = $Bottom_MT_CNC;
+		}
+		if ($IIA_BAs) {
+			$Bottom_IIA = $IIA_BAs;
+			usort($IIA_BAs, function ($a, $b) {
+				return $b['total_value'] - $a['total_value'];
+			});
+			$Top_BAs = $IIA_BAs;
+
+			// Bottom 5
+			usort($Bottom_IIA, function ($a, $b) {
+				return $a['total_value'] - $b['total_value'];
+			});
+			$Bottom_BAs = $Bottom_IIA;
+		}
+
+		$Final_Report = [];
+		$Final_Report['Top_BA'] = array_slice($Top_BAs, 0, 5);;
+		$Final_Report['Bottom_BA'] = array_slice($Bottom_BAs, 0, 5);
+
+		return response()->json([
+			'data'     =>  $Final_Report,
+			'count' => sizeof($Final_Report),
+			'success' =>  true
+		], 200);
+	}
 }
