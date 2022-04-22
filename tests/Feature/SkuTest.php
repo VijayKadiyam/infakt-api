@@ -135,7 +135,8 @@ class SkuTest extends TestCase
             'gst_percent',
             'category',
             'price',
-            'main_category'
+            'main_category',
+            'launch_date'
           ]
       ]);
   }

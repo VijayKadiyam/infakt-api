@@ -1280,7 +1280,8 @@ class UserAttendancesController extends Controller
       $users = $users
         ->where('channel', 'LIKE', '%' . $request->channel . '%');
     }
-    $users = $users->get();
+    $users = $users->take(50)->get();
+    // return $users;
     $userAttendances = request()->company->user_attendances();
 
     $channel = $request->channel;
@@ -1298,7 +1299,7 @@ class UserAttendancesController extends Controller
 
     $userAttendances = $userAttendances->get();
     $count = $userAttendances->count();
-    // return $userAttendances;
+    $userAttendances = $userAttendances->toArray();
     $gt_attandances = [];
     $total_North_App_id = 0;
     $total_South_App_id = 0;
@@ -1309,9 +1310,23 @@ class UserAttendancesController extends Controller
     $Active_South_Ba_Count = 0;
     $Active_East_Ba_Count = 0;
     $Active_West_Ba_Count = 0;
+    $abc = [];
+    $Absent_users = [];
     foreach ($users as $key => $user) {
+      // if (empty($user['user_attendances'])) {
+      //   return $user['id'];
+      // }
+      $user_attendances = $user['user_attendances'];
       $region = str_replace(" ", "", $user['region']);
-
+      $attendance_key = array_search($user->id, array_column($userAttendances, 'user_id'));
+      $User_Attendances = $attendance_key !== false ? $userAttendances[$attendance_key] : "Not Found";
+      $user['User_Attendances'] = $User_Attendances;
+      if ($attendance_key === false) {
+        // Find Entire Month
+        $Absent_users[] = $user;
+      } else {
+      }
+      $abc[] = $user;
       switch ($region) {
         case 'North':
           $total_North_App_id++;
@@ -1343,7 +1358,7 @@ class UserAttendancesController extends Controller
           break;
       }
     }
-
+    return $Absent_users;
 
     $North_present_count = 0;
     $North_weekly_off_count = 0;
@@ -1353,6 +1368,7 @@ class UserAttendancesController extends Controller
     $North_half_day_count = 0;
     $North_holiday_count = 0;
     $North_work_from_home_count = 0;
+    $North_absent_count = 0;
 
     $South_present_count = 0;
     $South_weekly_off_count = 0;
@@ -1362,6 +1378,7 @@ class UserAttendancesController extends Controller
     $South_half_day_count = 0;
     $South_holiday_count = 0;
     $South_work_from_home_count = 0;
+    $South_absent_count = 0;
 
     $East_present_count = 0;
     $East_weekly_off_count = 0;
@@ -1371,6 +1388,7 @@ class UserAttendancesController extends Controller
     $East_half_day_count = 0;
     $East_holiday_count = 0;
     $East_work_from_home_count = 0;
+    $East_absent_count = 0;
 
     $West_present_count = 0;
     $West_weekly_off_count = 0;
@@ -1380,6 +1398,9 @@ class UserAttendancesController extends Controller
     $West_half_day_count = 0;
     $West_holiday_count = 0;
     $West_work_from_home_count = 0;
+    $West_absent_count = 0;
+
+    $Absent_users = [];
     foreach ($userAttendances as $key => $attendance) {
       $user = $attendance['user'];
       $region = str_replace(" ", "", $user['region']);
@@ -1413,6 +1434,7 @@ class UserAttendancesController extends Controller
               $North_work_from_home_count++;
               break;
             default:
+              $North_absent_count++;
               break;
           }
           // $North_Present = $attendance['session_type'] == 'PRESENT' ? $North_Present + 1 : $North_Present;
@@ -1693,6 +1715,11 @@ class UserAttendancesController extends Controller
           if (!isset($$work_from_home_name)) {
             $$work_from_home_name =  0;
           }
+          $absent_name = $chain . '_absent_count';
+          // absent_name= H&G_absent_count
+          if (!isset($$absent_name)) {
+            $$absent_name =  0;
+          }
           switch ($attendance->session_type) {
             case 'PRESENT':
               $$present_name = $$present_name ? $$present_name + 1 : 1;
@@ -1726,6 +1753,7 @@ class UserAttendancesController extends Controller
               // $North_work_from_home_count++;
               break;
             default:
+              $$absent_name = $$absent_name ? $$absent_name + 1 : 1;
               break;
           }
         }
@@ -1735,7 +1763,7 @@ class UserAttendancesController extends Controller
 
     foreach ($Channel_Chains as $key => $chain) {
       $total_name = 'total_' . $chain . '_App_id';
-      $Active_name = 'Active_' . $chain. '_Ba_Count';
+      $Active_name = 'Active_' . $chain . '_Ba_Count';
       $present_name = $chain . '_present_count';
       // present_name= H&G_present_count
       if (!isset($$present_name)) {

@@ -423,6 +423,7 @@ Route::get('offtake_reports/products', 'OfftakeAnalyticsController@noOrValueOfRe
 Route::get('offtake_reports/TVA_report', 'OfftakeAnalyticsController@TVA_report');
 Route::get('offtake_reports/Top_Supervisor_report', 'OfftakeAnalyticsController@Top_Supervisor_report');
 Route::get('offtake_reports/Top_ASM_report', 'OfftakeAnalyticsController@Top_ASM_report');
+Route::get('offtake_reports/YTD_report', 'OfftakeAnalyticsController@YTD_report');
 Route::get('offtake_reports/category_wise_report', 'OfftakeAnalyticsController@category_wise_report');
 Route::get('exports', 'OfftakeAnalyticsController@exports');
 Route::get('simple_exports', 'OfftakeAnalyticsController@simple_exports');
