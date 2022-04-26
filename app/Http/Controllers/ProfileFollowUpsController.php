@@ -9,7 +9,7 @@ class ProfileFollowUpsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:api', 'site']);
+        $this->middleware(['auth:api', 'company']);
     }
 
     /*
@@ -19,7 +19,7 @@ class ProfileFollowUpsController extends Controller
      */
     public function index(Request $request)
     {
-        $profile_follow_ups = $request->site->profile_follow_ups()->get();
+        $profile_follow_ups = $request->company->profile_follow_ups()->get();
 
         return response()->json([
             'data'     =>  $profile_follow_ups
@@ -39,7 +39,7 @@ class ProfileFollowUpsController extends Controller
         ]);
 
         $profile_follow_up = new ProfileFollowUp($request->all());
-        $request->site->profile_follow_ups()->save($profile_follow_up);
+        $request->company->profile_follow_ups()->save($profile_follow_up);
 
         return response()->json([
             'data'    =>  $profile_follow_up

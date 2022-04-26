@@ -15,7 +15,7 @@ class CreateProfileFollowUpsTable extends Migration
     {
         Schema::create('profile_follow_ups', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('site_id')->nullable();
+            $table->integer('company_id')->nullable();
             $table->integer('user_id')->nullable();
             $table->integer('profile_id')->nullable();
             $table->string('remarks')->nullable();

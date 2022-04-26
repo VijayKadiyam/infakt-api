@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ProfileFollowUp extends Model
 {
     protected $fillable = [
-        'site_id',
+        'company_id',
         'user_id',
         'profile_id',
         'remarks',

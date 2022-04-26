@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\ProfileFollowUp;
-use App\Site;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -17,14 +16,14 @@ class ProfileFollowUpTest extends TestCase
     {
         parent::setUp();
 
-        $this->site = factory(Site::class)->create();
-
-        $this->user->assignRole(1);
-        $this->user->assignSite($this->site->id);
-        $this->headers['siteid'] = $this->site->id;
+        $this->company = factory(\App\Company::class)->create([
+            'name' => 'test'
+        ]);
+        $this->user->assignCompany($this->company->id);
+        $this->headers['company-id'] = $this->company->id;
 
         factory(ProfileFollowUp::class)->create([
-            'site_id' =>  $this->site->id
+            'company_id' =>  $this->company->id
         ]);
 
         $this->payload = [
@@ -75,7 +74,7 @@ class ProfileFollowUpTest extends TestCase
                     'next_meeting_date',
                     'is_active',
                     'is_deleted',
-                    'site_id',
+                    'company_id',
                     'updated_at',
                     'created_at',
                     'id'
@@ -149,7 +148,7 @@ class ProfileFollowUpTest extends TestCase
             ->assertJsonStructureExact([
                 'data'  => [
                     'id',
-                    'site_id',
+                    'company_id',
                     'user_id',
                     'profile_id',
                     'remarks',
