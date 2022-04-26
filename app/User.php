@@ -32,7 +32,9 @@ class User extends Authenticatable
     'batch_no',
     'ba_status',
     'pms_emp_id',
-    'store_status'
+    'store_status',
+    'is_active',
+    'is_deleted'
   ];
 
   /**

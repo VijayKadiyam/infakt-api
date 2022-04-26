@@ -47,7 +47,8 @@ class ProfilesController extends Controller
         $profiles = $request->company->profiles()->get();
 
         return response()->json([
-            'data'     =>  $profiles
+            'data'     =>  $profiles,
+            'success'   =>  true,
         ], 200);
     }
 
