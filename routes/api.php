@@ -482,6 +482,7 @@ Route::get('truncate_competitor_datas', 'CrudeCompetitorDatasController@truncate
 
 // Profiles
 Route::get('profiles/masters', 'ProfilesController@masters');
+Route::post('upload_profile_photo', 'ProfilesController@ProfilePhotoPath');
 Route::resource('profiles', 'ProfilesController');
 
 // Profile Follow UP
