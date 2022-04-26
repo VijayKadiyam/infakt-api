@@ -479,3 +479,10 @@ Route::get('crude_competitor_datas', 'CrudeCompetitorDatasController@index');
 Route::post('upload_competitor_data', 'CrudeCompetitorDatasController@uploadCompetitorData');
 Route::get('process_competitor_data', 'CrudeCompetitorDatasController@processCompetitorData');
 Route::get('truncate_competitor_datas', 'CrudeCompetitorDatasController@truncate');
+
+// Profiles
+Route::get('profiles/masters', 'ProfilesController@masters');
+Route::resource('profiles', 'ProfilesController');
+
+// Profile Follow UP
+Route::resource('profile_follow_ups', 'ProfileFollowUpsController');
