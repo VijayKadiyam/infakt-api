@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Retailer;
 use App\Notice;
+use App\Profile;
 use App\User;
 use App\UserAttendance;
 
@@ -189,6 +190,33 @@ class UploadsController extends Controller
     return response()->json([
       'data'  => [
         'attachment_path'  =>  $imagePath
+      ],
+      'success' =>  true
+    ]);
+  }
+
+  public function ProfilePhotoPath(Request $request)
+  {
+    $request->validate([
+      'profileid'        => 'required',
+    ]);
+
+    $photoPath = '';
+    if ($request->hasFile('photoPath')) {
+      $file = $request->file('photoPath');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();;
+      $photoPath = 'profile/photo/' .  $request->profileid . '/' . $name;
+      Storage::disk('local')->put($photoPath, file_get_contents($file), 'public');
+
+      $profile = Profile::where('id', '=', request()->profiletid)->first();
+      $profile->photo_1_path = $photoPath;
+      $profile->update();
+    }
+
+    return response()->json([
+      'data'  => [
+        'photo_1_path'  =>  $photoPath
       ],
       'success' =>  true
     ]);
