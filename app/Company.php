@@ -512,4 +512,13 @@ class Company extends Model
   {
     return $this->hasMany(MonthlyOrderSummary::class)->with('user', 'sku');
   }
+  public function profiles()
+  {
+    return $this->hasMany(Profile::class)->with('user')->where(['is_active' => true, 'is_deleted' => false]);
+  }
+
+  public function profile_follow_ups()
+  {
+    return $this->hasMany(ProfileFollowUp::class)->with('profile', 'user')->where(['is_active' => true, 'is_deleted' => false]);
+  }
 }
