@@ -39,6 +39,20 @@ class Profile extends Model
         'next_meeting_date',
         'is_active',
         'is_deleted',
+        'service_fees',
+        'recruitment_fees',
+        'onboarding_fees',
+        'service_fee_on_reimbursements',
+        'service_fee_on_incentive',
+        'service_fee_on_ad_hoc',
+        'absorption_fee',
+        'agency_fee_for_junior_level',
+        'agency_fee_for_middle_level',
+        'agency_fee_for_senior_level',
+        'hajiri_per_user_per_month',
+        'dastavej_per_user_per_month',
+        'sales_per_user_per_month',
+        'merchandising_per_user_per_month',
     ];
 
     public function company()
