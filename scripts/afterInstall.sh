@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /var/www/vhosts/mamaearth/me-api
+cd /var/www/vhosts/bdev/bdev-api
 
 # php /usr/local/bin/composer install
 

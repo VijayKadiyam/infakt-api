@@ -514,7 +514,7 @@ class Company extends Model
   }
   public function profiles()
   {
-    return $this->hasMany(Profile::class)->with('user')->where(['is_active' => true, 'is_deleted' => false]);
+    return $this->hasMany(Profile::class)->with('user', 'profile_follow_ups')->where(['is_active' => true, 'is_deleted' => false]);
   }
 
   public function profile_follow_ups()
