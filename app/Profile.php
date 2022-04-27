@@ -55,6 +55,7 @@ class Profile extends Model
         'merchandising_per_user_per_month',
         'mark_in_address',
         'mark_out_address',
+        'status',
     ];
 
     public function company()
