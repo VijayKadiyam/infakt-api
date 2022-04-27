@@ -24,7 +24,7 @@ class ProfilesController extends Controller
         $usersController = new UsersController();
         $request->request->add(['role_id' => '3']);
         $usersResponse = $usersController->index($request);
-        
+
         $industries = [
             ['id' => 'Industry 1', 'text' => 'Industry 1'],
             ['id' => 'Industry 2', 'text' => 'Industry 2'],
@@ -46,10 +46,30 @@ class ProfilesController extends Controller
 
     public function index(Request $request)
     {
-        $profiles = $request->company->profiles()->get();
+        if (request()->page && request()->rowsPerPage) {
+            $profiles = request()->company->profiles();
+            $count = $profiles->count();
+            $profiles = $profiles->paginate(request()->rowsPerPage)->toArray();
+            $profiles = $profiles['data'];
+        }
+        if ($request->search != null) {
+            $keyword = $request->search;
+            $profiles = request()->company->profiles();
+            $profiles = $profiles->where('visit_call', 'LIKE', '%' . $keyword . '%')
+                ->orWhere('company_name', 'LIKE', '%' . $keyword . '%')
+                ->orWhere('head_office', 'LIKE', '%' . $keyword . '%')
+                ->orWhere('website', 'LIKE', '%' . $keyword . '%');
+            $profiles = $profiles->orwhereHas('user',  function ($q) use ($keyword) {
+                $q->where('name', 'LIKE', '%' . $keyword . '%');
+            });
+            $profiles = $profiles->get();
+        } else {
+            $profiles = $request->company->profiles()->get();
+        }
 
         return response()->json([
             'data'     =>  $profiles,
+            'count'     =>  sizeof($profiles),
             'success'   =>  true,
         ], 200);
     }
