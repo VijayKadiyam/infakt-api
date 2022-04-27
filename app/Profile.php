@@ -48,7 +48,7 @@ class Profile extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class)->where(['is_active' => true, 'is_deleted' => false]);
+        return $this->belongsTo(User::class)->where(['active' => true]);
     }
 
     public function profile_follow_ups()

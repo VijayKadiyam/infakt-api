@@ -28,6 +28,6 @@ class ProfileFollowUp extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class)->where(['is_active' => true, 'is_deleted' => false]);
+        return $this->belongsTo(User::class);
     }
 }
