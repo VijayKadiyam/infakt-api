@@ -73,6 +73,9 @@ class ProfileTest extends TestCase
             'dastavej_per_user_per_month' => 'dastavej_per_user_per_month',
             'sales_per_user_per_month' => 'sales_per_user_per_month',
             'merchandising_per_user_per_month' => 'merchandising_per_user_per_month',
+            'mark_in_address' => 'mark_in_address',
+            'mark_out_address' => 'mark_out_address',
+
         ];
     }
 
@@ -142,6 +145,9 @@ class ProfileTest extends TestCase
                     'dastavej_per_user_per_month' => 'dastavej_per_user_per_month',
                     'sales_per_user_per_month' => 'sales_per_user_per_month',
                     'merchandising_per_user_per_month' => 'merchandising_per_user_per_month',
+                    'mark_in_address' => 'mark_in_address',
+                    'mark_out_address' => 'mark_out_address',
+
                 ]
             ])
             ->assertJsonStructureExact([
@@ -191,6 +197,9 @@ class ProfileTest extends TestCase
                     'dastavej_per_user_per_month',
                     'sales_per_user_per_month',
                     'merchandising_per_user_per_month',
+                    'mark_in_address',
+                    'mark_out_address',
+
                     'company_id',
                     'updated_at',
                     'created_at',
@@ -253,6 +262,9 @@ class ProfileTest extends TestCase
                         'dastavej_per_user_per_month',
                         'sales_per_user_per_month',
                         'merchandising_per_user_per_month',
+                        'mark_in_address',
+                        'mark_out_address',
+
                     ]
                 ]
             ]);
@@ -312,6 +324,9 @@ class ProfileTest extends TestCase
                     'dastavej_per_user_per_month' => 'dastavej_per_user_per_month',
                     'sales_per_user_per_month' => 'sales_per_user_per_month',
                     'merchandising_per_user_per_month' => 'merchandising_per_user_per_month',
+                    'mark_in_address' => 'mark_in_address',
+                    'mark_out_address' => 'mark_out_address',
+
                 ]
             ]);
     }
@@ -365,6 +380,9 @@ class ProfileTest extends TestCase
             'dastavej_per_user_per_month' => 'dastavej_per_user_per_month',
             'sales_per_user_per_month' => 'sales_per_user_per_month',
             'merchandising_per_user_per_month' => 'merchandising_per_user_per_month',
+            'mark_in_address' => 'mark_in_address',
+            'mark_out_address' => 'mark_out_address',
+
         ];
 
         $this->json('patch', '/api/profiles/1', $payload, $this->headers)
@@ -416,6 +434,9 @@ class ProfileTest extends TestCase
                     'dastavej_per_user_per_month' => 'dastavej_per_user_per_month',
                     'sales_per_user_per_month' => 'sales_per_user_per_month',
                     'merchandising_per_user_per_month' => 'merchandising_per_user_per_month',
+                    'mark_in_address' => 'mark_in_address',
+                    'mark_out_address' => 'mark_out_address',
+
                 ]
             ])
             ->assertJsonStructureExact([
@@ -469,6 +490,9 @@ class ProfileTest extends TestCase
                     'dastavej_per_user_per_month',
                     'sales_per_user_per_month',
                     'merchandising_per_user_per_month',
+                    'mark_in_address',
+                    'mark_out_address',
+
                 ]
             ]);
     }

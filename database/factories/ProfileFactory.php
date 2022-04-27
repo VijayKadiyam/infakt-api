@@ -50,5 +50,7 @@ $factory->define(Profile::class, function (Faker $faker) {
         'dastavej_per_user_per_month' => 'dastavej_per_user_per_month',
         'sales_per_user_per_month' => 'sales_per_user_per_month',
         'merchandising_per_user_per_month' => 'merchandising_per_user_per_month',
+        'mark_in_address' => 'mark_in_address',
+        'mark_out_address' => 'mark_out_address',
     ];
 });
