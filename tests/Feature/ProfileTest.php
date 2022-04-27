@@ -75,7 +75,7 @@ class ProfileTest extends TestCase
             'merchandising_per_user_per_month' => 'merchandising_per_user_per_month',
             'mark_in_address' => 'mark_in_address',
             'mark_out_address' => 'mark_out_address',
-
+            'status' => 'status',
         ];
     }
 
@@ -147,7 +147,7 @@ class ProfileTest extends TestCase
                     'merchandising_per_user_per_month' => 'merchandising_per_user_per_month',
                     'mark_in_address' => 'mark_in_address',
                     'mark_out_address' => 'mark_out_address',
-
+                    'status' => 'status',
                 ]
             ])
             ->assertJsonStructureExact([
@@ -199,6 +199,7 @@ class ProfileTest extends TestCase
                     'merchandising_per_user_per_month',
                     'mark_in_address',
                     'mark_out_address',
+                    'status',
 
                     'company_id',
                     'updated_at',
@@ -264,6 +265,7 @@ class ProfileTest extends TestCase
                         'merchandising_per_user_per_month',
                         'mark_in_address',
                         'mark_out_address',
+                        'status',
 
                     ]
                 ]
@@ -326,6 +328,7 @@ class ProfileTest extends TestCase
                     'merchandising_per_user_per_month' => 'merchandising_per_user_per_month',
                     'mark_in_address' => 'mark_in_address',
                     'mark_out_address' => 'mark_out_address',
+                    'status' => 'status',
 
                 ]
             ]);
@@ -382,6 +385,7 @@ class ProfileTest extends TestCase
             'merchandising_per_user_per_month' => 'merchandising_per_user_per_month',
             'mark_in_address' => 'mark_in_address',
             'mark_out_address' => 'mark_out_address',
+            'status' => 'status',
 
         ];
 
@@ -436,7 +440,7 @@ class ProfileTest extends TestCase
                     'merchandising_per_user_per_month' => 'merchandising_per_user_per_month',
                     'mark_in_address' => 'mark_in_address',
                     'mark_out_address' => 'mark_out_address',
-
+                    'status' => 'status',
                 ]
             ])
             ->assertJsonStructureExact([
@@ -492,7 +496,7 @@ class ProfileTest extends TestCase
                     'merchandising_per_user_per_month',
                     'mark_in_address',
                     'mark_out_address',
-
+                    'status',
                 ]
             ]);
     }
