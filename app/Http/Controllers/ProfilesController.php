@@ -93,12 +93,11 @@ class ProfilesController extends Controller
         $photoPath = '';
         if ($request->hasFile('photoPath')) {
             $file = $request->file('photoPath');
-            $name = $request->filename ?? 'photo.';
-            $name = $name . $file->getClientOriginalExtension();;
-            $photoPath = 'profile/photo/' .  $request->profileid . '/' . $name;
+            $name = $request->filename ?? 'photo.jpg';
+            $photoPath = 'profile/photo/' .  $profile->id . '/' . $name;
             Storage::disk('local')->put($photoPath, file_get_contents($file), 'public');
 
-            $profile = Profile::where('id', '=', request()->profileid)->first();
+            $profile = Profile::where('id', '=', $profile->id)->first();
             $profile->photo_1_path = $photoPath;
             $profile->update();
         }
@@ -134,10 +133,10 @@ class ProfilesController extends Controller
             $file = $request->file('photoPath');
             $name = $request->filename ?? 'photo.';
             $name = $name . $file->getClientOriginalExtension();;
-            $photoPath = 'profile/photo/' .  $request->profileid . '/' . $name;
+            $photoPath = 'profile/photo/' .  $profile->id . '/' . $name;
             Storage::disk('local')->put($photoPath, file_get_contents($file), 'public');
 
-            $profile = Profile::where('id', '=', request()->profileid)->first();
+            $profile = Profile::where('id', '=', $profile->id)->first();
             $profile->photo_1_path = $photoPath;
             $profile->update();
         }
