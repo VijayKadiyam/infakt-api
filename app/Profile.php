@@ -53,6 +53,8 @@ class Profile extends Model
         'dastavej_per_user_per_month',
         'sales_per_user_per_month',
         'merchandising_per_user_per_month',
+        'mark_in_address',
+        'mark_out_address',
     ];
 
     public function company()
