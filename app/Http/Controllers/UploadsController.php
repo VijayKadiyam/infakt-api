@@ -209,7 +209,7 @@ class UploadsController extends Controller
       $photoPath = 'profile/photo/' .  $request->profileid . '/' . $name;
       Storage::disk('local')->put($photoPath, file_get_contents($file), 'public');
 
-      $profile = Profile::where('id', '=', request()->profiletid)->first();
+      $profile = Profile::where('id', '=', request()->profileid)->first();
       $profile->photo_1_path = $photoPath;
       $profile->update();
     }

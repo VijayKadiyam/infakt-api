@@ -98,7 +98,7 @@ class ProfilesController extends Controller
             $photoPath = 'profile/photo/' .  $request->profileid . '/' . $name;
             Storage::disk('local')->put($photoPath, file_get_contents($file), 'public');
 
-            $profile = Profile::where('id', '=', request()->profiletid)->first();
+            $profile = Profile::where('id', '=', request()->profileid)->first();
             $profile->photo_1_path = $photoPath;
             $profile->update();
         }
@@ -129,6 +129,18 @@ class ProfilesController extends Controller
     {
 
         $profile->update($request->all());
+        $photoPath = '';
+        if ($request->hasFile('photoPath')) {
+            $file = $request->file('photoPath');
+            $name = $request->filename ?? 'photo.';
+            $name = $name . $file->getClientOriginalExtension();;
+            $photoPath = 'profile/photo/' .  $request->profileid . '/' . $name;
+            Storage::disk('local')->put($photoPath, file_get_contents($file), 'public');
+
+            $profile = Profile::where('id', '=', request()->profileid)->first();
+            $profile->photo_1_path = $photoPath;
+            $profile->update();
+        }
 
         return response()->json([
             'data'  =>  $profile
