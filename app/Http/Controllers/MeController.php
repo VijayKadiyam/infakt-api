@@ -22,8 +22,6 @@ class MeController extends Controller
     $user = $request->user();
     $user->roles = $user->roles;
     $user->companies = $user->companies;
-    $user->notifications = $user->notifications;
-    $user->salaries = $user->salaries;
 
     $version = Version::latest()->first();
 

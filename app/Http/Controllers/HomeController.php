@@ -22,12 +22,6 @@ class HomeController extends Controller
     // Active Employee Count
     $count['activeEmployees'] = $users->where('active', '=', 1)->count();
     // Present Employees
-    if($request->date) {
-      $date = $request->date;
-      $count['presentEmployees'] = $request->company->users()->whereHas('user_attendances', function($q) use($date) {
-          $q->where('date', '=', $date);
-        })->count();
-    }
     $count['absentEmployees'] = $count['activeEmployees'] - $count['presentEmployees'];
     $count['employeesOnLeave'] = 0;
     $count['leaveApplication'] = 0;
