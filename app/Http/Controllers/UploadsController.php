@@ -10,6 +10,7 @@ use App\Notice;
 use App\Profile;
 use App\User;
 use App\UserAttendance;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UploadsController extends Controller
 {
@@ -36,7 +37,7 @@ class UploadsController extends Controller
       $user->notifications = $user->notifications;
       $user->salaries = $user->salaries;
       $user->distributor = $user->distributor;
-      
+
       return response()->json([
         'data'  =>  $user,
         'message' =>  "User is Logged in Successfully",
@@ -58,13 +59,21 @@ class UploadsController extends Controller
       'id'        => 'required',
     ]);
 
+    Excel::import($request->file('image_path')->getRealPath(), function ($reader) {
+      foreach ($reader->toArray() as $key => $row) {
+        $data['id'] = $row['id'];
+      }
+    });
+
+    return 1;
+
     $image_path = '';
     if ($request->hasFile('image_path')) {
       $file = $request->file('image_path');
-      $name = $request->filename ?? 'photo.';
+      $name = 'attachment.';
       $name = $name . $file->getClientOriginalExtension();;
-      $image_path = 'document/photo/' .  $request->id . '/' . $name;
-      Storage::disk('local')->put($image_path, file_get_contents($file), 'public');
+      $image_path = 'warden/' .  $request->id . '/' . $name;
+      Storage::disk('s3')->put($image_path, file_get_contents($file), 'public');
 
       $document = Document::where('id', '=', request()->id)->first();
       $document->image_path = $image_path;
