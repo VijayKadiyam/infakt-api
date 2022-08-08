@@ -1,3 +1,0 @@
-Geofence Email
-
-Activity: {{ $activity }}
