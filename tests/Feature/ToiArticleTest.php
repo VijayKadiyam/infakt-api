@@ -15,11 +15,17 @@ class ToiArticleTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-
-        // $this->company = factory(\App\Company::class)->create([
-        //     'name' => 'test'
-        // ]);
-        // $this->headers['company-id'] = $this->company->id;
+        factory(ToiArticle::class)->create([
+            'toi_xml_id'    => 1,
+            'edition_name'  => 'edition_name',
+            'story_id'      => 'story_id',
+            'story_date'    => 'story_date',
+            'headline'      => 'headline',
+            'byline'        => 'byline',
+            'category'      => 'category',
+            'drophead'      => 'drophead',
+            'content'       => 'content',
+        ]);
 
         $this->payload = [
             'toi_xml_id'    => 1,
@@ -135,6 +141,7 @@ class ToiArticleTest extends TestCase
     /** @test */
     function update_toi_article()
     {
+        $this->disableEH();
         $payload = [
             'toi_xml_id'    => 1,
             'edition_name'  => 'edition_name',
@@ -147,7 +154,7 @@ class ToiArticleTest extends TestCase
             'content'       => 'content',
         ];
 
-        $this->json('patch', '/api/toi_articles/1', $payload)
+        $this->json('patch', '/api/toi_articles/1', $payload,  $this->headers)
             ->assertStatus(200)
             ->assertJson([
                 'data'    => [

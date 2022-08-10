@@ -7,10 +7,10 @@ use Illuminate\Http\Request;
 
 class ToiArticlesController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware(['auth:api', 'company']);
-    // }
+    public function __construct()
+    {
+        $this->middleware(['auth:api']);
+    }
     /*
      * To get all reference plans
        *
