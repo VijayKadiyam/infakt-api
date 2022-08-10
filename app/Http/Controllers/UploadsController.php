@@ -56,25 +56,30 @@ class UploadsController extends Controller
     ]);
 
     $xml_path = '';
+    $msg = '';
     if ($request->hasFile('xml_path')) {
       $file = $request->file('xml_path');
-      $current = Carbon::now()->format('YmdHs');
-      $file_name = basename($file, ".xml");
-      $name = $file_name . $current . '.';
-      $name = $name . $file->getClientOriginalExtension();
-      $xml_path = 'infact/toi-xmls/' . $name;
-      Storage::disk('local')->put($xml_path, file_get_contents($file), 'public');
-      // Storage::disk('s3')->put($xml_path, file_get_contents($file), 'public');
+      $name = $file->getClientOriginalName();
+      $toi_xml_data = ToiXml::where(['xmlpath' => $name, 'is_process' => true])->first();
 
-      $toi_xml['xmlpath'] = $xml_path;
+      if (!$toi_xml_data) {
+        $xml_path = 'infact/toi-xmls/' . $name;
+        Storage::disk('local')->put($xml_path, file_get_contents($file), 'public');
+        // Storage::disk('s3')->put($xml_path, file_get_contents($file), 'public');
 
-      $toi_xml = new ToiXml($toi_xml);
-      $toi_xml->save();
+        $toi_xml['xmlpath'] = $xml_path;
+
+        $toi_xml = new ToiXml($toi_xml);
+        $toi_xml->save();
+      }
+    } else {
+      $msg = 'File Already Exist';
     }
 
     return response()->json([
       'data'  => [
-        'xml_path'  =>  $xml_path
+        'xml_path'  =>  $xml_path,
+        'msg ' => $msg,
       ],
       'success' =>  true
     ]);
