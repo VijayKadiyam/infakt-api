@@ -22,10 +22,10 @@ class CompaniesController extends Controller
   public function index()
   {
     $companies = Company::with([
-      'users'  => function($query) {
-        $query->whereHas('roles',  function($q) {
-            $q->where('name', '=', 'Admin');
-          });
+      'users'  => function ($query) {
+        $query->whereHas('roles',  function ($q) {
+          $q->where('name', '=', 'Admin');
+        });
       }
     ])->get();
 
@@ -46,17 +46,14 @@ class CompaniesController extends Controller
       'email'   =>  'required',
       'phone'   =>  'required',
       'address' =>  'required',
-      'time_zone' =>  'required'
     ]);
 
     $company = new Company(request()->all());
     $company->save();
-    $company->saveDefaultDesignations();
-    $company->saveDefaultCompanyLeaves();
 
     return response()->json([
       'data'    =>  $company,
-    ], 201); 
+    ], 201);
   }
 
   /*
@@ -71,7 +68,7 @@ class CompaniesController extends Controller
     return response()->json([
       'data'   =>  $company,
       'success' =>  true
-    ], 200);   
+    ], 200);
   }
 
   /*
@@ -86,7 +83,7 @@ class CompaniesController extends Controller
     ]);
 
     $company->update($request->all());
-      
+
     return response()->json([
       'data'  =>  $company
     ], 200);

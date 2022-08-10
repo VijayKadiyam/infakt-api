@@ -154,11 +154,11 @@ class UsersController extends Controller
 
     $user['name'] = $request->name;
     $user['email'] = $request->email;
-    $user['email_2'] = $request->email_2;
+    // $user['email_2'] = $request->email_2;
     $user['active'] = $request->active;
     $user['phone'] = $request->phone;
     $user['password'] = bcrypt('123456');
-    $user['password_backup'] = bcrypt('123456');
+    // $user['password_backup'] = bcrypt('123456');
 
     $user = new User($user);
     $user->save();
@@ -167,6 +167,7 @@ class UsersController extends Controller
     $user->roles = $user->roles;
     $user->assignCompany($request->company_id);
     $user->companies = $user->companies;
+
     return response()->json([
       'data'     =>  $user
     ], 201);
