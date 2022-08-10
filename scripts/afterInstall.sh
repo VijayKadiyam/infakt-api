@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /var/www/vhosts/bdev/bdev-api
+cd /var/www/vhosts/infakt/infakt-api
 
 # php /usr/local/bin/composer install
 

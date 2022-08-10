@@ -1,8 +1,0 @@
----
-deployment:
-  tasks:
-    - sh ~/public_html/pms-api/deploy1.sh 2>&1
-    - export DEPLOYPATH=~/public_html/
-    - /bin/cp -R ~/repositories/pms-api/ $DEPLOYPATH
-    - sh ~/public_html/pms-api/deploy.sh 2>&1
-    
