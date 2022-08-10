@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ToiXml extends Model
 {
     protected $fillable = [
-        'xmlpath'
+        'xmlpath',
+        'is_process'
     ];
 }
