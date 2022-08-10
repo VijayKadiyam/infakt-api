@@ -58,3 +58,6 @@ Route::get('send_otp', 'SendSmsController@index');
 // Documents
 Route::post('documents/upload', 'UploadsController@DocumentImage');
 Route::resource('documents', 'DocumentsController');
+
+// Boards
+Route::resource('boards', 'BoardsController');
