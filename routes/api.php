@@ -61,3 +61,6 @@ Route::resource('documents', 'DocumentsController');
 
 // Boards
 Route::resource('boards', 'BoardsController');
+
+// Subjects
+Route::resource('subjects', 'SubjectsController');
