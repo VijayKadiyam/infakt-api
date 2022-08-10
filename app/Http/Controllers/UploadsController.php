@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Document;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Retailer;
-use App\Notice;
-use App\Profile;
+use App\ToiXml;
 use App\User;
-use App\UserAttendance;
-use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
 
 class UploadsController extends Controller
 {
@@ -53,36 +49,32 @@ class UploadsController extends Controller
     ]);
   }
 
-  public function DocumentImage(Request $request)
+  public function toi_xml(Request $request)
   {
     $request->validate([
-      'id'        => 'required',
+      'xml_path'        => 'required',
     ]);
 
-    Excel::import($request->file('image_path')->getRealPath(), function ($reader) {
-      foreach ($reader->toArray() as $key => $row) {
-        $data['id'] = $row['id'];
-      }
-    });
+    $xml_path = '';
+    if ($request->hasFile('xml_path')) {
+      $file = $request->file('xml_path');
+      $current = Carbon::now()->format('YmdHs');
+      $file_name = basename($file, ".xml");
+      $name = $file_name . $current . '.';
+      $name = $name . $file->getClientOriginalExtension();
+      $xml_path = 'infact/toi-xmls/' . $name;
+      Storage::disk('local')->put($xml_path, file_get_contents($file), 'public');
+      // Storage::disk('s3')->put($xml_path, file_get_contents($file), 'public');
 
-    return 1;
+      $toi_xml['xmlpath'] = $xml_path;
 
-    $image_path = '';
-    if ($request->hasFile('image_path')) {
-      $file = $request->file('image_path');
-      $name = 'attachment.';
-      $name = $name . $file->getClientOriginalExtension();;
-      $image_path = 'warden/' .  $request->id . '/' . $name;
-      Storage::disk('s3')->put($image_path, file_get_contents($file), 'public');
-
-      $document = Document::where('id', '=', request()->id)->first();
-      $document->image_path = $image_path;
-      $document->update();
+      $toi_xml = new ToiXml($toi_xml);
+      $toi_xml->save();
     }
 
     return response()->json([
       'data'  => [
-        'image_path'  =>  $image_path
+        'xml_path'  =>  $xml_path
       ],
       'success' =>  true
     ]);
