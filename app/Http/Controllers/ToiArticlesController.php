@@ -102,26 +102,25 @@ class ToiArticlesController extends Controller
             $edition_name = $edition["@attributes"]['EdName'];
 
             foreach ($edition['body'] as $k => $content) {
-                $headline = $content['body.head']['headline']['h1'];
+                $headline = is_array($content['body.head']['headline']['h1']) ? '' : $content['body.head']['headline']['h1'];
                 $story_id = $content['body.head']['dateline']['story-id'];
                 $story_date = $content['body.head']['dateline']['storydate'];
-                $byline = $content['body.head']['dateline']['byline'];
-                $category = $content['body.head']['dateline']['category'];
-                $drophead = $content['body.head']['dateline']['drophead'];
-                $content = $content['body.content']['block'];
+                $byline = is_array($content['body.head']['dateline']['byline']) ? '' : $content['body.head']['dateline']['byline'];
+                $category = is_array($content['body.head']['dateline']['category']) ? '' : $content['body.head']['dateline']['category'];
+                $drophead = is_array($content['body.head']['dateline']['drophead']) ? '' : $content['body.head']['dateline']['drophead'];
+                $content = is_array($content['body.content']['block']) ? '' : $content['body.content']['block'];
 
                 $data = [
                     'toi_xml_id'   => 1,
-                    'edition_name' => json_encode($edition_name),
-                    'headline'     => json_encode($headline),
-                    'story_id'     => json_encode($story_id),
-                    'story_date'   => json_encode($story_date),
-                    'byline'       => json_encode($byline),
-                    'category'     => json_encode($category),
-                    'drophead'     => json_encode($drophead),
-                    'content'      => json_encode($content),
+                    'story_id'     => $story_id,
+                    'story_date'   => $story_date,
+                    'category'     => $category,
+                    'edition_name' => $edition_name,
+                    'headline'     => $headline,
+                    'byline'       => $byline,
+                    'drophead'     => $drophead,
+                    'content'      => $content,
                 ];
-                // $data=json_encode($data);
                 $toi_article = new ToiArticle($data);
                 $toi_article->save($data);
                 $toi_articles[] = $toi_article;
