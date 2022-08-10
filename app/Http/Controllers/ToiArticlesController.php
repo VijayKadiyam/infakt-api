@@ -90,39 +90,46 @@ class ToiArticlesController extends Controller
 
     public function processTOIXML()
     {
+
         $xmlString = file_get_contents("https://aaibuzz-spc-1.s3.ap-south-1.amazonaws.com/infakt-api/TOI-Epaper210722.xml");
         $xmlObject = simplexml_load_string($xmlString, 'SimpleXMLElement', LIBXML_NOCDATA);
 
         $json = json_encode($xmlObject);
         $phpArray = json_decode($json, true);
-
         $editions = $phpArray['Edition'];
-
-        // return sizeof($edition["@attributes"]['EdName']);
-
         $data = [];
-        foreach ($editions as $edition) {
-            foreach ($edition as $content) {
-                $data[] = [
-                    'toi_xml_id'  => 1,
-                    'edition_name'  =>    $edition["@attributes"]['EdName'],
-                    'headline'  =>  sizeof($content),
-                    'story_id'  =>  
-                    'story_date',
-                    'byline',
-                    'category',
-                    'drophead',
-                    'content',
+        foreach ($editions as $i => $edition) {
+            $edition_name = $edition["@attributes"]['EdName'];
+
+            foreach ($edition['body'] as $k => $content) {
+                $headline = $content['body.head']['headline']['h1'];
+                $story_id = $content['body.head']['dateline']['story-id'];
+                $story_date = $content['body.head']['dateline']['storydate'];
+                $byline = $content['body.head']['dateline']['byline'];
+                $category = $content['body.head']['dateline']['category'];
+                $drophead = $content['body.head']['dateline']['drophead'];
+                $content = $content['body.content']['block'];
+
+                $data = [
+                    'toi_xml_id'   => 1,
+                    'edition_name' => json_encode($edition_name),
+                    'headline'     => json_encode($headline),
+                    'story_id'     => json_encode($story_id),
+                    'story_date'   => json_encode($story_date),
+                    'byline'       => json_encode($byline),
+                    'category'     => json_encode($category),
+                    'drophead'     => json_encode($drophead),
+                    'content'      => json_encode($content),
                 ];
+                // $data=json_encode($data);
+                $toi_article = new ToiArticle($data);
+                $toi_article->save($data);
+                $toi_articles[] = $toi_article;
             }
         }
 
         return response()->json([
-            'data'  =>  $data,
-        ]);
-
-        return response()->json([
-            'data'  =>  $phpArray,
+            'data'  =>  $toi_articles,
         ]);
     }
 }
