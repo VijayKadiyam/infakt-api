@@ -61,3 +61,9 @@ Route::resource('documents', 'DocumentsController');
 
 // Boards
 Route::resource('boards', 'BoardsController');
+
+// TOI XML
+Route::post('toi_xml/upload', 'UploadsController@toi_xml');
+
+// TOI Articles
+Route::resource('toi_articles', 'ToiArticlesController');
