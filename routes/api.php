@@ -60,10 +60,10 @@ Route::resource('boards', 'BoardsController');
 
 // TOI XML
 Route::post('toi_xml/upload', 'UploadsController@toi_xml');
+Route::get('toi_xml', 'ToiXmlsController@index');
 
 // TOI Articles
 Route::resource('toi_articles', 'ToiArticlesController');
 
 // Subjects
 Route::resource('subjects', 'SubjectsController');
-

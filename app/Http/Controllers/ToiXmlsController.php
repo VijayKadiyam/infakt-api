@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ToiXml;
 use Illuminate\Http\Request;
 
 class ToiXmlsController extends Controller
@@ -13,7 +14,11 @@ class ToiXmlsController extends Controller
      */
     public function index()
     {
-        //
+        $toi_xmls = ToiXml::get();
+
+        return response()->json([
+            'data'     =>  $toi_xmls
+        ], 200);
     }
 
     /**
