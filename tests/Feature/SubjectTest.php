@@ -103,31 +103,40 @@ class SubjectTest extends TestCase
             ]);
     }
 
-    // /** @test */
-    // function update_single_subject()
-    // {
-    //     $this->disableEH();
-    //     $payload = [
-    //         'name' => "name",
-    //         'is_active' => 1,
-    //     ];
+    /** @test */
+    function update_single_subject()
+    {
+        $this->disableEH();
+        $payload = [
+            'name' => "name",
+            'is_active' => 1,
+        ];
 
-    //     $this->json('patch', '/api/subjects/1', $payload)
-    //         ->assertStatus(200)
-    //         ->assertJson([
-    //             'data'    => [
-    //                 'name' => "name",
-    //                 'is_active' => 1,
-    //             ]
-    //         ])
-    //         ->assertJsonStructureExact([
-    //             'data'    => [
-    //                 'id',
-    //                 'name',
-    //                 'is_active',
-    //                 'created_at',
-    //                 'updated_at'
-    //             ]
-    //         ]);
-    // }
+        $this->json('patch', '/api/subjects/1', $payload, $this->headers)
+            ->assertStatus(200)
+            ->assertJson([
+                'data'    => [
+                    'name' => "name",
+                    'is_active' => 1,
+                ]
+            ])
+            ->assertJsonStructureExact([
+                'data'    => [
+                    'id',
+                    'name',
+                    'is_active',
+                    'created_at',
+                    'updated_at'
+                ]
+            ]);
+    }
+
+    /** @test */
+    function delete_subject()
+    {
+        $this->json('delete', '/api/subjects/1', [], $this->headers)
+            ->assertStatus(204);
+
+        $this->assertCount(0, Subject::all());
+    }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Subject;
+use App\ContactRequest;
 use Illuminate\Http\Request;
 
-class SubjectsController extends Controller
+class ContactRequestsController extends Controller
 {
     public function __construct()
     {
@@ -19,10 +19,10 @@ class SubjectsController extends Controller
      */
     public function index()
     {
-        $subjects = Subject::where('is_active', true)->get();
+        $contact_requests = ContactRequest::where('is_deleted', false)->get();
         return response()->json([
-            'data'  =>  $subjects,
-            'count' =>   sizeof($subjects),
+            'data'  =>  $contact_requests,
+            'count' =>   sizeof($contact_requests),
             'success' =>  true,
         ], 200);
     }
@@ -39,11 +39,11 @@ class SubjectsController extends Controller
             'name'  =>  'required'
         ]);
 
-        $subject = new Subject(request()->all());
-        $subject->save();
+        $contact_request = new ContactRequest(request()->all());
+        $contact_request->save();
 
         return response()->json([
-            'data'  =>  $subject
+            'data'  =>  $contact_request
         ], 201);
     }
 
@@ -53,10 +53,10 @@ class SubjectsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Subject $subject)
+    public function show(ContactRequest $contact_request)
     {
         return response()->json([
-            'data'  =>  $subject
+            'data'  =>  $contact_request
         ], 200);
     }
     /**
@@ -66,16 +66,16 @@ class SubjectsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Subject $subject)
+    public function update(Request $request, ContactRequest $contact_request)
     {
         $request->validate([
             'name'  =>  'required',
         ]);
 
-        $subject->update($request->all());
+        $contact_request->update($request->all());
 
         return response()->json([
-            'data'  =>  $subject
+            'data'  =>  $contact_request
         ], 200);
     }
 
@@ -87,8 +87,8 @@ class SubjectsController extends Controller
      */
     public function destroy($id)
     {
-        $subject = Subject::find($id);
-        $subject->delete();
+        $contact_request = ContactRequest::find($id);
+        $contact_request->delete();
 
         return response()->json([
             'message' =>  'Deleted'
