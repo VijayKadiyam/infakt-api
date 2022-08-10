@@ -16,6 +16,11 @@ class SubjectTest extends TestCase
     {
         parent::setUp();
 
+        factory(\App\Subject::class)->create([
+            'name' => "Subject 1",
+            'is_active' => 1,
+        ]);
+
         $this->payload = [
             'name' => "name",
             'is_active' => 1,
@@ -72,30 +77,31 @@ class SubjectTest extends TestCase
                     ]
                 ]
             ]);
-        $this->assertCount(0, Subject::all());
+        $this->assertCount(1, Subject::all());
     }
 
-    // /** @test */
-    // function show_single_subject()
-    // {
-    //     $this->disableEH();
-    //     $this->json('get', "/api/subjects/1", [])
-    //         ->assertStatus(200)
-    //         ->assertJson([
-    //             'data'  => [
-    //                 'name' => "name",
-    //                 'is_active' => 1,
-    //             ]
-    //         ])
-    //         ->assertJsonStructureExact([
-    //             'data'    => [
-    //                 'id',
-    //                 'name',
-    //                 'created_at',
-    //                 'updated_at'
-    //             ]
-    //         ]);
-    // }
+    /** @test */
+    function show_single_subject()
+    {
+        $this->disableEH();
+        $this->json('get', "/api/subjects/1", [],  $this->headers)
+            ->assertStatus(200)
+            ->assertJson([
+                'data'  => [
+                    'name' => "Subject 1",
+                    'is_active' => 1,
+                ]
+            ])
+            ->assertJsonStructureExact([
+                'data'    => [
+                    'id',
+                    'name',
+                    'is_active',
+                    'created_at',
+                    'updated_at'
+                ]
+            ]);
+    }
 
     // /** @test */
     // function update_single_subject()
