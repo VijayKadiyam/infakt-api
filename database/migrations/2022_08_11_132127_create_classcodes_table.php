@@ -15,6 +15,14 @@ class CreateClasscodesTable extends Migration
     {
         Schema::create('classcodes', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('company_id')->nullable();
+            $table->integer('standard_id')->nullable();
+            $table->integer('section_id')->nullable();
+            $table->string('subject_name')->nullable();
+            $table->string('classcode')->nullable();
+            $table->boolean('is_deleted')->default(false);
+            $table->boolean('is_active')->default(true);
+            $table->boolean('is_optional')->default(false);
             $table->timestamps();
         });
     }
