@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use PhpParser\Node\Expr\Assign;
 
 class Company extends Model
 {
@@ -58,5 +59,10 @@ class Company extends Model
   public function classcodes()
   {
     return $this->hasMany(Classcode::class);
+  }
+
+  public function assignments()
+  {
+    return $this->hasMany(Assignment::class);
   }
 }

@@ -101,3 +101,6 @@ Route::resource('sections', 'SectionsController');
 
 // Classcodes
 Route::resource('classcodes', 'ClasscodesController');
+
+// Assignments
+Route::resource('assignments', 'AssignmentsController');
