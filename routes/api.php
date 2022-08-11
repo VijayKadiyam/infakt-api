@@ -81,3 +81,9 @@ Route::resource('contents', 'ContentsController');
 
 // Standards
 Route::resource('standars', 'StandardsController');
+
+// ContentSubjects
+Route::resource('content_subjects', 'ContentSubjectsController');
+
+// ContentMedias
+Route::resource('content_medias', 'ContentMediasController');
