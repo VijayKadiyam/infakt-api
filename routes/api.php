@@ -68,7 +68,7 @@ Route::resource('toi_articles', 'ToiArticlesController');
 // Subjects
 Route::resource('subjects', 'SubjectsController');
 
-Route::get('processTOIXML', 'ToiArticlesController@processTOIXML');
+Route::post('processTOIXML', 'ToiArticlesController@processTOIXML');
 
 // ContactRequests
 Route::resource('contact_requests', 'ContactRequestsController');
