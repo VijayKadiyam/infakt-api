@@ -43,6 +43,7 @@ class UserStandardsController extends Controller
         ]);
 
         $user_standard = new UserStandard(request()->all());
+        // dd($request->company());
         $request->company->user_standards()->save($user_standard);
 
         return response()->json([
