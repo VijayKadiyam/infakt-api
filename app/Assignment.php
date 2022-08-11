@@ -33,4 +33,9 @@ class Assignment extends Model
     {
         return $this->hasMany(AssignmentQuestion::class);
     }
+
+    public function assignmnet_question_options()
+    {
+        return $this->hasMany(AssignmentQuestionOption::class);
+    }
 }

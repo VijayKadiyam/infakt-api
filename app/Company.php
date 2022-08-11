@@ -80,4 +80,9 @@ class Company extends Model
   {
     return $this->hasMany(AssignmentQuestion::class);
   }
+
+  public function assignment_question_options()
+  {
+    return $this->hasMany(AssignmentQuestionOption::class);
+  }
 }

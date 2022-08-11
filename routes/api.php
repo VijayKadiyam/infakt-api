@@ -112,3 +112,6 @@ Route::resource('user_assignments', 'UserAssignmentsController');
 
 // Assignment Questions
 Route::resource('assignment_questions', 'AssignmentQuestionsController');
+
+// Assignment QuestionOptions
+Route::resource('assignment_question_options', 'AssignmentQuestionOptionsController');
