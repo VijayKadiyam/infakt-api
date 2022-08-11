@@ -38,15 +38,19 @@ class Company extends Model
   public function user_standards()
   {
     return $this->hasMany(UserStandard::class);
-}
+  }
   public function standards()
   {
     return $this->hasMany(Standard::class);
-
   }
 
   public function sections()
   {
     return $this->hasMany(Section::class);
+  }
+
+  public function classcodes()
+  {
+    return $this->hasMany(Classcode::class);
   }
 }

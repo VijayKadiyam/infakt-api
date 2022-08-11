@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Classcode;
 use Illuminate\Http\Request;
 
 class ClasscodesController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['auth:api', 'company']);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -13,17 +19,14 @@ class ClasscodesController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $classcodes = request()->company->classcodes()
+            ->where('is_active', true)->get();
+        // dd($classcodes);
+        return response()->json([
+            'data'  =>  $classcodes,
+            'count' =>   sizeof($classcodes),
+            'success' =>  true,
+        ], 200);
     }
 
     /**
@@ -34,7 +37,18 @@ class ClasscodesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'standard_id'  =>  'required',
+            'section_id'  =>  'required',
+            'classcode'  =>  'required',
+        ]);
+
+        $classcode = new Classcode($request->all());
+        $request->company->classcodes()->save($classcode);
+
+        return response()->json([
+            'data'  =>  $classcode
+        ], 201);
     }
 
     /**
@@ -43,22 +57,12 @@ class ClasscodesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Classcode $classcode)
     {
-        //
+        return response()->json([
+            'data'  =>  $classcode
+        ], 200);
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
     /**
      * Update the specified resource in storage.
      *
@@ -66,9 +70,19 @@ class ClasscodesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Classcode $classcode)
     {
-        //
+        $request->validate([
+            'standard_id'  =>  'required',
+            'section_id'  =>  'required',
+            'classcode'  =>  'required',
+        ]);
+
+        $classcode->update($request->all());
+
+        return response()->json([
+            'data'  =>  $classcode
+        ], 200);
     }
 
     /**
@@ -79,6 +93,12 @@ class ClasscodesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $classcode = request()->company->classcodes()
+            ->where('id', $id)->first();
+        $classcode->delete();
+
+        return response()->json([
+            'message' =>  'Deleted'
+        ], 204);
     }
 }

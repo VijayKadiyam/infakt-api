@@ -17,4 +17,9 @@ class Section extends Model
     {
         return $this->belongsTo(Company::class);
     }
+
+    public function classcodes()
+    {
+        return $this->hasMany(Classcode::class);
+    }
 }
