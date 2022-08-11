@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Content;
+use App\ContentSubject;
 use Illuminate\Http\Request;
 
-class ContentsController extends Controller
+class ContentSubjectsController extends Controller
 {
     public function __construct()
     {
@@ -19,10 +19,10 @@ class ContentsController extends Controller
      */
     public function index()
     {
-        $contents = Content::where('is_deleted', false)->get();
+        $content_subjects = ContentSubject::where('is_active', true)->get();
         return response()->json([
-            'data'  =>  $contents,
-            'count' =>   sizeof($contents), 
+            'data'  =>  $content_subjects,
+            'count' =>   sizeof($content_subjects),
             'success' =>  true,
         ], 200);
     }
@@ -36,14 +36,14 @@ class ContentsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'content_name'  =>  'required'
+            'content_id'  =>  'required'
         ]);
 
-        $content = new Content(request()->all());
-        $content->save();
+        $content_subject = new ContentSubject(request()->all());
+        $content_subject->save();
 
         return response()->json([
-            'data'  =>  $content
+            'data'  =>  $content_subject
         ], 201);
     }
 
@@ -53,10 +53,10 @@ class ContentsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Content $content)
+    public function show(ContentSubject $content_subject)
     {
         return response()->json([
-            'data'  =>  $content
+            'data'  =>  $content_subject
         ], 200);
     }
     /**
@@ -66,16 +66,16 @@ class ContentsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Content $content)
+    public function update(Request $request, ContentSubject $content_subject)
     {
         $request->validate([
-            'content_name'  =>  'required',
+            'content_id'  =>  'required',
         ]);
 
-        $content->update($request->all());
+        $content_subject->update($request->all());
 
         return response()->json([
-            'data'  =>  $content
+            'data'  =>  $content_subject
         ], 200);
     }
 
@@ -87,8 +87,8 @@ class ContentsController extends Controller
      */
     public function destroy($id)
     {
-        $content = Content::find($id);
-        $content->delete();
+        $content_subject = ContentSubject::find($id);
+        $content_subject->delete();
 
         return response()->json([
             'message' =>  'Deleted'
