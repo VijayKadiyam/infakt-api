@@ -22,4 +22,9 @@ class Assignment extends Model
     {
         return $this->belongsTo(Company::class);
     }
+
+    public function assignmnet()
+    {
+        return $this->belongsTo(Assignment::class);
+    }
 }

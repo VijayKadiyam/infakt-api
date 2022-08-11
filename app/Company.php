@@ -65,4 +65,9 @@ class Company extends Model
   {
     return $this->hasMany(Assignment::class);
   }
+
+  public function assignment_classcodes()
+  {
+    return $this->hasMany(AssignmentClasscode::class);
+  }
 }
