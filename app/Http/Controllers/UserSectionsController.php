@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\UserStandard;
+use App\UserSection;
 use Illuminate\Http\Request;
 
-class UserStandardsController extends Controller
+class UserSectionsController extends Controller
 {
     public function __construct()
     {
@@ -16,23 +16,23 @@ class UserStandardsController extends Controller
     {
         $count = 0;
         if ($request->user_id) {
-            $user_standards = request()->company->user_standards()
+            $user_sections = request()->company->user_sections()
                 ->where('user_id', '=', $request->user_id)
                 ->get();
         } else {
 
-            $user_standards = request()->company->user_standards;
-            $count = $user_standards->count();
+            $user_sections = request()->company->user_sections;
+            $count = $user_sections->count();
         }
 
         return response()->json([
-            'data'     =>  $user_standards,
+            'data'     =>  $user_sections,
             'count'    =>   $count
         ], 200);
     }
 
     /*
-     * To store a new user_standard
+     * To store a new user_section
      *
      *@
      */
@@ -42,46 +42,45 @@ class UserStandardsController extends Controller
             'user_id'        =>  'required',
         ]);
 
-        $user_standard = new UserStandard(request()->all());
-        // dd($request->company());
-        $request->company->user_standards()->save($user_standard);
+        $user_section = new UserSection(request()->all());
+        $request->company->user_sections()->save($user_section);
 
         return response()->json([
-            'data'    =>  $user_standard
+            'data'    =>  $user_section
         ], 201);
     }
 
     /*
-     * To view a single user_standard
+     * To view a single user_section
      *
      *@
      */
-    public function show(UserStandard $user_standard)
+    public function show(UserSection $user_section)
     {
         return response()->json([
-            'data'   =>  $user_standard,
+            'data'   =>  $user_section,
             'success' =>  true
         ], 200);
     }
 
     /*
-     * To update a user_standard
+     * To update a user_section
      *
      *@
      */
-    public function update(Request $request, UserStandard $user_standard)
+    public function update(Request $request, UserSection $user_section)
     {
-        $user_standard->update($request->all());
+        $user_section->update($request->all());
 
         return response()->json([
-            'data'  =>  $user_standard
+            'data'  =>  $user_section
         ], 200);
     }
 
     public function destroy($id)
     {
-        $user_standard = UserStandard::find($id);
-        $user_standard->delete();
+        $user_section = UserSection::find($id);
+        $user_section->delete();
 
         return response()->json([
             'message' =>  'Deleted'

@@ -2,14 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Company;
-use App\UserStandard;
+use App\UserSection;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class UserStandardTest extends TestCase
+class UserSectionTest extends TestCase
 {
     use DatabaseTransactions;
 
@@ -23,30 +22,30 @@ class UserStandardTest extends TestCase
 
         $this->headers['company-id'] = $this->company->id;
 
-        factory(UserStandard::class)->create([
+        factory(UserSection::class)->create([
             'company_id' =>  $this->company->id,
-            'user_id' => '1',
-            'standard_id' => '1',
+            'user_id' => 1,
+            'section_id' => 1,
             'start_date' => 'start_date',
             'end_date' => 'end_date',
-            'is_active' => '1',
-            'is_deleted' => '0',
+            'is_active' => 1,
+            'is_deleted' => 0,
         ]);
 
         $this->payload = [
-            'user_id' => '1',
-            'standard_id' => '1',
+            'user_id' => 1,
+            'section_id' => 1,
             'start_date' => 'start_date',
             'end_date' => 'end_date',
-            'is_active' => '1',
-            'is_deleted' => '0',
+            'is_active' => 1,
+            'is_deleted' => 0,
         ];
     }
 
     /** @test */
     function it_requires_following_details()
     {
-        $this->json('post', '/api/user_standards', [], $this->headers)
+        $this->json('post', '/api/user_sections', [], $this->headers)
             ->assertStatus(422)
             ->assertExactJson([
                 "errors"  =>  [
@@ -57,26 +56,26 @@ class UserStandardTest extends TestCase
     }
 
     /** @test */
-    function add_new_user_standard()
+    function add_new_user_section()
     {
         $this->disableEH();
 
-        $this->json('post', '/api/user_standards', $this->payload, $this->headers)
+        $this->json('post', '/api/user_sections', $this->payload, $this->headers)
             ->assertStatus(201)
             ->assertJson([
                 'data'   => [
-                    'user_id' => '1',
-                    'standard_id' => '1',
+                    'user_id' => 1,
+                    'section_id' => 1,
                     'start_date' => 'start_date',
                     'end_date' => 'end_date',
-                    'is_active' => '1',
-                    'is_deleted' => '0',
+                    'is_active' => 1,
+                    'is_deleted' => 0,
                 ]
             ])
             ->assertJsonStructureExact([
                 'data'   => [
                     'user_id',
-                    'standard_id',
+                    'section_id',
                     'start_date',
                     'end_date',
                     'is_active',
@@ -90,16 +89,16 @@ class UserStandardTest extends TestCase
     }
 
     /** @test */
-    function list_of_user_standards()
+    function list_of_user_sections()
     {
         $this->disableEH();
-        $this->json('GET', '/api/user_standards', [], $this->headers)
+        $this->json('GET', '/api/user_sections', [], $this->headers)
             ->assertStatus(200)
             ->assertJsonStructure([
                 'data' => [
                     0 =>  [
                         'user_id',
-                        'standard_id',
+                        'section_id',
                         'start_date',
                         'end_date',
                         'is_active',
@@ -107,49 +106,49 @@ class UserStandardTest extends TestCase
                     ]
                 ]
             ]);
-        $this->assertCount(1, UserStandard::all());
+        $this->assertCount(1, UserSection::all());
     }
 
     /** @test */
-    function show_single_user_standard()
+    function show_single_user_section()
     {
 
-        $this->json('get', "/api/user_standards/1", [], $this->headers)
+        $this->json('get', "/api/user_sections/1", [], $this->headers)
             ->assertStatus(200)
             ->assertJson([
                 'data'  => [
-                    'user_id' => '1',
-                    'standard_id' => '1',
+                    'user_id' => 1,
+                    'section_id' => 1,
                     'start_date' => 'start_date',
                     'end_date' => 'end_date',
-                    'is_active' => '1',
-                    'is_deleted' => '0',
+                    'is_active' => 1,
+                    'is_deleted' => 0,
                 ]
             ]);
     }
 
     /** @test */
-    function update_single_user_standard()
+    function update_single_user_section()
     {
         $payload = [
-            'user_id' => '1',
-            'standard_id' => '1',
+            'user_id' => 1,
+            'section_id' => 1,
             'start_date' => 'start_date',
             'end_date' => 'end_date',
-            'is_active' => '1',
-            'is_deleted' => '0',
+            'is_active' => 1,
+            'is_deleted' => 0,
         ];
 
-        $this->json('patch', '/api/user_standards/1', $payload, $this->headers)
+        $this->json('patch', '/api/user_sections/1', $payload, $this->headers)
             ->assertStatus(200)
             ->assertJson([
                 'data'    => [
-                    'user_id' => '1',
-                    'standard_id' => '1',
+                    'user_id' => 1,
+                    'section_id' => 1,
                     'start_date' => 'start_date',
                     'end_date' => 'end_date',
-                    'is_active' => '1',
-                    'is_deleted' => '0',
+                    'is_active' => 1,
+                    'is_deleted' => 0,
                 ]
             ])
             ->assertJsonStructureExact([
@@ -157,7 +156,7 @@ class UserStandardTest extends TestCase
                     'id',
                     'company_id',
                     'user_id',
-                    'standard_id',
+                    'section_id',
                     'start_date',
                     'end_date',
                     'is_active',
@@ -169,11 +168,11 @@ class UserStandardTest extends TestCase
     }
 
     /** @test */
-    function delete_user_standard()
+    function delete_user_section()
     {
-        $this->json('delete', '/api/user_standards/1', [], $this->headers)
+        $this->json('delete', '/api/user_sections/1', [], $this->headers)
             ->assertStatus(204);
 
-        $this->assertCount(0, UserStandard::all());
+        $this->assertCount(0, UserSection::all());
     }
 }
