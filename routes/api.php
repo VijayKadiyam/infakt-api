@@ -97,3 +97,7 @@ Route::resource('user_sections', 'UserSectionsController');
 
 // Sections
 Route::resource('sections', 'SectionsController');
+
+
+// Classcodes
+Route::resource('classcodes', 'ClasscodesController');
