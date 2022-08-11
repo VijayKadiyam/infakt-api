@@ -98,7 +98,6 @@ Route::resource('user_sections', 'UserSectionsController');
 // Sections
 Route::resource('sections', 'SectionsController');
 
-
 // Classcodes
 Route::resource('classcodes', 'ClasscodesController');
 
@@ -107,3 +106,6 @@ Route::resource('assignments', 'AssignmentsController');
 
 // Assignment Classcodes
 Route::resource('assignment_classcodes', 'AssignmentClasscodesController');
+
+// User Assignment 
+Route::resource('user_assignments', 'UserAssignmentsController');
