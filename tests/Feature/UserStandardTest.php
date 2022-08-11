@@ -17,11 +17,11 @@ class UserStandardTest extends TestCase
     {
         parent::setUp();
 
-        $this->company = factory(Company::class)->create();
+        $this->company = factory(\App\Company::class)->create([
+            'name' => 'test'
+        ]);
 
-        $this->user->assignRole(1);
-        $this->user->assigncompany($this->company->id);
-        $this->headers['companyid'] = $this->company->id;
+        $this->headers['company-id'] = $this->company->id;
 
         factory(UserStandard::class)->create([
             'company_id' =>  $this->company->id,
@@ -118,7 +118,6 @@ class UserStandardTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'data'  => [
-                    'company_id' => '1',
                     'user_id' => '1',
                     'standard_id' => '1',
                     'start_date' => 'start_date',
