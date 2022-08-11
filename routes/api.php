@@ -79,5 +79,5 @@ Route::resource('career_requests', 'CareerRequestsController');
 // Contents
 Route::resource('contents', 'ContentsController');
 
-// ContentSubjects
-Route::resource('content_subjects', 'ContentSubjectsController');
+// Standards
+Route::resource('standars', 'StandardsController');
