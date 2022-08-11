@@ -4,13 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AssignmentClasscode extends Model
+class AssignmentQuestion extends Model
 {
     protected $fillable = [
         'assignment_id',
-        'classcode_id',
-        'start_date',
-        'end_date',
+        'description',
+        'correct_option_sr_no',
+        'marks',
+        'negative_marks',
         'is_deleted',
     ];
 
