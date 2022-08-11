@@ -16,4 +16,14 @@ class Content extends Model
         'med_content',
         'hard_content',
     ];
+
+    public function written_by()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function content_subjects()
+    {
+        return $this->hasMany(ContentSubject::class);
+    }
 }
