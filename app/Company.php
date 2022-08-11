@@ -38,4 +38,9 @@ class Company extends Model
   {
     return $this->hasMany(Standard::class);
   }
+
+  public function sections()
+  {
+    return $this->hasMany(Section::class);
+  }
 }

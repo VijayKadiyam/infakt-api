@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Section;
 use Illuminate\Http\Request;
 
 class SectionsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['auth:api', 'company']);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -13,17 +19,14 @@ class SectionsController extends Controller
      */
     public function index()
     {
-        //
-    }
+        $sections = request()->company->sections()
+            ->where('is_active', true)->get();
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return response()->json([
+            'data'  =>  $sections,
+            'count' =>   sizeof($sections),
+            'success' =>  true,
+        ], 200);
     }
 
     /**
@@ -34,7 +37,17 @@ class SectionsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'standard_id'  =>  'required',
+            'name'  =>  'required',
+        ]);
+
+        $section = new Section($request->all());
+        $request->company->sections()->save($section);
+
+        return response()->json([
+            'data'  =>  $section
+        ], 201);
     }
 
     /**
@@ -43,22 +56,12 @@ class SectionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Section $section)
     {
-        //
+        return response()->json([
+            'data'  =>  $section
+        ], 200);
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
     /**
      * Update the specified resource in storage.
      *
@@ -66,9 +69,18 @@ class SectionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Section $section)
     {
-        //
+        $request->validate([
+            'standard_id'  =>  'required',
+            'name'  =>  'required',
+        ]);
+
+        $section->update($request->all());
+
+        return response()->json([
+            'data'  =>  $section
+        ], 200);
     }
 
     /**
@@ -79,6 +91,12 @@ class SectionsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $section = request()->company->sections()
+            ->where('id', $id)->first();
+        $section->delete();
+
+        return response()->json([
+            'message' =>  'Deleted'
+        ], 204);
     }
 }
