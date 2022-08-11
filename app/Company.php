@@ -75,4 +75,9 @@ class Company extends Model
   {
     return $this->hasMany(UserAssignment::class);
   }
+
+  public function assignment_questions()
+  {
+    return $this->hasMany(AssignmentQuestion::class);
+  }
 }

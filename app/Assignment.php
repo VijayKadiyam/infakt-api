@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Tests\Feature\AssignmentQuestionTest;
 
 class Assignment extends Model
 {
@@ -23,8 +24,13 @@ class Assignment extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function assignmnet()
+    public function assignmnet_classcodes()
     {
-        return $this->belongsTo(Assignment::class);
+        return $this->hasMany(AssignmentClasscode::class);
+    }
+
+    public function assignmnet_questions()
+    {
+        return $this->hasMany(AssignmentQuestion::class);
     }
 }

@@ -109,3 +109,6 @@ Route::resource('assignment_classcodes', 'AssignmentClasscodesController');
 
 // User Assignment 
 Route::resource('user_assignments', 'UserAssignmentsController');
+
+// Assignment Questions
+Route::resource('assignment_questions', 'AssignmentQuestionsController');
