@@ -33,4 +33,9 @@ class Company extends Model
     return $this->belongsToMany(User::class)
       ->with('roles', 'companies');
   }
+
+  public function user_standards()
+  {
+    return $this->hasMany(UserStandard::class);
+  }
 }

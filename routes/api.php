@@ -72,3 +72,6 @@ Route::get('processTOIXML', 'ToiArticlesController@processTOIXML');
 
 // ContactRequests
 Route::resource('contact_requests', 'ContactRequestsController');
+
+// UserStandard
+Route::resource('user_standards', 'UserStandardsController');
