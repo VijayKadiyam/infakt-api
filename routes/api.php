@@ -92,3 +92,5 @@ Route::resource('content_subjects', 'ContentSubjectsController');
 // ContentMedias
 Route::resource('content_medias', 'ContentMediasController');
 
+// UserSections
+Route::resource('user_sections', 'UserSectionsController');
