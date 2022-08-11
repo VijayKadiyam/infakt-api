@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\ContentMedia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ContentMediasController extends Controller
 {
@@ -42,6 +43,16 @@ class ContentMediasController extends Controller
         $content_media = new ContentMedia(request()->all());
         $content_media->save();
 
+        if ($request->hasFile('mediapath')) {
+            $file = $request->file('mediapath');
+            $name = $request->filename ?? 'photo.jpg';
+            // $name = $name . $file->getClientOriginalExtension();;
+            $mediapath = 'infakt/content_medias/' . $name;
+            Storage::disk('s3')->put($mediapath, file_get_contents($file), 'public');
+            $content_media->mediapath = $mediapath;
+            $content_media->update();
+          }
+      
         return response()->json([
             'data'  =>  $content_media
         ], 201);
