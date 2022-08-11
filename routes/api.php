@@ -72,3 +72,6 @@ Route::get('processTOIXML', 'ToiArticlesController@processTOIXML');
 
 // ContactRequests
 Route::resource('contact_requests', 'ContactRequestsController');
+
+// CareerRequests
+Route::resource('career_requests', 'CareerRequestsController');
