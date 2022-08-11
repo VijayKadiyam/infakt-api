@@ -78,3 +78,6 @@ Route::resource('career_requests', 'ContentsController');
 
 // Contents
 Route::resource('contents', 'ContentsController');
+
+// Standards
+Route::resource('standards', 'StandardsController');
