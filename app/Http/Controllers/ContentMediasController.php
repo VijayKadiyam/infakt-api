@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\ContentSubject;
+use App\ContentMedia;
 use Illuminate\Http\Request;
 
-class ContentSubjectsController extends Controller
+class ContentMediasController extends Controller
 {
     public function __construct()
     {
@@ -19,10 +19,10 @@ class ContentSubjectsController extends Controller
      */
     public function index()
     {
-        $content_subjects = ContentSubject::all();
+        $content_medias = ContentMedia::all();
         return response()->json([
-            'data'  =>  $content_subjects,
-            'count' =>   sizeof($content_subjects),
+            'data'  =>  $content_medias,
+            'count' =>   sizeof($content_medias),
             'success' =>  true,
         ], 200);
     }
@@ -39,11 +39,11 @@ class ContentSubjectsController extends Controller
             'content_id'  =>  'required'
         ]);
 
-        $content_subject = new ContentSubject(request()->all());
-        $content_subject->save();
+        $content_media = new ContentMedia(request()->all());
+        $content_media->save();
 
         return response()->json([
-            'data'  =>  $content_subject
+            'data'  =>  $content_media
         ], 201);
     }
 
@@ -53,10 +53,10 @@ class ContentSubjectsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(ContentSubject $content_subject)
+    public function show(ContentMedia $content_media)
     {
         return response()->json([
-            'data'  =>  $content_subject
+            'data'  =>  $content_media
         ], 200);
     }
     /**
@@ -66,16 +66,16 @@ class ContentSubjectsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ContentSubject $content_subject)
+    public function update(Request $request, ContentMedia $content_media)
     {
         $request->validate([
             'content_id'  =>  'required',
         ]);
 
-        $content_subject->update($request->all());
+        $content_media->update($request->all());
 
         return response()->json([
-            'data'  =>  $content_subject
+            'data'  =>  $content_media
         ], 200);
     }
 
@@ -87,8 +87,8 @@ class ContentSubjectsController extends Controller
      */
     public function destroy($id)
     {
-        $content_subject = ContentSubject::find($id);
-        $content_subject->delete();
+        $content_media = ContentMedia::find($id);
+        $content_media->delete();
 
         return response()->json([
             'message' =>  'Deleted'

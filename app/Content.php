@@ -26,4 +26,8 @@ class Content extends Model
     {
         return $this->hasMany(ContentSubject::class);
     }
+    public function content_medias()
+    {
+        return $this->hasMany(ContentMedia::class);
+    }
 }

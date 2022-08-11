@@ -34,9 +34,15 @@ class Company extends Model
       ->with('roles', 'companies');
   }
 
+
+  public function user_standards()
+  {
+    return $this->hasMany(UserStandard::class);
+}
   public function standards()
   {
     return $this->hasMany(Standard::class);
+
   }
 
   public function sections()
