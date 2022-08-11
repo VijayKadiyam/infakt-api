@@ -104,3 +104,6 @@ Route::resource('classcodes', 'ClasscodesController');
 
 // Assignments
 Route::resource('assignments', 'AssignmentsController');
+
+// Assignment Classcodes
+Route::resource('assignment_classcodes', 'AssignmentClasscodesController');
