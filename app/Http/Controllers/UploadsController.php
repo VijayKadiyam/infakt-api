@@ -60,12 +60,12 @@ class UploadsController extends Controller
     if ($request->hasFile('xml_path')) {
       $file = $request->file('xml_path');
       $name = $file->getClientOriginalName();
-      $toi_xml_data = ToiXml::where(['xmlpath' => $name, 'is_process' => true])->first();
+      $xml_path = 'infact/toi-xmls/' . $name;
+      $toi_xml_data = ToiXml::where(['xmlpath' => $xml_path])->first();
 
       if (!$toi_xml_data) {
-        $xml_path = 'infact/toi-xmls/' . $name;
-        Storage::disk('local')->put($xml_path, file_get_contents($file), 'public');
-        // Storage::disk('s3')->put($xml_path, file_get_contents($file), 'public');
+        // Storage::disk('local')->put($xml_path, file_get_contents($file), 'public');
+        Storage::disk('s3')->put($xml_path, file_get_contents($file), 'public');
 
         $toi_xml['xmlpath'] = $xml_path;
 
@@ -73,13 +73,14 @@ class UploadsController extends Controller
         $toi_xml->save();
       }
     } else {
+      $xml_path = '';
       $msg = 'File Already Exist';
     }
 
     return response()->json([
       'data'  => [
         'xml_path'  =>  $xml_path,
-        'msg ' => $msg,
+        'msg' => $msg,
       ],
       'success' =>  true
     ]);

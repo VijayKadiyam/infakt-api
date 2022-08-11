@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ToiArticle;
+use App\ToiXml;
 use Illuminate\Http\Request;
 
 class ToiArticlesController extends Controller
@@ -90,42 +91,57 @@ class ToiArticlesController extends Controller
 
     public function processTOIXML()
     {
+        $xml =  ToiXml::where('id', request()->id)->first();
+        if ($xml->is_process != true) {
+            $path = 'https://aaibuzz-spc-1.s3.ap-south-1.amazonaws.com/' . request()->xmlpath;
+            // return $path;
+            $xmlString = file_get_contents($path);
+            // return $xmlString;
+            // $xmlString = file_get_contents("https://aaibuzz-spc-1.s3.ap-south-1.amazonaws.com/infakt-api/TOI-Epaper210722.xml");
+            $xmlObject = simplexml_load_string($xmlString, 'SimpleXMLElement', LIBXML_NOCDATA);
 
-        $xmlString = file_get_contents("https://aaibuzz-spc-1.s3.ap-south-1.amazonaws.com/infakt-api/TOI-Epaper210722.xml");
-        $xmlObject = simplexml_load_string($xmlString, 'SimpleXMLElement', LIBXML_NOCDATA);
+            $json = json_encode($xmlObject);
+            $phpArray = json_decode($json, true);
+            $editions = $phpArray['Edition'];
+            $data = [];
+            foreach ($editions as $i => $edition) {
+                $edition_name = $edition["@attributes"]['EdName'];
 
-        $json = json_encode($xmlObject);
-        $phpArray = json_decode($json, true);
-        $editions = $phpArray['Edition'];
-        $data = [];
-        foreach ($editions as $i => $edition) {
-            $edition_name = $edition["@attributes"]['EdName'];
+                foreach ($edition['body'] as $k => $content) {
+                    $headline = is_array($content['body.head']['headline']['h1']) ? '' : $content['body.head']['headline']['h1'];
+                    $story_id = $content['body.head']['dateline']['story-id'];
+                    $story_date = $content['body.head']['dateline']['storydate'];
+                    $byline = is_array($content['body.head']['dateline']['byline']) ? '' : $content['body.head']['dateline']['byline'];
+                    $category = is_array($content['body.head']['dateline']['category']) ? '' : $content['body.head']['dateline']['category'];
+                    $drophead = is_array($content['body.head']['dateline']['drophead']) ? '' : $content['body.head']['dateline']['drophead'];
+                    $content = is_array($content['body.content']['block']) ? '' : $content['body.content']['block'];
 
-            foreach ($edition['body'] as $k => $content) {
-                $headline = is_array($content['body.head']['headline']['h1']) ? '' : $content['body.head']['headline']['h1'];
-                $story_id = $content['body.head']['dateline']['story-id'];
-                $story_date = $content['body.head']['dateline']['storydate'];
-                $byline = is_array($content['body.head']['dateline']['byline']) ? '' : $content['body.head']['dateline']['byline'];
-                $category = is_array($content['body.head']['dateline']['category']) ? '' : $content['body.head']['dateline']['category'];
-                $drophead = is_array($content['body.head']['dateline']['drophead']) ? '' : $content['body.head']['dateline']['drophead'];
-                $content = is_array($content['body.content']['block']) ? '' : $content['body.content']['block'];
-
-                $data = [
-                    'toi_xml_id'   => 1,
-                    'story_id'     => $story_id,
-                    'story_date'   => $story_date,
-                    'category'     => $category,
-                    'edition_name' => $edition_name,
-                    'headline'     => $headline,
-                    'byline'       => $byline,
-                    'drophead'     => $drophead,
-                    'content'      => $content,
-                ];
-                $toi_article = new ToiArticle($data);
-                $toi_article->save($data);
-                $toi_articles[] = $toi_article;
+                    $data = [
+                        'toi_xml_id'   => request()->id,
+                        'story_id'     => $story_id,
+                        'story_date'   => $story_date,
+                        'category'     => $category,
+                        'edition_name' => $edition_name,
+                        'headline'     => $headline,
+                        'byline'       => $byline,
+                        'drophead'     => $drophead,
+                        'content'      => $content,
+                    ];
+                    $toi_article = new ToiArticle($data);
+                    $toi_article->save($data);
+                    $toi_articles[] = $toi_article;
+                }
             }
+            if ($toi_articles) {
+                $toi_xml = ToiXml::where('id', '=', request()->id)->first();
+                $toi_xml->is_process = true;
+                $toi_xml->update();
+            }
+        } else {
+            $toi_articles = 'Already Processed';
         }
+
+
 
         return response()->json([
             'data'  =>  $toi_articles,
