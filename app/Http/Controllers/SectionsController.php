@@ -2,16 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\ToiXml;
 use Illuminate\Http\Request;
 
-class ToiXmlsController extends Controller
+class SectionsController extends Controller
 {
-
-    public function __construct()
-    {
-        $this->middleware(['auth:api']);
-    }
     /**
      * Display a listing of the resource.
      *
@@ -19,11 +13,7 @@ class ToiXmlsController extends Controller
      */
     public function index()
     {
-        $toi_xmls = ToiXml::get();
-
-        return response()->json([
-            'data'     =>  $toi_xmls
-        ], 200);
+        //
     }
 
     /**
