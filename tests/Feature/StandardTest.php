@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Classcode;
+use App\Section;
 use App\Standard;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -28,17 +30,39 @@ class StandardTest extends TestCase
         $this->payload = [
             'name' => "name",
             'is_active' => 1,
+            'sections' =>  [
+                0 =>  [
+                    'name' =>  'name',
+                    'classcodes' => [
+                        0 => [
+                            'subject_name' => 'subject_name',
+                        ]
+                    ]
+                ]
+            ],
         ];
     }
 
     /** @test */
-    function it_requires_standard_name()
+    function it_requires_standard()
     {
-        $this->json('post', '/api/standards', [], $this->headers)
+        $payload = [
+
+            'sections' =>  [
+                0 =>  [
+                    'classcodes' =>  [
+                        0 =>  []
+                    ]
+                ],
+
+            ],
+
+        ];
+        $this->json('post', '/api/standards', $payload, $this->headers)
             ->assertStatus(422)
             ->assertExactJson([
                 "errors"  =>  [
-                    "name"  =>  ["The name field is required."]
+                    "name"  =>  ["The name field is required."],
                 ],
                 "message" =>  "The given data was invalid."
             ]);
@@ -47,6 +71,7 @@ class StandardTest extends TestCase
     /** @test */
     function add_new_standard()
     {
+        // dd($this->payload);
         $this->disableEH();
         $this->json('post', '/api/standards', $this->payload, $this->headers)
             ->assertStatus(201)
@@ -54,6 +79,16 @@ class StandardTest extends TestCase
                 'data'  =>  [
                     'name' => "name",
                     'is_active' => 1,
+                    'sections' =>  [
+                        0 =>   [
+                            'name' =>  'name',
+                            'classcodes' => [
+                                0 => [
+                                    'subject_name' => 'subject_name',
+                                ]
+                            ]
+                        ]
+                    ],
                 ]
             ])
             ->assertJsonStructureExact([
@@ -63,7 +98,8 @@ class StandardTest extends TestCase
                     'company_id',
                     'updated_at',
                     'created_at',
-                    'id'
+                    'id',
+                    'sections'
                 ]
             ]);
     }
@@ -105,7 +141,7 @@ class StandardTest extends TestCase
                     'is_active',
                     'is_deleted',
                     'created_at',
-                    'updated_at'
+                    'updated_at',
                 ]
             ]);
     }
@@ -114,6 +150,7 @@ class StandardTest extends TestCase
     function update_single_standard()
     {
         $this->disableEH();
+
         $payload = [
             'name' => "name",
             'is_active' => 1,
@@ -135,7 +172,140 @@ class StandardTest extends TestCase
                     'is_active',
                     'is_deleted',
                     'created_at',
-                    'updated_at'
+                    'updated_at',
+                ]
+            ]);
+    }
+    /** @test */
+    function update_single_standard_nested()
+    {
+        $this->disableEH();
+
+        $standard = factory(Standard::class)->create([
+            'company_id' =>  $this->company->id
+        ]);
+
+        $section = factory(Section::class)->create([
+            'standard_id' => $standard->id
+        ]);
+
+        $classcode = factory(Classcode::class)->create([
+            'standard_id' => $standard->id,
+            'section_id' => $section->id
+        ]);
+
+        // Old Edit + No Delete + 1 New
+        $payload = [
+            'name' => "name",
+            'is_active' => 1,
+            'sections' =>  [
+                0 =>  [
+                    'id'          =>  2,
+                    'name'  =>  'name',
+                    'classcodes' => [
+                        0 => [
+                            'id'          =>  2,
+                            'subject_name' => 'subject_name',
+                        ]
+                    ]
+
+                ],
+                1 =>  [
+                    'name'  =>  'name',
+                    'classcodes' => [
+                        0 => [
+                            'subject_name' => 'subject_name',
+                        ]
+                    ]
+                ]
+            ],
+        ];
+
+        $this->json('post', '/api/standards', $payload, $this->headers)
+            ->assertStatus(201)
+            ->assertJson([
+                'data'    => [
+                    'name' => "name",
+                    'is_active' => 1,
+                    'sections' =>  [
+                        0 =>  [
+                            'id'          =>  2,
+                            'name'  =>  'name',
+                            'classcodes' => [
+                                0 => [
+                                    'id'          =>  2,
+                                    'subject_name' => 'subject_name',
+                                ]
+                            ]
+
+                        ],
+                        // ]
+                    ],
+                ]
+            ])
+            ->assertJsonStructureExact([
+                'data'    => [
+                    'name',
+                    'is_active',
+                    'company_id',
+                    // 'is_deleted',
+                    'updated_at',
+                    'created_at',
+                    'id',
+                    'sections'
+                ]
+            ]);
+        // 1 Delete + 1 New
+        $payload = [
+            'name' => "name",
+            'is_active' => 1,
+            'sections' =>  [
+                0 =>  [
+                    'id'          =>  4,
+                    'name'  =>  'name',
+                    'classcodes' => [
+                        0 => [
+                            'id'          =>  4,
+                            'subject_name' => 'subject_name',
+                        ]
+                    ]
+
+                ]
+            ],
+        ];
+
+        $this->json('post', '/api/standards', $payload, $this->headers)
+            ->assertStatus(201)
+            ->assertJson([
+                'data'    => [
+                    'name' => "name",
+                    'is_active' => 1,
+                    'sections' =>  [
+                        0 =>  [
+                            'id'          =>  4,
+                            'name'  =>  'name',
+                            'classcodes' => [
+                                0 => [
+                                    'id'          =>  4,
+                                    'subject_name' => 'subject_name',
+                                ]
+                            ]
+
+                        ],
+                        // ]
+                    ],
+                ]
+            ])
+            ->assertJsonStructureExact([
+                'data'    => [
+                    'name',
+                    'is_active',
+                    'company_id',
+                    // 'is_deleted',
+                    'updated_at',
+                    'created_at',
+                    'id',
+                    'sections'
                 ]
             ]);
     }
