@@ -14,7 +14,7 @@ class BoardsController extends Controller
      */
     public function index()
     {
-        $boards = Board::where('is_active', true)->get();
+        $boards = Board::all();
         return response()->json([
             'data'  =>  $boards,
             'count' =>   sizeof($boards),

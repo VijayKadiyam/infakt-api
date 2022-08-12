@@ -47,19 +47,20 @@ class PasswordResetTest extends TestCase
         'data'   => [
           'id',
           'name',
-          'phone',
           'email',
           'email_verified_at',
+          'active',
+          'phone',
+          'api_token',
           'doj',
           'dob',
           'company_designation_id',
-          'company_state_id',
           'company_state_branch_id',
           'pf_no',
           'uan_no',
           'esi_no',
-          'roles',
-          'companies',
+          'created_at',
+          'updated_at',
         ]
       ]);
   }

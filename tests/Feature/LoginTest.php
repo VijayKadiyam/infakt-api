@@ -55,7 +55,6 @@ class LoginTest extends TestCase
         'token',
         'success',
         'currentAndroidVersionFromApi',
-        'currentSupVersionFromApi'
       ]);;
   }
 }
