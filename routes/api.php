@@ -121,3 +121,6 @@ Route::resource('user_classcodes', 'UserClasscodesController');
 
 // Assignment Extensions
 Route::resource('assignment_extensions', 'AssignmentExtensionsController');
+
+// UserAssignmentSelectedAnswers
+Route::resource('user_assignment_selected_answers', 'UserAssignmentSelectedAnswersController');
