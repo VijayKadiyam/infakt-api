@@ -45,14 +45,15 @@ class ContentMediasController extends Controller
 
         if ($request->hasFile('mediapath')) {
             $file = $request->file('mediapath');
-            $name = $request->filename ?? 'photo.jpg';
-            // $name = $name . $file->getClientOriginalExtension();;
-            $mediapath = 'infakt/content_medias/' . $name;
+            $name = $request->filename ?? 'photo.';
+            $name = $name . $file->getClientOriginalExtension();
+            $mediapath = 'infakt/content-medias/' .  $content_media->id . '/' . $name;
+
             Storage::disk('s3')->put($mediapath, file_get_contents($file), 'public');
             $content_media->mediapath = $mediapath;
             $content_media->update();
-          }
-      
+        }
+
         return response()->json([
             'data'  =>  $content_media
         ], 201);
