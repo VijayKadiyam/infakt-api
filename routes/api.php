@@ -141,3 +141,7 @@ Route::get('value_lists/masters', 'ValueListsController@masters');
 Route::post('values/{value}/value_lists_multiple', 'ValueListsController@storeMultiple');
 Route::resource('values/{value}/value_lists', 'ValueListsController');
 Route::resource('value_lists', 'ValueListsController');
+
+// collection_contents
+Route::resource('collection_contents', 'CollectionContentsController');
+

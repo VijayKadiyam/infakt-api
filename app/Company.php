@@ -114,4 +114,9 @@ class Company extends Model
   {
     return $this->hasMany(Value::class);
   }
+
+  public function collection_contents()
+  {
+    return $this->hasMany(CollectionContent::class);
+  }
 }
