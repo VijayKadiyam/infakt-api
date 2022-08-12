@@ -100,4 +100,9 @@ class Company extends Model
   {
     return $this->hasMany(UserAssignmentSelectedAnswer::class);
   }
+
+  public function bookmarks()
+  {
+    return $this->hasMany(Bookmark::class);
+  }
 }

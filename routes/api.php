@@ -127,3 +127,6 @@ Route::resource('assignment_extensions', 'AssignmentExtensionsController');
 // UserAssignmentSelectedAnswers
 Route::post('upload_uasa_documentpath', 'UploadsController@upload_uasa_documentpath');
 Route::resource('user_assignment_selected_answers', 'UserAssignmentSelectedAnswersController');
+
+// bookmarks
+Route::resource('bookmarks', 'BookmarksController');
