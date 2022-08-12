@@ -130,3 +130,6 @@ Route::resource('user_assignment_selected_answers', 'UserAssignmentSelectedAnswe
 
 // bookmarks
 Route::resource('bookmarks', 'BookmarksController');
+
+// collection
+Route::resource('collections', 'CollectionsController');
