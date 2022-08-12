@@ -109,7 +109,6 @@ class UserTest extends TestCase
           'created_at',
           'id',
           'roles',
-          'companies'
         ]
       ]);
   }

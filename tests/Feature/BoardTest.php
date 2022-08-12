@@ -15,7 +15,10 @@ class BoardTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-
+        factory(\App\Board::class)->create([
+            'name' => "name",
+            'is_active' => 1,
+        ]);
         $this->payload = [
             'name' => "name",
             'is_active' => 1,
@@ -72,7 +75,7 @@ class BoardTest extends TestCase
                     ]
                 ]
             ]);
-        $this->assertCount(0, Board::all());
+        $this->assertCount(1, Board::all());
     }
 
     /** @test */
@@ -91,6 +94,7 @@ class BoardTest extends TestCase
                 'data'    => [
                     'id',
                     'name',
+                    'is_active',
                     'created_at',
                     'updated_at'
                 ]

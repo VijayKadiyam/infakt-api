@@ -127,3 +127,17 @@ Route::resource('assignment_extensions', 'AssignmentExtensionsController');
 // UserAssignmentSelectedAnswers
 Route::post('upload_uasa_documentpath', 'UploadsController@upload_uasa_documentpath');
 Route::resource('user_assignment_selected_answers', 'UserAssignmentSelectedAnswersController');
+
+// bookmarks
+Route::resource('bookmarks', 'BookmarksController');
+
+// collection
+Route::resource('collections', 'CollectionsController');
+
+// Value 
+Route::resource('values', 'ValuesController');
+//  Value List
+Route::get('value_lists/masters', 'ValueListsController@masters');
+Route::post('values/{value}/value_lists_multiple', 'ValueListsController@storeMultiple');
+Route::resource('values/{value}/value_lists', 'ValueListsController');
+Route::resource('value_lists', 'ValueListsController');
