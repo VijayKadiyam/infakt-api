@@ -17,6 +17,11 @@ class Standard extends Model
         return $this->belongsTo(Company::class);
     }
 
+    public function sections()
+    {
+        return $this->hasMany(Section::class)->with('classcodes');
+    }
+
     public function classcodes()
     {
         return $this->hasMany(Classcode::class);
