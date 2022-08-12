@@ -118,3 +118,6 @@ Route::resource('assignment_question_options', 'AssignmentQuestionOptionsControl
 
 // UserClasscodes
 Route::resource('user_classcodes', 'UserClasscodesController');
+
+// Assignment Extensions
+Route::resource('assignment_extensions', 'AssignmentExtensionsController');
