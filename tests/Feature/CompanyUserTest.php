@@ -69,15 +69,12 @@ class CompanyUserTest extends TestCase
       ->assertJsonStructureExact([
         'data'  =>  [
           'id',
+          'name',
           'email',
           'email_verified_at',
           'active',
           'phone',
           'api_token',
-          'created_at',
-          'updated_at',
-          'address',
-          'name',
           'doj',
           'dob',
           'company_designation_id',
@@ -85,6 +82,8 @@ class CompanyUserTest extends TestCase
           'pf_no',
           'uan_no',
           'esi_no',
+          'created_at',
+          'updated_at',
           'companies',
         ]
       ]);
