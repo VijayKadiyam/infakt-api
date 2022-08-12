@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\ContentMedia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\ToiXml;
 use App\User;
+use App\UserAssignment;
+use App\UserAssignmentSelectedAnswer;
 use Carbon\Carbon;
 
 class UploadsController extends Controller
@@ -20,7 +23,7 @@ class UploadsController extends Controller
     if ($request->hasFile('imagepath')) {
       $file = $request->file('imagepath');
       $name = $request->filename ?? 'photo.';
-      $name = $name . $file->getClientOriginalExtension();;
+      $name = $name . $file->getClientOriginalExtension();
       $imagePath = 'users/' .  $request->userid . '/' . $name;
       Storage::disk('local')->put($imagePath, file_get_contents($file), 'public');
 
@@ -84,5 +87,92 @@ class UploadsController extends Controller
       ],
       'success' =>  true
     ]);
+  }
+
+  // Upload Function For Content Medias Media Path
+  public function upload_content_mediapath(Request $request)
+  {
+    $request->validate([
+      'id'        => 'required',
+      'mediapath'        => 'required',
+    ]);
+
+    $mediapath = '';
+    $content_media = [];
+    if ($request->hasFile('mediapath')) {
+      $file = $request->file('mediapath');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();
+      $mediapath = 'infakt/content-medias/' .  $request->id . '/' . $name;
+      Storage::disk('s3')->put($mediapath, file_get_contents($file), 'public');
+
+      $content_media = ContentMedia::where('id', '=', request()->id)->first();
+      $content_media->mediapath = $mediapath;
+      $content_media->update();
+    }
+    return response()->json([
+      'data'  =>  $content_media,
+      'image_path'  =>  $mediapath,
+      'message' =>  "Content Medias Media Image Upload Successfully",
+      'success' =>  true
+    ], 200);
+  }
+
+  // Upload Function For User Assignment Document Path
+  public function upload_user_assignment_documentpath(Request $request)
+  {
+    $request->validate([
+      'id'        => 'required',
+      'documentpath'        => 'required',
+    ]);
+
+    $documentpath = '';
+    $user_assignment = [];
+    if ($request->hasFile('documentpath')) {
+      $file = $request->file('documentpath');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();
+      $documentpath = 'infakt/user-assignments/' .  $request->id . '/' . $name;
+      Storage::disk('s3')->put($documentpath, file_get_contents($file), 'public');
+
+      $user_assignment = UserAssignment::where('id', '=', request()->id)->first();
+      $user_assignment->documentpath = $documentpath;
+      $user_assignment->update();
+    }
+    return response()->json([
+      'data'  =>  $user_assignment,
+      'image_path'  =>  $documentpath,
+      'message' =>  "User Assignment Document Image Upload Successfully",
+      'success' =>  true
+    ], 200);
+  }
+
+  // Upload Function For User Assignment Selected Answers Document Path
+  public function upload_uasa_documentpath(Request $request)
+  {
+    $request->validate([
+      'id'        => 'required',
+      'documentpath'        => 'required',
+    ]);
+
+    $documentpath = '';
+    $user_assignment_selected_answer = [];
+    if ($request->hasFile('documentpath')) {
+      $file = $request->file('documentpath');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();
+      $documentpath = 'infakt/user-assignment-selected-answers/' .  $request->id . '/' . $name;
+      Storage::disk('s3')->put($documentpath, file_get_contents($file), 'public');
+
+      $user_assignment_selected_answer = UserAssignmentSelectedAnswer::where('id', '=', request()->id)->first();
+      $user_assignment_selected_answer->documentpath = $documentpath;
+      $user_assignment_selected_answer->update();
+    }
+    return response()->json([
+      'data'  =>  $user_assignment_selected_answer,
+      'image_path'  =>  $documentpath,
+      'message' =>  "User Assignment Selected Answer Document Image Upload Successfully",
+      'success' =>  true
+    ], 200);
   }
 }

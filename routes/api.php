@@ -84,12 +84,13 @@ Route::resource('career_requests', 'CareerRequestsController');
 Route::resource('contents', 'ContentsController');
 
 // Standards
-Route::resource('standars', 'StandardsController');
+Route::resource('standards', 'StandardsController');
 
 // ContentSubjects
 Route::resource('content_subjects', 'ContentSubjectsController');
 
 // ContentMedias
+Route::post('upload_content_mediapath', 'UploadsController@upload_content_mediapath');
 Route::resource('content_medias', 'ContentMediasController');
 
 // UserSections
@@ -108,6 +109,7 @@ Route::resource('assignments', 'AssignmentsController');
 Route::resource('assignment_classcodes', 'AssignmentClasscodesController');
 
 // User Assignment 
+Route::post('upload_user_assignment_documentpath', 'UploadsController@upload_user_assignment_documentpath');
 Route::resource('user_assignments', 'UserAssignmentsController');
 
 // Assignment Questions
@@ -123,4 +125,5 @@ Route::resource('user_classcodes', 'UserClasscodesController');
 Route::resource('assignment_extensions', 'AssignmentExtensionsController');
 
 // UserAssignmentSelectedAnswers
+Route::post('upload_uasa_documentpath', 'UploadsController@upload_uasa_documentpath');
 Route::resource('user_assignment_selected_answers', 'UserAssignmentSelectedAnswersController');
