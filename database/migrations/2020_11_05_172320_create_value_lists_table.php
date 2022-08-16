@@ -20,6 +20,7 @@ class CreateValueListsTable extends Migration
             $table->string('description', 100)->nullable();
             $table->string('code', 100)->nullable();
             $table->integer('is_active')->default(1);
+            $table->boolean('is_deleted')->default(false);
             $table->timestamps();
         });
     }

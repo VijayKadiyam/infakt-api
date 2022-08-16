@@ -152,6 +152,7 @@ class ValueListTest extends TestCase
             'description',
             'code',
             'is_active',
+            'is_deleted',
             'created_at',
             'updated_at',
           ],
@@ -219,6 +220,7 @@ class ValueListTest extends TestCase
           'description',
           'code',
           'is_active',
+          'is_deleted',
           'created_at',
           'updated_at',
         ]

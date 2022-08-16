@@ -115,6 +115,8 @@ class ValueTest extends TestCase
           'id',
           'company_id',
           'name',
+          'is_active',
+          'is_deleted',
           'created_at',
           'updated_at',
         ]
