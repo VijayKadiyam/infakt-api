@@ -68,7 +68,6 @@ class StandardsController extends Controller
                 }
             // ---------------------------------------------------
         } else {
-            dd($request->id);
             // Update Content
             $standard = Standard::find($request->id);
             $standard->update($request->all());

@@ -3,6 +3,10 @@
 namespace Tests\Feature;
 
 use App\Assignment;
+use App\AssignmentClasscode;
+use App\AssignmentExtension;
+use App\AssignmentQuestion;
+use App\AssignmentQuestionOption;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -33,7 +37,28 @@ class AssignmentTest extends TestCase
             'duration' => 'duration',
             'documentpath' => 'documentpath',
             'maximum_marks' => false,
+            'assignment_classcodes' => [
+                0 => [
+                    'start_date' => 'start_date'
+                ]
+            ],
+            'assignment_questions' =>  [
+                0 =>  [
+                    'description' =>  'description',
+                    'assignment_question_options' => [
+                        0 => [
+                            'option1' => 'option1',
+                        ]
+                    ]
+                ]
+            ],
+            'assignment_extensions' => [
+                0 => [
+                    'extension_reason' => 'extension_reason'
+                ]
+            ],
         ];
+        // dd($this->payload);
     }
 
     /** @test */
@@ -52,6 +77,7 @@ class AssignmentTest extends TestCase
     /** @test */
     function add_new_assignment()
     {
+        // dd($this->payload);
         $this->disableEH();
         $this->json('post', '/api/assignments', $this->payload, $this->headers)
             ->assertStatus(201)
@@ -64,6 +90,26 @@ class AssignmentTest extends TestCase
                     'duration' => 'duration',
                     'documentpath' => 'documentpath',
                     'maximum_marks' => false,
+                    'assignment_classcodes' => [
+                        0 => [
+                            'start_date' => 'start_date'
+                        ]
+                    ],
+                    'assignment_questions' =>  [
+                        0 =>  [
+                            'description' =>  'description',
+                            'assignment_question_options' => [
+                                0 => [
+                                    'option1' => 'option1',
+                                ]
+                            ]
+                        ]
+                    ],
+                    'assignment_extensions' => [
+                        0 => [
+                            'extension_reason' => 'extension_reason'
+                        ]
+                    ],
                 ]
             ])
             ->assertJsonStructureExact([
@@ -78,7 +124,11 @@ class AssignmentTest extends TestCase
                     'company_id',
                     'updated_at',
                     'created_at',
-                    'id'
+                    'id',
+                    'assignment_classcodes',
+                    'assignment_questions',
+                    'assignment_extensions'
+
                 ]
             ]);
     }
@@ -182,6 +232,244 @@ class AssignmentTest extends TestCase
                     'is_deleted',
                     'created_at',
                     'updated_at'
+                ]
+            ]);
+    }
+
+    function update_single_assignment_nested()
+    {
+        $this->disableEH();
+
+        $assignment = factory(Assignment::class)->create([
+            'company_id' =>  $this->company->id
+        ]);
+
+        $assignment_classcode = factory(AssignmentClasscode::class)->create([
+            'assignment_id' => $assignment->id
+        ]);
+
+        $assignment_question = factory(AssignmentQuestion::class)->create([
+            'assignment_id' => $assignment->id,
+        ]);
+        $assignment_question_option = factory(AssignmentQuestionOption::class)->create([
+            'assignment_question_id' => $assignment_question->id,
+        ]);
+        $assignment_extension = factory(AssignmentExtension::class)->create([
+            'assignment_id' => $assignment->id,
+        ]);
+
+
+        $payload = [
+            'assignment_type' => 'assignment_type',
+            'created_by_id' => 1,
+            'student_instructions' => 'student_instructions',
+            'content_id' => 1,
+            'duration' => 'duration',
+            'documentpath' => 'documentpath',
+            'maximum_marks' => false,
+            'assignment_classcodes' =>  [
+                0 =>  [
+                    'id'          =>  2,
+                    'start_date'  =>  'start_date',
+
+
+                ],
+                1 =>  [
+                    'start_date'  =>  'start_date',
+
+                ]
+            ],
+            'assignment_questions' =>  [
+                0 =>  [
+                    'id'          =>  2,
+                    'description'  =>  'description',
+                    'assignment_question_options' => [
+                        0 => [
+                            'id'          =>  2,
+                            'option1' => 'option1',
+                        ]
+                    ]
+
+                ],
+                1 =>  [
+                    'description'  =>  'description',
+                    'assignment_question_options' => [
+                        0 => [
+                            'option1' => 'option1',
+                        ]
+                    ]
+                ]
+            ],
+            'assignment_extensions' =>  [
+                0 =>  [
+                    'id'          =>  2,
+                    'extension_reason'  =>  'extension_reason',
+
+
+                ],
+                1 =>  [
+                    'extension_reason'  =>  'extension_reason',
+
+                ]
+            ],
+        ];
+
+        $this->json('post', '/api/assignments', $payload, $this->headers)
+            ->assertStatus(200)
+            ->assertJson([
+                'data'    => [
+                    'assignment_type' => 'assignment_type',
+                    'created_by_id' => 1,
+                    'student_instructions' => 'student_instructions',
+                    'content_id' => 1,
+                    'duration' => 'duration',
+                    'documentpath' => 'documentpath',
+                    'maximum_marks' => false,
+                    'assignment_classcodes' =>  [
+                        0 =>  [
+                            'id'          =>  2,
+                            'start_date'  =>  'start_date',
+
+
+                        ],
+                    ],
+                    'assignment_questions' =>  [
+                        0 =>  [
+                            'id'          =>  2,
+                            'description'  =>  'description',
+                            'assignment_question_options' => [
+                                0 => [
+                                    'id'          =>  2,
+                                    'option1' => 'option1',
+                                ]
+                            ]
+
+                        ],
+                    ],
+                    'assignment_extensions' =>  [
+                        0 =>  [
+                            'id'          =>  2,
+                            'extension_reason'  =>  'extension_reason',
+
+
+                        ],
+                    ],
+
+                ]
+            ])
+            ->assertJsonStructureExact([
+                'data'    => [
+                    'id',
+                    'company_id',
+                    'assignment_type',
+                    'created_by_id',
+                    'student_instructions',
+                    'content_id',
+                    'duration',
+                    'documentpath',
+                    'maximum_marks',
+                    'is_deleted',
+                    'created_at',
+                    'updated_at',
+                    'assignment_classcodes',
+                    'assignment_questions',
+                    'assignment_extensions'
+                ]
+            ]);
+
+        // 1 Delete + 1 New
+        $payload = [
+            'assignment_classcodes' =>  [
+                0 =>  [
+                    'id'          =>  2,
+                    'start_date'  =>  'start_date',
+
+
+                ],
+            ],
+            'assignment_questions' =>  [
+                0 =>  [
+                    'id'          =>  2,
+                    'description'  =>  'description',
+                    'assignment_question_options' => [
+                        0 => [
+                            'id'          =>  2,
+                            'option1' => 'option1',
+                        ]
+                    ]
+
+                ],
+            ],
+            'assignment_extensions' =>  [
+                0 =>  [
+                    'id'          =>  2,
+                    'extension_reason'  =>  'extension_reason',
+
+
+                ],
+            ],
+        ];
+
+        $this->json('post', '/api/assignments', $payload, $this->headers)
+            ->assertStatus(200)
+            ->assertJson([
+                'data'    => [
+                    'assignment_type' => 'assignment_type',
+                    'created_by_id' => 1,
+                    'student_instructions' => 'student_instructions',
+                    'content_id' => 1,
+                    'duration' => 'duration',
+                    'documentpath' => 'documentpath',
+                    'maximum_marks' => false,
+                    'assignment_classcodes' =>  [
+                        0 =>  [
+                            'id'          =>  2,
+                            'start_date'  =>  'start_date',
+
+
+                        ],
+                    ],
+                    'assignment_questions' =>  [
+                        0 =>  [
+                            'id'          =>  2,
+                            'description'  =>  'description',
+                            'assignment_question_options' => [
+                                0 => [
+                                    'id'          =>  2,
+                                    'option1' => 'option1',
+                                ]
+                            ]
+
+                        ],
+                    ],
+                    'assignment_extensions' =>  [
+                        0 =>  [
+                            'id'          =>  2,
+                            'extension_reason'  =>  'extension_reason',
+
+
+                        ],
+                    ],
+
+                ]
+            ])
+            ->assertJsonStructureExact([
+                'data'    => [
+                    'id',
+                    'company_id',
+                    'assignment_type',
+                    'created_by_id',
+                    'student_instructions',
+                    'content_id',
+                    'duration',
+                    'documentpath',
+                    'maximum_marks',
+                    'is_deleted',
+                    'created_at',
+                    'updated_at',
+                    'assignment_classcodes',
+                    'assignment_questions',
+                    'assignment_extensions'
                 ]
             ]);
     }
