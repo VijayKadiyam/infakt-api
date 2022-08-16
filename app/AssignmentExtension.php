@@ -21,13 +21,13 @@ class AssignmentExtension extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function assignments()
+    public function assignment()
     {
-        return $this->hasMany(Assignment::class);
+        return $this->belongsTo(Assignment::class);
     }
 
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsTo(User::class);
     }
 }

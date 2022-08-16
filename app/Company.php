@@ -63,7 +63,7 @@ class Company extends Model
 
   public function assignments()
   {
-    return $this->hasMany(Assignment::class);
+    return $this->hasMany(Assignment::class)->with('assignment_questions', 'assignment_extensions');
   }
 
   public function assignment_classcodes()

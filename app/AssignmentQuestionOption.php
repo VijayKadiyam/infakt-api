@@ -20,8 +20,8 @@ class AssignmentQuestionOption extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function assignments()
+    public function assignment_question()
     {
-        return $this->hasMany(Assignment::class);
+        return $this->belongsTo(AssignmentQuestion::class);
     }
 }

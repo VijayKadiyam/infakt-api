@@ -24,18 +24,18 @@ class Assignment extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function assignmnet_classcodes()
+    public function assignment_classcodes()
     {
         return $this->hasMany(AssignmentClasscode::class);
     }
 
-    public function assignmnet_questions()
+    public function assignment_questions()
     {
-        return $this->hasMany(AssignmentQuestion::class);
+        return $this->hasMany(AssignmentQuestion::class)->with('assignment_question_options');
     }
 
-    public function assignmnet_question_options()
+    public function assignment_extensions()
     {
-        return $this->hasMany(AssignmentQuestionOption::class);
+        return $this->hasMany(AssignmentExtension::class);
     }
 }
