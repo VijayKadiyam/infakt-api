@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class ValueList extends Model
 {
   protected $fillable = [
-    'value_id', 'company_id', 'description', 'code', 'is_active'
+    'value_id', 'company_id', 'description', 'code', 'is_active',
+    'is_deleted',
   ];
 
   public function company()
