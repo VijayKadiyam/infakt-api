@@ -35,55 +35,63 @@ class UsersController extends Controller
    */
   public function index(Request $request)
   {
-    $count = 0;
-    $role = 3;
-    $users = [];
-    if (request()->page && request()->rowsPerPage) {
-      $users = request()->company->users()
-        ->whereHas('roles',  function ($q) {
-          $q->where('name', '!=', 'ADMIN');
-        });
-      $users = $users->paginate(request()->rowsPerPage)->toArray();
-      $users = $users['data'];
-    } else if ($request->search == 'all') {
-      $users = $request->company->users()
-        ->whereHas('roles',  function ($q) {
-          $q->where('name', '!=', 'ADMIN');
-        })
-        ->latest()->get();
-    } else if ($request->searchEmp) {
-      $users = $request->company->users()->with('roles')
-        ->whereHas('roles',  function ($q) {
-          $q->where('name', '!=', 'ADMIN');
-        });
-
-      $users = $users->where('name', 'LIKE', '%' . $request->searchEmp . '%')
-        ->orWhere('email', 'LIKE', '%' . $request->searchEmp . '%')
-        ->orWhere('phone', 'LIKE', '%' . $request->searchEmp . '%')
-        ->latest()->get();
-      // return $users;
-    } else if ($request->role_id) {
-      $role = Role::find($request->role_id);
-      $users = $request->company->allUsers()
-        ->whereHas('roles', function ($q) use ($role) {
-          $q->where('name', '=', $role->name);
-        });
-      if ($request->status != 'all')
-        $users = $users->where('active', '=', 1);
-      $users = $users->latest()->get();
-    } else {
-      $users = $request->company->users()->with('roles')
-        ->whereHas('roles',  function ($q) {
-          $q->where('name', '!=', 'ADMIN');
-        })->latest()->get();
-    }
-    $count = sizeOf($users);
+    $users = User::where('active', true)->with('roles')->get();
     return response()->json([
       'data'  =>  $users,
-      'count' =>   $count,
+      'count' =>   sizeof($users),
       'success' =>  true,
     ], 200);
   }
+  // {
+  //   $count = 0;
+  //   // $role = 3;
+  //   $users = [];
+  //   if (request()->page && request()->rowsPerPage) {
+  //     $users = request()->company->users()
+  //       ->whereHas('roles',  function ($q) {
+  //         $q->where('name', '!=', 'ADMIN');
+  //       });
+  //     $users = $users->paginate(request()->rowsPerPage)->toArray();
+  //     $users = $users['data'];
+  //   } else if ($request->search == 'all') {
+  //     $users = $request->company->users()
+  //       ->whereHas('roles',  function ($q) {
+  //         $q->where('name', '!=', 'ADMIN');
+  //       })
+  //       ->latest()->get();
+  //   } else if ($request->searchEmp) {
+  //     $users = $request->company->users()->with('roles')
+  //       ->whereHas('roles',  function ($q) {
+  //         $q->where('name', '!=', 'ADMIN');
+  //       });
+
+  //     $users = $users->where('name', 'LIKE', '%' . $request->searchEmp . '%')
+  //       ->orWhere('email', 'LIKE', '%' . $request->searchEmp . '%')
+  //       ->orWhere('phone', 'LIKE', '%' . $request->searchEmp . '%')
+  //       ->latest()->get();
+  //     // return $users;
+  //   } else if ($request->role_id) {
+  //     $role = Role::find($request->role_id);
+  //     $users = $request->company->allUsers()
+  //       ->whereHas('roles', function ($q) use ($role) {
+  //         $q->where('name', '=', $role->name);
+  //       });
+  //     if ($request->status != 'all')
+  //       $users = $users->where('active', '=', 1);
+  //     $users = $users->latest()->get();
+  //   } else {
+  //     $users = $request->company->users()->with('roles')
+  //       ->whereHas('roles',  function ($q) {
+  //         $q->where('name', '!=', 'ADMIN');
+  //       })->latest()->get();
+  //   }
+  //   $count = sizeOf($users);
+  //   return response()->json([
+  //     'data'  =>  $users,
+  //     'count' =>   $count,
+  //     'success' =>  true,
+  //   ], 200);
+  // }
 
   public function searchByRole(Request $request)
   {
