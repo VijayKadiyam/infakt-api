@@ -20,7 +20,7 @@ class ClasscodesController extends Controller
     public function index()
     {
         $classcodes = request()->company->classcodes()
-            ->where('is_active', true)->get();
+            ->where('is_deleted', false)->get();
         // dd($classcodes);
         return response()->json([
             'data'  =>  $classcodes,
@@ -69,6 +69,8 @@ class ClasscodesController extends Controller
      */
     public function show(Classcode $classcode)
     {
+        $classcode->section = $classcode->section;
+        $classcode->standard = $classcode->standard;
         return response()->json([
             'data'  =>  $classcode
         ], 200);
