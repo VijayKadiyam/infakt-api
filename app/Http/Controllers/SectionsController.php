@@ -58,6 +58,7 @@ class SectionsController extends Controller
      */
     public function show(Section $section)
     {
+        $section->standard = $section->standard;
         return response()->json([
             'data'  =>  $section
         ], 200);
