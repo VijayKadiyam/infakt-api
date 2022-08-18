@@ -81,6 +81,7 @@ Route::resource('user_standards', 'UserStandardsController');
 Route::resource('career_requests', 'CareerRequestsController');
 
 // Contents
+Route::get('contents/masters', 'ContentsController@masters');
 Route::resource('contents', 'ContentsController');
 
 // Standards

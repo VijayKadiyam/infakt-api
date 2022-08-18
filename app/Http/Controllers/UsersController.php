@@ -35,7 +35,14 @@ class UsersController extends Controller
    */
   public function index(Request $request)
   {
+    // return $request->role_id;
     $users = User::where('active', true)->with('roles')->get();
+    if ($request->role_id) {
+      $role = Role::find($request->role_id);
+      $users = User::with('roles')->whereHas('roles', function ($q) use ($role) {
+        $q->where('name', '=', $role->name);
+      })->get();
+    }
     return response()->json([
       'data'  =>  $users,
       'count' =>   sizeof($users),
