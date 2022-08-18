@@ -24,7 +24,7 @@ class Content extends Model
 
     public function content_subjects()
     {
-        return $this->hasMany(ContentSubject::class);
+        return $this->hasMany(ContentSubject::class)->with('subject');
     }
     public function content_medias()
     {
