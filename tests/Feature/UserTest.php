@@ -74,14 +74,6 @@ class UserTest extends TestCase
           'name'                 => 'sangeetha',
           'phone'                => 9844778380,
           'email'                => 'sangeetha@gmail.com',
-          'doj'               =>  '12-02-2019',
-          'dob'               =>  '04-05-1992',
-          'company_designation_id'  =>  1,
-          'company_state_id' => 1,
-          'company_state_branch_id' => 1,
-          'pf_no'                   =>  '1234567654',
-          'uan_no'                  =>  '1234565432',
-          'esi_no'                  =>  '234565'
         ]
       ])
       ->assertJsonStructure([
@@ -94,21 +86,14 @@ class UserTest extends TestCase
       ->assertJsonStructureExact([
         'data'  =>  [
           'name',
-          'phone',
           'email',
-          'doj',
-          'dob',
-          'company_designation_id',
-          'company_state_id',
-          'company_state_branch_id',
-          'pf_no',
-          'uan_no',
-          'esi_no',
-          'password_backup',
+          'active',
+          'phone',
           'updated_at',
           'created_at',
           'id',
           'roles',
+          'companies',
         ]
       ]);
   }
@@ -295,6 +280,7 @@ class UserTest extends TestCase
           'esi_no',
           'created_at',
           'updated_at',
+          'is_password_reseted',
           'roles',
           'companies',
         ],
