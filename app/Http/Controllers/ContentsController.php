@@ -150,6 +150,9 @@ class ContentsController extends Controller
      */
     public function show(Content $content)
     {
+        $content->content_subjects = $content->content_subjects;
+        $content->content_medias = $content->content_medias;
+        
         return response()->json([
             'data'  =>  $content
         ], 200);
