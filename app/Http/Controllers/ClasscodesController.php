@@ -20,7 +20,7 @@ class ClasscodesController extends Controller
     public function index()
     {
         $classcodes = request()->company->classcodes()
-            ->where('is_active', true)->get();
+            ->where('is_deleted', false)->get();
         // dd($classcodes);
         return response()->json([
             'data'  =>  $classcodes,
@@ -40,12 +40,22 @@ class ClasscodesController extends Controller
         $request->validate([
             'standard_id'  =>  'required',
             'section_id'  =>  'required',
-            'classcode'  =>  'required',
+            'subject_name'  =>  'required',
         ]);
 
         $classcode = new Classcode($request->all());
         $request->company->classcodes()->save($classcode);
 
+        if ($classcode) {
+            $section = $classcode->section;
+            $standard = $classcode->section->standard;
+            $standard_name = $standard->name;
+            $section_name = $section->name;
+            $classcode_id = $classcode->id;
+
+            $classcode->classcode = $standard_name . "" . $section_name . "/" . $classcode->subject_name . "/" . $classcode_id;
+            $classcode->update();
+        }
         return response()->json([
             'data'  =>  $classcode
         ], 201);
@@ -59,6 +69,8 @@ class ClasscodesController extends Controller
      */
     public function show(Classcode $classcode)
     {
+        $classcode->section = $classcode->section;
+        $classcode->standard = $classcode->standard;
         return response()->json([
             'data'  =>  $classcode
         ], 200);

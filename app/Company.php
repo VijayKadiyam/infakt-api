@@ -58,7 +58,7 @@ class Company extends Model
 
   public function classcodes()
   {
-    return $this->hasMany(Classcode::class);
+    return $this->hasMany(Classcode::class)->with('section');
   }
 
   public function assignments()
