@@ -23,8 +23,20 @@ class UsersController extends Controller
     $rolesController = new RolesController();
     $rolesResponse = $rolesController->index($request);
 
+    $standardsController = new StandardsController();
+    $standardsResponse = $standardsController->index($request);
+
+    $sectionsController = new StandardsController();
+    $sectionsResponse = $sectionsController->index($request);
+
+    $classcodesController = new ClasscodesController();
+    $classcodesResponse = $classcodesController->index($request);
+
     return response()->json([
-      'roles'                 =>  $rolesResponse->getData()->data,
+      'roles'      =>  $rolesResponse->getData()->data,
+      'standards'  =>  $standardsResponse->getData()->data,
+      'sections'   =>  $sectionsResponse->getData()->data,
+      'classcodes' =>  $classcodesResponse->getData()->data,
     ], 200);
   }
 
@@ -35,8 +47,7 @@ class UsersController extends Controller
    */
   public function index(Request $request)
   {
-    // return $request->role_id;
-    $users = User::where('active', true)->with('roles')->get();
+    $users = User::where('is_deleted', false)->with('roles')->get();
     if ($request->role_id) {
       $role = Role::find($request->role_id);
       $users = User::with('roles')->whereHas('roles', function ($q) use ($role) {
@@ -162,16 +173,21 @@ class UsersController extends Controller
   public function store(Request $request)
   {
     $request->validate([
-      'name'                    => ['required', 'string', 'max:255'],
+      'first_name'                    => ['required', 'string', 'max:255'],
+      'last_name'                    => ['required', 'string', 'max:255'],
       'email'                   => ['required', 'string', 'max:255', 'unique:users'],
       'role_id'                 =>  'required',
     ]);
 
-    $user['name'] = $request->name;
+    $user['first_name'] = $request->first_name;
+    $user['last_name'] = $request->last_name;
+    $user['name'] =  $request->first_name . ' ' . $request->last_name;
     $user['email'] = $request->email;
-    // $user['email_2'] = $request->email_2;
     $user['active'] = $request->active;
-    $user['phone'] = $request->phone;
+    $user['contact_number'] = $request->contact_number;
+    $user['id_given_by_school'] = $request->id_given_by_school;
+    $user['joining_date'] = $request->joining_date;
+    $user['gender'] = $request->gender;
     $user['password'] = bcrypt('123456');
     // $user['password_backup'] = bcrypt('123456');
 
@@ -196,7 +212,7 @@ class UsersController extends Controller
   public function show($id)
   {
     $user = User::where('id', '=', $id)
-      ->with('roles', 'companies')->first();
+      ->with('roles', 'companies', 'user_classcodes')->first();
 
     return response()->json([
       'data'  =>  $user,
