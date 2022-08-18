@@ -101,6 +101,7 @@ Route::resource('standards/{standard}/sections', 'SectionsController');
 Route::resource('sections', 'SectionsController');
 
 // Classcodes
+Route::resource('sections/{section}/classcodes', 'ClasscodesController');
 Route::resource('classcodes', 'ClasscodesController');
 
 // Assignments

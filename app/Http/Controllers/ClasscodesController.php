@@ -40,12 +40,22 @@ class ClasscodesController extends Controller
         $request->validate([
             'standard_id'  =>  'required',
             'section_id'  =>  'required',
-            'classcode'  =>  'required',
+            'subject_name'  =>  'required',
         ]);
 
         $classcode = new Classcode($request->all());
         $request->company->classcodes()->save($classcode);
 
+        if ($classcode) {
+            $section = $classcode->section;
+            $standard = $classcode->section->standard;
+            $standard_name = $standard->name;
+            $section_name = $section->name;
+            $classcode_id = $classcode->id;
+
+            $classcode->classcode = $standard_name . "" . $section_name . "/" . $classcode->subject_name . "/" . $classcode_id;
+            $classcode->update();
+        }
         return response()->json([
             'data'  =>  $classcode
         ], 201);
