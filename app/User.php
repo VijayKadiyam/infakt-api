@@ -16,7 +16,9 @@ class User extends Authenticatable
    * @var array
    */
   protected $fillable = [
-    'name', 'email', 'password', 'phone', 'doj', 'dob', 'company_designation_id', 'company_state_branch_id', 'pf_no', 'uan_no',
+    'name', 'email', 'password', 'phone',
+    'joining_date', 'first_name', 'last_name', 'gender', 'image_path', 'id_given_by_school',
+    'contact_number',
     'active',
     'is_deleted',
     'is_password_reseted',
@@ -484,5 +486,9 @@ class User extends Authenticatable
   public function monthly_order_summaries()
   {
     return $this->hasMany(MonthlyOrderSummary::class);
+  }
+  public function user_classcodes()
+  {
+    return $this->hasMany(UserClasscode::class);
   }
 }

@@ -13,6 +13,8 @@ class UserClasscode extends Model
         'end_date',
         'is_active',
         'is_deleted',
+        'standard_id',
+        'section_id',
     ];
     public function company()
     {
