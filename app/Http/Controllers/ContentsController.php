@@ -14,6 +14,21 @@ class ContentsController extends Controller
         $this->middleware(['auth:api']);
     }
 
+    public function masters(Request $request)
+    {
+        $usersController = new UsersController();
+        $request->request->add(['role_id' => 4]);
+        $usersResponse = $usersController->index($request);
+
+        $subjectsController = new SubjectsController();
+        $subjectsResponse = $subjectsController->index($request);
+
+        return response()->json([
+            'users'                 =>  $usersResponse->getData()->data,
+            'subjects'              =>  $subjectsResponse->getData()->data,
+        ], 200);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -21,7 +36,7 @@ class ContentsController extends Controller
      */
     public function index()
     {
-        $contents = Content::all();
+        $contents = Content::with('written_by', 'content_subjects', 'content_medias')->get();
         return response()->json([
             'data'  =>  $contents,
             'count' =>   sizeof($contents),
