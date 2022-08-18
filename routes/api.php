@@ -98,6 +98,7 @@ Route::resource('content_medias', 'ContentMediasController');
 Route::resource('user_sections', 'UserSectionsController');
 
 // Sections
+Route::resource('standards/{standard}/sections', 'SectionsController');
 Route::resource('sections', 'SectionsController');
 
 // Classcodes
