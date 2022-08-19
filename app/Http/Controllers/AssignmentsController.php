@@ -150,11 +150,11 @@ class AssignmentsController extends Controller
 
                 foreach ($request->assignment_questions as $question) {
                     if (!isset($question['id'])) {
-                        $question = new AssignmentQuestion($question);
-                        $assignment->assignment_questions()->save($question);
+                        $assignmentQuestion = new AssignmentQuestion($question);
+                        $assignment->assignment_questions()->save($assignmentQuestion);
                     } else {
-                        $question = AssignmentQuestion::find($question['id']);
-                        $question->update($question);
+                        $assignmentQuestion = AssignmentQuestion::find($question['id']);
+                        $assignmentQuestion->update($question);
                     }
 
                     // Check if Assignment Question Option deleted
@@ -163,7 +163,7 @@ class AssignmentsController extends Controller
                         $optionIdResponseArray = array_pluck($assignment_question_options, 'id');
                     else
                         $optionIdResponseArray = [];
-                    $questionId = $question->id;
+                    $questionId = $assignmentQuestion->id;
                     $optionIdArray = array_pluck(AssignmentQuestionOption::where('assignment_question_id', '=', $questionId)->get(), 'id');
                     $differenceQuestionIds = array_diff($optionIdArray, $optionIdResponseArray);
                     // Delete which is there in the database but not in the response
@@ -179,8 +179,8 @@ class AssignmentsController extends Controller
                                 $option = new AssignmentQuestionOption($question_option);
                                 $question->assignment_question_options()->save($option);
                             } else {
-                                $option = AssignmentQuestionOption::find($question_option['id']);
-                                $option->update($option);
+                                $assignmentQuestionOption = AssignmentQuestionOption::find($question_option['id']);
+                                $assignmentQuestionOption->update($question_option);
                             }
                         }
                 }
@@ -234,6 +234,11 @@ class AssignmentsController extends Controller
      */
     public function show(Assignment $assignment)
     {
+        $assignment->content = $assignment->content;
+        $assignment->assignment_classcodes = $assignment->assignment_classcodes;
+        $assignment->assignment_questions = $assignment->assignment_questions;
+        $assignment->assignment_extensions = $assignment->assignment_extensions;
+
         return response()->json([
             'data'  =>  $assignment
         ], 200);
