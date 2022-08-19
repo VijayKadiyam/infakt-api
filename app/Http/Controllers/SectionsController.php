@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Section;
+use App\Standard;
 use Illuminate\Http\Request;
 
 class SectionsController extends Controller
@@ -17,9 +18,9 @@ class SectionsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Standard $standard)
     {
-        $sections = request()->company->sections()
+        $sections = $standard->sections()
             ->where('is_active', true)->get();
 
         return response()->json([
