@@ -2,31 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Collection;
+use App\ContentRead;
 use Illuminate\Http\Request;
 
-class CollectionsController extends Controller
+class ContentReadsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['company']);
+        $this->middleware(['auth:api', 'company']);
     }
 
     public function index(Request $request)
     {
         $count = 0;
         if ($request->user_id) {
-            $collections = request()->company->collections()
+            $content_reads = request()->company->content_reads()
                 ->where('user_id', '=', $request->user_id)
                 ->get();
         } else {
 
-            $collections = request()->company->collections;
-            $count = $collections->count();
+            $content_reads = request()->company->content_reads;
+            $count = $content_reads->count();
         }
 
         return response()->json([
-            'data'     =>  $collections,
+            'data'     =>  $content_reads,
             'count'    =>   $count
         ], 200);
     }
@@ -40,14 +40,13 @@ class CollectionsController extends Controller
     {
         $request->validate([
             'user_id'        =>  'required',
-            'collection_name'        =>  'required',
         ]);
 
-        $collection = new Collection(request()->all());
-        $request->company->collections()->save($collection);
+        $content_read = new ContentRead(request()->all());
+        $request->company->content_reads()->save($content_read);
 
         return response()->json([
-            'data'    =>  $collection
+            'data'    =>  $content_read
         ], 201);
     }
 
@@ -56,11 +55,11 @@ class CollectionsController extends Controller
      *
      *@
      */
-    public function show(Collection $collection)
+    public function show(ContentRead $content_read)
     {
         return response()->json([
-            'data'   =>  $collection,
-            'success' =>  true
+            'data'   =>  $content_read,
+
         ], 200);
     }
 
@@ -69,19 +68,19 @@ class CollectionsController extends Controller
      *
      *@
      */
-    public function update(Request $request, Collection $collection)
+    public function update(Request $request, ContentRead $content_read)
     {
-        $collection->update($request->all());
+        $content_read->update($request->all());
 
         return response()->json([
-            'data'  =>  $collection
+            'data'  =>  $content_read
         ], 200);
     }
 
     public function destroy($id)
     {
-        $collection = Collection::find($id);
-        $collection->delete();
+        $content_read = ContentRead::find($id);
+        $content_read->delete();
 
         return response()->json([
             'message' =>  'Deleted'

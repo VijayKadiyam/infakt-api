@@ -9,7 +9,7 @@ class BookmarksController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['company']);
+        $this->middleware(['auth:api', 'company']);
     }
 
     public function index(Request $request)

@@ -124,7 +124,12 @@ class AssignmentQuestionTest extends TestCase
                     'negative_marks',
                     'is_deleted',
                     'created_at',
-                    'updated_at'
+                    'updated_at',
+                    'sr_no',
+                    'option1',
+                    'option2',
+                    'option3',
+                    'option4',
                 ]
             ]);
     }
@@ -163,7 +168,13 @@ class AssignmentQuestionTest extends TestCase
                     'negative_marks',
                     'is_deleted',
                     'created_at',
-                    'updated_at'
+                    'updated_at',
+                    'sr_no',
+                    'option1',
+                    'option2',
+                    'option3',
+                    'option4',
+
                 ]
             ]);
     }
