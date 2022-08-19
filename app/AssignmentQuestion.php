@@ -13,6 +13,7 @@ class AssignmentQuestion extends Model
         'marks',
         'negative_marks',
         'is_deleted',
+        'sr_no',
     ];
 
     public function company()
