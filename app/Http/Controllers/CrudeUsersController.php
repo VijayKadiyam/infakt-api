@@ -48,7 +48,7 @@ class CrudeUsersController extends Controller
             $data = [
                 'name'               =>  $user->first_name . " " . $user->last_name,
                 'first_name'         =>  $user->first_name,
-                'last_name'          =>  $user->first_name,
+                'last_name'          =>  $user->last_name,
                 'contact_number'     =>  $user->contact_number,
                 'joining_date'     =>  $user->joining_date,
                 'gender'             =>  $user->gender == 'MALE' ? 1 : 0,
