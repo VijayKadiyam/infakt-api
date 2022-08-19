@@ -126,6 +126,10 @@ class AssignmentQuestionTest extends TestCase
                     'created_at',
                     'updated_at',
                     'sr_no',
+                    'option1',
+                    'option2',
+                    'option3',
+                    'option4',
                 ]
             ]);
     }
@@ -166,6 +170,11 @@ class AssignmentQuestionTest extends TestCase
                     'created_at',
                     'updated_at',
                     'sr_no',
+                    'option1',
+                    'option2',
+                    'option3',
+                    'option4',
+
                 ]
             ]);
     }

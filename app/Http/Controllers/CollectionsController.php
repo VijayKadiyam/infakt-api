@@ -40,6 +40,7 @@ class CollectionsController extends Controller
     {
         $request->validate([
             'user_id'        =>  'required',
+            'collection_name'        =>  'required',
         ]);
 
         $collection = new Collection(request()->all());
@@ -87,4 +88,3 @@ class CollectionsController extends Controller
         ], 204);
     }
 }
-
