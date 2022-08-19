@@ -50,8 +50,8 @@ Route::resource('company_user', 'CompanyUserController');
 Route::post('sendEmail', 'SendEmailController@index');
 
 Route::get('crude_users', 'CrudeUsersController@index');
-Route::post('upload_user', 'CrudeUsersController@uploadUser');
-Route::get('process_user', 'CrudeUsersController@processUser');
+Route::post('upload_user', 'CrudeUsersController@uploadUsers');
+Route::get('process_user', 'CrudeUsersController@processUsers');
 Route::get('truncate_users', 'CrudeUsersController@truncate');
 
 Route::get('send_otp', 'SendSmsController@index');
