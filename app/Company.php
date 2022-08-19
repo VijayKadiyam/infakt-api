@@ -119,4 +119,9 @@ class Company extends Model
   {
     return $this->hasMany(CollectionContent::class);
   }
+
+  public function content_reads()
+  {
+    return $this->hasMany(ContentRead::class);
+  }
 }

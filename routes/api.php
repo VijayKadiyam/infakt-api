@@ -147,3 +147,6 @@ Route::resource('value_lists', 'ValueListsController');
 
 // collection_contents
 Route::resource('collection_contents', 'CollectionContentsController');
+
+// Content Reads
+Route::resource('content_reads', 'ContentReadsController');

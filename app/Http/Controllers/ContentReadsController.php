@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Bookmark;
+use App\ContentRead;
 use Illuminate\Http\Request;
 
-class BookmarksController extends Controller
+class ContentReadsController extends Controller
 {
     public function __construct()
     {
@@ -16,17 +16,17 @@ class BookmarksController extends Controller
     {
         $count = 0;
         if ($request->user_id) {
-            $bookmarks = request()->company->bookmarks()
+            $content_reads = request()->company->content_reads()
                 ->where('user_id', '=', $request->user_id)
                 ->get();
         } else {
 
-            $bookmarks = request()->company->bookmarks;
-            $count = $bookmarks->count();
+            $content_reads = request()->company->content_reads;
+            $count = $content_reads->count();
         }
 
         return response()->json([
-            'data'     =>  $bookmarks,
+            'data'     =>  $content_reads,
             'count'    =>   $count
         ], 200);
     }
@@ -42,11 +42,11 @@ class BookmarksController extends Controller
             'user_id'        =>  'required',
         ]);
 
-        $bookmark = new Bookmark(request()->all());
-        $request->company->bookmarks()->save($bookmark);
+        $content_read = new ContentRead(request()->all());
+        $request->company->content_reads()->save($content_read);
 
         return response()->json([
-            'data'    =>  $bookmark
+            'data'    =>  $content_read
         ], 201);
     }
 
@@ -55,11 +55,11 @@ class BookmarksController extends Controller
      *
      *@
      */
-    public function show(Bookmark $bookmark)
+    public function show(ContentRead $content_read)
     {
         return response()->json([
-            'data'   =>  $bookmark,
-            'success' =>  true
+            'data'   =>  $content_read,
+
         ], 200);
     }
 
@@ -68,19 +68,19 @@ class BookmarksController extends Controller
      *
      *@
      */
-    public function update(Request $request, Bookmark $bookmark)
+    public function update(Request $request, ContentRead $content_read)
     {
-        $bookmark->update($request->all());
+        $content_read->update($request->all());
 
         return response()->json([
-            'data'  =>  $bookmark
+            'data'  =>  $content_read
         ], 200);
     }
 
     public function destroy($id)
     {
-        $bookmark = Bookmark::find($id);
-        $bookmark->delete();
+        $content_read = ContentRead::find($id);
+        $content_read->delete();
 
         return response()->json([
             'message' =>  'Deleted'
