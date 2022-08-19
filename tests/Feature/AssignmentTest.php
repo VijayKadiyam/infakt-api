@@ -36,7 +36,7 @@ class AssignmentTest extends TestCase
             'content_id' => 1,
             'duration' => 'duration',
             'documentpath' => 'documentpath',
-            'maximum_marks' => false,
+            'maximum_marks' => 1,
             'assignment_classcodes' => [
                 0 => [
                     'start_date' => 'start_date'
@@ -89,7 +89,7 @@ class AssignmentTest extends TestCase
                     'content_id' => 1,
                     'duration' => 'duration',
                     'documentpath' => 'documentpath',
-                    'maximum_marks' => false,
+                    'maximum_marks' => 1,
                     'assignment_classcodes' => [
                         0 => [
                             'start_date' => 'start_date'
@@ -170,7 +170,7 @@ class AssignmentTest extends TestCase
                     'content_id' => 1,
                     'duration' => 'duration',
                     'documentpath' => 'documentpath',
-                    'maximum_marks' => false,
+                    'maximum_marks' => 1,
                 ]
             ])
             ->assertJsonStructureExact([
@@ -183,10 +183,12 @@ class AssignmentTest extends TestCase
                     'content_id',
                     'duration',
                     'documentpath',
-                    'maximum_marks',
                     'is_deleted',
                     'created_at',
-                    'updated_at'
+                    'updated_at',
+                    'maximum_marks',
+                    'assignment_title',
+                    'is_draft',
                 ]
             ]);
     }
@@ -202,7 +204,7 @@ class AssignmentTest extends TestCase
             'content_id' => 1,
             'duration' => 'duration',
             'documentpath' => 'documentpath',
-            'maximum_marks' => false,
+            'maximum_marks' => 1,
         ];
 
         $this->json('patch', '/api/assignments/1', $payload, $this->headers)
@@ -215,7 +217,7 @@ class AssignmentTest extends TestCase
                     'content_id' => 1,
                     'duration' => 'duration',
                     'documentpath' => 'documentpath',
-                    'maximum_marks' => false,
+                    'maximum_marks' => 1,
                 ]
             ])
             ->assertJsonStructureExact([
@@ -228,10 +230,12 @@ class AssignmentTest extends TestCase
                     'content_id',
                     'duration',
                     'documentpath',
-                    'maximum_marks',
                     'is_deleted',
                     'created_at',
-                    'updated_at'
+                    'updated_at',
+                    'maximum_marks',
+                    'assignment_title',
+                    'is_draft',
                 ]
             ]);
     }
@@ -266,7 +270,7 @@ class AssignmentTest extends TestCase
             'content_id' => 1,
             'duration' => 'duration',
             'documentpath' => 'documentpath',
-            'maximum_marks' => false,
+            'maximum_marks' => 1,
             'assignment_classcodes' =>  [
                 0 =>  [
                     'id'          =>  2,
@@ -324,7 +328,7 @@ class AssignmentTest extends TestCase
                     'content_id' => 1,
                     'duration' => 'duration',
                     'documentpath' => 'documentpath',
-                    'maximum_marks' => false,
+                    'maximum_marks' => 1,
                     'assignment_classcodes' =>  [
                         0 =>  [
                             'id'          =>  2,
@@ -420,7 +424,7 @@ class AssignmentTest extends TestCase
                     'content_id' => 1,
                     'duration' => 'duration',
                     'documentpath' => 'documentpath',
-                    'maximum_marks' => false,
+                    'maximum_marks' => 1,
                     'assignment_classcodes' =>  [
                         0 =>  [
                             'id'          =>  2,

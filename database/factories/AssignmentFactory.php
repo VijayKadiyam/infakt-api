@@ -11,6 +11,6 @@ $factory->define(Assignment::class, function (Faker $faker) {
         'content_id' => 1,
         'duration' => 'duration',
         'documentpath' => 'documentpath',
-        'maximum_marks' => false,
+        'maximum_marks' => 1,
     ];
 });

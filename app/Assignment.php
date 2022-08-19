@@ -17,6 +17,8 @@ class Assignment extends Model
         'documentpath',
         'maximum_marks',
         'is_deleted',
+        'assignment_title',
+        'is_draft',
     ];
 
     public function company()
