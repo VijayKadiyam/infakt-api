@@ -11,4 +11,9 @@ class CollectionContent extends Model
         'content_id',
         'is_deleted',
     ];
+
+    public function collection()
+    {
+        return $this->belongsTo(Collection::class);
+    }
 }
