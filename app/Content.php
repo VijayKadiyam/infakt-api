@@ -30,4 +30,8 @@ class Content extends Model
     {
         return $this->hasMany(ContentMedia::class);
     }
+    public function content_reads()
+    {
+        return $this->hasMany(ContentRead::class);
+    }
 }
