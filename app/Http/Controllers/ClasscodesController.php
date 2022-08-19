@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Classcode;
+use App\Section;
 use Illuminate\Http\Request;
 
 class ClasscodesController extends Controller
@@ -17,11 +18,10 @@ class ClasscodesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Section $section)
     {
-        $classcodes = request()->company->classcodes()
+        $classcodes = $section->classcodes()
             ->where('is_deleted', false)->get();
-        // dd($classcodes);
         return response()->json([
             'data'  =>  $classcodes,
             'count' =>   sizeof($classcodes),
@@ -29,6 +29,16 @@ class ClasscodesController extends Controller
         ], 200);
     }
 
+    public function all_classcodes()
+    {
+        $classcodes = request()->company->classcodes()
+            ->where('is_deleted', false)->get();
+        return response()->json([
+            'data'  =>  $classcodes,
+            'count' =>   sizeof($classcodes),
+            'success' =>  true,
+        ], 200);
+    }
     /**
      * Store a newly created resource in storage.
      *
