@@ -45,23 +45,27 @@ class CrudeUsersController extends Controller
                 ->orWhere('id_given_by_school', '=', $user->id_given_by_school)
                 ->first();
             $role_id = $user->role_id;
+            $data = [
+                'name'               =>  $user->first_name . " " . $user->last_name,
+                'first_name'         =>  $user->first_name,
+                'last_name'          =>  $user->first_name,
+                'contact_number'     =>  $user->contact_number,
+                'joining_date'     =>  $user->joining_date,
+                'gender'             =>  $user->gender == 'MALE' ? 1 : 0,
+                'active'             =>  $user->active == 'YES' ? 1 : 0,
+            ];
             if (!$us) {
-                $data = [
-                    'name'               =>  $user->first_name . " " . $user->last_name,
-                    'first_name'         =>  $user->first_name,
-                    'last_name'          =>  $user->first_name,
-                    'email'              =>  $user->email,
-                    'password'           =>  bcrypt('123456'),
-                    'id_given_by_school' =>  $user->id_given_by_school,
-                    'contact_number'     =>  $user->contact_number,
-                    'joining_date'     =>  $user->joining_date,
-                    'gender'             =>  $user->gender == 'MALE' ? 1 : 0,
-                    'active'             =>  $user->active == 'YES' ? 1 : 0,
-                ];
+                $data['email'] = $user->email;
+                $data['password'] = bcrypt('123456');
+                $data['id_given_by_school'] = $user->id_given_by_school;
                 $user = new User($data);
                 $user->save();
                 $user->assignCompany(request()->company->id);
                 $user->assignRole($role_id);
+            } else {
+                $user_id = $us->id;
+                $user = User::find($user_id);
+                $user->update($data);
             }
         }
     }
