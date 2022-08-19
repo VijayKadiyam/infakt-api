@@ -19,12 +19,13 @@ class UserClasscodesTest extends TestCase
         $this->company = factory(\App\Company::class)->create([
             'name' => 'test'
         ]);
-
         $this->headers['company-id'] = $this->company->id;
 
         factory(UserClasscode::class)->create([
             'company_id' =>  $this->company->id,
             'user_id' => 1,
+            'standard_id' => 1,
+            'section_id' => 1,
             'classcode_id' => 1,
             'start_date' => 'start_date',
             'end_date' => 'end_date',
@@ -34,6 +35,8 @@ class UserClasscodesTest extends TestCase
 
         $this->payload = [
             'user_id' => 1,
+            'standard_id' => 1,
+            'section_id' => 1,
             'classcode_id' => 1,
             'start_date' => 'start_date',
             'end_date' => 'end_date',
@@ -65,6 +68,8 @@ class UserClasscodesTest extends TestCase
             ->assertJson([
                 'data'   => [
                     'user_id' => 1,
+                    'standard_id' => 1,
+                    'section_id' => 1,
                     'classcode_id' => 1,
                     'start_date' => 'start_date',
                     'end_date' => 'end_date',
@@ -75,6 +80,8 @@ class UserClasscodesTest extends TestCase
             ->assertJsonStructureExact([
                 'data'   => [
                     'user_id',
+                    'standard_id',
+                    'section_id',
                     'classcode_id',
                     'start_date',
                     'end_date',
@@ -118,6 +125,8 @@ class UserClasscodesTest extends TestCase
             ->assertJson([
                 'data'  => [
                     'user_id' => 1,
+                    'standard_id' => 1,
+                    'section_id' => 1,
                     'classcode_id' => 1,
                     'start_date' => 'start_date',
                     'end_date' => 'end_date',
@@ -132,6 +141,8 @@ class UserClasscodesTest extends TestCase
     {
         $payload = [
             'user_id' => 1,
+            'standard_id' => 1,
+            'section_id' => 1,
             'classcode_id' => 1,
             'start_date' => 'start_date',
             'end_date' => 'end_date',
@@ -144,6 +155,8 @@ class UserClasscodesTest extends TestCase
             ->assertJson([
                 'data'    => [
                     'user_id' => 1,
+                    'standard_id' => 1,
+                    'section_id' => 1,
                     'classcode_id' => 1,
                     'start_date' => 'start_date',
                     'end_date' => 'end_date',
@@ -163,6 +176,8 @@ class UserClasscodesTest extends TestCase
                     'is_deleted',
                     'created_at',
                     'updated_at',
+                    'standard_id',
+                    'section_id',
                 ]
             ]);
     }

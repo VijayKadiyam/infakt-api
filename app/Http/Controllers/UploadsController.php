@@ -24,8 +24,8 @@ class UploadsController extends Controller
       $file = $request->file('imagepath');
       $name = $request->filename ?? 'photo.';
       $name = $name . $file->getClientOriginalExtension();
-      $imagePath = 'users/' .  $request->userid . '/' . $name;
-      Storage::disk('local')->put($imagePath, file_get_contents($file), 'public');
+      $imagePath = 'infakt/users/' .  $request->userid . '/' . $name;
+      Storage::disk('s3')->put($imagePath, file_get_contents($file), 'public');
 
       $user = User::where('id', '=', request()->userid)->first();
       $user->image_path = $imagePath;

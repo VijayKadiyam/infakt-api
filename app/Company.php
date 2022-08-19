@@ -26,7 +26,7 @@ class Company extends Model
   {
     return $this->belongsToMany(User::class)
       ->where('active', '=', 1)
-      ->with('roles', 'companies');
+      ->with('roles', 'companies', 'user_classcodes');
   }
 
   public function allUsers()

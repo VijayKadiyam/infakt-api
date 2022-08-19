@@ -9,6 +9,7 @@ use App\Role;
 use \Carbon\Carbon;
 use App\Sku;
 use App\Stock;
+use App\UserClasscode;
 use App\Value;
 
 class UsersController extends Controller
@@ -23,8 +24,20 @@ class UsersController extends Controller
     $rolesController = new RolesController();
     $rolesResponse = $rolesController->index($request);
 
+    $standardsController = new StandardsController();
+    $standardsResponse = $standardsController->index($request);
+
+    $sectionsController = new StandardsController();
+    $sectionsResponse = $sectionsController->index($request);
+
+    $classcodesController = new ClasscodesController();
+    $classcodesResponse = $classcodesController->all_classcodes($request);
+
     return response()->json([
-      'roles'                 =>  $rolesResponse->getData()->data,
+      'roles'      =>  $rolesResponse->getData()->data,
+      'standards'  =>  $standardsResponse->getData()->data,
+      'sections'   =>  $sectionsResponse->getData()->data,
+      'classcodes' =>  $classcodesResponse->getData()->data,
     ], 200);
   }
 
@@ -35,8 +48,7 @@ class UsersController extends Controller
    */
   public function index(Request $request)
   {
-    // return $request->role_id;
-    $users = User::where('active', true)->with('roles')->get();
+    $users = User::where('is_deleted', false)->with('roles')->get();
     if ($request->role_id) {
       $role = Role::find($request->role_id);
       $users = User::with('roles')->whereHas('roles', function ($q) use ($role) {
@@ -159,19 +171,24 @@ class UsersController extends Controller
    *
    *@
    */
-  public function store(Request $request)
+  public function store_1(Request $request)
   {
     $request->validate([
-      'name'                    => ['required', 'string', 'max:255'],
+      'first_name'                    => ['required', 'string', 'max:255'],
+      'last_name'                    => ['required', 'string', 'max:255'],
       'email'                   => ['required', 'string', 'max:255', 'unique:users'],
       'role_id'                 =>  'required',
     ]);
 
-    $user['name'] = $request->name;
+    $user['first_name'] = $request->first_name;
+    $user['last_name'] = $request->last_name;
+    $user['name'] =  $request->first_name . ' ' . $request->last_name;
     $user['email'] = $request->email;
-    // $user['email_2'] = $request->email_2;
     $user['active'] = $request->active;
-    $user['phone'] = $request->phone;
+    $user['contact_number'] = $request->contact_number;
+    $user['id_given_by_school'] = $request->id_given_by_school;
+    $user['joining_date'] = $request->joining_date;
+    $user['gender'] = $request->gender;
     $user['password'] = bcrypt('123456');
     // $user['password_backup'] = bcrypt('123456');
 
@@ -196,7 +213,7 @@ class UsersController extends Controller
   public function show($id)
   {
     $user = User::where('id', '=', $id)
-      ->with('roles', 'companies')->first();
+      ->with('roles', 'companies', 'user_classcodes')->first();
 
     return response()->json([
       'data'  =>  $user,
@@ -221,7 +238,13 @@ class UsersController extends Controller
     if ($request->role_id)
       $user->assignRole($request->role_id);
 
-    $user->assignCompany(1);
+    if ($request->user_classcodes) {
+      foreach ($request->user_classcodes as $key => $uc) {
+        $user_classcodes = new UserClasscode($uc);
+        $user->user_classcodes()->save($user_classcodes);
+      }
+    }
+    // $user->assignCompany(1);
     $user->roles = $user->roles;
     $user->companies = $user->companies;
 
@@ -230,6 +253,86 @@ class UsersController extends Controller
       'message' =>  "User is Logged in Successfully",
       'success' =>  true
     ], 200);
+  }
+
+  public function store(Request $request)
+  {
+    if ($request->id == null || $request->id == '') {
+      $request->validate([
+        'first_name'                    => ['required', 'string', 'max:255'],
+        'last_name'                    => ['required', 'string', 'max:255'],
+        'email'                   => ['required', 'string', 'max:255', 'unique:users'],
+        'role_id'                 =>  'required',
+      ]);
+      // Save User
+      $user['first_name'] = $request->first_name;
+      $user['last_name'] = $request->last_name;
+      $user['name'] =  $request->first_name . ' ' . $request->last_name;
+      $user['email'] = $request->email;
+      $user['active'] = $request->active;
+      $user['contact_number'] = $request->contact_number;
+      $user['id_given_by_school'] = $request->id_given_by_school;
+      $user['joining_date'] = $request->joining_date;
+      $user['gender'] = $request->gender;
+      $user['password'] = bcrypt('123456');
+      $user = new User($user);
+      $user->save();
+
+      $user->assignRole($request->role_id);
+      $user->roles = $user->roles;
+      $user->assignCompany($request->company_id);
+      $user->companies = $user->companies;
+
+      // Save User Classcodes
+      if (isset($request->user_classcodes))
+        foreach ($request->user_classcodes as $classcode) {
+          $classcode = new UserClasscode($classcode);
+          $user->user_classcodes()->save($classcode);
+        }
+      // ---------------------------------------------------
+    } else {
+      // Update User
+      $request->validate([
+        'name'                    => ['required', 'string', 'max:255'],
+        'email'                   => ['required', 'string', 'max:255'],
+      ]);
+
+      $user = User::find($request->id);
+      $user->update($request->all());
+
+      // Check if User Classcode deleted
+      if (isset($request->user_classcodes)) {
+        $userClasscodeIdResponseArray = array_pluck($request->user_classcodes, 'id');
+      } else
+        $userClasscodeIdResponseArray = [];
+      $userId = $user->id;
+      $userClasscodeIdArray = array_pluck(UserClasscode::where('user_id', '=', $userId)->get(), 'id');
+      $differenceUserClasscodeIds = array_diff($userClasscodeIdArray, $userClasscodeIdResponseArray);
+      // Delete which is there in the database but not in the response
+      if ($differenceUserClasscodeIds)
+        foreach ($differenceUserClasscodeIds as $differenceUserClasscodeId) {
+          $userClasscode = UserClasscode::find($differenceUserClasscodeId);
+          $userClasscode->delete();
+        }
+
+      // Update User Classcode
+      if (isset($request->user_classcodes))
+        foreach ($request->user_classcodes as $classcode) {
+          if (!isset($classcode['id'])) {
+            $user_classcode = new UserClasscode($classcode);
+            $user->user_classcodes()->save($user_classcode);
+          } else {
+            $user_classcode = UserClasscode::find($classcode['id']);
+            $user_classcode->update($classcode);
+          }
+        }
+
+      // ---------------------------------------------------
+    }
+    $user->user_classcodes = $user->user_classcodes;
+    return response()->json([
+      'data'  =>  $user
+    ], 201);
   }
 
   /*

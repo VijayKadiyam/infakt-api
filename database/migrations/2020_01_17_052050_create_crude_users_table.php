@@ -16,10 +16,15 @@ class CreateCrudeUsersTable extends Migration
         Schema::create('crude_users', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('company_id')->nullable();
-            $table->string('empid')->nullable();
-            $table->string('name')->nullable();
+            $table->integer('role_id')->nullable();
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('id_given_by_school')->nullable();
             $table->string('email')->nullable();
-            $table->string('phone')->nullable();
+            $table->string('contact_number')->nullable();
+            $table->string('gender')->nullable();
+            $table->string('active')->nullable();
+            $table->string('joining_date')->nullable();
             $table->timestamps();
         });
     }

@@ -26,6 +26,11 @@ class Assignment extends Model
         return $this->belongsTo(Company::class);
     }
 
+    public function content()
+    {
+        return $this->belongsTo(Content::class);
+    }
+
     public function assignment_classcodes()
     {
         return $this->hasMany(AssignmentClasscode::class);
@@ -33,7 +38,8 @@ class Assignment extends Model
 
     public function assignment_questions()
     {
-        return $this->hasMany(AssignmentQuestion::class)->with('assignment_question_options');
+        return $this->hasMany(AssignmentQuestion::class)->with('assignment_question_options')
+            ->with('assignment_question_options');
     }
 
     public function assignment_extensions()

@@ -7,12 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class UserClasscode extends Model
 {
     protected $fillable = [
+        'company_id',
         'user_id',
         'classcode_id',
         'start_date',
         'end_date',
         'is_active',
         'is_deleted',
+        'standard_id',
+        'section_id',
     ];
     public function company()
     {
