@@ -16,6 +16,15 @@ class UserAssignmentSelectedAnswer extends Model
         "documentpath",
         "description",
         "is_deleted",
+        "company_id",
+        "question",
+        'option1',
+        'option2',
+        'option3',
+        'option4',
+        'marks',
+        'correct_option_sr_no',
+
     ];
 
     public function company()

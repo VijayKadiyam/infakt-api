@@ -33,7 +33,8 @@ class Assignment extends Model
 
     public function assignment_classcodes()
     {
-        return $this->hasMany(AssignmentClasscode::class);
+        return $this->hasMany(AssignmentClasscode::class)
+            ->with('classcode');
     }
 
     public function assignment_questions()
@@ -45,5 +46,16 @@ class Assignment extends Model
     public function assignment_extensions()
     {
         return $this->hasMany(AssignmentExtension::class);
+    }
+
+    public function my_results() {
+        return $this->hasMany(UserAssignment::class)
+            ->with('user_assignment_selected_answers')
+            ->where('user_id', '=', request()->user()->id);
+    }
+
+    public function user_assignments() {
+        return $this->hasMany(UserAssignment::class)
+            ->with('user');
     }
 }

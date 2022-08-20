@@ -13,6 +13,7 @@ class UserAssignment extends Model
         "score",
         "documentpath",
         'is_deleted',
+        'time_taken', 'total_questions', 'answered_questions', 'right_questions', 'wrong_questions', 'result_declared'
     ];
 
     public function company()
@@ -28,5 +29,10 @@ class UserAssignment extends Model
     public function assignment()
     {
         return $this->belongsTo(Assignment::class);
+    }
+
+    public function user_assignment_selected_answers()
+    {
+        return $this->hasMany(UserAssignmentSelectedAnswer::class);
     }
 }

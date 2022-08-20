@@ -23,7 +23,10 @@ class AssignmentsController extends Controller
      */
     public function index()
     {
-        $assignments = request()->company->assignments()->get();
+        $assignments = request()->company->assignments()
+            ->with('my_results')
+            ->get();
+
         return response()->json([
             'data'  =>  $assignments,
             'count' =>   sizeof($assignments),
@@ -238,6 +241,7 @@ class AssignmentsController extends Controller
         $assignment->assignment_classcodes = $assignment->assignment_classcodes;
         $assignment->assignment_questions = $assignment->assignment_questions;
         $assignment->assignment_extensions = $assignment->assignment_extensions;
+        $assignment->user_assignments = $assignment->user_assignments;
 
         return response()->json([
             'data'  =>  $assignment
