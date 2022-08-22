@@ -16,4 +16,8 @@ class CollectionContent extends Model
     {
         return $this->belongsTo(Collection::class);
     }
+    public function content()
+    {
+        return $this->belongsTo(Content::class);
+    }
 }

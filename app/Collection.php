@@ -24,6 +24,6 @@ class Collection extends Model
 
    public function collection_contents()
    {
-      return $this->hasMany(CollectionContent::class);
+      return $this->hasMany(CollectionContent::class)->with('content');
    }
 }
