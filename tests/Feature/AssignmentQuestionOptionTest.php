@@ -124,7 +124,10 @@ class AssignmentQuestionOptionTest extends TestCase
                     'option4',
                     'is_deleted',
                     'created_at',
-                    'updated_at'
+                    'updated_at',
+                    'option5',
+                    'option6',
+
                 ]
             ]);
     }
@@ -163,7 +166,9 @@ class AssignmentQuestionOptionTest extends TestCase
                     'option4',
                     'is_deleted',
                     'created_at',
-                    'updated_at'
+                    'updated_at',
+                    'option5',
+                    'option6',
                 ]
             ]);
     }
