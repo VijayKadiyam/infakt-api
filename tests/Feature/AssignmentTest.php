@@ -37,6 +37,7 @@ class AssignmentTest extends TestCase
             'duration' => 'duration',
             'documentpath' => 'documentpath',
             'maximum_marks' => 1,
+            'collection_id' => 1,
             'assignment_classcodes' => [
                 0 => [
                     'start_date' => 'start_date'
@@ -90,6 +91,7 @@ class AssignmentTest extends TestCase
                     'duration' => 'duration',
                     'documentpath' => 'documentpath',
                     'maximum_marks' => 1,
+                    'collection_id' => 1,
                     'assignment_classcodes' => [
                         0 => [
                             'start_date' => 'start_date'
@@ -121,13 +123,17 @@ class AssignmentTest extends TestCase
                     'duration',
                     'documentpath',
                     'maximum_marks',
+                    'collection_id',
                     'company_id',
                     'updated_at',
                     'created_at',
                     'id',
+                    'content',
                     'assignment_classcodes',
                     'assignment_questions',
-                    'assignment_extensions'
+                    'assignment_extensions',
+                    'user_assignments',
+
 
                 ]
             ]);
@@ -150,6 +156,7 @@ class AssignmentTest extends TestCase
                         'documentpath',
                         'maximum_marks',
                         'is_deleted',
+                        'collection_id',
                     ]
                 ]
             ]);
@@ -171,6 +178,7 @@ class AssignmentTest extends TestCase
                     'duration' => 'duration',
                     'documentpath' => 'documentpath',
                     'maximum_marks' => 1,
+                    'collection_id' => 1,
                 ]
             ])
             ->assertJsonStructureExact([
@@ -189,6 +197,12 @@ class AssignmentTest extends TestCase
                     'maximum_marks',
                     'assignment_title',
                     'is_draft',
+                    'collection_id',
+                    'content',
+                    'assignment_classcodes',
+                    'assignment_questions',
+                    'assignment_extensions',
+                    'user_assignments',
                 ]
             ]);
     }
@@ -205,6 +219,7 @@ class AssignmentTest extends TestCase
             'duration' => 'duration',
             'documentpath' => 'documentpath',
             'maximum_marks' => 1,
+            'collection_id' => 1,
         ];
 
         $this->json('patch', '/api/assignments/1', $payload, $this->headers)
@@ -218,6 +233,7 @@ class AssignmentTest extends TestCase
                     'duration' => 'duration',
                     'documentpath' => 'documentpath',
                     'maximum_marks' => 1,
+                    'collection_id' => 1,
                 ]
             ])
             ->assertJsonStructureExact([
@@ -236,6 +252,7 @@ class AssignmentTest extends TestCase
                     'maximum_marks',
                     'assignment_title',
                     'is_draft',
+                    'collection_id',
                 ]
             ]);
     }
@@ -271,6 +288,7 @@ class AssignmentTest extends TestCase
             'duration' => 'duration',
             'documentpath' => 'documentpath',
             'maximum_marks' => 1,
+            'collection_id' => 1,
             'assignment_classcodes' =>  [
                 0 =>  [
                     'id'          =>  2,
@@ -329,6 +347,7 @@ class AssignmentTest extends TestCase
                     'duration' => 'duration',
                     'documentpath' => 'documentpath',
                     'maximum_marks' => 1,
+                    'collection_id' => 1,
                     'assignment_classcodes' =>  [
                         0 =>  [
                             'id'          =>  2,
@@ -375,6 +394,7 @@ class AssignmentTest extends TestCase
                     'is_deleted',
                     'created_at',
                     'updated_at',
+                    'collection_id',
                     'assignment_classcodes',
                     'assignment_questions',
                     'assignment_extensions'
@@ -425,6 +445,7 @@ class AssignmentTest extends TestCase
                     'duration' => 'duration',
                     'documentpath' => 'documentpath',
                     'maximum_marks' => 1,
+                    'collection_id' => 1,
                     'assignment_classcodes' =>  [
                         0 =>  [
                             'id'          =>  2,
@@ -471,6 +492,7 @@ class AssignmentTest extends TestCase
                     'is_deleted',
                     'created_at',
                     'updated_at',
+                    'collection_id',
                     'assignment_classcodes',
                     'assignment_questions',
                     'assignment_extensions'
