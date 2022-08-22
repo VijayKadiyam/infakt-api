@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Notification extends Model
 {
   protected $fillable = [
-    'notification', 'status'
+    'user_id',
+    'description',
   ];
 
-  public function user()
+  public function company()
   {
-    return $this->belongsTo(User::class);
+    return $this->belongsTo(Company::class);
   }
 }
