@@ -41,12 +41,23 @@ class BookmarksController extends Controller
         $request->validate([
             'user_id'        =>  'required',
         ]);
+        $bookmark = [];
+        $msg = '';
+        $existing_bookmark = request()->company->bookmarks()
+            ->where(['user_id' => request()->user_id, 'content_id' => request()->content_id])->first();
+        $bookmark = [];
+        if (!$existing_bookmark) {
+            $bookmark = new Bookmark(request()->all());
+            $request->company->bookmarks()->save($bookmark);
+        } else {
+            $msg = 'Bookmark already exist.';
+        }
 
-        $bookmark = new Bookmark(request()->all());
-        $request->company->bookmarks()->save($bookmark);
+
 
         return response()->json([
-            'data'    =>  $bookmark
+            'data'    =>  $bookmark,
+            'msg' => $msg
         ], 201);
     }
 
