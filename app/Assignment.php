@@ -19,6 +19,7 @@ class Assignment extends Model
         'is_deleted',
         'assignment_title',
         'is_draft',
+        'collection_id',
     ];
 
     public function company()

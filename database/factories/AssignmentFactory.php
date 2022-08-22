@@ -12,5 +12,6 @@ $factory->define(Assignment::class, function (Faker $faker) {
         'duration' => 'duration',
         'documentpath' => 'documentpath',
         'maximum_marks' => 1,
+        'collection_id'=>1,
     ];
 });
