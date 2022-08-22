@@ -103,11 +103,11 @@ class Company extends Model
 
   public function bookmarks()
   {
-    return $this->hasMany(Bookmark::class);
+    return $this->hasMany(Bookmark::class)->with('content');
   }
   public function collections()
   {
-    return $this->hasMany(Collection::class);
+    return $this->hasMany(Collection::class)->with('collection_contents');
   }
 
   public function values()
