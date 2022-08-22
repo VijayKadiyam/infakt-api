@@ -59,6 +59,7 @@ class CollectionsController extends Controller
      */
     public function show(Collection $collection)
     {
+        $collection->collection_contents = $collection->collection_contents;
         return response()->json([
             'data'   =>  $collection,
             'success' =>  true
