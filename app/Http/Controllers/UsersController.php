@@ -296,7 +296,7 @@ class UsersController extends Controller
 
       $user->assignRole($request->role_id);
       $user->roles = $user->roles;
-      $user->assignCompany($request->company_id);
+      $user->assignCompany($request->company->id);
       $user->companies = $user->companies;
 
       // Save User Classcodes

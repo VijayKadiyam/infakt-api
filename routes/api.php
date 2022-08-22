@@ -108,6 +108,7 @@ Route::resource('classcodes', 'ClasscodesController');
 
 // Assignments
 Route::resource('assignments', 'AssignmentsController');
+Route::post('upload_assignment_document', 'UploadsController@uploadAssignmentDocument');
 
 // Assignment Classcodes
 Route::resource('assignment_classcodes', 'AssignmentClasscodesController');

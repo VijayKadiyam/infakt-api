@@ -23,9 +23,30 @@ class AssignmentsController extends Controller
      */
     public function index()
     {
-        $assignments = request()->company->assignments()
-            ->with('my_results')
-            ->get();
+        $roleName = request()->user()->roles[0]->name;
+        if ($roleName == 'ADMIN') {
+            $assignments = request()->company->assignments()
+                ->get();
+        } else if ($roleName == 'TEACHER') {
+            $assignments = request()->company->assignments()
+                ->where('created_by_id', '=', request()->user()->id)
+                ->get();
+        } else if ($roleName == 'STUDENT') {
+            $assignments = [];
+            $userClascodes = request()->user()->user_classcodes;
+            foreach ($userClascodes as $userClascode) {
+                $classcode = $userClascode->classcode_id;
+
+                $classcodeAssignments = request()->company->assignments()
+                    ->whereHas('assignment_classcodes', function ($q) use ($classcode) {
+                        $q->where('classcode_id', '=', $classcode);
+                    })
+                    ->with('my_results', 'my_assignment_classcodes')
+                    ->get();
+                $assignments = [...$assignments, ...$classcodeAssignments];
+            }
+        }
+
 
         return response()->json([
             'data'  =>  $assignments,
@@ -221,9 +242,11 @@ class AssignmentsController extends Controller
 
         }
 
+        $assignment->content = $assignment->content;
         $assignment->assignment_classcodes = $assignment->assignment_classcodes;
         $assignment->assignment_questions = $assignment->assignment_questions;
         $assignment->assignment_extensions = $assignment->assignment_extensions;
+        $assignment->user_assignments = $assignment->user_assignments;
 
         return response()->json([
             'data'  =>  $assignment

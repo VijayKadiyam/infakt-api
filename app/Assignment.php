@@ -26,6 +26,11 @@ class Assignment extends Model
         return $this->belongsTo(Company::class);
     }
 
+    public function created_by() {
+        return $this->belongsTo(User::class)
+            ->with('roles');
+    }
+
     public function content()
     {
         return $this->belongsTo(Content::class);
@@ -45,7 +50,8 @@ class Assignment extends Model
 
     public function assignment_extensions()
     {
-        return $this->hasMany(AssignmentExtension::class);
+        return $this->hasMany(AssignmentExtension::class)
+            ->with('user');
     }
 
     public function my_results() {
@@ -53,6 +59,12 @@ class Assignment extends Model
             ->with('user_assignment_selected_answers')
             ->where('user_id', '=', request()->user()->id);
     }
+
+    public function my_assignment_classcodes()
+    {
+        return $this->hasMany(AssignmentClasscode::class);
+    }
+
 
     public function user_assignments() {
         return $this->hasMany(UserAssignment::class)
