@@ -16,6 +16,9 @@ class ContentsController extends Controller
 
     public function masters(Request $request)
     {
+        // $collectionsController = new CollectionsController();
+        // $request->request->add(['user_id' => $request->user_id]);
+        // $collectionsResponse = $collectionsController->index($request);
         $usersController = new UsersController();
         $request->request->add(['role_id' => 4]);
         $usersResponse = $usersController->index($request);
@@ -24,6 +27,7 @@ class ContentsController extends Controller
         $subjectsResponse = $subjectsController->index($request);
 
         return response()->json([
+            // 'collections'           =>  $collectionsResponse->getData()->data,
             'users'                 =>  $usersResponse->getData()->data,
             'subjects'              =>  $subjectsResponse->getData()->data,
         ], 200);
@@ -36,7 +40,13 @@ class ContentsController extends Controller
      */
     public function index()
     {
-        $contents = Content::with('written_by', 'content_subjects', 'content_medias')->get();
+        $contents = Content::with('written_by', 'content_subjects', 'content_medias','content_reads');
+        if (request()->subject_id) {
+            $contents = $contents->whereHas('content_subjects', function ($c) {
+                $c->where('subject_id', '=', request()->subject_id);
+            });
+        }
+        $contents = $contents->get();
         return response()->json([
             'data'  =>  $contents,
             'count' =>   sizeof($contents),
@@ -152,7 +162,7 @@ class ContentsController extends Controller
     {
         $content->content_subjects = $content->content_subjects;
         $content->content_medias = $content->content_medias;
-        
+
         return response()->json([
             'data'  =>  $content
         ], 200);
