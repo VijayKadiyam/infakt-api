@@ -15,15 +15,20 @@ class UserClasscodesController extends Controller
     public function index(Request $request)
     {
         $count = 0;
+        $user_classcodes = request()->company->user_classcodes();
         if ($request->user_id) {
-            $user_classcodes = request()->company->user_classcodes()
-                ->where('user_id', '=', $request->user_id)
-                ->get();
-        } else {
-
-            $user_classcodes = request()->company->user_classcodes;
-            $count = $user_classcodes->count();
+            $user_classcodes = $user_classcodes->where('user_id', '=', $request->user_id);
         }
+        if ($request->standard_id) {
+            $user_classcodes = $user_classcodes->where('standard_id', '=', $request->standard_id);
+        }
+        if ($request->section_id) {
+            $user_classcodes = $user_classcodes->where('section_id', '=', $request->section_id);
+        }
+        if ($request->classcode_id) {
+            $user_classcodes = $user_classcodes->where('classcode_id', '=', $request->classcode_id);
+        }
+        $user_classcodes = $user_classcodes->get();
 
         return response()->json([
             'data'     =>  $user_classcodes,
