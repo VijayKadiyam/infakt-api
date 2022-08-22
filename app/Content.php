@@ -34,4 +34,8 @@ class Content extends Model
     {
         return $this->hasMany(ContentRead::class);
     }
+    public function bookmarks()
+    {
+        return $this->hasMany(Bookmark::class);
+    }
 }

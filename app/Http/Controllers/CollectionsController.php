@@ -47,7 +47,8 @@ class CollectionsController extends Controller
         $request->company->collections()->save($collection);
 
         return response()->json([
-            'data'    =>  $collection
+            'data'    =>  $collection,
+            'success' => true,
         ], 201);
     }
 
