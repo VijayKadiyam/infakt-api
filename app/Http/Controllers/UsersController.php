@@ -148,7 +148,7 @@ class UsersController extends Controller
         $users = $users->where('supervisor_id', '=', $request->superVisor_id);
       }
       $count = $users->count();
-      $users = $users->paginate(request()->rowsPerPage)->toArray();
+      $users = $users->paginate(request()->rowsPerPage)->latest()->toArray();
       $users = $users['data'];
     }
     return response()->json([
