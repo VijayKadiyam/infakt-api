@@ -152,3 +152,6 @@ Route::resource('collection_contents', 'CollectionContentsController');
 
 // Content Reads
 Route::resource('content_reads', 'ContentReadsController');
+
+// notifications 
+Route::resource('notifications', 'NotificationsController');
