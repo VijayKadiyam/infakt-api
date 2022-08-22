@@ -23,4 +23,8 @@ class AssignmentClasscode extends Model
     {
         return $this->hasMany(Assignment::class);
     }
+
+    public function classcode() {
+        return $this->belongsTo(Classcode::class);
+    }
 }

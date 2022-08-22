@@ -22,6 +22,7 @@ class MeController extends Controller
     $user = $request->user();
     $user->roles = $user->roles;
     $user->companies = $user->companies;
+    $user->user_classcodes = $user->user_classcodes;
 
     $version = Version::latest()->first();
 

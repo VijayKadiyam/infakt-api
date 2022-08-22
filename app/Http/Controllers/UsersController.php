@@ -27,8 +27,8 @@ class UsersController extends Controller
     $standardsController = new StandardsController();
     $standardsResponse = $standardsController->index($request);
 
-    $sectionsController = new StandardsController();
-    $sectionsResponse = $sectionsController->index($request);
+    $sectionsController = new SectionsController();
+    $sectionsResponse = $sectionsController->all_sections($request);
 
     $classcodesController = new ClasscodesController();
     $classcodesResponse = $classcodesController->all_classcodes($request);
@@ -53,8 +53,24 @@ class UsersController extends Controller
       $role = Role::find($request->role_id);
       $users = User::with('roles')->whereHas('roles', function ($q) use ($role) {
         $q->where('name', '=', $role->name);
-      })->get();
+      });
     }
+    if ($request->standard_id) {
+      $users = $users->whereHas('user_classcodes', function ($uc) {
+        $uc->where('standard_id', '=', request()->standard_id);
+      });
+    }
+    if ($request->section_id) {
+      $users = $users->whereHas('user_classcodes', function ($uc) {
+        $uc->where('section_id', '=', request()->section_id);
+      });
+    }
+    if ($request->subject_id) {
+      $users = $users->whereHas('user_classcodes', function ($uc) {
+        $uc->where('standard_id', '=', request()->standard_id);
+      });
+    }
+    $users = $users->get();
     return response()->json([
       'data'  =>  $users,
       'count' =>   sizeof($users),
@@ -280,7 +296,7 @@ class UsersController extends Controller
 
       $user->assignRole($request->role_id);
       $user->roles = $user->roles;
-      $user->assignCompany($request->company_id);
+      $user->assignCompany($request->company->id);
       $user->companies = $user->companies;
 
       // Save User Classcodes

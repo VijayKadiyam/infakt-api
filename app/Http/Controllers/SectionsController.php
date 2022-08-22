@@ -29,6 +29,17 @@ class SectionsController extends Controller
             'success' =>  true,
         ], 200);
     }
+    public function all_sections()
+    {
+        $sections = request()->company->sections()
+            ->where('is_active', true)->get();
+
+        return response()->json([
+            'data'  =>  $sections,
+            'count' =>   sizeof($sections),
+            'success' =>  true,
+        ], 200);
+    }
 
     /**
      * Store a newly created resource in storage.

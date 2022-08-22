@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Assignment;
 use App\ContentMedia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -117,6 +118,36 @@ class UploadsController extends Controller
       'success' =>  true
     ], 200);
   }
+
+  // Upload Function For Assignment Document path
+  public function uploadAssignmentDocument(Request $request)
+  {
+    $request->validate([
+      'assignmentid'        => 'required',
+      'documentpath'        => 'required',
+    ]);
+
+    $documentpath = '';
+    $assignment = [];
+    if ($request->hasFile('documentpath')) {
+      $file = $request->file('documentpath');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();
+      $documentpath = 'infakt/assignments/' .  $request->assignmentid . '/' . $name;
+      Storage::disk('s3')->put($documentpath, file_get_contents($file), 'public');
+
+      $assignment = Assignment::where('id', '=', request()->assignmentid)->first();
+      $assignment->documentpath = $documentpath;
+      $assignment->update();
+    }
+    return response()->json([
+      'data'  =>  $assignment,
+      'image_path'  =>  $documentpath,
+      'message' =>  "Assignment Image Upload Successfully",
+      'success' =>  true
+    ], 200);
+  }
+
 
   // Upload Function For User Assignment Document Path
   public function upload_user_assignment_documentpath(Request $request)

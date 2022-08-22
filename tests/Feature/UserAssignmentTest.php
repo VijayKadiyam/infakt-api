@@ -39,6 +39,20 @@ class UserAssignmentTest extends TestCase
             "score" => 1,
             "documentpath" => "documentpath",
             'is_deleted' => 0,
+            'user_assignment_selected_answers'  =>  [
+                0   =>  [
+                    "user_id" => 1,
+                    "company_id"    => 1,
+                    "assignment_id" => 1,
+                    "assignment_question_id" => 1,
+                    "selected_option_sr_no" => 1,
+                    "is_correct" => false,
+                    "marks_obtained" => 0,
+                    "documentpath" => "documentpath",
+                    "description" => "description",
+                    "is_deleted" => false,
+                ]
+            ]
         ];
     }
 
@@ -70,6 +84,20 @@ class UserAssignmentTest extends TestCase
                     "score" => 1,
                     "documentpath" => "documentpath",
                     'is_deleted' => 0,
+                    'user_assignment_selected_answers'  =>  [
+                        0   =>  [
+                            "user_id" => 1,
+                            "company_id"    => 1,
+                            "assignment_id" => 1,
+                            "assignment_question_id" => 1,
+                            "selected_option_sr_no" => 1,
+                            "is_correct" => false,
+                            "marks_obtained" => 0,
+                            "documentpath" => "documentpath",
+                            "description" => "description",
+                            "is_deleted" => false,
+                        ]
+                    ]
                 ]
             ])
             ->assertJsonStructureExact([
@@ -83,7 +111,8 @@ class UserAssignmentTest extends TestCase
                     'company_id',
                     'updated_at',
                     'created_at',
-                    'id'
+                    'id',
+                    "user_assignment_selected_answers"
                 ]
             ]);
     }
