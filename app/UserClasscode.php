@@ -21,4 +21,20 @@ class UserClasscode extends Model
     {
         return $this->belongsTo(Company::class);
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function classcode()
+    {
+        return $this->belongsTo(Classcode::class);
+    }
+    public function standard()
+    {
+        return $this->belongsTo(Standard::class);
+    }
+    public function section()
+    {
+        return $this->belongsTo(Section::class);
+    }
 }

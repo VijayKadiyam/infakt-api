@@ -88,7 +88,7 @@ class Company extends Model
 
   public function user_classcodes()
   {
-    return $this->hasMany(UserClasscode::class);
+    return $this->hasMany(UserClasscode::class)->with('user', 'standard', 'section', 'classcode');
   }
 
   public function assignment_extensions()

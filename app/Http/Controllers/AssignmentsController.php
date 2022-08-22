@@ -26,10 +26,12 @@ class AssignmentsController extends Controller
         $roleName = request()->user()->roles[0]->name;
         if ($roleName == 'ADMIN') {
             $assignments = request()->company->assignments()
+                ->with('my_results', 'my_assignment_classcodes')
                 ->get();
         } else if ($roleName == 'TEACHER') {
             $assignments = request()->company->assignments()
                 ->where('created_by_id', '=', request()->user()->id)
+                ->with('my_results', 'my_assignment_classcodes')
                 ->get();
         } else if ($roleName == 'STUDENT') {
             $assignments = [];

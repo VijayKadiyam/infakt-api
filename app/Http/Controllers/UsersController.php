@@ -48,8 +48,9 @@ class UsersController extends Controller
    */
   public function index(Request $request)
   {
-    $users = User::where('is_deleted', false)->with('roles')->get();
+    $users = User::where('is_deleted', false)->with('roles');
     if ($request->role_id) {
+      // return $request->role_id;
       $role = Role::find($request->role_id);
       $users = User::with('roles')->whereHas('roles', function ($q) use ($role) {
         $q->where('name', '=', $role->name);
@@ -148,7 +149,7 @@ class UsersController extends Controller
         $users = $users->where('supervisor_id', '=', $request->superVisor_id);
       }
       $count = $users->count();
-      $users = $users->paginate(request()->rowsPerPage)->toArray();
+      $users = $users->paginate(request()->rowsPerPage)->latest()->toArray();
       $users = $users['data'];
     }
     return response()->json([

@@ -9,19 +9,21 @@ class CollectionsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['company']);
+        $this->middleware(['auth:api','company']);
     }
 
     public function index(Request $request)
     {
         $count = 0;
         if ($request->user_id) {
-            $collections = request()->company->collections()
-                ->where('user_id', '=', $request->user_id)
+            $collections =  request()->company->collections()
+            ->where('user_id', '=', $request->user_id)
+                ->where('is_deleted', false)
                 ->get();
         } else {
 
-            $collections = request()->company->collections;
+            $collections =  $request->company->collections()
+                ->where('is_deleted', false)->get();
             $count = $collections->count();
         }
 

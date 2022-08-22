@@ -153,5 +153,8 @@ Route::resource('collection_contents', 'CollectionContentsController');
 // Content Reads
 Route::resource('content_reads', 'ContentReadsController');
 
+// Dashboards
+Route::get('adminDashboard', 'DashboardsController@adminDashboard');
+Route::get('teacherDashboard', 'DashboardsController@teacherDashboard');
 // notifications 
 Route::resource('notifications', 'NotificationsController');
