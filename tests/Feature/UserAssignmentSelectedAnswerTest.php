@@ -190,6 +190,15 @@ class UserAssignmentSelectedAnswerTest extends TestCase
                     "is_deleted",
                     'created_at',
                     'updated_at',
+                    'user_assignment_id',
+                    'question',
+                    'option1',
+                    'option2',
+                    'option3',
+                    'option4',
+                    'marks',
+                    'correct_option_sr_no',
+                    'feedback',
                 ]
             ]);
     }
