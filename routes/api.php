@@ -158,3 +158,6 @@ Route::get('adminDashboard', 'DashboardsController@adminDashboard');
 Route::get('teacherDashboard', 'DashboardsController@teacherDashboard');
 // notifications 
 Route::resource('notifications', 'NotificationsController');
+
+// Bookmark Classcodes 
+Route::resource('bookmark_classcodes', 'BookmarkClasscodesController');
