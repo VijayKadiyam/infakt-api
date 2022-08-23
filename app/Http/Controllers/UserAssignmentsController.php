@@ -91,6 +91,8 @@ class UserAssignmentsController extends Controller
                 }
         }
 
+        $user_assignment->user = $user_assignment->user;
+        $user_assignment->assignment = $user_assignment->assignment;
         $user_assignment->user_assignment_selected_answers = $user_assignment->user_assignment_selected_answers;
 
         return response()->json([
