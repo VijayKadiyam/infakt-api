@@ -199,6 +199,8 @@ class UserAssignmentSelectedAnswerTest extends TestCase
                     'marks',
                     'correct_option_sr_no',
                     'feedback',
+                    'option5',
+                    'option6',
                 ]
             ]);
     }
