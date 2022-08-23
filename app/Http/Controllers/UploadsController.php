@@ -93,24 +93,36 @@ class UploadsController extends Controller
   // Upload Function For Content Medias Media Path
   public function upload_content_mediapath(Request $request)
   {
-    $request->validate([
-      'id'        => 'required',
-      'mediapath'        => 'required',
-    ]);
 
+    // return $var;
+
+
+    $request->validate([
+      'to_be_update'        => 'required',
+    ]);
+    $content_meadias = json_decode(request()->to_be_stored);
+    $update_content_meadias = json_decode(request()->to_be_update);
     $mediapath = '';
     $content_media = [];
-    if ($request->hasFile('mediapath')) {
-      $file = $request->file('mediapath');
-      $name = $request->filename ?? 'photo.';
-      $name = $name . $file->getClientOriginalExtension();
-      $mediapath = 'infakt/content-medias/' .  $request->id . '/' . $name;
-      Storage::disk('s3')->put($mediapath, file_get_contents($file), 'public');
+    foreach ($update_content_meadias as $key => $update_media) {
+      foreach ($content_meadias as $key => $media) {
+        // return $request->hasFile($media->mediapath);
+        if ($request->hasFile($media->mediapath)) {
+          $file = $request->file($media->mediapath);
+          $name = $request->filename ?? 'photo.';
+          $name = $name . $file->getClientOriginalExtension();
+          $mediapath = 'infakt/content-medias/' .  $request->id . '/' . $name;
+          Storage::disk('local')->put($mediapath, file_get_contents($file), 'public');
+          // Storage::disk('s3')->put($mediapath, file_get_contents($file), 'public');
 
-      $content_media = ContentMedia::where('id', '=', request()->id)->first();
-      $content_media->mediapath = $mediapath;
-      $content_media->update();
+          $content_media = ContentMedia::where('id', '=', $update_media->id)->first();
+          $content_media->mediapath = $mediapath;
+          $content_media->update();
+        }
+      }
     }
+
+
     return response()->json([
       'data'  =>  $content_media,
       'image_path'  =>  $mediapath,
