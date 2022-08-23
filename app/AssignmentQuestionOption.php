@@ -13,6 +13,8 @@ class AssignmentQuestionOption extends Model
         'option3',
         'option4',
         'is_deleted',
+        'option5',
+        'option6',
     ];
 
     public function company()
