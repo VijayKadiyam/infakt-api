@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Collection;
 use App\CollectionContent;
 use Illuminate\Http\Request;
 
@@ -30,17 +31,25 @@ class CollectionContentsController extends Controller
      *
      *@
      */
-    public function store(Request $request)
+    public function store(Request $request, Collection  $collection)
     {
         $request->validate([
             'collection_id'        =>  'required',
         ]);
+        $collection_contents  = [];
+        $msg = '';
+        $existing_collection_content = CollectionContent::where(['collection_id' => request()->collection_id, 'content_id' => request()->content_id])->first();
+        if (!$existing_collection_content) {
+            $collection_contents = new CollectionContent(request()->all());
+            $collection_contents->save();
+        } else {
+            $msg = 'Content already exist';
+        }
 
-        $collection_contents = new CollectionContent(request()->all());
-        $collection_contents->save();
 
         return response()->json([
-            'data'    =>  $collection_contents
+            'data'    =>  $collection_contents,
+            'msg' => $msg
         ], 201);
     }
 

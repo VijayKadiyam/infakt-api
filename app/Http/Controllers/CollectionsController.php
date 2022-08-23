@@ -44,12 +44,23 @@ class CollectionsController extends Controller
             'user_id'        =>  'required',
             'collection_name'        =>  'required',
         ]);
+        $collection = [];
+        $msg = '';
+        $existing_collection = request()->company->collections()
+            ->where(['user_id' => $request->user_id, 'collection_name' => request()->collection_name])
+            ->first();
+        if (!$existing_collection) {
+            $collection = new Collection(request()->all());
+            $request->company->collections()->save($collection);
+        } else {
+            $msg = request()->collection_name . ' already exist.';
+        }
 
-        $collection = new Collection(request()->all());
-        $request->company->collections()->save($collection);
+
 
         return response()->json([
             'data'    =>  $collection,
+            'msg' => $msg,
             'success' => true,
         ], 201);
     }
