@@ -20,8 +20,11 @@ class SectionsController extends Controller
      */
     public function index(Standard $standard)
     {
-        $sections = $standard->sections()
-            ->where('is_active', true)->get();
+        $sections = $standard->sections()->where('is_deleted', false);
+        if (request()->section_id) {
+            $sections = $sections->where('id', request()->section_id);
+        }
+        $sections = $sections->get();
 
         return response()->json([
             'data'  =>  $sections,
