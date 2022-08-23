@@ -21,7 +21,11 @@ class ClasscodesController extends Controller
     public function index(Section $section)
     {
         $classcodes = $section->classcodes()
-            ->where('is_deleted', false)->get();
+            ->where('is_deleted', false);
+        if (request()->classcode_id) {
+            $classcodes = $classcodes->where('id', request()->classcode_id);
+        }
+        $classcodes = $classcodes->get();
         return response()->json([
             'data'  =>  $classcodes,
             'count' =>   sizeof($classcodes),
