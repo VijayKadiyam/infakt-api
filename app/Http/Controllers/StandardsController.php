@@ -22,7 +22,11 @@ class StandardsController extends Controller
     public function index()
     {
         $standards = request()->company->standards()
-            ->where('is_active', true)->get();
+            ->where('is_deleted', false);
+        if (request()->standard_id) {
+            $standards = $standards->where('id', request()->standard_id);
+        }
+        $standards = $standards->get();
 
         return response()->json([
             'data'  =>  $standards,

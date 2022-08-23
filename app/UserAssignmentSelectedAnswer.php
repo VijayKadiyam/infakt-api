@@ -24,7 +24,7 @@ class UserAssignmentSelectedAnswer extends Model
         'option4',
         'marks',
         'correct_option_sr_no',
-
+        'feedback',
     ];
 
     public function company()
