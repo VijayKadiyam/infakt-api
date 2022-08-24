@@ -161,3 +161,6 @@ Route::resource('notifications', 'NotificationsController');
 
 // Bookmark Classcodes 
 Route::resource('bookmark_classcodes', 'BookmarkClasscodesController');
+
+// Collection Classcodes 
+Route::resource('collection_classcodes', 'CollectionClasscodesController');
