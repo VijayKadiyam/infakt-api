@@ -129,4 +129,19 @@ class Company extends Model
   {
     return $this->hasMany(Notification::class);
   }
+
+  public function bookmark_classcodes()
+  {
+    return $this->hasMany(BookmarkClasscode::class);
+  }
+
+  public function collection_classcodes()
+  {
+    return $this->hasMany(CollectionClasscode::class);
+  }
+
+  public function content_classcodes()
+  {
+    return $this->hasMany(ContentClasscode::class);
+  }
 }
