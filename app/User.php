@@ -143,6 +143,7 @@ class User extends Authenticatable
   }
   public function user_classcodes()
   {
-    return $this->hasMany(UserClasscode::class);
+    return $this->hasMany(UserClasscode::class)
+      ->with('classcode');
   }
 }
