@@ -107,6 +107,7 @@ Route::resource('sections/{section}/classcodes', 'ClasscodesController');
 Route::resource('classcodes', 'ClasscodesController');
 
 // Assignments
+Route::get('assignments/type_overview', 'AssignmentsController@type_overview');
 Route::resource('assignments', 'AssignmentsController');
 Route::post('upload_assignment_document', 'UploadsController@uploadAssignmentDocument');
 

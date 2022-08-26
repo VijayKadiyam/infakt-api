@@ -308,4 +308,109 @@ class AssignmentsController extends Controller
             'message' =>  'Deleted'
         ], 204);
     }
+
+    public function type_overview()
+    {
+        $assignments = request()->company->assignments()
+            ->where('created_by_id', '=', request()->user()->id)
+            ->with('my_results', 'my_assignment_classcodes');
+        if (request()->classcode_id) {
+            $assignments = $assignments->wherehas('my_assignment_classcodes', function ($uc) {
+                $uc->where('classcode_id', '=', request()->classcode_id);
+            });
+        }
+        $assignments = $assignments->get();
+        $subjective_assignment_count = 0;
+        $objective_assignment_count = 0;
+        $document_assignment_count = 0;
+        foreach ($assignments as $key => $assignment) {
+            switch ($assignment->assignment_type) {
+                case 'SUBJECTIVE':
+                    $subjective_assignment_count++;
+                    break;
+
+                case 'OBJECTIVE':
+                    $objective_assignment_count++;
+                    break;
+
+                case 'DOCUMENT':
+                    $document_assignment_count++;
+                    break;
+
+                default:
+                    # code...
+                    break;
+            }
+        }
+        $total_count = sizeof($assignments);
+        $subjective_assignment_percantage =  $subjective_assignment_count ? ($subjective_assignment_count / $total_count) * 100 : 0;
+        $objective_assignment_percantage =  $objective_assignment_count ? ($objective_assignment_count / $total_count) * 100 : 0;
+        $document_assignment_percentage = $document_assignment_count ? ($document_assignment_count / $total_count) * 100 : 0;
+        $data = [
+            'subjective_assignment_count' => $subjective_assignment_count,
+            'objective_assignment_count' => $objective_assignment_count,
+            'document_assignment_count' => $document_assignment_count,
+            'subjective_assignment_percantage' => round($subjective_assignment_percantage, 2),
+            'objective_assignment_percantage' => round($objective_assignment_percantage, 2),
+            'document_assignment_percentage' => round($document_assignment_percentage, 2),
+            'total_count' => $total_count,
+        ];
+        return response()->json([
+            'data'  =>  $data,
+            'count' =>   sizeof($assignments),
+            'success' =>  true,
+        ], 200);
+    }
+    public function performance_overview()
+    {
+        $assignments = request()->company->assignments()
+            ->where('created_by_id', '=', request()->user()->id)
+            ->with('my_results', 'my_assignment_classcodes');
+        if (request()->classcode_id) {
+            $assignments = $assignments->wherehas('my_assignment_classcodes', function ($uc) {
+                $uc->where('classcode_id', '=', request()->classcode_id);
+            });
+        }
+        $assignments = $assignments->get();
+        $subjective_assignment_count = 0;
+        $objective_assignment_count = 0;
+        $document_assignment_count = 0;
+        foreach ($assignments as $key => $assignment) {
+            switch ($assignment->assignment_type) {
+                case 'SUBJECTIVE':
+                    $subjective_assignment_count++;
+                    break;
+
+                case 'OBJECTIVE':
+                    $objective_assignment_count++;
+                    break;
+
+                case 'DOCUMENT':
+                    $document_assignment_count++;
+                    break;
+
+                default:
+                    # code...
+                    break;
+            }
+        }
+        $total_count = sizeof($assignments);
+        $subjective_assignment_percantage =  $subjective_assignment_count ? ($subjective_assignment_count / $total_count) * 100 : 0;
+        $objective_assignment_count =  $objective_assignment_count ? ($objective_assignment_count / $total_count) * 100 : 0;
+        $document_assignment_count = $document_assignment_count ? ($document_assignment_count / $total_count) * 100 : 0;
+        $data = [
+            'subjective_assignment_count' => $subjective_assignment_count,
+            'objective_assignment_count' => $objective_assignment_count,
+            'document_assignment_count' => $document_assignment_count,
+            'subjective_assignment_percantage' => $subjective_assignment_count ? $subjective_assignment_percantage : 0,
+            'objective_assignment_count' => $objective_assignment_count ? $objective_assignment_count : 0,
+            'document_assignment_count' => $document_assignment_count ? $document_assignment_count : 0,
+            'total_count' => $total_count,
+        ];
+        return response()->json([
+            'data'  =>  $data,
+            'count' =>   sizeof($assignments),
+            'success' =>  true,
+        ], 200);
+    }
 }
