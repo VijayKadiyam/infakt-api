@@ -66,9 +66,9 @@ class UsersController extends Controller
         $uc->where('section_id', '=', request()->section_id);
       });
     }
-    if ($request->subject_id) {
+    if ($request->classcode_id) {
       $users = $users->whereHas('user_classcodes', function ($uc) {
-        $uc->where('standard_id', '=', request()->standard_id);
+        $uc->where('classcode_id', '=', request()->classcode_id);
       });
     }
     $users = $users->get();
