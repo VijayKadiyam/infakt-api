@@ -94,31 +94,22 @@ class UploadsController extends Controller
   public function upload_content_mediapath(Request $request)
   {
 
-    // return $var;
-
-
-    $request->validate([
-      'to_be_update'        => 'required',
-    ]);
-    $content_meadias = json_decode(request()->to_be_stored);
-    $update_content_meadias = json_decode(request()->to_be_update);
     $mediapath = '';
     $content_media = [];
-    foreach ($update_content_meadias as $key => $update_media) {
-      foreach ($content_meadias as $key => $media) {
-        // return $request->hasFile($media->mediapath);
-        if ($request->hasFile($media->mediapath)) {
-          $file = $request->file($media->mediapath);
-          $name = $request->filename ?? 'photo.';
-          $name = $name . $file->getClientOriginalExtension();
-          $mediapath = 'infakt/content-medias/' .  $request->id . '/' . $name;
-          Storage::disk('local')->put($mediapath, file_get_contents($file), 'public');
-          // Storage::disk('s3')->put($mediapath, file_get_contents($file), 'public');
+    for ($i = 0; $i < request()->mediapath_count; $i++) {
+      $id = "id" . $i;
+      if ($request->hasFile('mediapath' . $i)) {
+        $file = $request->file('mediapath' . $i);
+        $f_name = 'mediapath' . $i;
+        $name = $request->filename ?? "$f_name.";
+        $name = $name . $file->getClientOriginalExtension();
+        $mediapath = 'infakt/content-medias/' .  $request->id . '/' . $name;
+        Storage::disk('local')->put($mediapath, file_get_contents($file), 'public');
+        // Storage::disk('s3')->put($mediapath, file_get_contents($file), 'public');
 
-          $content_media = ContentMedia::where('id', '=', $update_media->id)->first();
-          $content_media->mediapath = $mediapath;
-          $content_media->update();
-        }
+        $content_media = ContentMedia::where('id', '=', $request->$id)->first();
+        $content_media->mediapath = $mediapath;
+        $content_media->update();
       }
     }
 
