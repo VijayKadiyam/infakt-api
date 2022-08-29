@@ -108,6 +108,7 @@ Route::resource('classcodes', 'ClasscodesController');
 
 // Assignments
 Route::get('assignments/type_overview', 'AssignmentsController@type_overview');
+Route::get('assignments/performance_overview', 'AssignmentsController@performance_overview');
 Route::resource('assignments', 'AssignmentsController');
 Route::post('upload_assignment_document', 'UploadsController@uploadAssignmentDocument');
 
@@ -168,3 +169,11 @@ Route::resource('collection_classcodes', 'CollectionClasscodesController');
 
 // Content Classcodes 
 Route::resource('content_classcodes', 'ContentClasscodesController');
+
+
+// TOI XML
+Route::post('et_xml/upload', 'UploadsController@et_xml');
+Route::get('et_xml', 'EtXmlsController@index');
+
+// TOI Articles
+Route::resource('et_articles', 'EtArticlesController');

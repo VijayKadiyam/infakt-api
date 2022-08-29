@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Assignment;
 use App\ContentMedia;
+use App\EtXml;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\ToiXml;
@@ -151,7 +152,6 @@ class UploadsController extends Controller
     ], 200);
   }
 
-
   // Upload Function For User Assignment Document Path
   public function upload_user_assignment_documentpath(Request $request)
   {
@@ -208,5 +208,43 @@ class UploadsController extends Controller
       'message' =>  "User Assignment Selected Answer Document Image Upload Successfully",
       'success' =>  true
     ], 200);
+  }
+
+  // Upload Function For Et XMLs
+  public function et_xml(Request $request)
+  {
+    $request->validate([
+      'xml_path'        => 'required',
+    ]);
+
+    $xml_path = '';
+    $msg = '';
+    if ($request->hasFile('xml_path')) {
+      $file = $request->file('xml_path');
+      $name = $file->getClientOriginalName();
+      $xml_path = 'infact/et-xmls/' . $name;
+      $et_xml_data = EtXml::where(['xmlpath' => $xml_path])->first();
+
+      if (!$et_xml_data) {
+        // Storage::disk('local')->put($xml_path, file_get_contents($file), 'public');
+        Storage::disk('s3')->put($xml_path, file_get_contents($file), 'public');
+
+        $et_xml['xmlpath'] = $xml_path;
+
+        $et_xml = new EtXml($et_xml);
+        $et_xml->save();
+      }
+    } else {
+      $xml_path = '';
+      $msg = 'File Already Exist';
+    }
+
+    return response()->json([
+      'data'  => [
+        'xml_path'  =>  $xml_path,
+        'msg' => $msg,
+      ],
+      'success' =>  true
+    ]);
   }
 }

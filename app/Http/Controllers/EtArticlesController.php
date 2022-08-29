@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\ToiArticle;
-use App\ToiXml;
+use App\EtArticle;
+use App\EtXml;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class ToiArticlesController extends Controller
+class EtArticlesController extends Controller
 {
     public function __construct()
     {
@@ -22,10 +22,10 @@ class ToiArticlesController extends Controller
 
     public function index(Request $request)
     {
-        // $toi_articles = ToiArticle::get();
-        $toi_articles = DB::select("call portal_toi_articles()");
+        // $et_articles = EtArticle::get();
+        $et_articles = DB::select("call portal_et_articles()");
         return response()->json([
-            'data'     =>  $toi_articles,
+            'data'     =>  $et_articles,
             'success'   =>  true,
         ], 200);
     }
@@ -41,11 +41,11 @@ class ToiArticlesController extends Controller
             'edition_name'       =>  'required',
         ]);
 
-        $toi_article = new ToiArticle($request->all());
-        $toi_article->save();
+        $et_article = new EtArticle($request->all());
+        $et_article->save();
 
         return response()->json([
-            'data'    =>  $toi_article
+            'data'    =>  $et_article
         ], 201);
     }
 
@@ -54,10 +54,10 @@ class ToiArticlesController extends Controller
      *
      *@
      */
-    public function show(ToiArticle $toi_article)
+    public function show(EtArticle $et_article)
     {
         return response()->json([
-            'data'   =>  $toi_article
+            'data'   =>  $et_article
         ], 200);
     }
 
@@ -66,16 +66,16 @@ class ToiArticlesController extends Controller
      *
      *@
      */
-    public function update(Request $request, ToiArticle $toi_article)
+    public function update(Request $request, EtArticle $et_article)
     {
         $request->validate([
             'edition_name'  =>  'required',
         ]);
 
-        $toi_article->update($request->all());
+        $et_article->update($request->all());
 
         return response()->json([
-            'data'  =>  $toi_article
+            'data'  =>  $et_article
         ], 200);
     }
 
@@ -92,12 +92,10 @@ class ToiArticlesController extends Controller
 
     public function processTOIXML()
     {
-        $xml =  ToiXml::where('id', request()->id)->first();
+        $xml =  EtXml::where('id', request()->id)->first();
         if ($xml->is_process != true) {
             $path = 'https://aaibuzz-spc-1.s3.ap-south-1.amazonaws.com/' . request()->xmlpath;
-            // return $path;
             $xmlString = file_get_contents($path);
-            // return $xmlString;
             // $xmlString = file_get_contents("https://aaibuzz-spc-1.s3.ap-south-1.amazonaws.com/infakt-api/TOI-Epaper210722.xml");
             $xmlObject = simplexml_load_string($xmlString, 'SimpleXMLElement', LIBXML_NOCDATA);
 
@@ -107,7 +105,6 @@ class ToiArticlesController extends Controller
             $data = [];
             foreach ($editions as $i => $edition) {
                 $edition_name = $edition["@attributes"]['EdName'];
-
                 foreach ($edition['body'] as $k => $content) {
                     $headline = is_array($content['body.head']['headline']['h1']) ? '' : $content['body.head']['headline']['h1'];
                     $story_id = $content['body.head']['dateline']['story-id'];
@@ -116,9 +113,8 @@ class ToiArticlesController extends Controller
                     $category = is_array($content['body.head']['dateline']['category']) ? '' : $content['body.head']['dateline']['category'];
                     $drophead = is_array($content['body.head']['dateline']['drophead']) ? '' : $content['body.head']['dateline']['drophead'];
                     $content = is_array($content['body.content']['block']) ? '' : $content['body.content']['block'];
-
                     $data = [
-                        'toi_xml_id'   => request()->id,
+                        'et_xml_id'   => request()->id,
                         'story_id'     => $story_id,
                         'story_date'   => $story_date,
                         'category'     => $category,
@@ -128,24 +124,22 @@ class ToiArticlesController extends Controller
                         'drophead'     => $drophead,
                         'content'      => $content,
                     ];
-                    $toi_article = new ToiArticle($data);
-                    $toi_article->save($data);
-                    $toi_articles[] = $toi_article;
+                    $et_article = new EtArticle($data);
+                    $et_article->save($data);
+                    $et_articles[] = $et_article;
                 }
             }
-            if ($toi_articles) {
-                $toi_xml = ToiXml::where('id', '=', request()->id)->first();
-                $toi_xml->is_process = true;
-                $toi_xml->update();
+            if ($et_articles) {
+                $et_xml = EtXml::where('id', '=', request()->id)->first();
+                $et_xml->is_process = true;
+                $et_xml->update();
             }
         } else {
-            $toi_articles = 'Already Processed';
+            $et_articles = 'Already Processed';
         }
 
-
-
         return response()->json([
-            'data'  =>  $toi_articles,
+            'data'  =>  $et_articles,
         ]);
     }
 }
