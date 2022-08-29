@@ -22,11 +22,19 @@ class ToiArticlesController extends Controller
 
     public function index(Request $request)
     {
-        // $toi_articles = ToiArticle::get();
-
         if (request()->page && request()->rowsPerPage) {
-            $count = $toi_articles = ToiArticle::count();
-            $toi_articles = ToiArticle::paginate(request()->rowsPerPage)->toArray();
+            $toi_articles = new ToiArticle;
+            if (request()->search_keyword) {
+                $toi_articles = $toi_articles->where('edition_name', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('story_date', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('headline', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('byline', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('drophead', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('category', 'LIKE', '%' . request()->search_keyword . '%');
+            }
+            // return $toi_articles = $toi_articles->get();
+            $count = $toi_articles->count();
+            $toi_articles = $toi_articles->paginate(request()->rowsPerPage)->toArray();
             $toi_articles = $toi_articles['data'];
         }
 
