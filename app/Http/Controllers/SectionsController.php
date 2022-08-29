@@ -20,11 +20,14 @@ class SectionsController extends Controller
      */
     public function index(Standard $standard)
     {
-        $sections = $standard->sections()->where('is_deleted', false);
-        if (request()->section_id) {
-            $sections = $sections->where('id', request()->section_id);
+        $sections = [];
+        if (request()->company) {
+            $sections = $standard->sections()->where('is_deleted', false);
+            if (request()->section_id) {
+                $sections = $sections->where('id', request()->section_id);
+            }
+            $sections = $sections->get();
         }
-        $sections = $sections->get();
 
         return response()->json([
             'data'  =>  $sections,
@@ -34,8 +37,11 @@ class SectionsController extends Controller
     }
     public function all_sections()
     {
-        $sections = request()->company->sections()
-            ->where('is_active', true)->get();
+        $sections = [];
+        if (request()->company) {
+            $sections = request()->company->sections()
+                ->where('is_active', true)->get();
+        }
 
         return response()->json([
             'data'  =>  $sections,

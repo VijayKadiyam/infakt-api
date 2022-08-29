@@ -145,6 +145,7 @@ class ContentsController extends Controller
 
             // ---------------------------------------------------
         }
+        
         $content->content_subjects = $content->content_subjects;
         $content->content_medias = $content->content_medias;
         return response()->json([

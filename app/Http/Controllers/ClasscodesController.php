@@ -20,12 +20,15 @@ class ClasscodesController extends Controller
      */
     public function index(Section $section)
     {
-        $classcodes = $section->classcodes()
-            ->where('is_deleted', false);
-        if (request()->classcode_id) {
-            $classcodes = $classcodes->where('id', request()->classcode_id);
+        $classcodes = [];
+        if (request()->company) {
+            $classcodes = $section->classcodes()
+                ->where('is_deleted', false);
+            if (request()->classcode_id) {
+                $classcodes = $classcodes->where('id', request()->classcode_id);
+            }
+            $classcodes = $classcodes->get();
         }
-        $classcodes = $classcodes->get();
         return response()->json([
             'data'  =>  $classcodes,
             'count' =>   sizeof($classcodes),
@@ -35,8 +38,11 @@ class ClasscodesController extends Controller
 
     public function all_classcodes()
     {
-        $classcodes = request()->company->classcodes()
-            ->where('is_deleted', false)->get();
+        $classcodes = [];
+        if (request()->company) {
+            $classcodes = request()->company->classcodes()
+                ->where('is_deleted', false)->get();
+        }
         return response()->json([
             'data'  =>  $classcodes,
             'count' =>   sizeof($classcodes),
