@@ -23,9 +23,18 @@ class ToiArticlesController extends Controller
     public function index(Request $request)
     {
         // $toi_articles = ToiArticle::get();
-        $toi_articles = DB::select("call portal_toi_articles()");
+
+        if (request()->page && request()->rowsPerPage) {
+            $count = $toi_articles = ToiArticle::count();
+            $toi_articles = ToiArticle::paginate(request()->rowsPerPage)->toArray();
+            $toi_articles = $toi_articles['data'];
+        }
+
+        // $toi_articles = DB::select("call portal_toi_articles()");
+
         return response()->json([
             'data'     =>  $toi_articles,
+            'count'    =>   $count,
             'success'   =>  true,
         ], 200);
     }
