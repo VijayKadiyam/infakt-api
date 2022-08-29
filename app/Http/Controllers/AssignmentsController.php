@@ -79,7 +79,6 @@ class AssignmentsController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->);
         $request->validate([
             'assignment_type'  =>  'required',
         ]);
@@ -372,43 +371,45 @@ class AssignmentsController extends Controller
             });
         }
         $assignments = $assignments->get();
-        $subjective_assignment_count = 0;
-        $objective_assignment_count = 0;
-        $document_assignment_count = 0;
-        foreach ($assignments as $key => $assignment) {
-            switch ($assignment->assignment_type) {
-                case 'SUBJECTIVE':
-                    $subjective_assignment_count++;
-                    break;
 
-                case 'OBJECTIVE':
-                    $objective_assignment_count++;
-                    break;
+        $top_students_count = 0;
+        $avg_students_count = 0;
+        $below_avg_students_count = 0;
+        $weak_students_count = 0;
+        // foreach ($assignments as $key => $assignment) {
+        //     switch ($assignment->assignment_type) {
+        //         case 'SUBJECTIVE':
+        //             $subjective_assignment_count++;
+        //             break;
 
-                case 'DOCUMENT':
-                    $document_assignment_count++;
-                    break;
+        //         case 'OBJECTIVE':
+        //             $objective_assignment_count++;
+        //             break;
 
-                default:
-                    # code...
-                    break;
-            }
-        }
-        $total_count = sizeof($assignments);
-        $subjective_assignment_percantage =  $subjective_assignment_count ? ($subjective_assignment_count / $total_count) * 100 : 0;
-        $objective_assignment_count =  $objective_assignment_count ? ($objective_assignment_count / $total_count) * 100 : 0;
-        $document_assignment_count = $document_assignment_count ? ($document_assignment_count / $total_count) * 100 : 0;
-        $data = [
-            'subjective_assignment_count' => $subjective_assignment_count,
-            'objective_assignment_count' => $objective_assignment_count,
-            'document_assignment_count' => $document_assignment_count,
-            'subjective_assignment_percantage' => $subjective_assignment_count ? $subjective_assignment_percantage : 0,
-            'objective_assignment_count' => $objective_assignment_count ? $objective_assignment_count : 0,
-            'document_assignment_count' => $document_assignment_count ? $document_assignment_count : 0,
-            'total_count' => $total_count,
-        ];
+        //         case 'DOCUMENT':
+        //             $document_assignment_count++;
+        //             break;
+
+        //         default:
+        //             # code...
+        //             break;
+        //     }
+        // }
+        // $total_count = sizeof($assignments);
+        // $subjective_assignment_percantage =  $subjective_assignment_count ? ($subjective_assignment_count / $total_count) * 100 : 0;
+        // $objective_assignment_count =  $objective_assignment_count ? ($objective_assignment_count / $total_count) * 100 : 0;
+        // $document_assignment_count = $document_assignment_count ? ($document_assignment_count / $total_count) * 100 : 0;
+        // $data = [
+        //     'subjective_assignment_count' => $subjective_assignment_count,
+        //     'objective_assignment_count' => $objective_assignment_count,
+        //     'document_assignment_count' => $document_assignment_count,
+        //     'subjective_assignment_percantage' => $subjective_assignment_count ? $subjective_assignment_percantage : 0,
+        //     'objective_assignment_count' => $objective_assignment_count ? $objective_assignment_count : 0,
+        //     'document_assignment_count' => $document_assignment_count ? $document_assignment_count : 0,
+        //     'total_count' => $total_count,
+        // ];
         return response()->json([
-            'data'  =>  $data,
+            'data'  =>  $assignments,
             'count' =>   sizeof($assignments),
             'success' =>  true,
         ], 200);
