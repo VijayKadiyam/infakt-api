@@ -171,9 +171,9 @@ Route::resource('collection_classcodes', 'CollectionClasscodesController');
 Route::resource('content_classcodes', 'ContentClasscodesController');
 
 
-// TOI XML
+// ET XML
 Route::post('et_xml/upload', 'UploadsController@et_xml');
 Route::get('et_xml', 'EtXmlsController@index');
-
-// TOI Articles
+Route::post('processETXML', 'EtXmlsController@processETXML');
+// ET Articles
 Route::resource('et_articles', 'EtArticlesController');
