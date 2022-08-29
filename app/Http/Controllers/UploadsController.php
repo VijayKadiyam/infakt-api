@@ -65,7 +65,7 @@ class UploadsController extends Controller
     if ($request->hasFile('xml_path')) {
       $file = $request->file('xml_path');
       $name = $file->getClientOriginalName();
-      $xml_path = 'infact/toi-xmls/' . $name;
+      $xml_path = 'infakt/toi-xmls/' . $name;
       $toi_xml_data = ToiXml::where(['xmlpath' => $xml_path])->first();
 
       if (!$toi_xml_data) {
@@ -222,7 +222,7 @@ class UploadsController extends Controller
     if ($request->hasFile('xml_path')) {
       $file = $request->file('xml_path');
       $name = $file->getClientOriginalName();
-      $xml_path = 'infact/et-xmls/' . $name;
+      $xml_path = 'infakt/et-xmls/' . $name;
       $et_xml_data = EtXml::where(['xmlpath' => $xml_path])->first();
 
       if (!$et_xml_data) {

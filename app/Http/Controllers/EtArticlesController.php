@@ -22,10 +22,27 @@ class EtArticlesController extends Controller
 
     public function index(Request $request)
     {
-        // $et_articles = EtArticle::get();
-        $et_articles = DB::select("call portal_et_articles()");
+        if (request()->page && request()->rowsPerPage) {
+            $et_articles = new EtArticle();
+            if (request()->search_keyword) {
+                $et_articles = $et_articles->where('edition_name', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('story_date', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('headline', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('byline', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('drophead', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('category', 'LIKE', '%' . request()->search_keyword . '%');
+            }
+            // return $et_articles = $et_articles->get();
+            $count = $et_articles->count();
+            $et_articles = $et_articles->paginate(request()->rowsPerPage)->toArray();
+            $et_articles = $et_articles['data'];
+        }
+
+        // $et_articles = DB::select("call portal_et_articles()");
+
         return response()->json([
             'data'     =>  $et_articles,
+            'count'    =>   $count,
             'success'   =>  true,
         ], 200);
     }
