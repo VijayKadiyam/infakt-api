@@ -426,10 +426,8 @@ class AssignmentsController extends Controller
             'weak_students_count' => $weak_students_count,
             // 'total_count' => $total_count,
         ];
-        return $data;
         return response()->json([
-            'data'  =>  $assignments,
-            'count' =>   sizeof($assignments),
+            'data'  =>  $data,
             'success' =>  true,
         ], 200);
     }
