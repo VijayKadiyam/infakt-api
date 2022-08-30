@@ -20,10 +20,22 @@ class EtXmlsController extends Controller
      */
     public function index()
     {
-        $et_xmls = EtXml::get();
+        // $et_xmls = EtXml::get();
+        if (request()->page && request()->rowsPerPage) {
+            $et_xmls = new EtXml;
+            if (request()->search_keyword) {
+                $et_xmls = $et_xmls
+                    ->where('xmlpath', 'LIKE', '%' . request()->search_keyword . '%');
+            }
+            $count = $et_xmls->count();
+            $et_xmls = $et_xmls->paginate(request()->rowsPerPage)->toArray();
+            $et_xmls = $et_xmls['data'];
+        }
 
         return response()->json([
-            'data'     =>  $et_xmls
+            'data'     =>  $et_xmls,
+            'count'    =>   $count,
+            'success'   =>  true,
         ], 200);
     }
 
