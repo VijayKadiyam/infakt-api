@@ -19,12 +19,39 @@ class CareerRequestsController extends Controller
      */
     public function index()
     {
-        $career_requests = CareerRequest::where('is_deleted', false)->get();
+        // return request()->all();
+        if (request()->page && request()->rowsPerPage) {
+            $career_requests = new CareerRequest;
+            if (request()->search_keyword) {
+                $career_requests = $career_requests
+
+                    ->orwhere('name', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('email', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('description', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('status', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('remarks', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('created_at', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->where('is_deleted', false);
+            }
+            // return $career_requests = $career_requests->get();
+            $count = $career_requests->count();
+            $career_requests = $career_requests->paginate(request()->rowsPerPage)->toArray();
+            $career_requests = $career_requests['data'];
+        }
+
+        // $toi_articles = DB::select("call portal_toi_articles()");
+
         return response()->json([
-            'data'  =>  $career_requests,
-            'count' =>   sizeof($career_requests),
-            'success' =>  true,
+            'data'     =>  $career_requests,
+            'count'    =>   $count,
+            'success'   =>  true,
         ], 200);
+        // $career_requests = CareerRequest::where('is_deleted', false)->get();
+        // return response()->json([
+        //     'data'  =>  $career_requests,
+        //     'count' =>   sizeof($career_requests),
+        //     'success' =>  true,
+        // ], 200);
     }
 
     /**
