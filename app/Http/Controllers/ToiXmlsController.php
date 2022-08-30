@@ -19,10 +19,22 @@ class ToiXmlsController extends Controller
      */
     public function index()
     {
-        $toi_xmls = ToiXml::get();
+        // $toi_xmls = ToiXml::get();
+        if (request()->page && request()->rowsPerPage) {
+            $toi_xmls = new ToiXml;
+            if (request()->search_keyword) {
+                $toi_xmls = $toi_xmls
+                    ->where('xmlpath', 'LIKE', '%' . request()->search_keyword . '%');
+            }
+            $count = $toi_xmls->count();
+            $toi_xmls = $toi_xmls->paginate(request()->rowsPerPage)->toArray();
+            $toi_xmls = $toi_xmls['data'];
+        }
 
         return response()->json([
-            'data'     =>  $toi_xmls
+            'data'     =>  $toi_xmls,
+            'count'    =>   $count,
+            'success'   =>  true,
         ], 200);
     }
 
