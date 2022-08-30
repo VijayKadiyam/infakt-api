@@ -57,6 +57,10 @@ class ContentsController extends Controller
                 ->orWhere('content_name', 'LIKE', '%' . request()->search_keyword . '%')
                 ->orWhere('created_at', 'LIKE', '%' . request()->search_keyword . '%');
         }
+        if (request()->date_filter) {
+            $contents = $contents
+                ->Where('created_at', 'LIKE', '%' . request()->date_filter . '%');
+        }
         $contents = $contents->get();
         return response()->json([
             'data'  =>  $contents,
