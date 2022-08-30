@@ -52,4 +52,17 @@ class DashboardsController extends Controller
             'data'  =>  $data
         ], 200);
     }
+
+    public function studentDashboard()
+    {
+        $data = [
+            'assignmentsCompetedCount'  =>  0,
+            'articlesReadCount'         =>  0,
+            'videosWatchedCount'        =>  0,
+            'assignmentsPendingCount'   =>  0,
+        ];
+        return response()->json([
+            'data'  =>  $data
+        ], 200);
+    }
 }
