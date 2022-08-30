@@ -54,7 +54,8 @@ class ContentsController extends Controller
                     $q->orwhere('last_name', 'LIKE', '%' . request()->search_keyword . '%');
                 })
                 ->orwhere('content_type', 'LIKE', '%' . request()->search_keyword . '%')
-                ->orWhere('content_name', 'LIKE', '%' . request()->search_keyword . '%');
+                ->orWhere('content_name', 'LIKE', '%' . request()->search_keyword . '%')
+                ->orWhere('created_at', 'LIKE', '%' . request()->search_keyword . '%');
         }
         $contents = $contents->get();
         return response()->json([
