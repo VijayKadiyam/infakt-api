@@ -7,6 +7,8 @@ use App\AssignmentClasscode;
 use App\AssignmentExtension;
 use App\AssignmentQuestion;
 use App\AssignmentQuestionOption;
+use App\Role;
+use App\User;
 use Illuminate\Http\Request;
 
 class AssignmentsController extends Controller
@@ -31,8 +33,13 @@ class AssignmentsController extends Controller
         } else if ($roleName == 'TEACHER') {
             $assignments = request()->company->assignments()
                 ->where('created_by_id', '=', request()->user()->id)
-                ->with('my_results', 'my_assignment_classcodes')
-                ->get();
+                ->with('my_results', 'my_assignment_classcodes');
+            if (request()->classcode_id) {
+                $assignments = $assignments->wherehas('my_assignment_classcodes', function ($uc) {
+                    $uc->where('classcode_id', '=', request()->classcode_id);
+                });
+            }
+            $assignments = $assignments->get();
         } else if ($roleName == 'STUDENT') {
             $assignments = [];
             $userClascodes = request()->user()->user_classcodes;
@@ -360,57 +367,142 @@ class AssignmentsController extends Controller
             'success' =>  true,
         ], 200);
     }
-    public function performance_overview()
+    public function assignment_wise_performance_overview()
     {
         $assignments = request()->company->assignments()
             ->where('created_by_id', '=', request()->user()->id)
-            ->with('my_results', 'my_assignment_classcodes');
+            ->with('my_assignment_classcodes', 'user_assignments');
         if (request()->classcode_id) {
             $assignments = $assignments->wherehas('my_assignment_classcodes', function ($uc) {
                 $uc->where('classcode_id', '=', request()->classcode_id);
             });
         }
+        if (request()->assignment_id) {
+            $assignments = $assignments->where('assignments.id', request()->assignment_id);
+        }
         $assignments = $assignments->get();
+        $top_students_count = 0;
+        $avg_students_count = 0;
+        $below_avg_students_count = 0;
+        $weak_students_count = 0;
+        $total_scored = 0;
+        foreach ($assignments as $key => $assignment) {
+            $maximum_marks = $assignment->maximum_marks;
+            $user_assignments = $assignment->user_assignments;
+            foreach ($user_assignments as $key => $ua) {
+                $score = $ua->score;
+                $percantage = ($score / $maximum_marks) * 100;
+                switch (true) {
+                    case ($percantage >= 76):
+                        $grade = 'A';
+                        $top_students_count++;
+                        break;
+                    case ($percantage >= 60 && $percantage < 76):
+                        $grade = 'B';
+                        $avg_students_count++;
+                        break;
+                    case ($percantage >= 59 && $percantage < 36):
+                        $grade = 'C';
+                        $below_avg_students_count++;
+                        break;
+                    case ($percantage < 36):
+                        $grade = 'D';
+                        $weak_students_count++;
+                        break;
+                }
+                $total_scored += $score;
+            }
+        }
+
+        // $total_count = sizeof($assignments);
+        // $subjective_assignment_percantage =  $subjective_assignment_count ? ($subjective_assignment_count / $total_count) * 100 : 0;
+        // $objective_assignment_count =  $objective_assignment_count ? ($objective_assignment_count / $total_count) * 100 : 0;
+        // $document_assignment_count = $document_assignment_count ? ($document_assignment_count / $total_count) * 100 : 0;
+        $data = [
+            'total_scored' => $total_scored,
+            'top_students_count' => $top_students_count,
+            'avg_students_count' => $avg_students_count,
+            'below_avg_students_count' => $below_avg_students_count,
+            'weak_students_count' => $weak_students_count,
+            // 'total_count' => $total_count,
+        ];
+        return $data;
+        return response()->json([
+            'data'  =>  $assignments,
+            'count' =>   sizeof($assignments),
+            'success' =>  true,
+        ], 200);
+    }
+    public function student_wise_performance_overview()
+    {
+        $users = User::where('is_deleted', false)->with('roles', 'user_assignments');
+        $role = Role::find(5);
+        $users = $users->with('roles')->whereHas('roles', function ($q) use ($role) {
+            $q->where('name', '=', $role->name);
+        });
+        if (request()->classcode_id) {
+            $users = $users->whereHas('user_classcodes', function ($uc) {
+                $uc->where('classcode_id', '=', request()->classcode_id);
+            });
+        }
+        $users = $users->get();
 
         $top_students_count = 0;
         $avg_students_count = 0;
         $below_avg_students_count = 0;
         $weak_students_count = 0;
-        // foreach ($assignments as $key => $assignment) {
-        //     switch ($assignment->assignment_type) {
-        //         case 'SUBJECTIVE':
-        //             $subjective_assignment_count++;
-        //             break;
+        $total_maximum_marks = 0;
+        foreach ($users as $key => $user) {
+            $total_scored = 0;
+            $average = 0;
+            $user_assignments = $user->user_assignments;
+            $assignment_submitted = sizeof($user_assignments);
+            foreach ($user_assignments as $key => $ua) {
+                $total_maximum_marks += $ua->assignment->maximum_marks;
+                $score = $ua->score;
+                $total_scored += $score;
+            }
+            if ($assignment_submitted != 0) {
+                $average = $total_scored / $assignment_submitted;
+            }
+            switch (true) {
+                case ($average >= 76):
+                    $grade = 'A';
+                    $top_students_count++;
+                    break;
+                case ($average >= 60 && $average < 76):
+                    $grade = 'B';
+                    $avg_students_count++;
+                    break;
+                case ($average >= 59 && $average < 36):
+                    $grade = 'C';
+                    $below_avg_students_count++;
+                    break;
+                case ($average < 36):
+                    $grade = 'D';
+                    $weak_students_count++;
+                    break;
+            }
+        }
 
-        //         case 'OBJECTIVE':
-        //             $objective_assignment_count++;
-        //             break;
-
-        //         case 'DOCUMENT':
-        //             $document_assignment_count++;
-        //             break;
-
-        //         default:
-        //             # code...
-        //             break;
-        //     }
-        // }
-        // $total_count = sizeof($assignments);
-        // $subjective_assignment_percantage =  $subjective_assignment_count ? ($subjective_assignment_count / $total_count) * 100 : 0;
-        // $objective_assignment_count =  $objective_assignment_count ? ($objective_assignment_count / $total_count) * 100 : 0;
-        // $document_assignment_count = $document_assignment_count ? ($document_assignment_count / $total_count) * 100 : 0;
-        // $data = [
-        //     'subjective_assignment_count' => $subjective_assignment_count,
-        //     'objective_assignment_count' => $objective_assignment_count,
-        //     'document_assignment_count' => $document_assignment_count,
-        //     'subjective_assignment_percantage' => $subjective_assignment_count ? $subjective_assignment_percantage : 0,
-        //     'objective_assignment_count' => $objective_assignment_count ? $objective_assignment_count : 0,
-        //     'document_assignment_count' => $document_assignment_count ? $document_assignment_count : 0,
-        //     'total_count' => $total_count,
-        // ];
+        $total_students = sizeof($users);
+        $top_students_percantage =  $top_students_count ? ($top_students_count / $total_students) * 100 : 0;
+        $avg_students_percantage =  $avg_students_count ? ($avg_students_count / $total_students) * 100 : 0;
+        $below_avg_students_percantage = $below_avg_students_count ? ($below_avg_students_count / $total_students) * 100 : 0;
+        $weak_students_percantage = $weak_students_count ? ($weak_students_count / $total_students) * 100 : 0;
+        $data = [
+            'total_students' => sizeOf($users),
+            'top_students_count' => $top_students_count,
+            'avg_students_count' => $avg_students_count,
+            'below_avg_students_count' => $below_avg_students_count,
+            'weak_students_count' => $weak_students_count,
+            'top_students_percantage' => round($top_students_percantage),
+            'avg_students_percantage' => round($avg_students_percantage),
+            'below_avg_students_percantage' => round($below_avg_students_percantage),
+            'weak_students_percantage' => round($weak_students_percantage),
+        ];
         return response()->json([
-            'data'  =>  $assignments,
-            'count' =>   sizeof($assignments),
+            'data'  =>  $data,
             'success' =>  true,
         ], 200);
     }

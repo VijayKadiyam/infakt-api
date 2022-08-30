@@ -146,4 +146,10 @@ class User extends Authenticatable
     return $this->hasMany(UserClasscode::class)
       ->with('classcode');
   }
+
+  public function user_assignments()
+  {
+    return $this->hasMany(UserAssignment::class)
+      ->with('assignment');
+  }
 }
