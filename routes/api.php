@@ -108,7 +108,8 @@ Route::resource('classcodes', 'ClasscodesController');
 
 // Assignments
 Route::get('assignments/type_overview', 'AssignmentsController@type_overview');
-Route::get('assignments/performance_overview', 'AssignmentsController@performance_overview');
+Route::get('assignments/assignment_wise_performance_overview', 'AssignmentsController@assignment_wise_performance_overview');
+Route::get('assignments/student_wise_performance_overview', 'AssignmentsController@student_wise_performance_overview');
 Route::resource('assignments', 'AssignmentsController');
 Route::post('upload_assignment_document', 'UploadsController@uploadAssignmentDocument');
 
