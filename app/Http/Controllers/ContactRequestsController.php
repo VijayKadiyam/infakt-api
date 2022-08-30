@@ -19,11 +19,31 @@ class ContactRequestsController extends Controller
      */
     public function index()
     {
-        $contact_requests = ContactRequest::where('is_deleted', false)->get();
+        if (request()->page && request()->rowsPerPage) {
+            $contact_requests = new ContactRequest;
+            if (request()->search_keyword) {
+                $contact_requests = $contact_requests
+
+                    ->orwhere('name', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('email', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('interested_in', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('phone_no', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('description', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('status', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('remarks', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('created_at', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->where('is_deleted', false);
+            }
+            $count = $contact_requests->count();
+            $contact_requests = $contact_requests->paginate(request()->rowsPerPage)->toArray();
+            $contact_requests = $contact_requests['data'];
+        }
+
+
         return response()->json([
-            'data'  =>  $contact_requests,
-            'count' =>   sizeof($contact_requests),
-            'success' =>  true,
+            'data'     =>  $contact_requests,
+            'count'    =>   $count,
+            'success'   =>  true,
         ], 200);
     }
 
