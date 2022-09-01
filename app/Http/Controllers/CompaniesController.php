@@ -27,11 +27,18 @@ class CompaniesController extends Controller
       $companies = new Company();
       if (request()->search_keyword) {
         $companies = $companies
+
           ->orwhere('name', 'LIKE', '%' . request()->search_keyword . '%')
           ->orWhere('email', 'LIKE', '%' . request()->search_keyword . '%');
       }
       $count = $companies->count();
-      $companies = $companies->paginate(request()->rowsPerPage)->toArray();
+      $companies = $companies->with([
+        'users'  => function ($query) {
+          $query->whereHas('roles',  function ($q) {
+            $q->where('name', '=', 'Admin');
+          });
+        }
+      ])->paginate(request()->rowsPerPage)->toArray();
       $companies = $companies['data'];
     } else {
       $companies = Company::with([

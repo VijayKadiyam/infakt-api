@@ -299,6 +299,8 @@ class UsersController extends Controller
       $user->roles = $user->roles;
       if ($request->company)
         $user->assignCompany($request->company->id);
+      if ($request->company_id)
+        $user->assignCompany($request->company_id);
       $user->companies = $user->companies;
 
       // Save User Classcodes
