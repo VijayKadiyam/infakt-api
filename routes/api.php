@@ -49,16 +49,23 @@ Route::resource('company_user', 'CompanyUserController');
 
 Route::post('sendEmail', 'SendEmailController@index');
 
+// Crude User
 Route::get('crude_users', 'CrudeUsersController@index');
 Route::post('upload_user', 'CrudeUsersController@uploadUsers');
 Route::get('process_user', 'CrudeUsersController@processUsers');
 Route::get('truncate_users', 'CrudeUsersController@truncate');
 
-
+// Crude Teacher
 Route::get('crude_teachers', 'CrudeTeachersController@index');
 Route::post('upload_teacher', 'CrudeTeachersController@uploadTeachers');
 Route::get('process_teacher', 'CrudeTeachersController@processTeachers');
 Route::get('truncate_teachers', 'CrudeTeachersController@truncate');
+
+// Crude Student
+Route::get('crude_students', 'CrudeStudentsController@index');
+Route::post('upload_student', 'CrudeStudentsController@uploadStudents');
+Route::get('process_student', 'CrudeStudentsController@processStudents');
+Route::get('truncate_students', 'CrudeStudentsController@truncate');
 
 Route::get('send_otp', 'SendSmsController@index');
 
