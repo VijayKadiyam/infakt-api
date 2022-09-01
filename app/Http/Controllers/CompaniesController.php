@@ -61,6 +61,9 @@ class CompaniesController extends Controller
       'email'   =>  'required',
       'phone'   =>  'required',
       'address' =>  'required',
+      'city' =>  'required',
+      'state' =>  'required',
+      'pincode' =>  'required',
     ]);
 
     $company = new Company(request()->all());
