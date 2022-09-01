@@ -43,7 +43,7 @@ class Company extends Model
 
   public function standards()
   {
-    return $this->hasMany(Standard::class);
+    return $this->hasMany(Standard::class)->where('is_deleted', false);
   }
 
   public function user_sections()
