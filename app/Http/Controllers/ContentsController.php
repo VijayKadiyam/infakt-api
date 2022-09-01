@@ -178,6 +178,7 @@ class ContentsController extends Controller
     {
         $content->content_subjects = $content->content_subjects;
         $content->content_medias = $content->content_medias;
+        $content->content_metadatas = $content->content_metadatas;
 
         return response()->json([
             'data'  =>  $content
