@@ -58,7 +58,7 @@ class Company extends Model
 
   public function classcodes()
   {
-    return $this->hasMany(Classcode::class)->with('section');
+    return $this->hasMany(Classcode::class)->with('section')->where('is_deleted', false);
   }
 
   public function assignments()
@@ -88,7 +88,8 @@ class Company extends Model
 
   public function user_classcodes()
   {
-    return $this->hasMany(UserClasscode::class)->with('user', 'standard', 'section', 'classcode');
+    return $this->hasMany(UserClasscode::class)->with('user', 'standard', 'section', 'classcode')
+      ->where('is_deleted', false);
   }
 
   public function assignment_extensions()

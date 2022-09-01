@@ -38,4 +38,8 @@ class Content extends Model
     {
         return $this->hasMany(Bookmark::class);
     }
+    public function content_metadatas()
+    {
+        return $this->hasMany(ContentMetadata::class);
+    }
 }
