@@ -21,13 +21,7 @@ class CompaniesController extends Controller
    */
   public function index()
   {
-    // $companies = Company::with([
-    //   'users'  => function ($query) {
-    //     $query->whereHas('roles',  function ($q) {
-    //       $q->where('name', '=', 'Admin');
-    //     });
-    //   }
-    // ])->get();
+
 
     if (request()->page && request()->rowsPerPage) {
       $companies = new Company();
@@ -39,10 +33,18 @@ class CompaniesController extends Controller
       $count = $companies->count();
       $companies = $companies->paginate(request()->rowsPerPage)->toArray();
       $companies = $companies['data'];
+    } else {
+      $companies = Company::with([
+        'users'  => function ($query) {
+          $query->whereHas('roles',  function ($q) {
+            $q->where('name', '=', 'Admin');
+          });
+        }
+      ])->get();
     }
     return response()->json([
       'data'     =>  $companies,
-      'count'    =>   $count,
+      // 'count'    =>   $count,
       'success'   =>  true,
     ], 200);
   }

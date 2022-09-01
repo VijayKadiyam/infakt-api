@@ -23,7 +23,6 @@ class ContactRequestsController extends Controller
             $contact_requests = new ContactRequest;
             if (request()->search_keyword) {
                 $contact_requests = $contact_requests
-
                     ->orwhere('name', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('email', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('interested_in', 'LIKE', '%' . request()->search_keyword . '%')
@@ -32,10 +31,11 @@ class ContactRequestsController extends Controller
                     ->orWhere('status', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('remarks', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('created_at', 'LIKE', '%' . request()->search_keyword . '%')
-                    ->where('is_deleted', false);
+                    ->where('is_deleted', false)
+                    ->latest();
             }
             $count = $contact_requests->count();
-            $contact_requests = $contact_requests->paginate(request()->rowsPerPage)->toArray();
+            $contact_requests = $contact_requests->latest()->paginate(request()->rowsPerPage)->toArray();
             $contact_requests = $contact_requests['data'];
         }
 
