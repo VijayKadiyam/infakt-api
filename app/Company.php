@@ -8,13 +8,15 @@ use PhpParser\Node\Expr\Assign;
 class Company extends Model
 {
   protected $fillable = [
-
     'name',
     'email',
     'phone',
     'address',
     'logo_path',
-    'contact_person'
+    'contact_person',
+    'city',
+    'state',
+    'pincode',
   ];
 
   /*
