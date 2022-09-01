@@ -112,7 +112,8 @@ class ContentMetadataTest extends TestCase
                     'color_class',
                     'selected_text',
                     'created_at',
-                    'updated_at'
+                    'updated_at',
+                    'annotation',
                 ]
             ]);
     }
@@ -146,7 +147,8 @@ class ContentMetadataTest extends TestCase
                     'color_class',
                     'selected_text',
                     'created_at',
-                    'updated_at'
+                    'updated_at',
+                    'annotation',
                 ]
             ]);
     }
