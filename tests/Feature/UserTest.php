@@ -24,19 +24,19 @@ class UserTest extends TestCase
     $this->headers['company-id'] = $this->company->id;
 
     $this->payload = [
-      'name'                 => 'sangeetha',
-      'phone'                => 9844778380,
-      'email'                => 'sangeetha@gmail.com',
-      'doj'               =>  '12-02-2019',
-      'dob'               =>  '04-05-1992',
+      'name'                    => 'sangeetha',
+      'phone'                   => 9844778380,
+      'email'                   => 'sangeetha@gmail.com',
+      'doj'                     => '12-02-2019',
+      'dob'                     => '04-05-1992',
       'company_designation_id'  =>  1,
-      'company_state_id'  =>  1,
-      'company_state_branch_id' => 1,
+      'company_state_id'        =>  1,
+      'company_state_branch_id' =>  1,
       'pf_no'                   =>  '1234567654',
       'uan_no'                  =>  '1234565432',
       'esi_no'                  =>  '234565',
       'role_id'                 =>  3,
-      'active'            =>  true,
+      'active'                  =>  true,
     ];
   }
 

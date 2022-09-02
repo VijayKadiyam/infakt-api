@@ -140,7 +140,12 @@ class ContactRequestTest extends TestCase
                     'remarks',
                     'is_deleted',
                     'created_at',
-                    'updated_at'
+                    'updated_at',
+                    'school_name',
+                    'role',
+                    'city',
+                    'state',
+                    'pincode',
                 ]
             ]);
     }
@@ -187,7 +192,11 @@ class ContactRequestTest extends TestCase
                     'is_deleted',
                     'created_at',
                     'updated_at',
-
+                    'school_name',
+                    'role',
+                    'city',
+                    'state',
+                    'pincode',
                 ]
             ]);
     }
