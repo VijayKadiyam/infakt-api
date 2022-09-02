@@ -16,5 +16,6 @@ class ToiArticle extends Model
         'category',
         'drophead',
         'content',
+        'word_count',
     ];
 }

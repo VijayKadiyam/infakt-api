@@ -24,6 +24,7 @@ class ToiArticlesController extends Controller
     {
         if (request()->page && request()->rowsPerPage) {
             $toi_articles = new ToiArticle;
+            $toi_articles = $toi_articles->where('word_count', '>', 100);
             if (request()->search_keyword) {
                 $toi_articles = $toi_articles->where('edition_name', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('story_date', 'LIKE', '%' . request()->search_keyword . '%')
@@ -31,6 +32,15 @@ class ToiArticlesController extends Controller
                     ->orWhere('byline', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('drophead', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('category', 'LIKE', '%' . request()->search_keyword . '%');
+            }
+            if (request()->word_count) {
+                $toi_articles = $toi_articles->where('word_count', '>', request()->word_count);
+            }
+            if (request()->date_filter) {
+                $date = date("F d Y", strtotime(request()->date_filter));
+                // return $date;
+                $toi_articles = $toi_articles->where('story_date', $date);
+                // ->Where('story_date', $date);
             }
             // return $toi_articles = $toi_articles->get();
             $count = $toi_articles->count();
@@ -133,6 +143,7 @@ class ToiArticlesController extends Controller
                     $category = is_array($content['body.head']['dateline']['category']) ? '' : $content['body.head']['dateline']['category'];
                     $drophead = is_array($content['body.head']['dateline']['drophead']) ? '' : $content['body.head']['dateline']['drophead'];
                     $content = is_array($content['body.content']['block']) ? '' : $content['body.content']['block'];
+                    $word_count = str_word_count($content);
 
                     $data = [
                         'toi_xml_id'   => request()->id,
@@ -144,6 +155,7 @@ class ToiArticlesController extends Controller
                         'byline'       => $byline,
                         'drophead'     => $drophead,
                         'content'      => $content,
+                        'word_count'      => $word_count,
                     ];
                     $toi_article = new ToiArticle($data);
                     $toi_article->save($data);
