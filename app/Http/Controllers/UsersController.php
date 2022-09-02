@@ -33,11 +33,15 @@ class UsersController extends Controller
     $classcodesController = new ClasscodesController();
     $classcodesResponse = $classcodesController->all_classcodes($request);
 
+    $boardsController = new BoardsController();
+    $boardsResponse = $boardsController->index($request);
+
     return response()->json([
       'roles'      =>  $rolesResponse->getData()->data,
       'standards'  =>  $standardsResponse->getData()->data,
       'sections'   =>  $sectionsResponse->getData()->data,
       'classcodes' =>  $classcodesResponse->getData()->data,
+      'boards' =>  $boardsResponse->getData()->data,
     ], 200);
   }
 
@@ -291,6 +295,7 @@ class UsersController extends Controller
       $user['id_given_by_school'] = $request->id_given_by_school;
       $user['joining_date'] = $request->joining_date;
       $user['gender'] = $request->gender;
+      $user['board_id'] = $request->board_id;
       $user['password'] = bcrypt('123456');
       $user = new User($user);
       $user->save();
