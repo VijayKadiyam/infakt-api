@@ -7,9 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class ContentDescription extends Model
 {
    protected $fillable = [
-    'content_id',
-    'level',
-    'title',
-    'description',
+      'content_id',
+      'level',
+      'title',
+      'description',
    ];
+   
+   public function content()
+   {
+      return $this->belongsTo(Content::class);
+   }
 }

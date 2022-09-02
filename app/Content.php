@@ -9,18 +9,24 @@ class Content extends Model
     protected $fillable = [
         'content_name',
         'content_type',
-        'written_by_id',
+        'written_by_name',
         'reading_time',
         'content_metadata',
         'easy_content',
         'med_content',
         'hard_content',
+        'grade_id',
+        'learning_outcome',
+        'for_school_type',
+        'board_id',
+        'specific_to',
+        'school_id',
     ];
 
-    public function written_by()
-    {
-        return $this->belongsTo(User::class);
-    }
+    // public function written_by()
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
 
     public function content_subjects()
     {
@@ -41,5 +47,9 @@ class Content extends Model
     public function content_metadatas()
     {
         return $this->hasMany(ContentMetadata::class);
+    }
+    public function content_descriptions()
+    {
+        return $this->hasMany(ContentDescription::class);
     }
 }

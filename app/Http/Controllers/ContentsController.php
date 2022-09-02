@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Content;
+use App\ContentDescription;
 use App\ContentMedia;
 use App\ContentSubject;
 use Illuminate\Http\Request;
@@ -26,10 +27,22 @@ class ContentsController extends Controller
         $subjectsController = new SubjectsController();
         $subjectsResponse = $subjectsController->index($request);
 
+        $gradesController = new GradesController();
+        $gradesResponse = $gradesController->index($request);
+
+        $boardsController = new BoardsController();
+        $boardsResponse = $boardsController->index($request);
+
+        $schoolsController = new CompaniesController();
+        $schoolsResponse = $schoolsController->index($request);
+
         return response()->json([
             // 'collections'           =>  $collectionsResponse->getData()->data,
-            'users'                 =>  $usersResponse->getData()->data,
-            'subjects'              =>  $subjectsResponse->getData()->data,
+            'users'     =>  $usersResponse->getData()->data,
+            'subjects'  =>  $subjectsResponse->getData()->data,
+            'grades'    =>  $gradesResponse->getData()->data,
+            'boards'    =>  $boardsResponse->getData()->data,
+            'schools'   =>  $schoolsResponse->getData()->data,
         ], 200);
     }
 
@@ -98,6 +111,13 @@ class ContentsController extends Controller
                     $content->content_medias()->save($media);
                 }
             // ---------------------------------------------------
+            // Save Content Descriptions
+            if (isset($request->content_descriptions))
+                foreach ($request->content_descriptions as $description) {
+                    $description = new ContentDescription($description);
+                    $content->content_descriptions()->save($description);
+                }
+            // ---------------------------------------------------
         } else {
             // Update Content
             $content = Content::find($request->id);
@@ -159,10 +179,39 @@ class ContentsController extends Controller
                 }
 
             // ---------------------------------------------------
+            // Check if Content Description deleted
+            if (isset($request->content_descriptions)) {
+                $contentDescriptionIdResponseArray = array_pluck($request->content_descriptions, 'id');
+            } else
+                $contentDescriptionIdResponseArray = [];
+            $contentId = $content->id;
+            $contentDescriptionIdArray = array_pluck(ContentDescription::where('content_id', '=', $contentId)->get(), 'id');
+            $differenceContentDescriptionIds = array_diff($contentDescriptionIdArray, $contentDescriptionIdResponseArray);
+            // Delete which is there in the database but not in the response
+            if ($differenceContentDescriptionIds)
+                foreach ($differenceContentDescriptionIds as $differenceContentDescriptionId) {
+                    $contentDescription = ContentDescription::find($differenceContentDescriptionId);
+                    $contentDescription->delete();
+                }
+
+            // Update Content Description
+            if (isset($request->content_descriptions))
+                foreach ($request->content_descriptions as $description) {
+                    if (!isset($description['id'])) {
+                        $content_description = new ContentDescription($description);
+                        $content->content_descriptions()->save($content_description);
+                    } else {
+                        $content_description = ContentDescription::find($description['id']);
+                        $content_description->update($description);
+                    }
+                }
+
+            // ---------------------------------------------------
         }
 
         $content->content_subjects = $content->content_subjects;
         $content->content_medias = $content->content_medias;
+        $content->content_descriptions = $content->content_descriptions;
         return response()->json([
             'data'  =>  $content
         ], 201);
@@ -179,6 +228,7 @@ class ContentsController extends Controller
         $content->content_subjects = $content->content_subjects;
         $content->content_medias = $content->content_medias;
         $content->content_metadatas = $content->content_metadatas;
+        $content->content_descriptions = $content->content_descriptions;
 
         return response()->json([
             'data'  =>  $content
