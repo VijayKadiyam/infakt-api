@@ -199,3 +199,6 @@ Route::resource('content_metadatas', 'ContentMetadatasController');
 
 // grades
 Route::resource('grades', 'GradesController');
+
+// grades
+Route::resource('content_descriptions', 'ContentDescriptionsController');
