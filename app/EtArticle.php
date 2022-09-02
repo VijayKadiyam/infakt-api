@@ -16,5 +16,6 @@ class EtArticle extends Model
         'category',
         'drophead',
         'content',
+        'word_count',
     ];
 }
