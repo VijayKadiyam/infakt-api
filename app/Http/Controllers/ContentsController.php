@@ -53,7 +53,7 @@ class ContentsController extends Controller
      */
     public function index()
     {
-        $contents = Content::with('written_by', 'content_subjects', 'content_medias', 'content_reads');
+        $contents = Content::with('content_subjects', 'content_medias', 'content_reads');
         if (request()->subject_id) {
             $contents = $contents->whereHas('content_subjects', function ($c) {
                 $c->where('subject_id', '=', request()->subject_id);
@@ -61,12 +61,7 @@ class ContentsController extends Controller
         }
         if (request()->search_keyword) {
             $contents = $contents
-                ->whereHas('written_by', function ($q) {
-                    $q->where('name', 'LIKE', '%' . request()->search_keyword . '%');
-                    $q->orwhere('first_name', 'LIKE', '%' . request()->search_keyword . '%');
-                    $q->orwhere('last_name', 'LIKE', '%' . request()->search_keyword . '%');
-                })
-                ->orwhere('content_type', 'LIKE', '%' . request()->search_keyword . '%')
+                ->where('content_type', 'LIKE', '%' . request()->search_keyword . '%')
                 ->orWhere('content_name', 'LIKE', '%' . request()->search_keyword . '%')
                 ->orWhere('created_at', 'LIKE', '%' . request()->search_keyword . '%');
         }
