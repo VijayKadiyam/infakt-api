@@ -56,7 +56,13 @@ class ContactRequestsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'  =>  'required'
+            'name'  =>  'required',
+            'email'  =>  'required',
+            'school_name'  =>  'required',
+            'role'  =>  'required',
+            'city'  =>  'required',
+            'state'  =>  'required',
+            'pincode'  =>  'required',
         ]);
 
         $contact_request = new ContactRequest(request()->all());
@@ -90,6 +96,12 @@ class ContactRequestsController extends Controller
     {
         $request->validate([
             'name'  =>  'required',
+            'email'  =>  'required',
+            'school_name'  =>  'required',
+            'role'  =>  'required',
+            'city'  =>  'required',
+            'state'  =>  'required',
+            'pincode'  =>  'required',
         ]);
 
         $contact_request->update($request->all());

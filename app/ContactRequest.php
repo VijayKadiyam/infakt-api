@@ -15,5 +15,10 @@ class ContactRequest extends Model
         'status',
         'remarks',
         'is_deleted',
+        'school_name',
+        'role',
+        'city',
+        'state',
+        'pincode',
     ];
 }
