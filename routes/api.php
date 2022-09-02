@@ -195,3 +195,6 @@ Route::resource('et_articles', 'EtArticlesController');
 
 // Content Metadata
 Route::resource('content_metadatas', 'ContentMetadatasController');
+
+// grades
+Route::resource('grades', 'GradesController');

@@ -147,4 +147,8 @@ class Company extends Model
   {
     return $this->hasMany(ContentClasscode::class);
   }
+  public function grades()
+  {
+    return $this->hasMany(Grade::class);
+  }
 }
