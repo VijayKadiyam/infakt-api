@@ -24,6 +24,7 @@ class EtArticlesController extends Controller
     {
         if (request()->page && request()->rowsPerPage) {
             $et_articles = new EtArticle();
+            $et_articles = $et_articles->where('word_count', '>', 100);
             if (request()->search_keyword) {
                 $et_articles = $et_articles->where('edition_name', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('story_date', 'LIKE', '%' . request()->search_keyword . '%')
@@ -31,6 +32,15 @@ class EtArticlesController extends Controller
                     ->orWhere('byline', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('drophead', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('category', 'LIKE', '%' . request()->search_keyword . '%');
+            }
+            if (request()->word_count) {
+                $et_articles = $et_articles->where('word_count', '>', request()->word_count);
+            }
+            if (request()->date_filter) {
+                $date = date("F d Y", strtotime(request()->date_filter));
+                // return $date;
+                $et_articles = $et_articles->where('story_date', $date);
+                // ->Where('story_date', $date);
             }
             // return $et_articles = $et_articles->get();
             $count = $et_articles->count();
@@ -130,6 +140,7 @@ class EtArticlesController extends Controller
                     $category = is_array($content['body.head']['dateline']['category']) ? '' : $content['body.head']['dateline']['category'];
                     $drophead = is_array($content['body.head']['dateline']['drophead']) ? '' : $content['body.head']['dateline']['drophead'];
                     $content = is_array($content['body.content']['block']) ? '' : $content['body.content']['block'];
+                    $word_count = str_word_count($content);
                     $data = [
                         'et_xml_id'   => request()->id,
                         'story_id'     => $story_id,
@@ -140,7 +151,9 @@ class EtArticlesController extends Controller
                         'byline'       => $byline,
                         'drophead'     => $drophead,
                         'content'      => $content,
+                        'word_count'      => $word_count,
                     ];
+                    return $data;
                     $et_article = new EtArticle($data);
                     $et_article->save($data);
                     $et_articles[] = $et_article;

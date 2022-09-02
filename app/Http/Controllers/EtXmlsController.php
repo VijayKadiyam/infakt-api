@@ -110,9 +110,7 @@ class EtXmlsController extends Controller
         $xml =  EtXml::where('id', request()->id)->first();
         if ($xml->is_process != true) {
             $path = 'https://aaibuzz-spc-1.s3.ap-south-1.amazonaws.com/' . request()->xmlpath;
-            // return $path;
             $xmlString = file_get_contents($path);
-            // return $xmlString;
             // $xmlString = file_get_contents("https://aaibuzz-spc-1.s3.ap-south-1.amazonaws.com/infakt-api/TOI-Epaper210722.xml");
             $xmlObject = simplexml_load_string($xmlString, 'SimpleXMLElement', LIBXML_NOCDATA);
 
@@ -122,7 +120,6 @@ class EtXmlsController extends Controller
             $data = [];
             foreach ($editions as $i => $edition) {
                 $edition_name = $edition["@attributes"]['EdName'];
-
                 foreach ($edition['body'] as $k => $content) {
                     $headline = is_array($content['body.head']['headline']['h1']) ? '' : $content['body.head']['headline']['h1'];
                     $story_id = $content['body.head']['dateline']['story-id'];
@@ -131,7 +128,7 @@ class EtXmlsController extends Controller
                     $category = is_array($content['body.head']['dateline']['category']) ? '' : $content['body.head']['dateline']['category'];
                     $drophead = is_array($content['body.head']['dateline']['drophead']) ? '' : $content['body.head']['dateline']['drophead'];
                     $content = is_array($content['body.content']['block']) ? '' : $content['body.content']['block'];
-
+                    $word_count = str_word_count($content);
                     $data = [
                         'et_xml_id'   => request()->id,
                         'story_id'     => $story_id,
@@ -142,25 +139,24 @@ class EtXmlsController extends Controller
                         'byline'       => $byline,
                         'drophead'     => $drophead,
                         'content'      => $content,
+                        'word_count'      => $word_count,
                     ];
-                    $toi_article = new EtArticle($data);
-                    $toi_article->save($data);
-                    $toi_articles[] = $toi_article;
+                    $et_article = new EtArticle($data);
+                    $et_article->save($data);
+                    $et_articles[] = $et_article;
                 }
             }
-            if ($toi_articles) {
+            if ($et_articles) {
                 $et_xml = EtXml::where('id', '=', request()->id)->first();
                 $et_xml->is_process = true;
                 $et_xml->update();
             }
         } else {
-            $toi_articles = 'Already Processed';
+            $et_articles = 'Already Processed';
         }
 
-
-
         return response()->json([
-            'data'  =>  $toi_articles,
+            'data'  =>  $et_articles,
         ]);
     }
 }
