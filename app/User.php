@@ -23,6 +23,7 @@ class User extends Authenticatable
     'is_deleted',
     'is_password_reseted',
     'is_mail_sent',
+    'board_id',
   ];
 
   /**
