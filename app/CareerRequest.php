@@ -13,5 +13,8 @@ class CareerRequest extends Model
         'status',
         'remarks',
         'is_deleted',
+        'phone_no',
+        'interested_in',
+        'attachment',
     ];
 }

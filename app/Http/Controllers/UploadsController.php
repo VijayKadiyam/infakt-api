@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Assignment;
+use App\CareerRequest;
 use App\ContentMedia;
 use App\EtXml;
 use Illuminate\Http\Request;
@@ -246,5 +247,35 @@ class UploadsController extends Controller
       ],
       'success' =>  true
     ]);
+  }
+
+  // Upload Function For Career Attachment
+  public function upload_career_attachment(Request $request)
+  {
+    $request->validate([
+      'id'        => 'required',
+      'attachment'        => 'required',
+    ]);
+
+    $attachment = '';
+    $careers = [];
+    if ($request->hasFile('attachment')) {
+      $file = $request->file('attachment');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();
+      $attachment = 'infakt/career-requests-attachment/' .  $request->id . '/' . $name;
+      Storage::disk('local')->put($attachment, file_get_contents($file), 'public');
+      // Storage::disk('s3')->put($attachment, file_get_contents($file), 'public');
+
+      $careers = CareerRequest::where('id', '=', request()->id)->first();
+      $careers->attachment = $attachment;
+      $careers->update();
+    }
+    return response()->json([
+      'data'  =>  $careers,
+      'attachment'  =>  $attachment,
+      'message' =>  "Career Attchament Upload Successfully",
+      'success' =>  true
+    ], 200);
   }
 }
