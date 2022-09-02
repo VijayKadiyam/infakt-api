@@ -92,6 +92,7 @@ Route::resource('contact_requests', 'ContactRequestsController');
 Route::resource('user_standards', 'UserStandardsController');
 
 // CareerRequests
+Route::post('upload_career_attachment', 'UploadsController@upload_career_attachment');
 Route::resource('career_requests', 'CareerRequestsController');
 
 // Contents
