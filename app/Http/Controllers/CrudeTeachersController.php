@@ -76,28 +76,11 @@ class CrudeTeachersController extends Controller
             }
             // send email
             if ($request->is_mail_sent == true) {
-                $config = array(
-                    'driver'     => 'smtp',
-                    'host'       => 'smtp.gmail.com',
-                    'port'       => 587,
-                    'from'       => 'demo.emailstest@gmail.com',
-                    'username'   => 'demo.emailstest@gmail.com',
-                    'password'   => 'Abeer@2021',
-                    'sendmail'   => '/usr/sbin/sendmail -bs',
-                    'encryption' => 'tls',
-                    'pretend'    => false,
-                );
-                Config::set('mail', $config);
-                // return $user;
-                Mail::to($teacher->email)->send(new RegisterMail($teacher));
-
-                // Mail::send('mails.register', $teacher, function ($message) use ($teacher) {
-                //     $message
-                //         ->from('demo.emailstest@gmail.com', 'Demo')
-                //         ->to($teacher->email);
-                // });
-                // Mail::to($teacher->email)->send(new RegisterMail($teacher));
+                Mail::to($user->email)->send(new RegisterMail($user));
+                $user->is_mail_sent = true;
+                $user->update();
             }
+            $user_id = $user->id;
             for ($i = 1; $i <= 10; $i++) {
                 $name = 'classcode_' . $i;
                 $excel_class_code = $teacher->$name;
