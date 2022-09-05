@@ -155,6 +155,8 @@ class StandardsController extends Controller
      */
     public function show(Standard $standard)
     {
+        $standard->sections = $standard->sections;
+
         return response()->json([
             'data'  =>  $standard
         ], 200);
