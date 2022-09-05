@@ -15,6 +15,7 @@ class UpdateContents2Table extends Migration
     {
         Schema::table('contents', function (Blueprint $table) {
             $table->renameColumn('hard_content', 'original_content');
+            $table->string('code')->nullable();
         });
         Schema::table('contents', function (Blueprint $table) {
             $table->string('written_by_name', 100)->nullable()->change();

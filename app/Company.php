@@ -17,6 +17,7 @@ class Company extends Model
     'city',
     'state',
     'pincode',
+    'code',
   ];
 
   /*

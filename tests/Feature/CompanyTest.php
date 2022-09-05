@@ -109,6 +109,7 @@ class CompanyTest extends TestCase
       ->assertJson([
         'data'  => [
           'name' => 'test',
+          'code'=> 'code'
         ]
       ]);
   }
@@ -118,6 +119,8 @@ class CompanyTest extends TestCase
   {
     $payload = [
       'name'  =>  'AAIBUZZZ'
+      
+      
     ];
 
     $this->json('patch', '/api/companies/2', $payload, $this->headers)
@@ -125,6 +128,7 @@ class CompanyTest extends TestCase
       ->assertJson([
         'data'    => [
           'name'  =>  'AAIBUZZZ',
+          'code'=> 'code',
         ]
       ])
       ->assertJsonStructureExact([
@@ -136,6 +140,7 @@ class CompanyTest extends TestCase
           'address',
           'logo_path',
           'contact_person',
+          'code',
           'created_at',
           'updated_at',
         ]
