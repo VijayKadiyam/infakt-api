@@ -14,7 +14,8 @@ class UpdateCompanies2Table extends Migration
     public function up()
     {
         Schema::table('companies', function (Blueprint $table) {
-            //
+            $table->string('code', 100)->nullable();
+            $table->boolean('is_mail_sent')->default(false);
         });
     }
 

@@ -30,7 +30,9 @@ class CompanyTest extends TestCase
       'phone'   =>  345765433,
       'email'   =>  'email@gmail.com',
       'address' =>  '606, Vardhaman Plaza',
-      'time_zone' =>  'Asia/Calcutta'
+      'city' =>  'city',
+      'state' =>  'state',
+      'pincode' =>  'pincode',
     ];
   }
 
@@ -48,10 +50,13 @@ class CompanyTest extends TestCase
       ->assertStatus(422)
       ->assertExactJson([
         "errors"  =>  [
-          "name"    =>  ["The name field is required."],
-          "email"   =>  ["The email field is required."],
-          "phone"   =>  ["The phone field is required."],
-          "address" =>  ["The address field is required."],
+          "name"     =>  ["The name field is required."],
+          "email"    =>  ["The email field is required."],
+          "phone"    =>  ["The phone field is required."],
+          "address"  =>  ["The address field is required."],
+          "city"     =>  ["The city field is required."],
+          "state"    =>  ["The state field is required."],
+          "pincode"  =>  ["The pincode field is required."],
         ],
         "message" =>  "The given data was invalid."
       ]);
@@ -65,7 +70,13 @@ class CompanyTest extends TestCase
       ->assertStatus(201)
       ->assertJson([
         'data'   => [
-          'name' => 'AAIBUZZ'
+          'name'    =>  'AAIBUZZ',
+          'phone'   =>  345765433,
+          'email'   =>  'email@gmail.com',
+          'address' =>  '606, Vardhaman Plaza',
+          'city' =>  'city',
+          'state' =>  'state',
+          'pincode' =>  'pincode',
         ]
       ])
       ->assertJsonStructureExact([
@@ -74,10 +85,12 @@ class CompanyTest extends TestCase
           'phone',
           'email',
           'address',
+          'city',
+          'state',
+          'pincode',
           'updated_at',
           'created_at',
           'id',
-
         ]
       ]);
     // $this->company->saveDefaultDesignations();
@@ -109,7 +122,6 @@ class CompanyTest extends TestCase
       ->assertJson([
         'data'  => [
           'name' => 'test',
-          'code'=> 'code'
         ]
       ]);
   }
@@ -118,17 +130,26 @@ class CompanyTest extends TestCase
   function update_single_company()
   {
     $payload = [
-      'name'  =>  'AAIBUZZZ'
-      
-      
+      'name'    =>  'AAIBUZZ',
+      'phone'   =>  345765433,
+      'email'   =>  'email@gmail.com',
+      'address' =>  '606, Vardhaman Plaza',
+      'city' =>  'city',
+      'state' =>  'state',
+      'pincode' =>  'pincode',
     ];
 
     $this->json('patch', '/api/companies/2', $payload, $this->headers)
       ->assertStatus(200)
       ->assertJson([
         'data'    => [
-          'name'  =>  'AAIBUZZZ',
-          'code'=> 'code',
+          'name'    =>  'AAIBUZZ',
+          'phone'   =>  345765433,
+          'email'   =>  'email@gmail.com',
+          'address' =>  '606, Vardhaman Plaza',
+          'city' =>  'city',
+          'state' =>  'state',
+          'pincode' =>  'pincode',
         ]
       ])
       ->assertJsonStructureExact([
@@ -140,9 +161,13 @@ class CompanyTest extends TestCase
           'address',
           'logo_path',
           'contact_person',
-          'code',
           'created_at',
           'updated_at',
+          'city',
+          'state',
+          'pincode',
+          'code',
+          'is_mail_sent'
         ]
       ]);
   }

@@ -44,6 +44,7 @@ Route::patch('users/{user}/uniqueID', 'UsersController@checkOrUpdateUniqueID');
 Route::post('upload_user_image', 'UploadsController@uploadUserImage');
 Route::resource('users', 'UsersController');
 
+Route::get('companies/masters', 'CompaniesController@masters');
 Route::resource('companies', 'CompaniesController');
 Route::resource('company_user', 'CompanyUserController');
 
@@ -200,8 +201,12 @@ Route::resource('content_metadatas', 'ContentMetadatasController');
 // grades
 Route::resource('grades', 'GradesController');
 
-// grades
+// Content Description
 Route::resource('content_descriptions', 'ContentDescriptionsController');
 
-// grades
+// About Us
 Route::resource('about_us', 'AboutUsController');
+
+// Company Boards
+Route::resource('company_boards', 'CompanyBoardsController');
+

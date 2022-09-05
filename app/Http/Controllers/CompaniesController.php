@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Company;
+use App\CompanyBoard;
 use App\CompanyDesignation;
 
 class CompaniesController extends Controller
@@ -14,6 +15,15 @@ class CompaniesController extends Controller
       ->except('index');
   }
 
+  public function masters(Request $request)
+  {
+    $boardsController = new BoardsController();
+    $boardsResponse = $boardsController->index($request);
+
+    return response()->json([
+      'boards' =>  $boardsResponse->getData()->data,
+    ], 200);
+  }
   /*
    * To get all companies
      *
@@ -21,14 +31,11 @@ class CompaniesController extends Controller
    */
   public function index()
   {
-
-
     if (request()->page && request()->rowsPerPage) {
       $companies = new Company();
       if (request()->search_keyword) {
         $companies = $companies
-
-          ->orwhere('name', 'LIKE', '%' . request()->search_keyword . '%')
+          ->where('name', 'LIKE', '%' . request()->search_keyword . '%')
           ->orWhere('email', 'LIKE', '%' . request()->search_keyword . '%');
       }
       $count = $companies->count();
@@ -73,9 +80,52 @@ class CompaniesController extends Controller
       'pincode' =>  'required',
     ]);
 
-    $company = new Company(request()->all());
-    $company->save();
+    if ($request->id == null || $request->id == '') {
 
+      $company = new Company(request()->all());
+      $company->save();
+
+      // Save Company Boards
+      if (isset($request->company_boards))
+        foreach ($request->company_boards as $board) {
+          $board = new CompanyBoard($board);
+          $company->company_boards()->save($board);
+        }
+      // ---------------------------------------------------
+    } else {
+      // Update Company
+      $company = Company::find($request->id);
+      $company->update($request->all());
+      // Check if Company Board deleted
+      if (isset($request->company_boards)) {
+        $companyBoardIdResponseArray = array_pluck($request->company_boards, 'id');
+      } else
+        $companyBoardIdResponseArray = [];
+      $companyId = $company->id;
+      $companyBoardIdArray = array_pluck(CompanyBoard::where('company_id', '=', $companyId)->get(), 'id');
+      $differenceCompanyBoardIds = array_diff($companyBoardIdArray, $companyBoardIdResponseArray);
+      // Delete which is there in the database but not in the response
+      if ($differenceCompanyBoardIds)
+        foreach ($differenceCompanyBoardIds as $differenceCompanyBoardId) {
+          $companyBoard = CompanyBoard::find($differenceCompanyBoardId);
+          $companyBoard->delete();
+        }
+
+      // Update Company Board
+      if (isset($request->company_boards))
+        foreach ($request->company_boards as $board) {
+          if (!isset($board['id'])) {
+            $company_board = new CompanyBoard($board);
+            $company->company_boards()->save($company_board);
+          } else {
+            $company_board = CompanyBoard::find($board['id']);
+            $company_board->update($board);
+          }
+        }
+
+      // ---------------------------------------------------
+    }
+    $company->company_boards = $company->company_boards;
     return response()->json([
       'data'    =>  $company,
     ], 201);
@@ -89,6 +139,7 @@ class CompaniesController extends Controller
   public function show(Company $company)
   {
     $company->leave_patterns = $company->leave_patterns;
+    $company->company_boards = $company->company_boards;
 
     return response()->json([
       'data'   =>  $company,
