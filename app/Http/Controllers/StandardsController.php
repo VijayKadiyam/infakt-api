@@ -56,20 +56,24 @@ class StandardsController extends Controller
             // Save Standard
             $standard = new Standard(request()->all());
             $request->company->standards()->save($standard);
+            $standardId = $standard->id;
+            $standard_name=$standard->name;
             // Save Section
             if (isset($request->sections))
                 foreach ($request->sections as $section) {
-                    // dd($section['classcodes']);
                     $store_section = new Section($section);
                     $standard->sections()->save($store_section);
-
+                    $section_name=$store_section->name;
                     // Save Classcodes
                     $class_codes = $section['classcodes'];
-                    // dd($class_codes);
                     if (isset($class_codes))
                         foreach ($class_codes as $classcode) {
+                            $classcode['standard_id'] = $standardId;
                             $class_code = new Classcode($classcode);
                             $store_section->classcodes()->save($class_code);
+
+                            $class_code['classcode'] = $standard_name . "" . $section_name . "/" . $classcode['subject_name'] . "/" . $class_code->id;
+                            $class_code->update();
                         }
                     // ---------------------------------------------------
 
@@ -79,7 +83,7 @@ class StandardsController extends Controller
             // Update Content
             $standard = Standard::find($request->id);
             $standard->update($request->all());
-
+            $standard_name = $standard->name;
             // Check if Section deleted
             if (isset($request->sections))
                 $sectionIdResponseArray = array_pluck($request->sections, 'id');
@@ -96,9 +100,7 @@ class StandardsController extends Controller
                 }
 
             // Update Section
-
             if (isset($request->sections))
-
                 foreach ($request->sections as $sec) {
                     if (!isset($sec['id'])) {
                         $section = new Section($sec);
@@ -107,9 +109,9 @@ class StandardsController extends Controller
                         $section = Section::find($sec['id']);
                         $section->update($sec);
                     }
-
+                    $section_name = $section->name;
                     // Check if Classcode deleted
-                    $classcodes = $section['classcodes'];
+                    $classcodes = $sec['classcodes'];
                     if (isset($classcodes))
                         $classcodeIdResponseArray = array_pluck($classcodes, 'id');
                     else
@@ -126,13 +128,17 @@ class StandardsController extends Controller
                     // Update Classcode
                     if (isset($classcodes))
                         foreach ($classcodes as $class_code) {
+                            $class_code['standard_id'] = $standardId;
                             if (!isset($class_code['id'])) {
+                                // return $class_code;
                                 $classcode = new Classcode($class_code);
                                 $section->classcodes()->save($classcode);
                             } else {
                                 $classcode = Classcode::find($class_code['id']);
-                                $classcode->update($class_code->toArray());
+                                $classcode->update($class_code);
                             }
+                            $classcode->classcode = $standard_name . "" . $section_name . "/" . $classcode->subject_name . "/" . $classcode->id;
+                            $classcode->update();
                         }
                 }
 
