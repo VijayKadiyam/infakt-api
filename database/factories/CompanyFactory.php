@@ -9,5 +9,6 @@ $factory->define(Company::class, function (Faker $faker) {
    'email'  =>  $faker->email,
    'phone'  =>  $faker->phoneNumber,
    'address'=>  $faker->address,
+   
   ];
 });
