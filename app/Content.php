@@ -14,7 +14,7 @@ class Content extends Model
         'content_metadata',
         'easy_content',
         'med_content',
-        'hard_content',
+        'original_content',
         'grade_id',
         'learning_outcome',
         'for_school_type',
