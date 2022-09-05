@@ -99,13 +99,13 @@ class StandardsController extends Controller
 
             if (isset($request->sections))
 
-                foreach ($request->sections as $section) {
-                    if (!isset($section['id'])) {
-                        $section = new Section($section);
+                foreach ($request->sections as $sec) {
+                    if (!isset($sec['id'])) {
+                        $section = new Section($sec);
                         $standard->sections()->save($section);
                     } else {
-                        $section = Section::find($section['id']);
-                        $section->update($section);
+                        $section = Section::find($sec['id']);
+                        $section->update($sec);
                     }
 
                     // Check if Classcode deleted
@@ -131,7 +131,7 @@ class StandardsController extends Controller
                                 $section->classcodes()->save($classcode);
                             } else {
                                 $classcode = Classcode::find($class_code['id']);
-                                $classcode->update($classcode);
+                                $classcode->update($class_code->toArray());
                             }
                         }
                 }
