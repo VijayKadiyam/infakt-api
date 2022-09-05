@@ -9,6 +9,9 @@ use App\UserClasscode;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Mail\RegisterMail;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Mail;
 
 class CrudeTeachersController extends Controller
 {
@@ -70,6 +73,30 @@ class CrudeTeachersController extends Controller
                 $user_id = $us->id;
                 $user = User::find($user_id);
                 $user->update($data);
+            }
+            // send email
+            if ($request->is_mail_sent == true) {
+                $config = array(
+                    'driver'     => 'smtp',
+                    'host'       => 'smtp.gmail.com',
+                    'port'       => 587,
+                    'from'       => 'demo.emailstest@gmail.com',
+                    'username'   => 'demo.emailstest@gmail.com',
+                    'password'   => 'Abeer@2021',
+                    'sendmail'   => '/usr/sbin/sendmail -bs',
+                    'encryption' => 'tls',
+                    'pretend'    => false,
+                );
+                Config::set('mail', $config);
+                // return $user;
+                Mail::to($teacher->email)->send(new RegisterMail($teacher));
+
+                // Mail::send('mails.register', $teacher, function ($message) use ($teacher) {
+                //     $message
+                //         ->from('demo.emailstest@gmail.com', 'Demo')
+                //         ->to($teacher->email);
+                // });
+                // Mail::to($teacher->email)->send(new RegisterMail($teacher));
             }
             for ($i = 1; $i <= 10; $i++) {
                 $name = 'classcode_' . $i;
