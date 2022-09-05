@@ -202,3 +202,6 @@ Route::resource('grades', 'GradesController');
 
 // grades
 Route::resource('content_descriptions', 'ContentDescriptionsController');
+
+// grades
+Route::resource('about_us', 'AboutUsController');
