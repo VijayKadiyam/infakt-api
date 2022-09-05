@@ -52,13 +52,21 @@ class UsersController extends Controller
    */
   public function index(Request $request)
   {
-    $users = User::where('is_deleted', false)->with('roles');
+    if (request()->company)
+      $users = request()->company->users()->where('is_deleted', false)->with('roles');
+    else
+      $users = User::where('is_deleted', false)->with('roles');
     if ($request->role_id) {
       // return $request->role_id;
       $role = Role::find($request->role_id);
-      $users = User::with('roles')->whereHas('roles', function ($q) use ($role) {
-        $q->where('name', '=', $role->name);
-      });
+      if (request()->company)
+        $users = request()->company->users()->whereHas('roles', function ($q) use ($role) {
+          $q->where('name', '=', $role->name);
+        });
+      else
+        $users = User::with('roles')->whereHas('roles', function ($q) use ($role) {
+          $q->where('name', '=', $role->name);
+        });
     }
     if ($request->standard_id) {
       $users = $users->whereHas('user_classcodes', function ($uc) {
