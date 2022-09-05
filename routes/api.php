@@ -38,6 +38,7 @@ Route::resource('permission_role', 'PermissionRoleController');
 Route::get('users/count', 'UsersController@countUsers');
 Route::get('users/masters', 'UsersController@masters');
 Route::get('users/search', 'UsersController@search');
+Route::get('users/send_mail', 'UsersController@SendMail');
 Route::get('users/excel_export', 'UsersController@excelDownload');
 Route::get('users/search_by_role', 'UsersController@searchByRole');
 Route::patch('users/{user}/uniqueID', 'UsersController@checkOrUpdateUniqueID');

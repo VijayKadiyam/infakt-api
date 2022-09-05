@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ImportBatch;
+use App\Mail\RegisterMail;
 use Illuminate\Http\Request;
 use App\User;
 use App\Role;
@@ -11,6 +12,8 @@ use App\Sku;
 use App\Stock;
 use App\UserClasscode;
 use App\Value;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Mail;
 
 class UsersController extends Controller
 {
@@ -278,6 +281,7 @@ class UsersController extends Controller
 
   public function store(Request $request)
   {
+    // return request()->is_mail_sent ? 'yes' : 'no';
     if ($request->id == null || $request->id == '') {
       $request->validate([
         'first_name'                    => ['required', 'string', 'max:255'],
@@ -315,45 +319,61 @@ class UsersController extends Controller
           $user->user_classcodes()->save($classcode);
         }
       // ---------------------------------------------------
-    } else {
-      // Update User
-      $request->validate([
-        'name'                    => ['required', 'string', 'max:255'],
-        'email'                   => ['required', 'string', 'max:255'],
-      ]);
+      // Send Regstration Emal
+      if (request()->is_mail_sent == true) {
 
-      $user = User::find($request->id);
-      $user->update($request->all());
+        $mail = Mail::to($request->email)->send(new RegisterMail($user));
+        $user->is_mail_sent = true;
+        $user->update();
+      } else {
+        // Update User
+        $request->validate([
+          'name'                    => ['required', 'string', 'max:255'],
+          'email'                   => ['required', 'string', 'max:255'],
+        ]);
 
-      // Check if User Classcode deleted
-      if (isset($request->user_classcodes)) {
-        $userClasscodeIdResponseArray = array_pluck($request->user_classcodes, 'id');
-      } else
-        $userClasscodeIdResponseArray = [];
-      $userId = $user->id;
-      $userClasscodeIdArray = array_pluck(UserClasscode::where('user_id', '=', $userId)->get(), 'id');
-      $differenceUserClasscodeIds = array_diff($userClasscodeIdArray, $userClasscodeIdResponseArray);
-      // Delete which is there in the database but not in the response
-      if ($differenceUserClasscodeIds)
-        foreach ($differenceUserClasscodeIds as $differenceUserClasscodeId) {
-          $userClasscode = UserClasscode::find($differenceUserClasscodeId);
-          $userClasscode->delete();
-        }
+        $user = User::find($request->id);
+        $user->update($request->all());
 
-      // Update User Classcode
-      if (isset($request->user_classcodes))
-        foreach ($request->user_classcodes as $classcode) {
-          if (!isset($classcode['id'])) {
-            $user_classcode = new UserClasscode($classcode);
-            $user->user_classcodes()->save($user_classcode);
-          } else {
-            $user_classcode = UserClasscode::find($classcode['id']);
-            $user_classcode->update($classcode);
+        // Check if User Classcode deleted
+        if (isset($request->user_classcodes)) {
+          $userClasscodeIdResponseArray = array_pluck($request->user_classcodes, 'id');
+        } else
+          $userClasscodeIdResponseArray = [];
+        $userId = $user->id;
+        $userClasscodeIdArray = array_pluck(UserClasscode::where('user_id', '=', $userId)->get(), 'id');
+        $differenceUserClasscodeIds = array_diff($userClasscodeIdArray, $userClasscodeIdResponseArray);
+        // Delete which is there in the database but not in the response
+        if ($differenceUserClasscodeIds)
+          foreach ($differenceUserClasscodeIds as $differenceUserClasscodeId) {
+            $userClasscode = UserClasscode::find($differenceUserClasscodeId);
+            $userClasscode->delete();
           }
-        }
 
-      // ---------------------------------------------------
+        // Update User Classcode
+        if (isset($request->user_classcodes))
+          foreach ($request->user_classcodes as $classcode) {
+            if (!isset($classcode['id'])) {
+              $user_classcode = new UserClasscode($classcode);
+              $user->user_classcodes()->save($user_classcode);
+            } else {
+              $user_classcode = UserClasscode::find($classcode['id']);
+              $user_classcode->update($classcode);
+            }
+          }
+
+        // ---------------------------------------------------
+      }
+
+      // Mail::send('mails.register', $teacher, function ($message) use ($teacher) {
+      //     $message
+      //         ->from('demo.emailstest@gmail.com', 'Demo')
+      //         ->to($teacher->email);
+      // });
+      // Mail::to($teacher->email)->send(new RegisterMail($teacher));
     }
+
+
     $user->user_classcodes = $user->user_classcodes;
     return response()->json([
       'data'  =>  $user
@@ -387,5 +407,18 @@ class UsersController extends Controller
     return response()->json([
       'data'  =>  $count
     ], 200);
+  }
+
+  public function SendMail()
+  {
+    $user_id = request()->user_id;
+    $user = User::find($user_id);
+    $mail = Mail::to($user->email)->send(new RegisterMail($user));
+    // return $mail;
+    // if ($mail) {
+    $user->is_mail_sent = true;
+    $user->update();
+    return $user;
+    // }
   }
 }

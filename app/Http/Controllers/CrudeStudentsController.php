@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\CrudeStudent;
 use App\Imports\StudentImport;
+use App\Mail\RegisterMail;
 use App\User;
 use App\UserClasscode;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 
 class CrudeStudentsController extends Controller
@@ -71,6 +73,14 @@ class CrudeStudentsController extends Controller
                 $user = User::find($user_id);
                 $user->update($data);
             }
+
+            if ($request->is_mail_sent == true) {
+                Mail::to($user->email)->send(new RegisterMail($user));
+                $user->is_mail_sent = true;
+                $user->update();
+            }
+            $user_id = $user->id;
+
             $standard_name = $student->standard;
             $standard = $request->company->standards()->where('name', $standard_name)->first();
             $section_name = $student->section;

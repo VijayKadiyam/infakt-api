@@ -137,7 +137,7 @@ class StandardsController extends Controller
                                 $classcode = Classcode::find($class_code['id']);
                                 $classcode->update($class_code);
                             }
-                            $classcode->classcode = $standard_name . "" . $section_name . "/" . $classcode->subject_name . "/" . $classcode->id;
+                            $cptde = $standard_name . "" . $section_name . "/" . $classcode->subject_name . "/" . $classcode->id;
                             $classcode->update();
                         }
                 }
