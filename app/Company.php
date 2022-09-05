@@ -18,6 +18,7 @@ class Company extends Model
     'state',
     'pincode',
     'code',
+    'is_mail_sent'
   ];
 
   /*
@@ -151,5 +152,10 @@ class Company extends Model
   public function grades()
   {
     return $this->hasMany(Grade::class);
+  }
+
+  public function company_boards()
+  {
+    return $this->hasMany(CompanyBoard::class);
   }
 }
