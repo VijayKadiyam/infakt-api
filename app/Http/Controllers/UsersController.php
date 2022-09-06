@@ -303,6 +303,7 @@ class UsersController extends Controller
       $user['name'] =  $request->first_name . ' ' . $request->last_name;
       $user['email'] = $request->email;
       $user['active'] = $request->active;
+      $user['is_mail_sent'] = $request->is_mail_sent;
       $user['contact_number'] = $request->contact_number;
       $user['id_given_by_school'] = $request->id_given_by_school;
       $user['joining_date'] = $request->joining_date;
@@ -329,56 +330,46 @@ class UsersController extends Controller
       // ---------------------------------------------------
       // Send Regstration Emal
       if (request()->is_mail_sent == true) {
-
         $mail = Mail::to($request->email)->send(new RegisterMail($user));
-        $user->is_mail_sent = true;
-        $user->update();
-      } else {
-        // Update User
-        $request->validate([
-          'name'                    => ['required', 'string', 'max:255'],
-          'email'                   => ['required', 'string', 'max:255'],
-        ]);
-
-        $user = User::find($request->id);
-        $user->update($request->all());
-
-        // Check if User Classcode deleted
-        if (isset($request->user_classcodes)) {
-          $userClasscodeIdResponseArray = array_pluck($request->user_classcodes, 'id');
-        } else
-          $userClasscodeIdResponseArray = [];
-        $userId = $user->id;
-        $userClasscodeIdArray = array_pluck(UserClasscode::where('user_id', '=', $userId)->get(), 'id');
-        $differenceUserClasscodeIds = array_diff($userClasscodeIdArray, $userClasscodeIdResponseArray);
-        // Delete which is there in the database but not in the response
-        if ($differenceUserClasscodeIds)
-          foreach ($differenceUserClasscodeIds as $differenceUserClasscodeId) {
-            $userClasscode = UserClasscode::find($differenceUserClasscodeId);
-            $userClasscode->delete();
-          }
-
-        // Update User Classcode
-        if (isset($request->user_classcodes))
-          foreach ($request->user_classcodes as $classcode) {
-            if (!isset($classcode['id'])) {
-              $user_classcode = new UserClasscode($classcode);
-              $user->user_classcodes()->save($user_classcode);
-            } else {
-              $user_classcode = UserClasscode::find($classcode['id']);
-              $user_classcode->update($classcode);
-            }
-          }
-
-        // ---------------------------------------------------
       }
+    } else {
+      // Update User
+      $request->validate([
+        'name'                    => ['required', 'string', 'max:255'],
+        'email'                   => ['required', 'string', 'max:255'],
+      ]);
 
-      // Mail::send('mails.register', $teacher, function ($message) use ($teacher) {
-      //     $message
-      //         ->from('demo.emailstest@gmail.com', 'Demo')
-      //         ->to($teacher->email);
-      // });
-      // Mail::to($teacher->email)->send(new RegisterMail($teacher));
+      $user = User::find($request->id);
+      $user->update($request->all());
+
+      // Check if User Classcode deleted
+      if (isset($request->user_classcodes)) {
+        $userClasscodeIdResponseArray = array_pluck($request->user_classcodes, 'id');
+      } else
+        $userClasscodeIdResponseArray = [];
+      $userId = $user->id;
+      $userClasscodeIdArray = array_pluck(UserClasscode::where('user_id', '=', $userId)->get(), 'id');
+      $differenceUserClasscodeIds = array_diff($userClasscodeIdArray, $userClasscodeIdResponseArray);
+      // Delete which is there in the database but not in the response
+      if ($differenceUserClasscodeIds)
+        foreach ($differenceUserClasscodeIds as $differenceUserClasscodeId) {
+          $userClasscode = UserClasscode::find($differenceUserClasscodeId);
+          $userClasscode->delete();
+        }
+
+      // Update User Classcode
+      if (isset($request->user_classcodes))
+        foreach ($request->user_classcodes as $classcode) {
+          if (!isset($classcode['id'])) {
+            $user_classcode = new UserClasscode($classcode);
+            $user->user_classcodes()->save($user_classcode);
+          } else {
+            $user_classcode = UserClasscode::find($classcode['id']);
+            $user_classcode->update($classcode);
+          }
+        }
+
+      // ---------------------------------------------------
     }
 
 

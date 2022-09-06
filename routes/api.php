@@ -45,6 +45,7 @@ Route::patch('users/{user}/uniqueID', 'UsersController@checkOrUpdateUniqueID');
 Route::post('upload_user_image', 'UploadsController@uploadUserImage');
 Route::resource('users', 'UsersController');
 
+Route::get('companies/send_mail', 'CompaniesController@SendMail');
 Route::get('companies/masters', 'CompaniesController@masters');
 Route::resource('companies', 'CompaniesController');
 Route::resource('company_user', 'CompanyUserController');
