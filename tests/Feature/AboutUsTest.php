@@ -94,8 +94,8 @@ class AboutUsTest extends TestCase
     /** @test */
     function show_single_about_us()
     {
-
-        $this->json('get', "/api/about_us/1", [], $this->headers)
+        $this->disableEH();
+        $this->json('get', "/api/about_us/1", [])
             ->assertStatus(200)
             ->assertJson([
                 'data'  => [
@@ -104,8 +104,20 @@ class AboutUsTest extends TestCase
                     'info_1' => 'info_1',
                     'description' => 'description',
                 ]
+            ])
+            ->assertJsonStructureExact([
+                'data'    => [
+                    'id',
+                    'tagline',
+                    'info',
+                    'info_1',
+                    'description',
+                    'created_at',
+                    'updated_at'
+                ]
             ]);
     }
+
 
     /** @test */
     function update_single_about_us()

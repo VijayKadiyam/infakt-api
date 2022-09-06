@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\AboutUs;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AboutUsController extends Controller
 
@@ -50,8 +51,11 @@ class AboutUsController extends Controller
      *
      *@
      */
-    public function show(AboutUs $about_us)
+    public function show($id)
     {
+        $about_us = DB::table('about_uses')
+            ->where('id', $id)
+            ->first();
         return response()->json([
             'data'   =>  $about_us,
             'success' =>  true
@@ -65,7 +69,16 @@ class AboutUsController extends Controller
      */
     public function update(Request $request, AboutUs $about_us)
     {
-        $about_us->update($request->all());
+        $data = [
+            'tagline' => request()->tagline,
+            'info' => request()->info,
+            'info_1' => request()->info_1,
+            'description' => request()->description,
+        ];
+        $about_us = DB::table('about_uses')
+            ->where('id', $request->id)
+            ->update($data);
+        // $about_us->update($request->all());
 
         return response()->json([
             'data'  =>  $about_us
