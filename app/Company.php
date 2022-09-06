@@ -32,6 +32,18 @@ class Company extends Model
       ->where('active', '=', 1)
       ->with('roles', 'companies', 'user_classcodes');
   }
+  public function teachers()
+  {
+    return $this->belongsToMany(User::class)
+      ->where('active', '=', 1)
+      ->with('roles', 'companies', 'user_classcodes');
+  }
+  public function students()
+  {
+    return $this->belongsToMany(User::class)
+      ->where('active', '=', 1)
+      ->with('roles', 'companies', 'user_classcodes');
+  }
 
   public function allUsers()
   {
