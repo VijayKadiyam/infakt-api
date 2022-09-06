@@ -47,7 +47,7 @@ class CrudeTeachersController extends Controller
         $crude_teachers = CrudeTeacher::all();
         foreach ($crude_teachers as $teacher) {
             $us = User::where('email', '=', $teacher->email)
-                ->orWhere('id_given_by_school', '=', $teacher->id_given_by_school)
+                // ->orWhere('id_given_by_school', '=', $teacher->id_given_by_school)
                 ->first();
             $role_id = 3;
             $data = [
