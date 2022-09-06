@@ -49,7 +49,7 @@ class StandardsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'  =>   ['required', 'unique:standards'],
+            'name'  =>  'required',
         ]);
 
         if ($request->id == null || $request->id == '') {
