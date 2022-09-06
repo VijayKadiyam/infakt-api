@@ -25,23 +25,23 @@ class ToiArticlesController extends Controller
         if (request()->page && request()->rowsPerPage) {
             $toi_articles = new ToiArticle;
             $toi_articles = $toi_articles->where('word_count', '>', 100);
-            if (request()->search_keyword) {
-                $toi_articles = $toi_articles->where('edition_name', 'LIKE', '%' . request()->search_keyword . '%')
-                    ->orWhere('story_date', 'LIKE', '%' . request()->search_keyword . '%')
-                    ->orWhere('headline', 'LIKE', '%' . request()->search_keyword . '%')
-                    ->orWhere('byline', 'LIKE', '%' . request()->search_keyword . '%')
-                    ->orWhere('drophead', 'LIKE', '%' . request()->search_keyword . '%')
-                    ->orWhere('category', 'LIKE', '%' . request()->search_keyword . '%');
-            }
-            if (request()->word_count) {
-                $toi_articles = $toi_articles->where('word_count', '>', request()->word_count);
-            }
-            if (request()->date_filter) {
-                $date = date("F d Y", strtotime(request()->date_filter));
-                // return $date;
-                $toi_articles = $toi_articles->where('story_date', $date);
-                // ->Where('story_date', $date);
-            }
+            // if (request()->search_keyword) {
+            //     $toi_articles = $toi_articles->where('edition_name', 'LIKE', '%' . request()->search_keyword . '%')
+            //         ->orWhere('story_date', 'LIKE', '%' . request()->search_keyword . '%')
+            //         ->orWhere('headline', 'LIKE', '%' . request()->search_keyword . '%')
+            //         ->orWhere('byline', 'LIKE', '%' . request()->search_keyword . '%')
+            //         ->orWhere('drophead', 'LIKE', '%' . request()->search_keyword . '%')
+            //         ->orWhere('category', 'LIKE', '%' . request()->search_keyword . '%');
+            // }
+            // if (request()->word_count) {
+            //     $toi_articles = $toi_articles->where('word_count', '>', request()->word_count);
+            // }
+            // if (request()->date_filter) {
+            //     $date = date("F d Y", strtotime(request()->date_filter));
+            //     // return $date;
+            //     $toi_articles = $toi_articles->where('story_date', $date);
+            //     // ->Where('story_date', $date);
+            // }
             // return $toi_articles = $toi_articles->get();
             $count = $toi_articles->count();
             $toi_articles = $toi_articles->paginate(request()->rowsPerPage)->toArray();
