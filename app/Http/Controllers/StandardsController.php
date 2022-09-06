@@ -177,7 +177,7 @@ class StandardsController extends Controller
     public function update(Request $request, Standard $standard)
     {
         $request->validate([
-            'name'  =>   ['required', 'unique:standards'],
+            'name'  =>   'required',
         ]);
 
         $standard->update($request->all());
