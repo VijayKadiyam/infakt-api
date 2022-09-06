@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Company;
 use App\CompanyBoard;
 use App\CompanyDesignation;
+use App\Mail\RegisterMail;
+use Illuminate\Support\Facades\Mail;
 
 class CompaniesController extends Controller
 {
@@ -92,6 +94,13 @@ class CompaniesController extends Controller
           $company->company_boards()->save($board);
         }
       // ---------------------------------------------------
+      // Send Regstration Emal
+      if (request()->is_mail_sent == true) {
+
+        $mail = Mail::to($request->email)->send(new RegisterMail($company));
+        $company->is_mail_sent = true;
+        $company->update();
+      }
     } else {
       // Update Company
       $company = Company::find($request->id);
@@ -169,5 +178,18 @@ class CompaniesController extends Controller
     return response()->json([
       'data'  =>  $company
     ], 200);
+  }
+
+  public function SendMail()
+  {
+    $school_id = request()->school_id;
+    $school = Company::find($school_id);
+    $mail = Mail::to($school->email)->send(new RegisterMail($school));
+    // return $mail;
+    // if ($mail) {
+    $school->is_mail_sent = true;
+    $school->update();
+    return $school;
+    // }
   }
 }
