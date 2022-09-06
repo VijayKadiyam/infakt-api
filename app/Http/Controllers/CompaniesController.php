@@ -7,6 +7,7 @@ use App\Company;
 use App\CompanyBoard;
 use App\CompanyDesignation;
 use App\Mail\RegisterMail;
+use App\User;
 use Illuminate\Support\Facades\Mail;
 
 class CompaniesController extends Controller
@@ -101,6 +102,22 @@ class CompaniesController extends Controller
         $company->is_mail_sent = true;
         $company->update();
       }
+
+      // Create Admin
+
+      $user['first_name'] = $request->name;
+      $user['last_name'] = "Admin";
+      $user['name'] =  $request->first_name . 'Admin';
+      $user['email'] = $request->email;
+      $user['active'] = true;
+      $user['password'] = bcrypt('123456');
+      $user = new User($user);
+      $user->save();
+
+      $user->assignRole(2);
+      $user->roles = $user->roles;
+      $user->assignCompany($company->id);
+      $user->companies = $user->companies;
     } else {
       // Update Company
       $company = Company::find($request->id);

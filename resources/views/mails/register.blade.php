@@ -2,8 +2,7 @@
 <html>
 
 <head>
-    <title>Registeration</title>
-
+    <title>Registration</title>
 </head>
 
 <body style="padding: 20px;">
