@@ -49,7 +49,7 @@ class StandardsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'  =>  'required',
+            'name'  =>   ['required', 'unique:standards'],
         ]);
 
         if ($request->id == null || $request->id == '') {
@@ -57,13 +57,13 @@ class StandardsController extends Controller
             $standard = new Standard(request()->all());
             $request->company->standards()->save($standard);
             $standardId = $standard->id;
-            $standard_name=$standard->name;
+            $standard_name = $standard->name;
             // Save Section
             if (isset($request->sections))
                 foreach ($request->sections as $section) {
                     $store_section = new Section($section);
                     $standard->sections()->save($store_section);
-                    $section_name=$store_section->name;
+                    $section_name = $store_section->name;
                     // Save Classcodes
                     $class_codes = $section['classcodes'];
                     if (isset($class_codes))
@@ -177,7 +177,7 @@ class StandardsController extends Controller
     public function update(Request $request, Standard $standard)
     {
         $request->validate([
-            'name'  =>  'required',
+            'name'  =>   ['required', 'unique:standards'],
         ]);
 
         $standard->update($request->all());
