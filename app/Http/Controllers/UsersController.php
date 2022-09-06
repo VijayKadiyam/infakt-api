@@ -303,6 +303,7 @@ class UsersController extends Controller
       $user['name'] =  $request->first_name . ' ' . $request->last_name;
       $user['email'] = $request->email;
       $user['active'] = $request->active;
+      $user['is_mail_sent'] = $request->is_mail_sent;
       $user['contact_number'] = $request->contact_number;
       $user['id_given_by_school'] = $request->id_given_by_school;
       $user['joining_date'] = $request->joining_date;
@@ -329,10 +330,7 @@ class UsersController extends Controller
       // ---------------------------------------------------
       // Send Regstration Emal
       if (request()->is_mail_sent == true) {
-
         $mail = Mail::to($request->email)->send(new RegisterMail($user));
-        $user->is_mail_sent = true;
-        $user->update();
       }
     } else {
       // Update User
