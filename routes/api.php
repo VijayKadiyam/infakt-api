@@ -173,6 +173,7 @@ Route::resource('collection_contents', 'CollectionContentsController');
 Route::resource('content_reads', 'ContentReadsController');
 
 // Dashboards
+Route::get('masters', 'DashboardsController@masters');
 Route::get('adminDashboard', 'DashboardsController@adminDashboard');
 Route::get('teacherDashboard', 'DashboardsController@teacherDashboard');
 Route::get('studentDashboard', 'DashboardsController@studentDashboard');
