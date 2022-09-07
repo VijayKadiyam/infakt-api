@@ -29,19 +29,19 @@ class Company extends Model
   public function users()
   {
     return $this->belongsToMany(User::class)
-      ->where('active', '=', 1)
+      ->where('is_deleted', false)
       ->with('roles', 'companies', 'user_classcodes');
   }
   public function teachers()
   {
     return $this->belongsToMany(User::class)
-      ->where('active', '=', 1)
+      ->where('is_deleted', false)
       ->with('roles', 'companies', 'user_classcodes');
   }
   public function students()
   {
     return $this->belongsToMany(User::class)
-      ->where('active', '=', 1)
+      ->where('is_deleted', false)
       ->with('roles', 'companies', 'user_classcodes');
   }
 

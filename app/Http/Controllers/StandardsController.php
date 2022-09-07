@@ -61,6 +61,8 @@ class StandardsController extends Controller
             // Save Section
             if (isset($request->sections))
                 foreach ($request->sections as $section) {
+                    $section['company_id'] = $standard->company_id;
+
                     $store_section = new Section($section);
                     $standard->sections()->save($store_section);
                     $section_name = $store_section->name;
@@ -68,6 +70,7 @@ class StandardsController extends Controller
                     $class_codes = $section['classcodes'];
                     if (isset($class_codes))
                         foreach ($class_codes as $classcode) {
+                            $classcode['company_id'] = $standard->company_id;
                             $classcode['standard_id'] = $standardId;
                             $class_code = new Classcode($classcode);
                             $store_section->classcodes()->save($class_code);
@@ -102,6 +105,7 @@ class StandardsController extends Controller
             // Update Section
             if (isset($request->sections))
                 foreach ($request->sections as $sec) {
+                    $sec['company_id'] = $standard->company_id;
                     if (!isset($sec['id'])) {
                         $section = new Section($sec);
                         $standard->sections()->save($section);
@@ -129,6 +133,7 @@ class StandardsController extends Controller
                     if (isset($classcodes))
                         foreach ($classcodes as $class_code) {
                             $class_code['standard_id'] = $standardId;
+                            $class_code['company_id'] = $standard->company_id;
                             if (!isset($class_code['id'])) {
                                 // return $class_code;
                                 $classcode = new Classcode($class_code);

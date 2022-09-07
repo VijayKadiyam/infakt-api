@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Section extends Model
 {
     protected $fillable = [
+        'company_id',
         'name',
         'standard_id',
         'is_active',

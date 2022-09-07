@@ -39,10 +39,7 @@ class ClasscodesController extends Controller
     public function all_classcodes()
     {
         $classcodes = [];
-        if (request()->company) {
-            $classcodes = request()->company->classcodes()
-                ->where('is_deleted', false)->get();
-        }
+        $classcodes = request()->company->classcodes;
         return response()->json([
             'data'  =>  $classcodes,
             'count' =>   sizeof($classcodes),
