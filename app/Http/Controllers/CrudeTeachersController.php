@@ -57,7 +57,7 @@ class CrudeTeachersController extends Controller
                 'contact_number'     =>  $teacher->contact_number,
                 'joining_date'     =>  $teacher->joining_date,
                 'gender'             =>  $teacher->gender == 'MALE' ? 1 : 0,
-                'active'             =>  $teacher->active == 'YES' ? 1 : 0,
+                'active'             =>  $teacher->active,
             ];
             if (!$us) {
                 // New Teacher
