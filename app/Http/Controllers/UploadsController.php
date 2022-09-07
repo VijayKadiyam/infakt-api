@@ -264,8 +264,8 @@ class UploadsController extends Controller
       $name = $request->filename ?? 'photo.';
       $name = $name . $file->getClientOriginalExtension();
       $attachment = 'infakt/career-requests-attachment/' .  $request->id . '/' . $name;
-      Storage::disk('local')->put($attachment, file_get_contents($file), 'public');
-      // Storage::disk('s3')->put($attachment, file_get_contents($file), 'public');
+      // Storage::disk('local')->put($attachment, file_get_contents($file), 'public');
+      Storage::disk('s3')->put($attachment, file_get_contents($file), 'public');
 
       $careers = CareerRequest::where('id', '=', request()->id)->first();
       $careers->attachment = $attachment;
