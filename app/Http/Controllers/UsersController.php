@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ImportBatch;
-use App\Mail\RegisterMail;
+use App\Mail\RegistrationMail;
 use Illuminate\Http\Request;
 use App\User;
 use App\Role;
@@ -341,7 +341,7 @@ class UsersController extends Controller
       // ---------------------------------------------------
       // Send Regstration Emal
       if (request()->is_mail_sent == true) {
-        $mail = Mail::to($request->email)->send(new RegisterMail($user));
+        $mail = Mail::to($request->email)->send(new RegistrationMail($user));
       }
     } else {
       // Update User
@@ -423,7 +423,7 @@ class UsersController extends Controller
   {
     $user_id = request()->user_id;
     $user = User::find($user_id);
-    $mail = Mail::to($user->email)->send(new RegisterMail($user));
+    $mail = Mail::to($user->email)->send(new RegistrationMail($user));
     // return $mail;
     // if ($mail) {
     $user->is_mail_sent = true;
@@ -439,7 +439,7 @@ class UsersController extends Controller
       $q->where('name', '=', $role->name);
     })->get();
     foreach ($users as $key => $user) {
-      $mail = Mail::to($user->email)->send(new RegisterMail($user));
+      $mail = Mail::to($user->email)->send(new RegistrationMail($user));
       $user->is_mail_sent = true;
       $user->update();
     }

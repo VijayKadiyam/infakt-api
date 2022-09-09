@@ -9,16 +9,27 @@
     <div align="center">
         <h1>
             <b>
-                Welcome &nbsp; {{ $user->full_name ? $user->full_name: $user->name}},
+                Welcome {{ $user->full_name ? $user->full_name: $user->name}},
             </b>
         </h1>
     </div>
-    To,
-    <br>
-    <h1>Infakt,</h1>
-    <br>
-    340 JJ road, Warden house, Byculla,
-    Mumbai 400008.
+
+    <p>
+        Hello <b>{{ $user->full_name ? $user->full_name: $user->name}}</b>,
+        <br>
+        Thank you for joining INFAKT.
+        <br>
+        We’d like to confirm that your account was created successfully. To access [customer portal] click the link below.
+        <br>
+        [Link/Button]
+        <br>
+        <br>
+        If you experience any issues logging into your account, reach out to us at [email address].
+        <br>
+        Best,
+        <br>
+        The INFAKT team
+    </p>
 
 </body>
 

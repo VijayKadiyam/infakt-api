@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Company;
 use App\CompanyBoard;
 use App\CompanyDesignation;
-use App\Mail\RegisterMail;
+use App\Mail\RegistrationMail;
 use App\User;
 use Illuminate\Support\Facades\Mail;
 
@@ -108,7 +108,7 @@ class CompaniesController extends Controller
       // Send Regstration Emal
       if (request()->is_mail_sent == true) {
 
-        $mail = Mail::to($request->email)->send(new RegisterMail($company));
+        $mail = Mail::to($request->email)->send(new RegistrationMail($company));
         $company->is_mail_sent = true;
         $company->update();
       }
@@ -211,7 +211,7 @@ class CompaniesController extends Controller
   {
     $school_id = request()->school_id;
     $school = Company::find($school_id);
-    $mail = Mail::to($school->email)->send(new RegisterMail($school));
+    $mail = Mail::to($school->email)->send(new RegistrationMail($school));
     // return $mail;
     // if ($mail) {
     $school->is_mail_sent = true;

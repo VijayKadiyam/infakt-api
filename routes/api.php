@@ -214,3 +214,8 @@ Route::resource('about_us', 'AboutUsController');
 // Company Boards
 Route::resource('company_boards', 'CompanyBoardsController');
 
+// toi_xml_imap
+Route::get('toi_xmls/emails', 'ToiXmlsController@toi_xml_imap');
+
+// et_xml_imap
+Route::get('et_xmls/emails', 'EtXmlsController@et_xml_imap');

@@ -9,7 +9,7 @@ use App\UserClasscode;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Mail\RegisterMail;
+use App\Mail\RegistrationMail;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
 
@@ -76,7 +76,7 @@ class CrudeTeachersController extends Controller
             }
             // send email
             if ($request->is_mail_sent == true) {
-                Mail::to($user->email)->send(new RegisterMail($user));
+                Mail::to($user->email)->send(new RegistrationMail($user));
                 $user->is_mail_sent = true;
                 $user->update();
             }
