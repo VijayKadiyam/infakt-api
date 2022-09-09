@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\CrudeStudent;
 use App\Imports\StudentImport;
-use App\Mail\RegisterMail;
+use App\Mail\RegistrationMail;
 use App\User;
 use App\UserClasscode;
 use Carbon\Carbon;
@@ -75,7 +75,7 @@ class CrudeStudentsController extends Controller
             }
 
             if ($request->is_mail_sent == true) {
-                Mail::to($user->email)->send(new RegisterMail($user));
+                Mail::to($user->email)->send(new RegistrationMail($user));
                 $user->is_mail_sent = true;
                 $user->update();
             }

@@ -8,6 +8,7 @@ class ToiXml extends Model
 {
     protected $fillable = [
         'xmlpath',
-        'is_process'
+        'is_process',
+        'message_id',
     ];
 }

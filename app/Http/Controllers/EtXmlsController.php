@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\EtArticle;
 use App\EtXml;
 use Illuminate\Http\Request;
+use Webklex\IMAP\Facades\Client;
+use Illuminate\Support\Facades\Storage;
 
 class EtXmlsController extends Controller
 {
@@ -158,5 +160,71 @@ class EtXmlsController extends Controller
         return response()->json([
             'data'  =>  $et_articles,
         ]);
+    }
+
+    public function et_xml_imap()
+    {
+        // return 1;
+        ini_set('max_execution_time', 0);
+        ini_set("memory_limit", "-1");
+
+        set_time_limit(0);
+        /** @var \Webklex\PHPIMAP\Client $client */
+        $client = Client::account('default');
+
+        //Connect to the IMAP Server
+        $client->connect();
+
+
+        //Get all Mailboxes
+        /** @var \Webklex\PHPIMAP\Support\FolderCollection $folders */
+        $folders = $client->getFolders();
+        // $previous_date = Carbon::now();
+        // day -1
+        // $previous_date = Carbon::now()->subDays(1);
+        // return $previous_date;
+        //Loop through every Mailbox
+        /** @var \Webklex\PHPIMAP\Folder $folder */
+        // return $folders;
+        foreach ($folders as $folder) {
+            // return $folder;
+
+            //Get all Messages of the current Mailbox $folder
+            /** @var \Webklex\PHPIMAP\Support\MessageCollection $messages */
+            $messages = $folder->messages()->get();
+            // return $messages;
+            // $messages = $folder->messages()->since($previous_date)->get();
+            // dd($messages);
+            /** @var \Webklex\PHPIMAP\Message $message */
+            foreach ($messages as $message) {
+                // return $message;
+                $message->getAttachments()->each(function ($oAttachment) use ($message) {
+                    // echo $message;
+                    // return $message->getMessageId();
+                    // if ($message->getSubject() == "ET XML") {
+                    $check_email_existing = EtXml::where('message_id', $message->getMessageId())
+                        ->first();
+                    // return $check_email_existing;
+                    if (!$check_email_existing) {
+                        // return 1;
+                        $path = 'infakt/et-xmls/' . $message->getMessageId() . '/' . $oAttachment->name;
+                        Storage::disk('s3')->put($path, $oAttachment->content, 'public');
+
+                        $data = [
+                            // 'subject' => $message->getSubject(),
+                            // 'body' => $message->getHTMLBody(),
+                            'xmlpath' => $path,
+                            'message_id' => $message->getMessageId(),
+
+                        ];
+                        // return $data;
+                        // dd($data);
+
+                        $et_xml = new EtXml($data);
+                        $et_xml->save();
+                    }
+                });
+            }
+        }
     }
 }
