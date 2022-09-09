@@ -23,11 +23,20 @@ class StudentImport implements ToModel, WithHeadingRow
             'email' =>  $row['Email'],
             'contact_number' =>  $row['Contact Number'],
             'gender' =>  $row['Gender'],
-            'active' =>  $row['is Active'],
-            'joining_date' =>  \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['Joining Date'])->format('Y-m-d'),
+            'active' =>  "YES",
+            // 'joining_date' =>  \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['Joining Date'])->format('Y-m-d'),
             'standard' =>  $row['Standard'],
             'section' =>  $row['Section'],
-
+            'optional_classcode_1' =>  $row['Optional Classcode 1'],
+            'optional_classcode_2' =>  $row['Optional Classcode 2'],
+            'optional_classcode_3' =>  $row['Optional Classcode 3'],
+            'optional_classcode_4' =>  $row['Optional Classcode 4'],
+            'optional_classcode_5' =>  $row['Optional Classcode 5'],
+            'optional_classcode_6' =>  $row['Optional Classcode 6'],
+            'optional_classcode_7' =>  $row['Optional Classcode 7'],
+            'optional_classcode_8' =>  $row['Optional Classcode 8'],
+            'optional_classcode_9' =>  $row['Optional Classcode 9'],
+            'optional_classcode_10' =>  $row['Optional Classcode 10'],
         ];
 
         return new CrudeStudent($data);

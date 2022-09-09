@@ -291,12 +291,23 @@ class UsersController extends Controller
   {
     // return request()->is_mail_sent ? 'yes' : 'no';
     if ($request->id == null || $request->id == '') {
-      $request->validate([
-        'first_name'                    => ['required', 'string', 'max:255'],
-        'last_name'                    => ['required', 'string', 'max:255'],
-        'email'                   => ['required', 'string', 'max:255', 'unique:users'],
-        'role_id'                 =>  'required',
-      ]);
+      if ($request->role_id == '5') {
+        // Student
+        $request->validate([
+          'first_name' => ['required', 'string', 'max:255'],
+          'last_name'  => ['required', 'string', 'max:255'],
+          'email'      => ['required', 'string', 'max:255', 'unique:users'],
+          'role_id'    =>  'required',
+          'board_id'   => 'required',
+        ]);
+      } else {
+        $request->validate([
+          'first_name' => ['required', 'string', 'max:255'],
+          'last_name'  => ['required', 'string', 'max:255'],
+          'email'      => ['required', 'string', 'max:255', 'unique:users'],
+          'role_id'    =>  'required',
+        ]);
+      }
       // Save User
       $user['first_name'] = $request->first_name;
       $user['last_name'] = $request->last_name;
@@ -418,6 +429,23 @@ class UsersController extends Controller
     $user->is_mail_sent = true;
     $user->update();
     return $user;
+    // }
+  }
+  public function SendMailAll()
+  {
+    $users = request()->company->users()->where('is_deleted', false)->where('is_mail_sent', false)->with('roles');
+    $role = Role::find(request()->role_id);
+    $users = request()->company->users()->whereHas('roles', function ($q) use ($role) {
+      $q->where('name', '=', $role->name);
+    })->get();
+    foreach ($users as $key => $user) {
+      $mail = Mail::to($user->email)->send(new RegisterMail($user));
+      $user->is_mail_sent = true;
+      $user->update();
+    }
+    // return $mail;
+    // if ($mail) {
+    return $users;
     // }
   }
 }

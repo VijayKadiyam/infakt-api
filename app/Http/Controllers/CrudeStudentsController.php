@@ -54,7 +54,7 @@ class CrudeStudentsController extends Controller
                 'first_name'         =>  $student->first_name,
                 'last_name'          =>  $student->last_name,
                 'contact_number'     =>  $student->contact_number,
-                'joining_date'       =>  $student->joining_date,
+                // 'joining_date'       =>  $student->joining_date,
                 'gender'             =>  $student->gender == 'MALE' ? 1 : 0,
                 'active'             =>  $student->active == 'YES' ? 1 : 0,
             ];
@@ -81,11 +81,12 @@ class CrudeStudentsController extends Controller
             }
             $user_id = $user->id;
 
+            // Manditory Classcode 
             $standard_name = $student->standard;
             $standard = $request->company->standards()->where('name', $standard_name)->first();
             $section_name = $student->section;
             $section = $standard->sections()->where('is_deleted', false)->where('name', $section_name)->first();
-            $classcodes = $request->company->classcodes()->where('standard_id', $standard->id)->where('section_id', $section->id)->get();
+            $classcodes = $request->company->classcodes()->where('standard_id', $standard->id)->where('section_id', $section->id)->where('is_optional', false)->get();
             if ($classcodes) {
                 foreach ($classcodes as $key => $classcode) {
                     $UserClasscode = $request->company->user_classcodes()->where('classcode_id', $classcode->id)->where('user_id', $user_id)->first();
@@ -101,6 +102,31 @@ class CrudeStudentsController extends Controller
                         ];
                         $user_classcodes = new UserClasscode($user_classcode);
                         $request->company->user_classcodes()->save($user_classcodes);
+                    }
+                }
+            }
+
+            // Optional Classcode if Entered
+            for ($i = 1; $i <= 10; $i++) {
+                $name = 'optional_classcode_' . $i;
+                $excel_class_code = $student->$name;
+                if ($excel_class_code) {
+                    $optional_classcode = $request->company->classcodes()->where('classcode', $excel_class_code)->first();
+                    if ($optional_classcode) {
+                        $UserClasscode = $request->company->user_classcodes()->where('classcode_id', $optional_classcode->id)->where('user_id', $user_id)->first();
+                        if (!$UserClasscode) {
+                            // No Previously Existing User Classcode 
+                            $user_classcode = [
+                                'user_id' => $user_id,
+                                'classcode_id' => $optional_classcode->id,
+                                'standard_id' => $optional_classcode->standard_id,
+                                'section_id' => $optional_classcode->section_id,
+                                'start_date' => Carbon::now()->format('Y-m-d'),
+                                'end_date' => Carbon::now()->format('Y-m-d'),
+                            ];
+                            $user_classcodes = new UserClasscode($user_classcode);
+                            $request->company->user_classcodes()->save($user_classcodes);
+                        }
                     }
                 }
             }
