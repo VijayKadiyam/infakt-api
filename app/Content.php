@@ -21,6 +21,7 @@ class Content extends Model
         'board_id',
         'specific_to',
         'school_id',
+        'info_board_id',
     ];
 
     // public function written_by()
