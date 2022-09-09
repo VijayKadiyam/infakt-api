@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Classcode;
+use App\Role;
 use App\Section;
 use App\Standard;
 use Illuminate\Http\Request;
@@ -28,9 +29,33 @@ class StandardsController extends Controller
             if (request()->standard_id) {
                 $standards = $standards->where('id', request()->standard_id);
             }
-            $standards = $standards->get();
-        }
 
+
+            $teacher_count = 0;
+            $student_count = 0;
+            $standards = $standards->get();
+
+            foreach ($standards as $key => $standard) {
+                $teachers = request()->company->user_classcodes()->with('user')->whereHas('user', function ($q) {
+                    $q->with('roles')->whereHas('roles', function ($r) {
+                        $r->where('roles.id', 3);
+                    });
+                })->where('standard_id', $standard->id)->get();
+                $teacher_count = $teachers->count();
+                $standards[$key]['teacher_count'] = $teacher_count;
+
+                $students = request()->company->user_classcodes()->with('user')->whereHas('user', function ($q) {
+                    $q->with('roles')->whereHas('roles', function ($r) {
+                        $r->where('roles.id', 5);
+                    });
+                })->where('standard_id', $standard->id)->get();
+
+                $student_count = $students->count();
+
+
+                $standards[$key]['student_count'] = $student_count;
+            }
+        }
 
         return response()->json([
             'data'  =>  $standards,

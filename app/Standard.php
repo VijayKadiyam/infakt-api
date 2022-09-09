@@ -26,4 +26,8 @@ class Standard extends Model
     {
         return $this->hasMany(Classcode::class);
     }
+    public function user_classcoedes()
+    {
+        return $this->hasMany(UserClasscode::class)->with('user');
+    }
 }

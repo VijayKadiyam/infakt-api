@@ -23,7 +23,7 @@ class UserClasscode extends Model
     }
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->with('roles');
     }
     public function classcode()
     {
@@ -36,5 +36,24 @@ class UserClasscode extends Model
     public function section()
     {
         return $this->belongsTo(Section::class);
+    }
+
+    public function teachers()
+    {
+        return $this->belongsToMany(User::class)
+            ->where('is_deleted', false)
+            ->with('roles');
+        // ->whereHas('roles', function ($q) {
+        //     $q->where('id', 3);
+        // });
+    }
+    public function students()
+    {
+        return $this->belongsToMany(User::class)
+            ->where('is_deleted', false)
+            ->with('roles');
+        // ->whereHas('roles', function ($q) {
+        //     $q->where('id', 5);
+        // });
     }
 }
