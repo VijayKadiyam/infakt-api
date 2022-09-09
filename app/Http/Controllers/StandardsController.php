@@ -40,7 +40,7 @@ class StandardsController extends Controller
                     $q->with('roles')->whereHas('roles', function ($r) {
                         $r->where('roles.id', 3);
                     });
-                })->where('standard_id', $standard->id)->get();
+                })->where('standard_id', $standard->id)->groupby('user_classcodes.user_id')->get();
                 $teacher_count = $teachers->count();
                 $standards[$key]['teacher_count'] = $teacher_count;
 
@@ -48,7 +48,7 @@ class StandardsController extends Controller
                     $q->with('roles')->whereHas('roles', function ($r) {
                         $r->where('roles.id', 5);
                     });
-                })->where('standard_id', $standard->id)->get();
+                })->where('standard_id', $standard->id)->groupby('user_classcodes.user_id')->get();
 
                 $student_count = $students->count();
 
@@ -167,7 +167,7 @@ class StandardsController extends Controller
                                 $classcode = Classcode::find($class_code['id']);
                                 $classcode->update($class_code);
                             }
-                            $cptde = $standard_name . "" . $section_name . "/" . $classcode->subject_name . "/" . $classcode->id;
+                            $classcode['classcode'] = $standard_name . "" . $section_name . "/" . $classcode->subject_name . "/" . $classcode->id;
                             $classcode->update();
                         }
                 }

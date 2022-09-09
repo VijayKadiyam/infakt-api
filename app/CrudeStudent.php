@@ -19,5 +19,15 @@ class CrudeStudent extends Model
         'joining_date',
         'standard',
         'section',
+        "optional_classcode_1",
+        "optional_classcode_2",
+        "optional_classcode_3",
+        "optional_classcode_4",
+        "optional_classcode_5",
+        "optional_classcode_6",
+        "optional_classcode_7",
+        "optional_classcode_8",
+        "optional_classcode_9",
+        "optional_classcode_10",
     ];
 }
