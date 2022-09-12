@@ -66,12 +66,13 @@ class DashboardsController extends Controller
         $data = [
             'schoolsCount'  =>  $schoolsCount,
             'studentsCount'  =>  $studentsCount,
+            'paidStudentsCount'  =>  $studentsCount,
+            'freeStudentsCount'  =>  0,
             'teachersCount'  =>  $teachersCount,
             'contentsCount'   =>  $contentsCount,
             'toi_papersCount'   =>  $toi_papersCount,
             'et_papersCount'   =>  $et_papersCount,
-            'contactRequestsCount'   =>  $contactRequestsCount,
-            'careerRequestsCount'   =>  $careerRequestsCount,
+            'RequestsCount'   =>  $contactRequestsCount + $careerRequestsCount,
         ];
         return response()->json([
             'data'  =>  $data
@@ -167,6 +168,7 @@ class DashboardsController extends Controller
             'data'  =>  $data
         ], 200);
     }
+
     public function SchoolWiseOverview()
     {
         $month = request()->month;
@@ -200,6 +202,58 @@ class DashboardsController extends Controller
             'teachersCount'  =>  $teachersCount,
             'L3M_Assignment_contents_count'  =>  $L3M_Assignment_contents_count,
             'assignments_count'  =>  $assignments_count,
+        ];
+        return response()->json([
+            'data'  =>  $data
+        ], 200);
+    }
+
+    public function ClasscodeWiseOverview()
+    {
+        $type = request()->type;
+        $month = request()->month;
+        $year = request()->year;
+
+        if (request()->company) {
+            $teachersCount = request()->company->allUsers()->where('is_deleted', false)->with('roles');
+            $studentsCount = request()->company->allUsers()->where('is_deleted', false)->with('roles');
+            $classesCount = request()->company->classcodes();
+        }
+        if ($type == 1) {
+            // Classcode
+            $teachersCount = $teachersCount->whereHas('user_classcodes', function ($uc) {
+                $uc->where('classcode_id', '=', request()->type_id);
+            });
+            $studentsCount = $studentsCount->whereHas('user_classcodes', function ($uc) {
+                $uc->where('classcode_id', '=', request()->type_id);
+            });
+            $classesCount = $classesCount->where('id', request()->type_id);
+        }
+        if ($type == 2) {
+            // Teacher
+
+        }
+        if ($type == 3) {
+            // Student
+        }
+        if ($type == 4) {
+            // Assignment
+        }
+
+        $teachersCount = $teachersCount->whereHas('roles', function ($q) {
+            $q->where('name', '=', 'TEACHER');
+        })->get();
+
+        $studentsCount = $studentsCount->whereHas('roles', function ($q) {
+            $q->where('name', '=', 'STUDENT');
+        })->count();
+        $classesCount = $classesCount->count();
+
+
+        $data = [
+            'teachersCount'  =>  $teachersCount,
+            'studentsCount'  =>  $studentsCount,
+            'classesCount'  =>  $classesCount,
         ];
         return response()->json([
             'data'  =>  $data
