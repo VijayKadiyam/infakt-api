@@ -154,4 +154,8 @@ class User extends Authenticatable
     return $this->hasMany(UserAssignment::class)
       ->with('assignment');
   }
+  public function assignments()
+  {
+    return $this->hasMany(Assignment::class, 'created_by_id')->where('is_deleted', false);
+  }
 }

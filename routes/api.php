@@ -227,3 +227,7 @@ Route::get('superadminDashboard', 'DashboardsController@superadminDashboard');
 Route::get('content_based_counts', 'DashboardsController@contentBasedCount');
 // School Wise Overview
 Route::get('school_wise_overview', 'DashboardsController@SchoolWiseOverview');
+// Classcode Overview
+Route::get('classcode_wise_overview', 'DashboardsController@ClasscodeWiseOverview');
+// Top 10 School based on no of assignment
+Route::get('top_school_based_on_assignments', 'DashboardsController@topSchoolBasedOnAssignments');
