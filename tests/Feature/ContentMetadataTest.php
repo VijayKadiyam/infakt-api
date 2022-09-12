@@ -84,6 +84,7 @@ class ContentMetadataTest extends TestCase
                         'metadata_type',
                         'color_class',
                         'selected_text',
+                        'user_id',
                     ]
                 ]
             ]);
@@ -114,6 +115,7 @@ class ContentMetadataTest extends TestCase
                     'created_at',
                     'updated_at',
                     'annotation',
+                    'user_id',
                 ]
             ]);
     }
@@ -149,6 +151,7 @@ class ContentMetadataTest extends TestCase
                     'created_at',
                     'updated_at',
                     'annotation',
+                    'user_id',
                 ]
             ]);
     }
