@@ -19,4 +19,9 @@ class ContentMetadata extends Model
     {
         return $this->belongsTo(Content::class);
     }
+
+    public function content_metadata_classcodes()
+    {
+        return $this->hasMany(ContentMetadataClasscode::class);
+    }
 }

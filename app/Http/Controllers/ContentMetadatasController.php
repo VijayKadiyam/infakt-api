@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ContentMetadata;
+use App\ContentMetadataClasscode;
 use Illuminate\Http\Request;
 
 class ContentMetadatasController extends Controller
@@ -39,8 +40,58 @@ class ContentMetadatasController extends Controller
             'content_id'  =>  'required'
         ]);
 
-        $content_metadata = new ContentMetadata(request()->all());
-        $content_metadata->save();
+        // $content_metadata = new ContentMetadata(request()->all());
+        // $content_metadata->save();
+
+        if ($request->id == null || $request->id == '') {
+            // Save Content
+            $content_metadata = new ContentMetadata(request()->all());
+            $content_metadata->save();
+            // Save Content Subjects
+            if (isset($request->content_metadata_classcodes))
+                foreach ($request->content_metadata_classcodes as $metadata_classcodes) {
+                    $content_metadata_classcodes = new ContentMetadataClasscode($metadata_classcodes);
+                    $content_metadata->content_metadata_classcodes()->save($content_metadata_classcodes);
+                }
+            // ---------------------------------------------------
+
+        } else {
+            // Update Content
+            $content_metadata = ContentMetadata::find($request->id);
+            $content_metadata->update($request->all());
+
+            // Check if Content Subject deleted
+            if (isset($request->content_metadata_classcodes)) {
+                $contentMetadataClasscodeIdResponseArray = array_pluck($request->content_metadata_classcodes, 'id');
+            } else
+                $contentMetadataClasscodeIdResponseArray = [];
+            $content_metadata_id = $content_metadata->id;
+            $contentMetadataClasscodeIdArray = array_pluck(ContentMetadataClasscode::where('content_id', '=', $content_metadata_id)->get(), 'id');
+            $differenceContentMetadataClasscodeIds = array_diff($contentMetadataClasscodeIdArray, $contentMetadataClasscodeIdResponseArray);
+            // Delete which is there in the database but not in the response
+            if ($differenceContentMetadataClasscodeIds)
+                foreach ($differenceContentMetadataClasscodeIds as $differenceContentMetadataClasscodeId) {
+                    $contentMetadataClasscode = ContentMetadataClasscode::find($differenceContentMetadataClasscodeId);
+                    $contentMetadataClasscode->delete();
+                }
+
+            // Update Content Subject
+            if (isset($request->content_metadata_classcodes))
+                foreach ($request->content_metadata_classcodes as $metadata_classcode) {
+                    if (!isset($metadata_classcode['id'])) {
+                        $content_metadata_classcode = new ContentMetadataClasscode($metadata_classcode);
+                        $content_metadata->content_metadata_classcodes()->save($content_metadata_classcode);
+                    } else {
+                        $content_metadata_classcode = ContentMetadataClasscode::find($metadata_classcode['id']);
+                        $content_metadata->update($metadata_classcode);
+                    }
+                }
+
+            // ---------------------------------------------------
+
+        }
+
+        $content_metadata->content_metadata_classcodes = $content_metadata->content_metadata_classcodes;
 
         return response()->json([
             'data'  =>  $content_metadata
