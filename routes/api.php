@@ -219,3 +219,9 @@ Route::get('toi_xmls/emails', 'ToiXmlsController@toi_xml_imap');
 
 // et_xml_imap
 Route::get('et_xmls/emails', 'EtXmlsController@et_xml_imap');
+
+// SUPERADMIN Dashboard
+Route::get('superadminDashboard', 'DashboardsController@superadminDashboard');
+
+// Dashboard (Content Based (Grade, Board, Subject and school))
+Route::get('content_based_counts', 'DashboardsController@contentBasedCount');
