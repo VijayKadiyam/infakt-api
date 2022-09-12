@@ -219,3 +219,6 @@ Route::get('toi_xmls/emails', 'ToiXmlsController@toi_xml_imap');
 
 // et_xml_imap
 Route::get('et_xmls/emails', 'EtXmlsController@et_xml_imap');
+
+// Content Description
+Route::resource('user_timestamps', 'UserTimestampsController');
