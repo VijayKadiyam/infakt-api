@@ -180,19 +180,12 @@ class DashboardsController extends Controller
 
         if (request()->company_id) {
             $company = Company::find(request()->company_id);
-
-            $teachersCount = $company->users()->where('is_deleted', false)->with('roles');
             $L3M_Assignment_contents_count = $company->assignments()->where('is_deleted', false);
             $assignments_count = $company->assignments()->where('is_deleted', false);
         } else {
-            $teachersCount = User::where('is_deleted', false)->with('roles');
             $L3M_Assignment_contents_count = Assignment::where('is_deleted', false);
             $assignments_count = Assignment::where('is_deleted', false);
         }
-
-        $teachersCount = $teachersCount->whereHas('roles', function ($q) {
-            $q->where('name', '=', 'TEACHER');
-        })->count();
 
         $L3M_Assignment_contents_count = $L3M_Assignment_contents_count
             ->whereBetween("created_at", [$start_date, $end_date])
@@ -203,9 +196,37 @@ class DashboardsController extends Controller
             ->count();
 
         $data = [
-            'teachersCount'  =>  $teachersCount,
+            'avg_time_spent_by_student'  =>  0,
+            'avg_time_spent_by_teacher'  =>  0,
             'L3M_Assignment_contents_count'  =>  $L3M_Assignment_contents_count,
             'assignments_count'  =>  $assignments_count,
+        ];
+        return response()->json([
+            'data'  =>  $data
+        ], 200);
+    }
+
+    public function topSchoolBasedOnAssignments()
+    {
+        $schools = Company::get();
+        $topSchool = [];
+        foreach ($schools as $key => $school) {
+            $assignments = Assignment::where('company_id', $school->id)
+                ->whereMonth('created_at', request()->month)
+                ->whereYear('created_at', request()->year)
+                ->get();
+
+            $topSchool[$key]['name'] = $school->name;
+            $topSchool[$key]['score'] = sizeof($assignments);
+        }
+        usort($topSchool, function ($a, $b) {
+            return $b['score'] - $a['score'];
+        });
+
+        $topSchool = array_slice($topSchool, 0, 10);
+
+        $data = [
+            'top_schools'  =>  $topSchool,
         ];
         return response()->json([
             'data'  =>  $data
@@ -218,56 +239,117 @@ class DashboardsController extends Controller
         $month = request()->month;
         $year = request()->year;
 
-        if (request()->company) {
-            $teachers = request()->company->allUsers()->where('is_deleted', false)->with('roles', 'user_classcodes', 'assignments');
-            $studentsCount = request()->company->allUsers()->where('is_deleted', false)->with('roles', 'user_classcodes', 'user_assignments');
-            $classesCount = request()->company->classcodes();
+        if (request()->company_id) {
+            $company = Company::find(request()->company_id);
+            $teachers = $company->allUsers()->where('is_deleted', false)->with('roles', 'user_classcodes', 'assignments');
+            $students = $company->allUsers()->where('is_deleted', false)->with('roles', 'user_classcodes', 'user_assignments');
+            $classes = $company->classcodes();
         }
         if ($type == 1) {
             // Classcode
             $teachers = $teachers->whereHas('user_classcodes', function ($uc) {
                 $uc->where('classcode_id', '=', request()->type_id);
             });
-            $studentsCount = $studentsCount->whereHas('user_classcodes', function ($uc) {
+            $students = $students->whereHas('user_classcodes', function ($uc) {
                 $uc->where('classcode_id', '=', request()->type_id);
             });
-            $classesCount = $classesCount->where('id', request()->type_id);
+            $classes = $classes->where('id', request()->type_id);
         }
         if ($type == 2) {
             // Teacher
-
+            $teachers = $teachers->where('id', request()->type_id);
+            $students = $students->whereHas('user_classcodes', function ($uc) {
+                $uc->where('classcode_id', '=', request()->type_id);
+            });
+            $classes = $classes->whereHas('user_classcodes', function ($uc) {
+                $uc->where('user_id', '=', request()->type_id);
+            });
         }
         if ($type == 3) {
             // Student
+            $teachers = $teachers->whereHas('user_classcodes', function ($uc) {
+                $uc->where('classcode_id', '=', request()->type_id);
+            });
+            $students = $students->whereHas('user_classcodes', function ($uc) {
+                $uc->where('classcode_id', '=', request()->type_id);
+            });
+            $classes = $classes->where('id', request()->type_id);
         }
         if ($type == 4) {
             // Assignment
+            $teachers = $teachers->whereHas('user_classcodes', function ($uc) {
+                $uc->where('classcode_id', '=', request()->type_id);
+            });
+            $students = $students->whereHas('user_classcodes', function ($uc) {
+                $uc->where('classcode_id', '=', request()->type_id);
+            });
+            $classes = $classes->where('id', request()->type_id);
         }
 
         $teachers = $teachers->whereHas('roles', function ($q) {
             $q->where('name', '=', 'TEACHER');
         })->get();
+
+        $students = $students->whereHas('roles', function ($q) {
+            $q->where('name', '=', 'STUDENT');
+        })->get();
+
+        $classes = $classes->get();
+
+        /******** Top Teachers */
+        $top_teachers = [];
         foreach ($teachers as $key => $teacher) {
-            $teacher->assignment_count = 0;
+            $teacher['assignment_count'] = 0;
             if ($teacher->assignments) {
-                $teacher->assignment_count = sizeof($teacher->assignments);
+                $teacher['assignment_count'] = sizeof($teacher->assignments);
             }
             // Top Teachers Based on Number of Assignment posted
-            $top_teachers = $teacher;
+            $top_teachers[] = $teacher;
         }
+        // Sorting Descending by Average
+        usort($top_teachers, function ($a, $b) {
+            return $b['assignment_count'] - $a['assignment_count'];
+        });
 
-        return $teachers;
-        $studentsCount = $studentsCount->whereHas('roles', function ($q) {
-            $q->where('name', '=', 'STUDENT');
-        })->count();
-        $classesCount = $classesCount->count();
+        /******** Top Student */
+        $top_teachers = [];
+        foreach ($teachers as $key => $teacher) {
+            $teacher['assignment_count'] = 0;
+            if ($teacher->assignments) {
+                $teacher['assignment_count'] = sizeof($teacher->assignments);
+            }
+            // Top Student Based on Number of Assignment posted
+            $top_teachers[] = $teacher;
+        }
+        // Sorting Descending by Average
+        usort($top_teachers, function ($a, $b) {
+            return $b['assignment_count'] - $a['assignment_count'];
+        });
+
+        /******** Top Classcodes */
+        $top_teachers = [];
+        foreach ($teachers as $key => $teacher) {
+            $teacher['assignment_count'] = 0;
+            if ($teacher->assignments) {
+                $teacher['assignment_count'] = sizeof($teacher->assignments);
+            }
+            // Top Classcodes Based on Number of Assignment posted
+            $top_teachers[] = $teacher;
+        }
+        // Sorting Descending by Average
+        usort($top_teachers, function ($a, $b) {
+            return $b['assignment_count'] - $a['assignment_count'];
+        });
 
 
         $data = [
             'teachers'  =>  $teachers,
             'teachersCount'  =>  $teachers->count(),
-            'studentsCount'  =>  $studentsCount,
-            'classesCount'  =>  $classesCount,
+            'students'  =>  $students,
+            'studentsCount'  =>  $students->count(),
+            'classes'  =>  $classes,
+            'classesCount'  =>  $classes->count(),
+            'top_teachers'  =>  array_slice($top_teachers, 0, 10),
         ];
         return response()->json([
             'data'  =>  $data

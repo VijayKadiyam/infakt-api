@@ -170,4 +170,12 @@ class Company extends Model
   {
     return $this->hasMany(CompanyBoard::class);
   }
+  public function user_timestamps()
+  {
+    return $this->hasMany(UserTimestamp::class);
+  }
+  public function searches()
+  {
+    return $this->hasMany(Search::class);
+  }
 }
