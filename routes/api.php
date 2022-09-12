@@ -229,3 +229,6 @@ Route::get('superadminDashboard', 'DashboardsController@superadminDashboard');
 Route::get('content_based_counts', 'DashboardsController@contentBasedCount');
 // School Wise Overview
 Route::get('school_wise_overview', 'DashboardsController@SchoolWiseOverview');
+
+// User Timestamps
+Route::resource('user_timestamps', 'UserTimestampsController');
