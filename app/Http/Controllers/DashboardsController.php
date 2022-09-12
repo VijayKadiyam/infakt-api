@@ -176,10 +176,12 @@ class DashboardsController extends Controller
         $end_date = Carbon::parse("$year-$month")->endOfMonth()->format('Y-n-d');
         $start_date = Carbon::parse("$year-$month")->subMonths(3)->startOfMonth()->format('Y-n-d');
 
-        if (request()->company) {
-            $teachersCount = request()->company->users()->where('is_deleted', false)->with('roles');
-            $L3M_Assignment_contents_count = request()->company->assignments()->where('is_deleted', false);
-            $assignments_count = request()->company->assignments()->where('is_deleted', false);
+        if (request()->company_id) {
+            $company = Company::find(request()->company_id);
+
+            $teachersCount = $company->users()->where('is_deleted', false)->with('roles');
+            $L3M_Assignment_contents_count = $company->assignments()->where('is_deleted', false);
+            $assignments_count = $company->assignments()->where('is_deleted', false);
         } else {
             $teachersCount = User::where('is_deleted', false)->with('roles');
             $L3M_Assignment_contents_count = Assignment::where('is_deleted', false);
@@ -215,13 +217,13 @@ class DashboardsController extends Controller
         $year = request()->year;
 
         if (request()->company) {
-            $teachersCount = request()->company->allUsers()->where('is_deleted', false)->with('roles');
-            $studentsCount = request()->company->allUsers()->where('is_deleted', false)->with('roles');
+            $teachers = request()->company->allUsers()->where('is_deleted', false)->with('roles', 'user_classcodes', 'assignments');
+            $studentsCount = request()->company->allUsers()->where('is_deleted', false)->with('roles', 'user_classcodes', 'user_assignments');
             $classesCount = request()->company->classcodes();
         }
         if ($type == 1) {
             // Classcode
-            $teachersCount = $teachersCount->whereHas('user_classcodes', function ($uc) {
+            $teachers = $teachers->whereHas('user_classcodes', function ($uc) {
                 $uc->where('classcode_id', '=', request()->type_id);
             });
             $studentsCount = $studentsCount->whereHas('user_classcodes', function ($uc) {
@@ -240,10 +242,19 @@ class DashboardsController extends Controller
             // Assignment
         }
 
-        $teachersCount = $teachersCount->whereHas('roles', function ($q) {
+        $teachers = $teachers->whereHas('roles', function ($q) {
             $q->where('name', '=', 'TEACHER');
         })->get();
+        foreach ($teachers as $key => $teacher) {
+            $teacher->assignment_count = 0;
+            if ($teacher->assignments) {
+                $teacher->assignment_count = sizeof($teacher->assignments);
+            }
+            // Top Teachers Based on Number of Assignment posted
+            $top_teachers = $teacher;
+        }
 
+        return $teachers;
         $studentsCount = $studentsCount->whereHas('roles', function ($q) {
             $q->where('name', '=', 'STUDENT');
         })->count();
@@ -251,7 +262,8 @@ class DashboardsController extends Controller
 
 
         $data = [
-            'teachersCount'  =>  $teachersCount,
+            'teachers'  =>  $teachers,
+            'teachersCount'  =>  $teachers->count(),
             'studentsCount'  =>  $studentsCount,
             'classesCount'  =>  $classesCount,
         ];
