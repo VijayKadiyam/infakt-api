@@ -12,6 +12,7 @@ class ContentMetadata extends Model
         'color_class',
         'selected_text',
         'annotation',
+        'user_id',
     ];
 
     public function content()
