@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\ContentMetadata;
+use App\ContentMetadataClasscode;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -28,6 +29,11 @@ class ContentMetadataTest extends TestCase
             'metadata_type' => 'metadata_type',
             'color_class' => 'color_class',
             'selected_text' => 'selected_text',
+            'content_metadata_classcodes' =>  [
+                0 =>  [
+                    'classcode_id' =>  1,
+                ]
+            ],
         ];
     }
 
@@ -56,6 +62,11 @@ class ContentMetadataTest extends TestCase
                     'metadata_type' => 'metadata_type',
                     'color_class' => 'color_class',
                     'selected_text' => 'selected_text',
+                    'content_metadata_classcodes' =>  [
+                        0 =>  [
+                            'classcode_id' =>  1,
+                        ]
+                    ],
                 ]
             ])
             ->assertJsonStructureExact([
@@ -66,7 +77,8 @@ class ContentMetadataTest extends TestCase
                     'selected_text',
                     'updated_at',
                     'created_at',
-                    'id'
+                    'id',
+                    'content_metadata_classcodes'
                 ]
             ]);
     }
@@ -84,6 +96,7 @@ class ContentMetadataTest extends TestCase
                         'metadata_type',
                         'color_class',
                         'selected_text',
+                        'user_id',
                     ]
                 ]
             ]);
@@ -114,6 +127,8 @@ class ContentMetadataTest extends TestCase
                     'created_at',
                     'updated_at',
                     'annotation',
+                    'user_id',
+                    // 'content_metadata_classcodes'
                 ]
             ]);
     }
@@ -127,6 +142,11 @@ class ContentMetadataTest extends TestCase
             'metadata_type' => 'metadata_type',
             'color_class' => 'color_class',
             'selected_text' => 'selected_text',
+            // 'content_metadata_classcodes' =>  [
+            //     0 =>  [
+            //         'classcode_id' =>  1,
+            //     ]
+            // ],
         ];
 
         $this->json('patch', '/api/content_metadatas/1', $payload, $this->headers)
@@ -137,6 +157,11 @@ class ContentMetadataTest extends TestCase
                     'metadata_type' => 'metadata_type',
                     'color_class' => 'color_class',
                     'selected_text' => 'selected_text',
+                    // 'content_metadata_classcodes' =>  [
+                    //     0 =>  [
+                    //         'classcode_id' =>  1,
+                    //     ]
+                    // ],
                 ]
             ])
             ->assertJsonStructureExact([
@@ -149,6 +174,113 @@ class ContentMetadataTest extends TestCase
                     'created_at',
                     'updated_at',
                     'annotation',
+                    'user_id',
+                ]
+            ]);
+    }
+
+    /** @test */
+    function update_single_content_metadata_nested()
+    {
+        $this->disableEH();
+
+        $content_metadata = factory(ContentMetadata::class)->create([
+            'content_id' => 1,
+            'metadata_type' => 'metadata_type',
+            'color_class' => 'color_class',
+            'selected_text' => 'selected_text',
+        ]);
+        $contentMetadataClasscode = factory(ContentMetadataClasscode::class)->create([
+            'content_metadata_id' =>  $content_metadata->id
+        ]);
+
+        // Old Edit + No Delete + 1 New
+        $payload = [
+            'id'          =>  $content_metadata->id,
+            'content_id' => 1,
+            'metadata_type' => 'metadata_type',
+            'color_class' => 'color_class',
+            'selected_text' => 'selected_text',
+            'content_metadata_classcodes' =>  [
+                0 =>  [
+                    'classcode_id' =>  1,
+                ]
+            ],
+        ];
+
+        $this->json('post', '/api/content_metadatas', $payload, $this->headers)
+            ->assertStatus(201)
+            ->assertJson([
+                'data'    => [
+                    'id'          =>  $content_metadata->id,
+                    'content_id' => 1,
+                    'metadata_type' => 'metadata_type',
+                    'color_class' => 'color_class',
+                    'selected_text' => 'selected_text',
+                    'content_metadata_classcodes' =>  [
+                        0 =>  [
+                            'classcode_id' =>  1,
+                        ]
+                    ],
+                ]
+            ])
+            ->assertJsonStructureExact([
+                'data'  => [
+                    'id',
+                    'content_id',
+                    'metadata_type',
+                    'color_class',
+                    'selected_text',
+                    'created_at',
+                    'updated_at',
+                    'annotation',
+                    'user_id',
+                    'content_metadata_classcodes'
+                ]
+            ]);
+
+        // 1 Delete + 1 New
+        $payload = [
+            'id'          =>  $content_metadata->id,
+            'content_id' => 1,
+            'metadata_type' => 'metadata_type',
+            'color_class' => 'color_class',
+            'selected_text' => 'selected_text',
+            'content_metadata_classcodes' =>  [
+                0 =>  [
+                    'classcode_id' =>  1,
+                ]
+            ],
+        ];
+
+        $this->json('post', '/api/content_metadatas', $payload, $this->headers)
+            ->assertStatus(201)
+            ->assertJson([
+                'data'    => [
+                    'id'          =>  $content_metadata->id,
+                    'content_id' => 1,
+                    'metadata_type' => 'metadata_type',
+                    'color_class' => 'color_class',
+                    'selected_text' => 'selected_text',
+                    'content_metadata_classcodes' =>  [
+                        0 =>  [
+                            'classcode_id' =>  1,
+                        ]
+                    ],
+                ]
+            ])
+            ->assertJsonStructureExact([
+                'data'  => [
+                    'id',
+                    'content_id',
+                    'metadata_type',
+                    'color_class',
+                    'selected_text',
+                    'created_at',
+                    'updated_at',
+                    'annotation',
+                    'user_id',
+                    'content_metadata_classcodes'
                 ]
             ]);
     }
