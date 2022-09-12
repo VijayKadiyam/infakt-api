@@ -235,3 +235,6 @@ Route::get('classcode_wise_overview', 'DashboardsController@ClasscodeWiseOvervie
 Route::get('top_school_based_on_assignments', 'DashboardsController@topSchoolBasedOnAssignments');
 // User Timestamps
 Route::resource('user_timestamps', 'UserTimestampsController');
+
+// searches
+Route::resource('searches', 'SearchesController');
