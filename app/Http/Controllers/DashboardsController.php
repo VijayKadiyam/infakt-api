@@ -178,19 +178,12 @@ class DashboardsController extends Controller
 
         if (request()->company_id) {
             $company = Company::find(request()->company_id);
-
-            $teachersCount = $company->users()->where('is_deleted', false)->with('roles');
             $L3M_Assignment_contents_count = $company->assignments()->where('is_deleted', false);
             $assignments_count = $company->assignments()->where('is_deleted', false);
         } else {
-            $teachersCount = User::where('is_deleted', false)->with('roles');
             $L3M_Assignment_contents_count = Assignment::where('is_deleted', false);
             $assignments_count = Assignment::where('is_deleted', false);
         }
-
-        $teachersCount = $teachersCount->whereHas('roles', function ($q) {
-            $q->where('name', '=', 'TEACHER');
-        })->count();
 
         $L3M_Assignment_contents_count = $L3M_Assignment_contents_count
             ->whereBetween("created_at", [$start_date, $end_date])
@@ -201,7 +194,8 @@ class DashboardsController extends Controller
             ->count();
 
         $data = [
-            'teachersCount'  =>  $teachersCount,
+            'avg_time_spent_by_student'  =>  0,
+            'avg_time_spent_by_teacher'  =>  0,
             'L3M_Assignment_contents_count'  =>  $L3M_Assignment_contents_count,
             'assignments_count'  =>  $assignments_count,
         ];
