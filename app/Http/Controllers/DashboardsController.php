@@ -39,10 +39,12 @@ class DashboardsController extends Controller
             ['text'  =>  'DECEMBER', 'value' =>  12],
         ];
         $years = ['2020', '2021', '2022'];
+        $schools = Company::all();
 
         return response()->json([
             'months'      =>  $months,
             'years'       =>  $years,
+            'schools'   =>  $schools
         ], 200);
     }
 
