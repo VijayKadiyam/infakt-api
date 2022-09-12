@@ -225,3 +225,5 @@ Route::get('superadminDashboard', 'DashboardsController@superadminDashboard');
 
 // Dashboard (Content Based (Grade, Board, Subject and school))
 Route::get('content_based_counts', 'DashboardsController@contentBasedCount');
+// School Wise Overview
+Route::get('school_wise_overview', 'DashboardsController@SchoolWiseOverview');

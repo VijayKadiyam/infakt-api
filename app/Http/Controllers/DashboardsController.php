@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Assignment;
 use App\CareerRequest;
 use App\Company;
 use App\ContactRequest;
@@ -11,6 +12,7 @@ use App\EtArticle;
 use App\Subject;
 use App\ToiArticle;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class DashboardsController extends Controller
@@ -161,6 +163,44 @@ class DashboardsController extends Controller
         }
         $data = [
             'contentBasedCount'   =>  $content_based_count,
+        ];
+        return response()->json([
+            'data'  =>  $data
+        ], 200);
+    }
+    public function SchoolWiseOverview()
+    {
+        $month = request()->month;
+        $year = request()->year;
+        $end_date = Carbon::parse("$year-$month")->endOfMonth()->format('Y-n-d');
+        $start_date = Carbon::parse("$year-$month")->subMonths(3)->startOfMonth()->format('Y-n-d');
+
+        if (request()->company) {
+            $teachersCount = request()->company->users()->where('is_deleted', false)->with('roles');
+            $L3M_Assignment_contents_count = request()->company->assignments()->where('is_deleted', false);
+            $assignments_count = request()->company->assignments()->where('is_deleted', false);
+        } else {
+            $teachersCount = User::where('is_deleted', false)->with('roles');
+            $L3M_Assignment_contents_count = Assignment::where('is_deleted', false);
+            $assignments_count = Assignment::where('is_deleted', false);
+        }
+
+        $teachersCount = $teachersCount->whereHas('roles', function ($q) {
+            $q->where('name', '=', 'TEACHER');
+        })->count();
+
+        $L3M_Assignment_contents_count = $L3M_Assignment_contents_count
+            ->whereBetween("created_at", [$start_date, $end_date])
+            ->count();
+
+        $assignments_count = $assignments_count
+            ->whereMonth("created_at", $month)
+            ->count();
+
+        $data = [
+            'teachersCount'  =>  $teachersCount,
+            'L3M_Assignment_contents_count'  =>  $L3M_Assignment_contents_count,
+            'assignments_count'  =>  $assignments_count,
         ];
         return response()->json([
             'data'  =>  $data
