@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Content;
 use App\ContentDescription;
+use App\ContentHiddenClasscode;
 use App\ContentMedia;
 use App\ContentSubject;
 use Illuminate\Http\Request;
@@ -113,6 +114,13 @@ class ContentsController extends Controller
                     $content->content_descriptions()->save($description);
                 }
             // ---------------------------------------------------
+            // Save Content Hidden Classcode
+            if (isset($request->content_hidden_classcodes))
+                foreach ($request->content_hidden_classcodes as $hidden_classcode) {
+                    $content_hidden_classcode = new ContentHiddenClasscode($hidden_classcode);
+                    $content->content_hidden_classcodes()->save($content_hidden_classcode);
+                }
+            // ---------------------------------------------------
         } else {
             // Update Content
             $content = Content::find($request->id);
@@ -202,11 +210,41 @@ class ContentsController extends Controller
                 }
 
             // ---------------------------------------------------
+
+            // Check if Content Hidden classcode deleted
+            if (isset($request->content_hidden_classcodes)) {
+                $contentHiddenClasscodeIdResponseArray = array_pluck($request->content_hidden_classcodes, 'id');
+            } else
+                $contentHiddenClasscodeIdResponseArray = [];
+            $contentId = $content->id;
+            $contentHiddenClasscodeIdArray = array_pluck(ContentHiddenClasscode::where('content_id', '=', $contentId)->get(), 'id');
+            $differenceContentHddenClasscodeIds = array_diff($contentHiddenClasscodeIdArray, $contentHiddenClasscodeIdResponseArray);
+            // Delete which is there in the database but not in the response
+            if ($differenceContentHddenClasscodeIds)
+                foreach ($differenceContentHddenClasscodeIds as $differenceContentHddenClasscodeId) {
+                    $contentHddenClasscode = ContentHiddenClasscode::find($differenceContentHddenClasscodeId);
+                    $contentHddenClasscode->delete();
+                }
+
+            // Update Content Description
+            if (isset($request->content_hidden_classcodes))
+                foreach ($request->content_hidden_classcodes as $hidden_classcode) {
+                    if (!isset($hidden_classcode['id'])) {
+                        $content_hidden_classcode = new ContentHiddenClasscode($hidden_classcode);
+                        $content->content_hidden_classcodes()->save($content_hidden_classcode);
+                    } else {
+                        $content_hidden_classcode = ContentHiddenClasscode::find($hidden_classcode['id']);
+                        $content_hidden_classcode->update($hidden_classcode);
+                    }
+                }
+
+            // ---------------------------------------------------
         }
 
         $content->content_subjects = $content->content_subjects;
         $content->content_medias = $content->content_medias;
         $content->content_descriptions = $content->content_descriptions;
+        $content->content_hidden_classcodes = $content->content_hidden_classcodes;
         return response()->json([
             'data'  =>  $content
         ], 201);
