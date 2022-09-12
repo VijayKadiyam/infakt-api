@@ -46,7 +46,6 @@ class DashboardsController extends Controller
             ->whereHas('roles', function ($q) {
                 $q->where('name', '=', 'TEACHER');
             })->count();
-
         $classesCount = $request->company->classcodes()->count();
         $data = [
             'studentsCount'  =>  $studentsCount,
