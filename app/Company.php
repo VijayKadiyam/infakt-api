@@ -174,4 +174,8 @@ class Company extends Model
   {
     return $this->hasMany(UserTimestamp::class);
   }
+  public function searches()
+  {
+    return $this->hasMany(Search::class);
+  }
 }
