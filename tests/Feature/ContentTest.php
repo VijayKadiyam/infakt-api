@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Content;
+use App\ContentHiddenClasscode;
 use App\ContentMedia;
 use App\ContentSubject;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -21,23 +22,23 @@ class ContentTest extends TestCase
         factory(Content::class)->create([
             'content_name'     => 'content_name',
             'content_type'     => 'content_type',
-            'written_by_id'    => 1,
+            'written_by_name'    => 1,
             'reading_time'     => 'reading_time',
             'content_metadata' => 'content_metadata',
             'easy_content'     => 'easy_content',
             'med_content'      => 'med_content',
-            'hard_content'     => 'hard_content',
+            'original_content'     => 'original_content',
         ]);
 
         $this->payload = [
             'content_name'     => 'content_name',
             'content_type'     => 'content_type',
-            'written_by_id'    => 1,
+            'written_by_name'    => 1,
             'reading_time'     => 'reading_time',
             'content_metadata' => 'content_metadata',
             'easy_content'     => 'easy_content',
             'med_content'      => 'med_content',
-            'hard_content'     => 'hard_content',
+            'original_content'     => 'original_content',
             'content_subjects' =>  [
                 0 =>  [
                     'subject_id' =>  1,
@@ -46,6 +47,11 @@ class ContentTest extends TestCase
             'content_medias' =>  [
                 0 =>  [
                     'mediapath' =>  'mediapath',
+                ]
+            ],
+            'content_hidden_classcodes' =>  [
+                0 =>  [
+                    'classcode_id' =>  1,
                 ]
             ],
         ];
@@ -74,12 +80,12 @@ class ContentTest extends TestCase
                 'data'  =>  [
                     'content_name'     => 'content_name',
                     'content_type'     => 'content_type',
-                    'written_by_id'    => 1,
+                    'written_by_name'    => 1,
                     'reading_time'     => 'reading_time',
                     'content_metadata' => 'content_metadata',
                     'easy_content'     => 'easy_content',
                     'med_content'      => 'med_content',
-                    'hard_content'     => 'hard_content',
+                    'original_content'     => 'original_content',
                     'content_subjects' =>  [
                         0 =>  [
                             'subject_id' =>  1,
@@ -90,23 +96,30 @@ class ContentTest extends TestCase
                             'mediapath' =>  'mediapath',
                         ]
                     ],
+                    'content_hidden_classcodes' =>  [
+                        0 =>  [
+                            'classcode_id' =>  1,
+                        ]
+                    ],
                 ]
             ])
             ->assertJsonStructureExact([
                 'data'  =>  [
                     'content_name',
                     'content_type',
-                    'written_by_id',
+                    'written_by_name',
                     'reading_time',
                     'content_metadata',
                     'easy_content',
                     'med_content',
-                    'hard_content',
+                    'original_content',
                     'updated_at',
                     'created_at',
                     'id',
                     'content_subjects',
                     'content_medias',
+                    'content_descriptions',
+                    'content_hidden_classcodes',
                 ]
             ]);
     }
@@ -122,12 +135,12 @@ class ContentTest extends TestCase
                     0 =>  [
                         'content_name',
                         'content_type',
-                        'written_by_id',
+                        'written_by_name',
                         'reading_time',
                         'content_metadata',
                         'easy_content',
                         'med_content',
-                        'hard_content',
+                        'original_content',
                     ]
                 ]
             ]);
@@ -144,12 +157,12 @@ class ContentTest extends TestCase
                 'data'  => [
                     'content_name'     => 'content_name',
                     'content_type'     => 'content_type',
-                    'written_by_id'    => 1,
+                    'written_by_name'    => 1,
                     'reading_time'     => 'reading_time',
                     'content_metadata' => 'content_metadata',
                     'easy_content'     => 'easy_content',
                     'med_content'      => 'med_content',
-                    'hard_content'     => 'hard_content',
+                    'original_content'     => 'original_content',
                 ]
             ])
             ->assertJsonStructureExact([
@@ -157,14 +170,25 @@ class ContentTest extends TestCase
                     'id',
                     'content_name',
                     'content_type',
-                    'written_by_id',
                     'reading_time',
                     'content_metadata',
                     'easy_content',
                     'med_content',
-                    'hard_content',
                     'created_at',
-                    'updated_at'
+                    'updated_at',
+                    'learning_outcome',
+                    'for_school_type',
+                    'specific_to',
+                    'school_id',
+                    'original_content',
+                    'written_by_name',
+                    'grade_id',
+                    'board_id',
+                    'info_board_id',
+                    'content_subjects',
+                    'content_medias',
+                    'content_metadatas',
+                    'content_descriptions',
                 ]
             ]);
     }
@@ -176,12 +200,12 @@ class ContentTest extends TestCase
         $payload = [
             'content_name'     => 'content_name',
             'content_type'     => 'content_type',
-            'written_by_id'    => 1,
+            'written_by_name'    => 1,
             'reading_time'     => 'reading_time',
             'content_metadata' => 'content_metadata',
             'easy_content'     => 'easy_content',
             'med_content'      => 'med_content',
-            'hard_content'     => 'hard_content',
+            'original_content'     => 'original_content',
             'content_subjects' =>  [
                 0 =>  [
                     'subject_id' =>  1,
@@ -192,6 +216,11 @@ class ContentTest extends TestCase
                     'mediapath' =>  1,
                 ]
             ],
+            'content_hidden_classcodes' =>  [
+                0 =>  [
+                    'classcode_id' =>  1,
+                ]
+            ],
         ];
 
         $this->json('patch', '/api/contents/1', $payload, $this->headers)
@@ -200,12 +229,12 @@ class ContentTest extends TestCase
                 'data'    => [
                     'content_name'     => 'content_name',
                     'content_type'     => 'content_type',
-                    'written_by_id'    => 1,
+                    'written_by_name'    => 1,
                     'reading_time'     => 'reading_time',
                     'content_metadata' => 'content_metadata',
                     'easy_content'     => 'easy_content',
                     'med_content'      => 'med_content',
-                    'hard_content'     => 'hard_content',
+                    'original_content'     => 'original_content',
                 ]
             ])
             ->assertJsonStructureExact([
@@ -213,14 +242,25 @@ class ContentTest extends TestCase
                     'id',
                     'content_name',
                     'content_type',
-                    'written_by_id',
                     'reading_time',
                     'content_metadata',
                     'easy_content',
                     'med_content',
-                    'hard_content',
                     'created_at',
-                    'updated_at'
+                    'updated_at',
+                    'learning_outcome',
+                    'for_school_type',
+                    'specific_to',
+                    'school_id',
+                    'original_content',
+                    'written_by_name',
+                    'grade_id',
+                    'board_id',
+                    'info_board_id',
+                    // 'content_subjects',
+                    // 'content_medias',
+                    // 'content_metadatas',
+                    // 'content_descriptions',
                 ]
             ]);
     }
@@ -233,17 +273,20 @@ class ContentTest extends TestCase
         $content = factory(Content::class)->create([
             'content_name'     => 'content_name',
             'content_type'     => 'content_type',
-            'written_by_id'    => 1,
+            'written_by_name'    => 1,
             'reading_time'     => 'reading_time',
             'content_metadata' => 'content_metadata',
             'easy_content'     => 'easy_content',
             'med_content'      => 'med_content',
-            'hard_content'     => 'hard_content',
+            'original_content'     => 'original_content',
         ]);
         $contentSubject = factory(ContentSubject::class)->create([
             'content_id' =>  $content->id
         ]);
         $contentMedia = factory(ContentMedia::class)->create([
+            'content_id' =>  $content->id
+        ]);
+        $contentHiddenClasscode = factory(ContentHiddenClasscode::class)->create([
             'content_id' =>  $content->id
         ]);
 
@@ -252,12 +295,12 @@ class ContentTest extends TestCase
             'id'          =>  $content->id,
             'content_name'     => 'content_name',
             'content_type'     => 'content_type',
-            'written_by_id'    => 1,
+            'written_by_name'    => 1,
             'reading_time'     => 'reading_time',
             'content_metadata' => 'content_metadata',
             'easy_content'     => 'easy_content',
             'med_content'      => 'med_content',
-            'hard_content'     => 'hard_content',
+            'original_content'     => 'original_content',
             'content_subjects' =>  [
                 0 =>  [
                     'id'        =>  $contentSubject->id,
@@ -276,6 +319,15 @@ class ContentTest extends TestCase
                     'mediapath'  =>  'mediapath'
                 ]
             ],
+            'content_hidden_classcodes' =>  [
+                0 =>  [
+                    'id'          =>  $contentHiddenClasscode->id,
+                    'classcode_id'  =>  1
+                ],
+                1 =>  [
+                    'classcode_id'  =>  1
+                ]
+            ],
         ];
 
         $this->json('post', '/api/contents', $payload, $this->headers)
@@ -285,12 +337,12 @@ class ContentTest extends TestCase
                     'id'          =>  $content->id,
                     'content_name'     => 'content_name',
                     'content_type'     => 'content_type',
-                    'written_by_id'    => 1,
+                    'written_by_name'    => 1,
                     'reading_time'     => 'reading_time',
                     'content_metadata' => 'content_metadata',
                     'easy_content'     => 'easy_content',
                     'med_content'      => 'med_content',
-                    'hard_content'     => 'hard_content',
+                    'original_content'     => 'original_content',
                     'content_subjects' =>  [
                         0 =>  [
                             'id'        =>  $contentSubject->id,
@@ -309,6 +361,15 @@ class ContentTest extends TestCase
                             'mediapath'  =>  'mediapath'
                         ]
                     ],
+                    'content_hidden_classcodes' =>  [
+                        0 =>  [
+                            'id'          =>  $contentHiddenClasscode->id,
+                            'classcode_id'  =>  1
+                        ],
+                        1 =>  [
+                            'classcode_id'  =>  1
+                        ]
+                    ],
                 ]
             ])
             ->assertJsonStructureExact([
@@ -316,16 +377,26 @@ class ContentTest extends TestCase
                     'id',
                     'content_name',
                     'content_type',
-                    'written_by_id',
                     'reading_time',
                     'content_metadata',
                     'easy_content',
                     'med_content',
-                    'hard_content',
                     'created_at',
                     'updated_at',
+                    'learning_outcome',
+                    'for_school_type',
+                    'specific_to',
+                    'school_id',
+                    'original_content',
+                    'written_by_name',
+                    'grade_id',
+                    'board_id',
+                    'info_board_id',
                     'content_subjects',
                     'content_medias',
+
+                    'content_descriptions',
+                    'content_hidden_classcodes'
                 ]
             ]);
 
@@ -334,12 +405,12 @@ class ContentTest extends TestCase
             'id'          =>  $content->id,
             'content_name'     => 'content_name',
             'content_type'     => 'content_type',
-            'written_by_id'    => 1,
+            'written_by_name'    => 1,
             'reading_time'     => 'reading_time',
             'content_metadata' => 'content_metadata',
             'easy_content'     => 'easy_content',
             'med_content'      => 'med_content',
-            'hard_content'     => 'hard_content',
+            'original_content'     => 'original_content',
             'content_subjects' =>  [
                 0 =>  [
                     'id'        =>  $contentSubject->id,
@@ -351,7 +422,12 @@ class ContentTest extends TestCase
                     'id' => $contentMedia->id,
                     'mediapath' => 'mediapath',
                 ]
-            ]
+            ],
+            'content_hidden_classcodes' =>  [
+                0 =>  [
+                    'classcode_id' =>  1,
+                ]
+            ],
         ];
 
         $this->json('post', '/api/contents', $payload, $this->headers)
@@ -361,12 +437,12 @@ class ContentTest extends TestCase
                     'id'          =>  $content->id,
                     'content_name'     => 'content_name',
                     'content_type'     => 'content_type',
-                    'written_by_id'    => 1,
+                    'written_by_name'    => 1,
                     'reading_time'     => 'reading_time',
                     'content_metadata' => 'content_metadata',
                     'easy_content'     => 'easy_content',
                     'med_content'      => 'med_content',
-                    'hard_content'     => 'hard_content',
+                    'original_content'     => 'original_content',
                     'content_subjects' =>  [
                         0 =>  [
                             'id'        =>  $contentSubject->id,
@@ -378,7 +454,13 @@ class ContentTest extends TestCase
                             'id' => $contentMedia->id,
                             'mediapath' => 'mediapath',
                         ]
-                    ]
+                    ],
+                    'content_hidden_classcodes' =>  [
+                        0 =>  [
+                            'id' => 3,
+                            'classcode_id' =>  '1',
+                        ]
+                    ],
                 ]
             ])
             ->assertJsonStructureExact([
@@ -386,16 +468,25 @@ class ContentTest extends TestCase
                     'id',
                     'content_name',
                     'content_type',
-                    'written_by_id',
                     'reading_time',
                     'content_metadata',
                     'easy_content',
                     'med_content',
-                    'hard_content',
                     'created_at',
                     'updated_at',
+                    'learning_outcome',
+                    'for_school_type',
+                    'specific_to',
+                    'school_id',
+                    'original_content',
+                    'written_by_name',
+                    'grade_id',
+                    'board_id',
+                    'info_board_id',
                     'content_subjects',
                     'content_medias',
+                    'content_descriptions',
+                    'content_hidden_classcodes',
                 ]
             ]);
     }

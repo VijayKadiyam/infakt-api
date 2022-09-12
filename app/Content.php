@@ -53,4 +53,8 @@ class Content extends Model
     {
         return $this->hasMany(ContentDescription::class);
     }
+    public function content_hidden_classcodes()
+    {
+        return $this->hasMany(ContentHiddenClasscode::class);
+    }
 }
