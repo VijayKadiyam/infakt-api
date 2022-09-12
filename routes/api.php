@@ -232,3 +232,6 @@ Route::get('school_wise_overview', 'DashboardsController@SchoolWiseOverview');
 
 // User Timestamps
 Route::resource('user_timestamps', 'UserTimestampsController');
+
+// searches
+Route::resource('searches', 'SearchesController');
