@@ -48,7 +48,6 @@ class DashboardsController extends Controller
         ], 200);
     }
 
-
     public function superadminDashboard(Request $request)
     {
         $schoolsCount =   Company::all()->count();
@@ -414,19 +413,20 @@ class DashboardsController extends Controller
 
     public function TeacherWiseOverview()
     {
+        $teacher_id = request()->type_id;
         if (request()->company_id) {
-            $company = Company::find(request()->company_id);
-            $teachers = $company->allUsers()->where('is_deleted', false)->with('roles', 'assignments');
-            $classes = $company->classcodes()->with('assignment_classcodes', 'students');
+            $company     = Company::find(request()->company_id);
+            $teachers    = $company->allUsers()->where('is_deleted', false);
+            $classes     = $company->classcodes()->where('is_deleted', false);
             $assignments = $company->assignments();
         }
-        if (request()->type_id) {
+        if ($teacher_id) {
             // Teacher
-            $teachers = $teachers->where('users.id', request()->type_id);
-            $classes = $classes->whereHas('user_classcodes', function ($uc) {
-                $uc->where('user_id', '=', request()->type_id);
+            $teachers = $teachers->where('users.id', $teacher_id);
+            $classes = $classes->whereHas('user_classcodes', function ($uc) use ($teacher_id) {
+                $uc->where('user_id', '=', $teacher_id);
             });
-            $assignments = $assignments->where('created_by_id', request()->type_id);
+            $assignments = $assignments->where('created_by_id', $teacher_id);
         }
 
         $teachers = $teachers->whereHas('roles', function ($q) {
@@ -437,6 +437,7 @@ class DashboardsController extends Controller
         $assignments = $assignments->get();
         /******** Top Teachers */
         $top_teachers = [];
+        $total_teacher_read_count = 0;
         foreach ($teachers as $key => $teacher) {
             $teacher['assignment_count'] = 0;
             if ($teacher->assignments) {
@@ -444,6 +445,12 @@ class DashboardsController extends Controller
             }
             // Top Teachers Based on Number of Assignment posted
             $top_teachers[] = $teacher;
+            // Total Teacher Content Read COunt 
+            $teacher['read_count'] = 0;
+            if ($teacher->content_reads) {
+                $teacher['read_count'] = sizeof($teacher->content_reads);
+            }
+            $total_teacher_read_count += $teacher['read_count'];
         }
         // Sorting Descending by Average
         usort($top_teachers, function ($a, $b) {
@@ -451,10 +458,17 @@ class DashboardsController extends Controller
         });
 
         /******** Top Classcodes */
+        $final_student_performance = [];
         $top_classes = [];
         $total_students = [];
-
+        $total_student_read_count = 0;
         foreach ($classes as $key => $class) {
+            $class_tsc = 'top_students_count_' . $class->id;
+            $class_asc = 'avg_students_count_' . $class->id;
+            $class_basc = 'below_avg_students_count_' . $class->id;
+            $class_wsc = 'weak_students_count_' . $class->id;
+            $class_tmm = 'total_maximum_marks_' . $class->id;
+            $class_ts = 'top_students_' . $class->id;
             $class['assignment_count'] = 0;
             if ($class->assignment_classcodes) {
                 $class['assignment_count'] = sizeof($class->assignment_classcodes);
@@ -464,12 +478,12 @@ class DashboardsController extends Controller
 
             /******** Top Student */
             $students = $class->students;
-            $top_students_count = 0;
-            $avg_students_count = 0;
-            $below_avg_students_count = 0;
-            $weak_students_count = 0;
-            $total_maximum_marks = 0;
-            $top_students = [];
+            $$class_tsc = 0;            // $top_students_count = 0;
+            $$class_asc = 0;            // $avg_students_count = 0;
+            $$class_basc = 0;           // $below_avg_students_count = 0;
+            $$class_wsc = 0;            // $weak_students_count = 0;
+            $$class_tmm = 0;            // $total_maximum_marks = 0;
+            $$class_ts = [];            // $top_students = [];
             foreach ($students as $key => $student) {
                 $student['average'] = 0;
                 $total_scored = 0;
@@ -477,7 +491,7 @@ class DashboardsController extends Controller
                 $user_assignments = $student->user_assignments;
                 $assignment_submitted = sizeof($user_assignments);
                 foreach ($user_assignments as $key => $ua) {
-                    $total_maximum_marks += $ua->assignment->maximum_marks;
+                    $$class_tmm += $ua->assignment->maximum_marks;
                     $score = $ua->score;
                     $total_scored += $score;
                 }
@@ -488,29 +502,48 @@ class DashboardsController extends Controller
                 switch (true) {
                     case ($average >= 76):
                         $grade = 'A';
-                        $top_students_count++;
+                        $$class_tsc++;
                         break;
                     case ($average >= 60 && $average < 76):
                         $grade = 'B';
-                        $avg_students_count++;
+                        $$class_asc++;
                         break;
                     case ($average >= 59 && $average < 36):
                         $grade = 'C';
-                        $below_avg_students_count++;
+                        $$class_basc++;
                         break;
                     case ($average < 36):
                         $grade = 'D';
-                        $weak_students_count++;
+                        $$class_wsc++;
                         break;
                 }
                 // Top Students Based on Average
-                $top_students[] = $student;
+                $$class_ts[] = $student;
                 $total_students[] = $student;
+                //  Total Student Content read Count
+                $student['read_count'] = 0;
+                if ($student->content_reads) {
+                    $student['read_count'] = sizeof($student->content_reads);
+                }
+                $total_student_read_count += $student['read_count'];
             }
             // Sorting Descending by Average
-            usort($top_students, function ($a, $b) {
+            usort($$class_ts, function ($a, $b) {
                 return $b['average'] - $a['average'];
             });
+
+            // Top 10 Students of that Class
+            $top_students = array_slice($$class_ts, 0, 10);
+            $final_top_student[] = $top_students;
+            //Student Wise Performance 
+            $student_performance = [
+                'id'                       => $class->id,
+                'top_students_count'       => $$class_tsc,
+                'avg_students_count'       => $$class_asc,
+                'below_avg_students_count' => $$class_basc,
+                'weak_students_count'      => $$class_wsc,
+            ];
+            $final_student_performance[] = $student_performance;
         }
         // Sorting Descending by Average
         usort($top_classes, function ($a, $b) {
@@ -540,7 +573,6 @@ class DashboardsController extends Controller
                     break;
             }
         }
-
         $data = [
             'teachers'      =>  $teachers,
             'teachersCount' =>  $teachers->count(),
@@ -549,17 +581,17 @@ class DashboardsController extends Controller
             'classes'       =>  $classes,
             'classesCount'  =>  $classes->count(),
             'top_10_teachers'  =>  array_slice($top_teachers, 0, 10),  //  Top 10 Teachers
-            'top_10_students'  =>  array_slice($top_students, 0, 10),  //  Top 10 Students
+            'top_10_students'  =>  $final_top_student,  //  Top 10 Students Array
             'top_10_classes'   =>  array_slice($top_classes, 0, 10),   //  Top 10 Classes
-            //Student Wise Performance 
-            'top_students_count'            => $top_students_count,
-            'avg_students_count'            => $avg_students_count,
-            'below_avg_students_count'      => $below_avg_students_count,
-            'weak_students_count'           => $weak_students_count,
+            //Student Wise Performance Array
+            'final_student_performance' => $final_student_performance,
             // Assignment Type Overview
             'subjective_assignment_count'      => $subjective_assignment_count,
             'objective_assignment_count'       => $objective_assignment_count,
             'document_assignment_count'        => $document_assignment_count,
+            // Total Content Read
+            'total_teacher_read_count'      => $total_teacher_read_count,
+            'total_student_read_count'      => $total_student_read_count,
 
         ];
         return response()->json([
