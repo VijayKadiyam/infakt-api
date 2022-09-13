@@ -244,3 +244,6 @@ Route::get('teacher_wise_overview', 'DashboardsController@TeacherWiseOverview');
 
 // features
 Route::resource('features', 'FeaturesController');
+
+// jobs
+Route::resource('jobs', 'JobsController');
