@@ -178,4 +178,8 @@ class Company extends Model
   {
     return $this->hasMany(Search::class);
   }
+  public function content_assign_to_reads()
+  {
+    return $this->hasMany(ContentAssignToRead::class);
+  }
 }

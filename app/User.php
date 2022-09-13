@@ -158,4 +158,8 @@ class User extends Authenticatable
   {
     return $this->hasMany(Assignment::class, 'created_by_id')->where('is_deleted', false);
   }
+  public function content_assign_to_reads()
+  {
+    return $this->hasMany(ContentAssignToRead::class);
+  }
 }
