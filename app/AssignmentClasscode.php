@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class AssignmentClasscode extends Model
 {
     protected $fillable = [
+        'company_id',
         'assignment_id',
         'classcode_id',
         'start_date',
