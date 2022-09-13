@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Content;
 use App\ContentHiddenClasscode;
+use App\ContentLockClasscode;
 use App\ContentMedia;
 use App\ContentSubject;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -50,6 +51,11 @@ class ContentTest extends TestCase
                 ]
             ],
             'content_hidden_classcodes' =>  [
+                0 =>  [
+                    'classcode_id' =>  1,
+                ]
+            ],
+            'content_lock_classcodes' =>  [
                 0 =>  [
                     'classcode_id' =>  1,
                 ]
@@ -101,6 +107,11 @@ class ContentTest extends TestCase
                             'classcode_id' =>  1,
                         ]
                     ],
+                    'content_lock_classcodes' =>  [
+                        0 =>  [
+                            'classcode_id' =>  '1',
+                        ]
+                    ],
                 ]
             ])
             ->assertJsonStructureExact([
@@ -120,6 +131,7 @@ class ContentTest extends TestCase
                     'content_medias',
                     'content_descriptions',
                     'content_hidden_classcodes',
+                    'content_lock_classcodes',
                 ]
             ]);
     }
@@ -221,6 +233,11 @@ class ContentTest extends TestCase
                     'classcode_id' =>  1,
                 ]
             ],
+            'content_lock_classcodes' =>  [
+                0 =>  [
+                    'classcode_id' =>  1,
+                ]
+            ],
         ];
 
         $this->json('patch', '/api/contents/1', $payload, $this->headers)
@@ -289,6 +306,9 @@ class ContentTest extends TestCase
         $contentHiddenClasscode = factory(ContentHiddenClasscode::class)->create([
             'content_id' =>  $content->id
         ]);
+        $contentLockClasscode = factory(ContentLockClasscode::class)->create([
+            'content_id' =>  $content->id
+        ]);
 
         // Old Edit + No Delete + 1 New
         $payload = [
@@ -322,6 +342,15 @@ class ContentTest extends TestCase
             'content_hidden_classcodes' =>  [
                 0 =>  [
                     'id'          =>  $contentHiddenClasscode->id,
+                    'classcode_id'  =>  1
+                ],
+                1 =>  [
+                    'classcode_id'  =>  1
+                ]
+            ],
+            'content_lock_classcodes' =>  [
+                0 =>  [
+                    'id'          =>  $contentLockClasscode->id,
                     'classcode_id'  =>  1
                 ],
                 1 =>  [
@@ -370,6 +399,15 @@ class ContentTest extends TestCase
                             'classcode_id'  =>  1
                         ]
                     ],
+                    'content_lock_classcodes' =>  [
+                        0 =>  [
+                            'id'          =>  $contentLockClasscode->id,
+                            'classcode_id'  =>  1
+                        ],
+                        1 =>  [
+                            'classcode_id'  =>  1
+                        ]
+                    ],
                 ]
             ])
             ->assertJsonStructureExact([
@@ -396,7 +434,8 @@ class ContentTest extends TestCase
                     'content_medias',
 
                     'content_descriptions',
-                    'content_hidden_classcodes'
+                    'content_hidden_classcodes',
+                    'content_lock_classcodes'
                 ]
             ]);
 
@@ -424,6 +463,11 @@ class ContentTest extends TestCase
                 ]
             ],
             'content_hidden_classcodes' =>  [
+                0 =>  [
+                    'classcode_id' =>  1,
+                ]
+            ],
+            'content_lock_classcodes' =>  [
                 0 =>  [
                     'classcode_id' =>  1,
                 ]
@@ -461,6 +505,12 @@ class ContentTest extends TestCase
                             'classcode_id' =>  '1',
                         ]
                     ],
+                    'content_lock_classcodes' =>  [
+                        0 =>  [
+                            'id' => 3,
+                            'classcode_id' =>  '1',
+                        ]
+                    ],
                 ]
             ])
             ->assertJsonStructureExact([
@@ -487,6 +537,7 @@ class ContentTest extends TestCase
                     'content_medias',
                     'content_descriptions',
                     'content_hidden_classcodes',
+                    'content_lock_classcodes',
                 ]
             ]);
     }

@@ -57,4 +57,8 @@ class Content extends Model
     {
         return $this->hasMany(ContentHiddenClasscode::class);
     }
+    public function content_lock_classcodes()
+    {
+        return $this->hasMany(ContentLockClasscode::class);
+    }
 }
