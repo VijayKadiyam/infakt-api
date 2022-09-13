@@ -52,8 +52,5 @@ class UserClasscode extends Model
         return $this->belongsToMany(User::class)
             ->where('is_deleted', false)
             ->with('roles');
-        // ->whereHas('roles', function ($q) {
-        //     $q->where('id', 5);
-        // });
     }
 }
