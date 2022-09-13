@@ -43,6 +43,10 @@ class Classcode extends Model
     {
         return $this->hasMany(ContentLockClasscode::class);
     }
+    public function content_assign_to_reads()
+    {
+        return $this->hasMany(ContentAssignToRead::class);
+    }
     public function students()
     {
         return $this->belongsToMany(User::class, 'user_classcodes', 'classcode_id', 'user_id')

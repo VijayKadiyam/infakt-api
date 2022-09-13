@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Content;
+use App\ContentAssignToRead;
 use App\ContentHiddenClasscode;
 use App\ContentLockClasscode;
 use App\ContentMedia;
@@ -60,6 +61,11 @@ class ContentTest extends TestCase
                     'classcode_id' =>  1,
                 ]
             ],
+            'content_assign_to_reads' =>  [
+                0 =>  [
+                    'classcode_id' =>  1,
+                ]
+            ],
         ];
     }
 
@@ -112,6 +118,11 @@ class ContentTest extends TestCase
                             'classcode_id' =>  '1',
                         ]
                     ],
+                    'content_assign_to_reads' =>  [
+                        0 =>  [
+                            'classcode_id' =>  '1',
+                        ]
+                    ],
                 ]
             ])
             ->assertJsonStructureExact([
@@ -132,6 +143,7 @@ class ContentTest extends TestCase
                     'content_descriptions',
                     'content_hidden_classcodes',
                     'content_lock_classcodes',
+                    'content_assign_to_reads',
                 ]
             ]);
     }
@@ -238,6 +250,11 @@ class ContentTest extends TestCase
                     'classcode_id' =>  1,
                 ]
             ],
+            'content_assign_to_reads' =>  [
+                0 =>  [
+                    'classcode_id' =>  1,
+                ]
+            ],
         ];
 
         $this->json('patch', '/api/contents/1', $payload, $this->headers)
@@ -309,6 +326,9 @@ class ContentTest extends TestCase
         $contentLockClasscode = factory(ContentLockClasscode::class)->create([
             'content_id' =>  $content->id
         ]);
+        $contentAssignToRead = factory(ContentAssignToRead::class)->create([
+            'content_id' =>  $content->id
+        ]);
 
         // Old Edit + No Delete + 1 New
         $payload = [
@@ -352,6 +372,15 @@ class ContentTest extends TestCase
                 0 =>  [
                     'id'          =>  $contentLockClasscode->id,
                     'classcode_id'  =>  1
+                ],
+                1 =>  [
+                    'classcode_id'  =>  1
+                ]
+            ],
+            'content_assign_to_reads' =>  [
+                0 =>  [
+                    'id'          =>  $contentAssignToRead->id,
+                    'classcode_id' =>  1,
                 ],
                 1 =>  [
                     'classcode_id'  =>  1
@@ -408,6 +437,15 @@ class ContentTest extends TestCase
                             'classcode_id'  =>  1
                         ]
                     ],
+                    'content_assign_to_reads' =>  [
+                        0 =>  [
+                            'id'          =>  $contentAssignToRead->id,
+                            'classcode_id' =>  1,
+                        ],
+                        1 =>  [
+                            'classcode_id'  =>  1
+                        ]
+                    ],
                 ]
             ])
             ->assertJsonStructureExact([
@@ -435,7 +473,8 @@ class ContentTest extends TestCase
 
                     'content_descriptions',
                     'content_hidden_classcodes',
-                    'content_lock_classcodes'
+                    'content_lock_classcodes',
+                    'content_assign_to_reads',
                 ]
             ]);
 
@@ -464,11 +503,19 @@ class ContentTest extends TestCase
             ],
             'content_hidden_classcodes' =>  [
                 0 =>  [
+                    'id' => $contentHiddenClasscode->id,
                     'classcode_id' =>  1,
                 ]
             ],
             'content_lock_classcodes' =>  [
                 0 =>  [
+                    'id' => $contentLockClasscode->id,
+                    'classcode_id' =>  1,
+                ]
+            ],
+            'content_assign_to_reads' =>  [
+                0 =>  [
+                    'id' => $contentAssignToRead->id,
                     'classcode_id' =>  1,
                 ]
             ],
@@ -501,13 +548,19 @@ class ContentTest extends TestCase
                     ],
                     'content_hidden_classcodes' =>  [
                         0 =>  [
-                            'id' => 3,
+                            'id' => $contentHiddenClasscode->id,
                             'classcode_id' =>  '1',
                         ]
                     ],
                     'content_lock_classcodes' =>  [
                         0 =>  [
-                            'id' => 3,
+                            'id' => $contentLockClasscode->id,
+                            'classcode_id' =>  '1',
+                        ]
+                    ],
+                    'content_assign_to_reads' =>  [
+                        0 =>  [
+                            'id' => $contentAssignToRead->id,
                             'classcode_id' =>  '1',
                         ]
                     ],
@@ -538,6 +591,7 @@ class ContentTest extends TestCase
                     'content_descriptions',
                     'content_hidden_classcodes',
                     'content_lock_classcodes',
+                    'content_assign_to_reads',
                 ]
             ]);
     }
