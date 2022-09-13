@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Content;
 use App\ContentDescription;
 use App\ContentHiddenClasscode;
+use App\ContentLockClasscode;
 use App\ContentMedia;
 use App\ContentSubject;
 use Illuminate\Http\Request;
@@ -86,6 +87,7 @@ class ContentsController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'content_name'  =>  'required'
         ]);
@@ -119,6 +121,13 @@ class ContentsController extends Controller
                 foreach ($request->content_hidden_classcodes as $hidden_classcode) {
                     $content_hidden_classcode = new ContentHiddenClasscode($hidden_classcode);
                     $content->content_hidden_classcodes()->save($content_hidden_classcode);
+                }
+            // ---------------------------------------------------
+            // Save Content Lock Classcode
+            if (isset($request->content_lock_classcodes))
+                foreach ($request->content_lock_classcodes as $lock_classcode) {
+                    $content_lock_classcode = new ContentLockClasscode($lock_classcode);
+                    $content->content_lock_classcodes()->save($content_lock_classcode);
                 }
             // ---------------------------------------------------
         } else {
@@ -226,7 +235,7 @@ class ContentsController extends Controller
                     $contentHddenClasscode->delete();
                 }
 
-            // Update Content Description
+            // Update Content Hdden
             if (isset($request->content_hidden_classcodes))
                 foreach ($request->content_hidden_classcodes as $hidden_classcode) {
                     if (!isset($hidden_classcode['id'])) {
@@ -239,12 +248,41 @@ class ContentsController extends Controller
                 }
 
             // ---------------------------------------------------
+            // Check if Content Lock classcode deleted
+            if (isset($request->content_lock_classcodes)) {
+                $contentLockClasscodeIdResponseArray = array_pluck($request->content_lock_classcodes, 'id');
+            } else
+                $contentLockClasscodeIdResponseArray = [];
+            $contentId = $content->id;
+            $contentLockClasscodeIdArray = array_pluck(ContentLockClasscode::where('content_id', '=', $contentId)->get(), 'id');
+            $differenceContentLockClasscodeIds = array_diff($contentLockClasscodeIdArray, $contentLockClasscodeIdResponseArray);
+            // Delete which is there in the database but not in the response
+            if ($differenceContentLockClasscodeIds)
+                foreach ($differenceContentLockClasscodeIds as $differenceContentLockClasscodeId) {
+                    $contentLockClasscode = ContentLockClasscode::find($differenceContentLockClasscodeId);
+                    $contentLockClasscode->delete();
+                }
+
+            // Update Content Description
+            if (isset($request->content_lock_classcodes))
+                foreach ($request->content_lock_classcodes as $lock_classcode) {
+                    if (!isset($lock_classcode['id'])) {
+                        $content_lock_classcode = new ContentLockClasscode($lock_classcode);
+                        $content->content_lock_classcodes()->save($content_lock_classcode);
+                    } else {
+                        $content_lock_classcode = ContentLockClasscode::find($lock_classcode['id']);
+                        $content_lock_classcode->update($lock_classcode);
+                    }
+                }
+
+            // ---------------------------------------------------
         }
 
         $content->content_subjects = $content->content_subjects;
         $content->content_medias = $content->content_medias;
         $content->content_descriptions = $content->content_descriptions;
         $content->content_hidden_classcodes = $content->content_hidden_classcodes;
+        $content->content_lock_classcodes = $content->content_lock_classcodes;
         return response()->json([
             'data'  =>  $content
         ], 201);

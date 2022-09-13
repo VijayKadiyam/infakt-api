@@ -35,4 +35,8 @@ class Classcode extends Model
     {
         return $this->hasMany(AssignmentClasscode::class);
     }
+    public function content_lock_classcodes()
+    {
+        return $this->hasMany(ContentLockClasscode::class);
+    }
 }
