@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Board;
 use Illuminate\Http\Request;
 use App\Company;
 use App\CompanyBoard;
@@ -99,13 +100,40 @@ class CompaniesController extends Controller
       $company->save();
 
       // Save Company Boards
+      $code3 = '';
       if (isset($request->company_boards))
-        foreach ($request->company_boards as $board) {
+        foreach ($request->company_boards  as $key =>  $board) {
           $board = new CompanyBoard($board);
           $company->company_boards()->save($board);
+
+          $board = Board::where('id', $board['board_id'])->first();
+          if ($key == 0) {
+            $code3 .=  mb_substr($board['name'], 0, 2);
+          } else {
+            $code3 .= "-" . mb_substr($board['name'], 0, 2);
+          }
         }
+
+      $school_words = explode(" ", $company->name);
+      $code1 = "";
+
+      foreach ($school_words as $w) {
+        $code1 .= mb_substr($w, 0, 1);
+      }
+
+      $state_words = explode(" ", $company->state);
+      $code2 = "";
+
+      foreach ($state_words as $w) {
+        $code2 .= mb_substr($w, 0, 3);
+      }
+      $code = $code1 . '/' . $code2 . '/' . $code3 . '/' . $company->id;
+
+      $company->code = strtoupper($code);
+      $company->update();
+
       // ---------------------------------------------------
-      // Send Regstration Emal
+      // Send Regstration Email
       if (request()->is_mail_sent == true) {
 
         $mail = Mail::to($request->email)->send(new RegistrationMail($company));
@@ -148,8 +176,9 @@ class CompaniesController extends Controller
         }
 
       // Update Company Board
+      $code3 = '';
       if (isset($request->company_boards))
-        foreach ($request->company_boards as $board) {
+        foreach ($request->company_boards as $key => $board) {
           if (!isset($board['id'])) {
             $company_board = new CompanyBoard($board);
             $company->company_boards()->save($company_board);
@@ -157,7 +186,30 @@ class CompaniesController extends Controller
             $company_board = CompanyBoard::find($board['id']);
             $company_board->update($board);
           }
+          $board = Board::where('id', $board['board_id'])->first();
+          if ($key == 0) {
+            $code3 .=  mb_substr($board['name'], 0, 2);
+          } else {
+            $code3 .= "-" . mb_substr($board['name'], 0, 2);
+          }
         }
+      $school_words = explode(" ", $company->name);
+      $code1 = "";
+
+      foreach ($school_words as $w) {
+        $code1 .= mb_substr($w, 0, 1);
+      }
+
+      $state_words = explode(" ", $company->state);
+      $code2 = "";
+
+      foreach ($state_words as $w) {
+        $code2 .= mb_substr($w, 0, 3);
+      }
+      $code = $code1 . '/' . $code2 . '/' . $code3 . '/' . $company->id;
+
+      $company->code = strtoupper($code);
+      $company->update();
 
       // ---------------------------------------------------
     }

@@ -31,4 +31,8 @@ class Classcode extends Model
     {
         return $this->belongsTo(Section::class)->with('standard');
     }
+    public function assignment_classcodes()
+    {
+        return $this->hasMany(AssignmentClasscode::class);
+    }
 }
