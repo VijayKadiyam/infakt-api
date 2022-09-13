@@ -22,12 +22,19 @@ class ClasscodesController extends Controller
     {
         $classcodes = [];
         if (request()->company) {
-            $classcodes = $section->classcodes()
-                ->where('is_deleted', false);
+            if ($section->id) {
+                $classcodes = $section->classcodes()
+                    ->where('is_deleted', false);
+            } else {
+                $classcodes = request()->company->classcodes()->where('is_deleted', false);
+            }
+            
             if (request()->classcode_id) {
                 $classcodes = $classcodes->where('id', request()->classcode_id);
             }
             $classcodes = $classcodes->get();
+        } else {
+            $classcodes = Classcode::get();
         }
         return response()->json([
             'data'  =>  $classcodes,
