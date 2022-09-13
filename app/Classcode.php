@@ -39,4 +39,8 @@ class Classcode extends Model
     {
         return $this->hasMany(ContentLockClasscode::class);
     }
+    public function content_assign_to_reads()
+    {
+        return $this->hasMany(ContentAssignToRead::class);
+    }
 }
