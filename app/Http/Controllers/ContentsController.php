@@ -9,6 +9,7 @@ use App\ContentHiddenClasscode;
 use App\ContentLockClasscode;
 use App\ContentMedia;
 use App\ContentSubject;
+use App\UserClasscode;
 use Illuminate\Http\Request;
 
 class ContentsController extends Controller
@@ -56,7 +57,7 @@ class ContentsController extends Controller
      */
     public function index()
     {
-        $contents = Content::with('content_subjects', 'content_medias', 'content_reads');
+        $contents = Content::with('content_subjects', 'content_medias', 'content_reads', 'content_descriptions');
         if (request()->subject_id) {
             $contents = $contents->whereHas('content_subjects', function ($c) {
                 $c->where('subject_id', '=', request()->subject_id);
@@ -73,6 +74,26 @@ class ContentsController extends Controller
                 ->Where('created_at', 'LIKE', '%' . request()->date_filter . '%');
         }
         $contents = $contents->get();
+
+        $user_role = request()->roleName;
+        $user_id = request()->user_id;
+
+        if ($user_role == 'STUDENT') {
+            $user_classcodes =  UserClasscode::where('user_id', $user_id)->get();
+
+            foreach ($user_classcodes as $key => $classcode) {
+                $content_hidden_classcodes = ContentHiddenClasscode::where('classcode_id', $classcode->classcode_id)->get();
+                $filtered_contents = [];
+                foreach ($content_hidden_classcodes as  $content_hidden_classcode) {
+                    foreach ($contents as $key => $content) {
+                        if ($content->id != $content_hidden_classcode->content_id) {
+                            array_push($filtered_contents, $content);
+                            $contents = $filtered_contents;
+                        }
+                    }
+                }
+            }
+        }
         return response()->json([
             'data'  =>  $contents,
             'count' =>   sizeof($contents),
