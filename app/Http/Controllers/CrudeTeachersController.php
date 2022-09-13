@@ -51,13 +51,13 @@ class CrudeTeachersController extends Controller
                 ->first();
             $role_id = 3;
             $data = [
-                'name'               =>  $teacher->first_name . " " . $teacher->last_name,
-                'first_name'         =>  $teacher->first_name,
-                'last_name'          =>  $teacher->last_name,
-                'contact_number'     =>  $teacher->contact_number,
-                'joining_date'     =>  $teacher->joining_date,
-                'gender'             =>  $teacher->gender == 'MALE' ? 1 : 0,
-                'active'             =>  $teacher->active,
+                'name'           =>  $teacher->first_name . " " . $teacher->last_name,
+                'first_name'     =>  $teacher->first_name,
+                'last_name'      =>  $teacher->last_name,
+                'contact_number' =>  $teacher->contact_number,
+                'joining_date'   =>  $teacher->joining_date,
+                'gender'         =>  $teacher->gender == 'MALE' ? 1 : 0,
+                'active'         =>  $teacher->active == 'YES' ? 1 : 0,
             ];
             if (!$us) {
                 // New Teacher
