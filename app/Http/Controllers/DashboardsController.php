@@ -234,14 +234,13 @@ class DashboardsController extends Controller
     public function ClasscodeWiseOverview()
     {
         $type = request()->type;
-        $month = request()->month;
-        $year = request()->year;
 
         if (request()->company_id) {
             $company = Company::find(request()->company_id);
             $teachers = $company->allUsers()->where('is_deleted', false)->with('roles', 'user_classcodes', 'assignments');
             $students = $company->allUsers()->where('is_deleted', false)->with('roles', 'user_classcodes', 'user_assignments');
             $classes = $company->classcodes()->with('assignment_classcodes');
+            $assignments = $company->assignments();
         }
         if ($type == 1) {
             // Classcode
@@ -252,6 +251,9 @@ class DashboardsController extends Controller
                 $uc->where('classcode_id', '=', request()->type_id);
             });
             $classes = $classes->where('id', request()->type_id);
+            $assignments = $assignments->wherehas('my_assignment_classcodes', function ($uc) {
+                $uc->where('classcode_id', '=', request()->type_id);
+            });
         }
         // if ($type == 2) {
         //     // Teacher
@@ -294,6 +296,7 @@ class DashboardsController extends Controller
 
         $classes = $classes->get();
 
+        $assignments = $assignments->get();
         /******** Top Teachers */
         $top_teachers = [];
         foreach ($teachers as $key => $teacher) {
@@ -310,6 +313,10 @@ class DashboardsController extends Controller
         });
 
         /******** Top Student */
+        $top_students_count = 0;
+        $avg_students_count = 0;
+        $below_avg_students_count = 0;
+        $weak_students_count = 0;
         $total_maximum_marks = 0;
         $top_students = [];
         foreach ($students as $key => $student) {
@@ -326,6 +333,24 @@ class DashboardsController extends Controller
             if ($assignment_submitted != 0) {
                 $average = $total_scored / $assignment_submitted;
                 $student['average'] = $average;
+            }
+            switch (true) {
+                case ($average >= 76):
+                    $grade = 'A';
+                    $top_students_count++;
+                    break;
+                case ($average >= 60 && $average < 76):
+                    $grade = 'B';
+                    $avg_students_count++;
+                    break;
+                case ($average >= 59 && $average < 36):
+                    $grade = 'C';
+                    $below_avg_students_count++;
+                    break;
+                case ($average < 36):
+                    $grade = 'D';
+                    $weak_students_count++;
+                    break;
             }
             // Top Students Based on Average
             $top_students[] = $student;
@@ -350,16 +375,50 @@ class DashboardsController extends Controller
             return $b['assignment_count'] - $a['assignment_count'];
         });
 
+        // Assignment Type Overview
+        $subjective_assignment_count = 0;
+        $objective_assignment_count = 0;
+        $document_assignment_count = 0;
+        foreach ($assignments as $key => $assignment) {
+            switch ($assignment->assignment_type) {
+                case 'SUBJECTIVE':
+                    $subjective_assignment_count++;
+                    break;
+
+                case 'OBJECTIVE':
+                    $objective_assignment_count++;
+                    break;
+
+                case 'DOCUMENT':
+                    $document_assignment_count++;
+                    break;
+
+                default:
+                    # code...
+                    break;
+            }
+        }
+
         $data = [
-            'teachers'  =>  $teachers,
-            'teachersCount'  =>  $teachers->count(),
-            'students'  =>  $students,
-            'studentsCount'  =>  $students->count(),
-            'classes'  =>  $classes,
+            'teachers'      =>  $teachers,
+            'teachersCount' =>  $teachers->count(),
+            'students'      =>  $students,
+            'studentsCount' => $students->count(),
+            'classes'       =>  $classes,
             'classesCount'  =>  $classes->count(),
-            'top_teachers'  =>  array_slice($top_teachers, 0, 10),
-            'top_students'  =>  array_slice($top_students, 0, 10),
-            'top_classes'  =>  array_slice($top_classes, 0, 10),
+            'top_10_teachers'  =>  array_slice($top_teachers, 0, 10),  //  Top 10 Teachers
+            'top_10_students'  =>  array_slice($top_students, 0, 10),  //  Top 10 Students
+            'top_10_classes'   =>  array_slice($top_classes, 0, 10),   //  Top 10 Classes
+            //Student Wise Performance 
+            'top_students_count'            => $top_students_count,
+            'avg_students_count'            => $avg_students_count,
+            'below_avg_students_count'      => $below_avg_students_count,
+            'weak_students_count'           => $weak_students_count,
+            // Assignment Type Overview
+            'subjective_assignment_count'      => $subjective_assignment_count,
+            'objective_assignment_count'       => $objective_assignment_count,
+            'document_assignment_count'        => $document_assignment_count,
+
         ];
         return response()->json([
             'data'  =>  $data
