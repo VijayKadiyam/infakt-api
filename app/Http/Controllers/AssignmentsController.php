@@ -56,7 +56,6 @@ class AssignmentsController extends Controller
             }
         }
 
-
         return response()->json([
             'data'  =>  $assignments,
             'count' =>   sizeof($assignments),

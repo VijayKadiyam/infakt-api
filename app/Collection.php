@@ -26,4 +26,8 @@ class Collection extends Model
    {
       return $this->hasMany(CollectionContent::class)->with('content');
    }
+   public function content_assign_to_reads()
+   {
+      return $this->hasMany(ContentAssignToRead::class);
+   }
 }

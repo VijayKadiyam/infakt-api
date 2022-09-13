@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Content;
+use App\ContentAssignToRead;
 use App\ContentDescription;
 use App\ContentHiddenClasscode;
 use App\ContentLockClasscode;
@@ -128,6 +129,14 @@ class ContentsController extends Controller
                 foreach ($request->content_lock_classcodes as $lock_classcode) {
                     $content_lock_classcode = new ContentLockClasscode($lock_classcode);
                     $content->content_lock_classcodes()->save($content_lock_classcode);
+                }
+            // ---------------------------------------------------
+            // Save Content Assign To Reads
+            if (isset($request->content_assign_to_reads))
+                foreach ($request->content_assign_to_reads as $assign_to_read) {
+
+                    $content_assign_to_read = new ContentAssignToRead($assign_to_read);
+                    $content->content_assign_to_reads()->save($content_assign_to_read);
                 }
             // ---------------------------------------------------
         } else {
@@ -276,6 +285,34 @@ class ContentsController extends Controller
                 }
 
             // ---------------------------------------------------
+            // Check if Content Assign to Read deleted
+            if (isset($request->content_assign_to_reads)) {
+                $contentAssignToReadIdResponseArray = array_pluck($request->content_assign_to_reads, 'id');
+            } else
+                $contentAssignToReadIdResponseArray = [];
+            $contentId = $content->id;
+            $contentAssignToReadIdArray = array_pluck(ContentAssignToRead::where('content_id', '=', $contentId)->get(), 'id');
+            $differenceContentAssignToReadIds = array_diff($contentAssignToReadIdArray, $contentAssignToReadIdResponseArray);
+            // Delete which is there in the database but not in the response
+            if ($differenceContentAssignToReadIds)
+                foreach ($differenceContentAssignToReadIds as $differenceContentAssignToReadId) {
+                    $contentAssignToRead = ContentAssignToRead::find($differenceContentAssignToReadId);
+                    $contentAssignToRead->delete();
+                }
+
+            // Update Content Description
+            if (isset($request->content_assign_to_reads))
+                foreach ($request->content_assign_to_reads as $assign_to_read) {
+                    if (!isset($assign_to_read['id'])) {
+                        $content_assign_to_read = new ContentAssignToRead($assign_to_read);
+                        $content->content_assign_to_reads()->save($content_assign_to_read);
+                    } else {
+                        $content_assign_to_read = ContentAssignToRead::find($assign_to_read['id']);
+                        $content_assign_to_read->update($assign_to_read);
+                    }
+                }
+
+            // ---------------------------------------------------
         }
 
         $content->content_subjects = $content->content_subjects;
@@ -283,6 +320,7 @@ class ContentsController extends Controller
         $content->content_descriptions = $content->content_descriptions;
         $content->content_hidden_classcodes = $content->content_hidden_classcodes;
         $content->content_lock_classcodes = $content->content_lock_classcodes;
+        $content->content_assign_to_reads = $content->content_assign_to_reads;
         return response()->json([
             'data'  =>  $content
         ], 201);
@@ -300,6 +338,8 @@ class ContentsController extends Controller
         $content->content_medias = $content->content_medias;
         $content->content_metadatas = $content->content_metadatas;
         $content->content_descriptions = $content->content_descriptions;
+        $content->content_hidden_classcodes = $content->content_hidden_classcodes;
+        $content->content_lock_classcodes = $content->content_lock_classcodes;
 
         return response()->json([
             'data'  =>  $content
