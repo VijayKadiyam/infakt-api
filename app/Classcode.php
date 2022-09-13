@@ -31,6 +31,10 @@ class Classcode extends Model
     {
         return $this->belongsTo(Section::class)->with('standard');
     }
+    public function user_classcodes()
+    {
+        return $this->hasMany(UserClasscode::class);
+    }
     public function assignment_classcodes()
     {
         return $this->hasMany(AssignmentClasscode::class);
@@ -38,5 +42,12 @@ class Classcode extends Model
     public function content_lock_classcodes()
     {
         return $this->hasMany(ContentLockClasscode::class);
+    }
+    public function students()
+    {
+        return $this->belongsToMany(User::class, 'user_classcodes', 'classcode_id', 'user_id')
+            ->whereHas('roles', function ($q) {
+                $q->where('name', 'STUDENT');
+            });
     }
 }
