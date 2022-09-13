@@ -238,3 +238,6 @@ Route::resource('user_timestamps', 'UserTimestampsController');
 
 // searches
 Route::resource('searches', 'SearchesController');
+
+// Teacher Overview
+Route::get('teacher_wise_overview', 'DashboardsController@TeacherWiseOverview');

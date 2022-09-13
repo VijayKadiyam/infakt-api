@@ -338,6 +338,8 @@ class ContentsController extends Controller
         $content->content_medias = $content->content_medias;
         $content->content_metadatas = $content->content_metadatas;
         $content->content_descriptions = $content->content_descriptions;
+        $content->content_hidden_classcodes = $content->content_hidden_classcodes;
+        $content->content_lock_classcodes = $content->content_lock_classcodes;
 
         return response()->json([
             'data'  =>  $content
