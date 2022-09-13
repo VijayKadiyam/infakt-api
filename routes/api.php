@@ -244,3 +244,6 @@ Route::get('teacher_wise_overview', 'DashboardsController@TeacherWiseOverview');
 
 // features
 Route::resource('features', 'FeaturesController');
+
+// Student Overview
+Route::get('student_wise_overview', 'DashboardsController@StudentWiseOverview');

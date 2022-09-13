@@ -54,4 +54,11 @@ class Classcode extends Model
                 $q->where('name', 'STUDENT');
             });
     }
+    public function teachers()
+    {
+        return $this->belongsToMany(User::class, 'user_classcodes', 'classcode_id', 'user_id')
+            ->whereHas('roles', function ($q) {
+                $q->where('name', 'TEACHER');
+            });
+    }
 }

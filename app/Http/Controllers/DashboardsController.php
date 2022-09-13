@@ -598,4 +598,190 @@ class DashboardsController extends Controller
             'data'  =>  $data
         ], 200);
     }
+
+    public function StudentWiseOverview()
+    {
+        $student_id = request()->type_id;
+        if (request()->company_id) {
+            $company     = Company::find(request()->company_id);
+            $students    = $company->allUsers()->where('is_deleted', false);
+            $classes     = $company->classcodes()->where('is_deleted', false);
+            $assignments = $company->assignments();
+        }
+        if ($student_id) {
+            // Student 
+            $students = $students->where('users.id', $student_id);
+            $classes = $classes->whereHas('user_classcodes', function ($uc) use ($student_id) {
+                $uc->where('user_id', '=', $student_id);
+            });
+            $assignments = $assignments->wherehas('assignment_classcodes', function ($uc) use ($student_id) {
+                $uc->where('classcode_id', '=', $student_id);
+            });
+        }
+
+        $students = $students->whereHas('roles', function ($q) {
+            $q->where('name', '=', 'STUDENT');
+        })->get();
+
+        $classes = $classes->get();
+        $assignments = $assignments->get();
+
+
+        /******** Top Student */
+        $top_students_count = 0;
+        $avg_students_count = 0;
+        $below_avg_students_count = 0;
+        $weak_students_count = 0;
+        $total_maximum_marks = 0;
+        $top_students = [];
+        $total_student_read_count = 0;
+
+        foreach ($students as $key => $student) {
+            $student['average'] = 0;
+            $total_scored = 0;
+            $average = 0;
+            $user_assignments = $student->user_assignments;
+            $assignment_submitted = sizeof($user_assignments);
+            foreach ($user_assignments as $key => $ua) {
+                $class_id = $ua->$total_maximum_marks += $ua->assignment->maximum_marks;
+                $score = $ua->score;
+                $total_scored += $score;
+            }
+            if ($assignment_submitted != 0) {
+                $average = $total_scored / $assignment_submitted;
+                $student['average'] = $average;
+            }
+            switch (true) {
+                case ($average >= 76):
+                    $grade = 'A';
+                    $top_students_count++;
+                    break;
+                case ($average >= 60 && $average < 76):
+                    $grade = 'B';
+                    $avg_students_count++;
+                    break;
+                case ($average >= 59 && $average < 36):
+                    $grade = 'C';
+                    $below_avg_students_count++;
+                    break;
+                case ($average < 36):
+                    $grade = 'D';
+                    $weak_students_count++;
+                    break;
+            }
+            // Top Students Based on Average
+            $top_students[] = $student;
+            //  Total Student Content read Count
+            $student['read_count'] = 0;
+            if ($student->content_reads) {
+                $student['read_count'] = sizeof($student->content_reads);
+            }
+            $total_student_read_count += $student['read_count'];
+        }
+        // Sorting Descending by Average
+        usort($top_students, function ($a, $b) {
+            return $b['average'] - $a['average'];
+        });
+
+        /******** Top Classcodes */
+        $top_classes = [];
+        $top_teachers = [];
+        $total_teachers = [];
+        $total_teacher_read_count = 0;
+        foreach ($classes as $key => $class) {
+            $class['assignment_count'] = 0;
+            if ($class->assignment_classcodes) {
+                $class['assignment_count'] = sizeof($class->assignment_classcodes);
+                // foreach ($class->assignment_classcodes as $key => $ac) {
+                //     $assignment = $ac->assignment;
+                //     if (sizeOf($assignment->user_assignments)) {
+                //         foreach ($assignment->user_assignments as $key => $ua) {
+                            
+                //         }
+                //         return $assignment->user_assignments;
+                //     }
+                // }
+            }
+            // Top Classcodes Based on Number of Assignment posted
+            $top_classes[] = $class;
+
+            /******** Top Teachers */
+            $teachers = $class->teachers;
+            foreach ($teachers as $key => $teacher) {
+                $teacher['assignment_count'] = 0;
+                if ($teacher->assignments) {
+                    $teacher['assignment_count'] = sizeof($teacher->assignments);
+                }
+
+                $teacher['read_count'] = 0;
+                if ($teacher->content_reads) {
+                    $teacher['read_count'] = sizeof($teacher->content_reads);
+                }
+                $total_teacher_read_count += $teacher['read_count'];
+                // Top Teachers Based on Number of Assignment posted
+                $top_teachers[] = $teacher;
+                $total_teachers[] = $teacher;
+            }
+        }
+        // Sorting Descending by Average
+        usort($top_teachers, function ($a, $b) {
+            return $b['assignment_count'] - $a['assignment_count'];
+        });
+
+        // Sorting Descending by Average
+        usort($top_classes, function ($a, $b) {
+            return $b['assignment_count'] - $a['assignment_count'];
+        });
+
+        // Assignment Type Overview
+        $subjective_assignment_count = 0;
+        $objective_assignment_count = 0;
+        $document_assignment_count = 0;
+        foreach ($assignments as $key => $assignment) {
+            switch ($assignment->assignment_type) {
+                case 'SUBJECTIVE':
+                    $subjective_assignment_count++;
+                    break;
+
+                case 'OBJECTIVE':
+                    $objective_assignment_count++;
+                    break;
+
+                case 'DOCUMENT':
+                    $document_assignment_count++;
+                    break;
+
+                default:
+                    # code...
+                    break;
+            }
+        }
+
+        $data = [
+            'teachers'      =>  $total_teachers,
+            'teachersCount' =>  sizeOf($total_teachers),
+            'students'      =>  $students,
+            'studentsCount' => $students->count(),
+            'classes'       =>  $classes,
+            'classesCount'  =>  $classes->count(),
+            'top_10_teachers'  =>  array_slice($top_teachers, 0, 10),  //  Top 10 Teachers
+            'top_10_students'  =>  array_slice($top_students, 0, 10),  //  Top 10 Students
+            'top_10_classes'   =>  array_slice($top_classes, 0, 10),   //  Top 10 Classes
+            //Student Wise Performance 
+            'top_students_count'            => $top_students_count,
+            'avg_students_count'            => $avg_students_count,
+            'below_avg_students_count'      => $below_avg_students_count,
+            'weak_students_count'           => $weak_students_count,
+            // Assignment Type Overview
+            'subjective_assignment_count'      => $subjective_assignment_count,
+            'objective_assignment_count'       => $objective_assignment_count,
+            'document_assignment_count'        => $document_assignment_count,
+            // Total Content Read
+            'total_teacher_read_count'      => $total_teacher_read_count,
+            'total_student_read_count'      => $total_student_read_count,
+        ];
+        return response()->json([
+            'data'  =>  $data
+        ], 200);
+    }
 }

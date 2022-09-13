@@ -20,12 +20,13 @@ class AssignmentClasscode extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function assignments()
+    public function assignment()
     {
-        return $this->hasMany(Assignment::class);
+        return $this->belongsTo(Assignment::class)->with('user_assignments');
     }
 
-    public function classcode() {
+    public function classcode()
+    {
         return $this->belongsTo(Classcode::class);
     }
 }
