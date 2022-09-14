@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Classcode;
 use App\ImportBatch;
 use App\Mail\RegistrationMail;
+use App\Notification;
 use Illuminate\Http\Request;
 use App\User;
 use App\Role;
@@ -337,6 +339,16 @@ class UsersController extends Controller
         foreach ($request->user_classcodes as $classcode) {
           $classcode = new UserClasscode($classcode);
           $user->user_classcodes()->save($classcode);
+
+          // Create Notification Log
+          $c = Classcode::find($classcode->classcode_id);
+          $description = "A new Classcode[ $c->classcode ] has been assigned to you.";
+          $notification_data = [
+            'user_id' => $user->id,
+            'description' => $description
+          ];
+          $notifications = new Notification($notification_data);
+          $request->company->notifications()->save($notifications);
         }
       // ---------------------------------------------------
       // Send Regstration Emal
@@ -365,7 +377,16 @@ class UsersController extends Controller
       if ($differenceUserClasscodeIds)
         foreach ($differenceUserClasscodeIds as $differenceUserClasscodeId) {
           $userClasscode = UserClasscode::find($differenceUserClasscodeId);
+          $c = Classcode::find($userClasscode['classcode_id']);
           $userClasscode->delete();
+          // Create Notification Log
+          $description = "An existing classcode[ $c->classcode ] has been unassigned.";
+          $notification_data = [
+            'user_id' => $user->id,
+            'description' => $description
+          ];
+          $notifications = new Notification($notification_data);
+          $request->company->notifications()->save($notifications);
         }
 
       // Update User Classcode
@@ -374,6 +395,15 @@ class UsersController extends Controller
           if (!isset($classcode['id'])) {
             $user_classcode = new UserClasscode($classcode);
             $user->user_classcodes()->save($user_classcode);
+            // Create Notification Log
+            $c = Classcode::find($classcode['classcode_id']);
+            $description = "A new Classcode[ $c->classcode ] has been assigned to you.";
+            $notification_data = [
+              'user_id' => $user->id,
+              'description' => $description
+            ];
+            $notifications = new Notification($notification_data);
+            $request->company->notifications()->save($notifications);
           } else {
             $user_classcode = UserClasscode::find($classcode['id']);
             $user_classcode->update($classcode);

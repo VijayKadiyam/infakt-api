@@ -4,19 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Notification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class NotificationsController extends Controller
 
 {
     public function __construct()
     {
-        $this->middleware(['auth:api','company']);
+        $this->middleware(['auth:api', 'company']);
     }
 
     public function index(Request $request)
     {
         $count = 0;
-        $notifications = $request->company->notifications;
+        $user_id = Auth::user()->id;
+        $notifications = $request->company->notifications();
+        if ($user_id) {
+            $notifications = $notifications->where('user_id', $user_id);
+        }
+        $notifications = $notifications->get();
         $count = $notifications->count();
 
         return response()->json([

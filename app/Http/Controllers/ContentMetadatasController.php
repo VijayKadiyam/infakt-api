@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Classcode;
 use App\ContentMetadata;
 use App\ContentMetadataClasscode;
+use App\Notification;
 use Illuminate\Http\Request;
 
 class ContentMetadatasController extends Controller
@@ -52,6 +54,18 @@ class ContentMetadatasController extends Controller
                 foreach ($request->content_metadata_classcodes as $metadata_classcodes) {
                     $content_metadata_classcodes = new ContentMetadataClasscode($metadata_classcodes);
                     $content_metadata->content_metadata_classcodes()->save($content_metadata_classcodes);
+                    // Create Notification Log
+                    $c = Classcode::find($content_metadata_classcodes->classcode_id);
+                    $students = $c->students;
+                    foreach ($students as $key => $user) {
+                        $description = "A new $content_metadata->metadata_type has been posted for Classcode[ $c->classcode ].";
+                        $notification_data = [
+                            'user_id' => $user->id,
+                            'description' => $description
+                        ];
+                        $notifications = new Notification($notification_data);
+                        $request->company->notifications()->save($notifications);
+                    }
                 }
             // ---------------------------------------------------
 
@@ -72,7 +86,19 @@ class ContentMetadatasController extends Controller
             if ($differenceContentMetadataClasscodeIds)
                 foreach ($differenceContentMetadataClasscodeIds as $differenceContentMetadataClasscodeId) {
                     $contentMetadataClasscode = ContentMetadataClasscode::find($differenceContentMetadataClasscodeId);
+                    $c = Classcode::find($contentMetadataClasscode['classcode_id']);
                     $contentMetadataClasscode->delete();
+                    // Create Notification Log
+                    $students = $c->students;
+                    foreach ($students as $key => $user) {
+                        $description = "An Existing $content_metadata->metadata_type has been removed for Classcode[ $c->classcode ].";
+                        $notification_data = [
+                            'user_id' => $user->id,
+                            'description' => $description
+                        ];
+                        $notifications = new Notification($notification_data);
+                        $request->company->notifications()->save($notifications);
+                    }
                 }
 
             // Update Content Subject
@@ -81,6 +107,18 @@ class ContentMetadatasController extends Controller
                     if (!isset($metadata_classcode['id'])) {
                         $content_metadata_classcode = new ContentMetadataClasscode($metadata_classcode);
                         $content_metadata->content_metadata_classcodes()->save($content_metadata_classcode);
+                        // Create Notification Log
+                        $c = Classcode::find($content_metadata_classcode['classcode_id']);
+                        $students = $c->students;
+                        foreach ($students as $key => $user) {
+                            $description = "A new $content_metadata->metadata_type has been posted for Classcode[ $c->classcode ].";
+                            $notification_data = [
+                                'user_id' => $user->id,
+                                'description' => $description
+                            ];
+                            $notifications = new Notification($notification_data);
+                            $request->company->notifications()->save($notifications);
+                        }
                     } else {
                         $content_metadata_classcode = ContentMetadataClasscode::find($metadata_classcode['id']);
                         $content_metadata->update($metadata_classcode);
