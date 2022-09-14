@@ -29,24 +29,31 @@ class UsersController extends Controller
     $rolesController = new RolesController();
     $rolesResponse = $rolesController->index($request);
 
-    $standardsController = new StandardsController();
-    $standardsResponse = $standardsController->index($request);
+    if ($request->company) {
+      $standardsController = new StandardsController();
+      $standardsResponse = $standardsController->index($request);
 
-    $sectionsController = new SectionsController();
-    $sectionsResponse = $sectionsController->all_sections($request);
+      $sectionsController = new SectionsController();
+      $sectionsResponse = $sectionsController->all_sections($request);
 
-    $classcodesController = new ClasscodesController();
-    $classcodesResponse = $classcodesController->all_classcodes($request);
+      $classcodesController = new ClasscodesController();
+      $classcodesResponse = $classcodesController->all_classcodes($request);
 
-    $boardsController = new BoardsController();
-    $boardsResponse = $boardsController->index($request);
+      $boardsController = new BoardsController();
+      $boardsResponse = $boardsController->index($request);
+
+      return response()->json([
+        'roles'      =>  $rolesResponse->getData()->data,
+        'standards'  =>  $standardsResponse->getData()->data,
+        'sections'   =>  $sectionsResponse->getData()->data,
+        'classcodes' =>  $classcodesResponse->getData()->data,
+        'boards' =>  $boardsResponse->getData()->data,
+      ], 200);
+    }
+
 
     return response()->json([
       'roles'      =>  $rolesResponse->getData()->data,
-      'standards'  =>  $standardsResponse->getData()->data,
-      'sections'   =>  $sectionsResponse->getData()->data,
-      'classcodes' =>  $classcodesResponse->getData()->data,
-      'boards' =>  $boardsResponse->getData()->data,
     ], 200);
   }
 

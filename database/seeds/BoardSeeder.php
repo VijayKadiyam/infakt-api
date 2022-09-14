@@ -14,16 +14,16 @@ class BoardSeeder extends Seeder
     {
         $boards = [
             [
-                'name' => 'CBSC',
+                'name' => 'CBSE',
             ],
             [
-                'name' => 'ICSC',
+                'name' => 'ICSE',
             ],
             [
                 'name' => 'ISC',
             ],
             [
-                'name' => 'IGSC',
+                'name' => 'IGCSE',
             ],
             [
                 'name' => 'IB',
