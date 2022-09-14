@@ -7,6 +7,8 @@ use App\AssignmentClasscode;
 use App\AssignmentExtension;
 use App\AssignmentQuestion;
 use App\AssignmentQuestionOption;
+use App\Classcode;
+use App\Notification;
 use App\Role;
 use App\User;
 use Illuminate\Http\Request;
@@ -98,6 +100,18 @@ class AssignmentsController extends Controller
                 foreach ($request->assignment_classcodes as $classcode) {
                     $assignment_classcode = new AssignmentClasscode($classcode);
                     $assignment->assignment_classcodes()->save($assignment_classcode);
+                    // Create Notification Log
+                    $c = Classcode::find($assignment_classcode->classcode_id);
+                    $students = $c->students;
+                    foreach ($students as $key => $user) {
+                        $description = "A new Assignment[ $assignment->assignment_title ] has been posted for Classcode[ $c->classcode ].";
+                        $notification_data = [
+                            'user_id' => $user->id,
+                            'description' => $description
+                        ];
+                        $notifications = new Notification($notification_data);
+                        $request->company->notifications()->save($notifications);
+                    }
                 }
             // ---------------------------------------------------
             // Save Assignment Questions 
@@ -143,7 +157,19 @@ class AssignmentsController extends Controller
             if ($differenceAssignmentClasscodeIds)
                 foreach ($differenceAssignmentClasscodeIds as $differenceAssignmentClasscodeId) {
                     $classcode = AssignmentClasscode::find($differenceAssignmentClasscodeId);
+                    $c = Classcode::find($classcode['classcode_id']);
+                    $students = $c->students;
                     $classcode->delete();
+                    // Create Notification Log
+                    foreach ($students as $key => $user) {
+                        $description = "An existing Assignment[ $assignment->assignment_title ] has been removed for Classcode[ $c->classcode ].";
+                        $notification_data = [
+                            'user_id' => $user->id,
+                            'description' => $description
+                        ];
+                        $notifications = new Notification($notification_data);
+                        $request->company->notifications()->save($notifications);
+                    }
                 }
 
             // Update Assignmnet Classcode
@@ -152,6 +178,18 @@ class AssignmentsController extends Controller
                     if (!isset($classcode['id'])) {
                         $assignment_classcode = new AssignmentClasscode($classcode);
                         $assignment->assignment_classcodes()->save($assignment_classcode);
+                        // Create Notification Log
+                        $c = Classcode::find($classcode['classcode_id']);
+                        $students = $c->students;
+                        foreach ($students as $key => $user) {
+                            $description = "A new Assignment[ $assignment->assignment_title ] has been posted for Classcode[ $c->classcode ].";
+                            $notification_data = [
+                                'user_id' => $user->id,
+                                'description' => $description
+                            ];
+                            $notifications = new Notification($notification_data);
+                            $request->company->notifications()->save($notifications);
+                        }
                     } else {
                         $assignment_classcode = AssignmentClasscode::find($classcode['id']);
                         $assignment_classcode->update($classcode);
