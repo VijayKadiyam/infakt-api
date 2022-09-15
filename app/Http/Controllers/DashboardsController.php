@@ -56,7 +56,7 @@ class DashboardsController extends Controller
             'type'  =>  'required'
         ]);
         $subTypes = [];
-        if($request->type == 'Classcode') {
+        if ($request->type == 'Classcode') {
             $subTypes = Classcode::where('company_id', '=', $request->schoolId)
                 ->get();
         }
@@ -632,8 +632,8 @@ class DashboardsController extends Controller
             $classes = $classes->whereHas('user_classcodes', function ($uc) use ($student_id) {
                 $uc->where('user_id', '=', $student_id);
             });
-            $assignments = $assignments->wherehas('assignment_classcodes', function ($uc) use ($student_id) {
-                $uc->where('classcode_id', '=', $student_id);
+            $assignments = $assignments->wherehas('user_assignments', function ($uc) use ($student_id) {
+                $uc->where('user_id', '=', $student_id);
             });
         }
 
@@ -643,7 +643,6 @@ class DashboardsController extends Controller
 
         $classes = $classes->get();
         $assignments = $assignments->get();
-
 
         /******** Top Student */
         $top_students_count = 0;
@@ -661,7 +660,7 @@ class DashboardsController extends Controller
             $user_assignments = $student->user_assignments;
             $assignment_submitted = sizeof($user_assignments);
             foreach ($user_assignments as $key => $ua) {
-                $class_id = $ua->$total_maximum_marks += $ua->assignment->maximum_marks;
+                $total_maximum_marks += $ua->assignment->maximum_marks;
                 $score = $ua->score;
                 $total_scored += $score;
             }
@@ -710,16 +709,65 @@ class DashboardsController extends Controller
             $class['assignment_count'] = 0;
             if ($class->assignment_classcodes) {
                 $class['assignment_count'] = sizeof($class->assignment_classcodes);
-                // foreach ($class->assignment_classcodes as $key => $ac) {
-                //     $assignment = $ac->assignment;
-                //     if (sizeOf($assignment->user_assignments)) {
-                //         foreach ($assignment->user_assignments as $key => $ua) {
+                $total_assignment_posted_for_classcode = $class['assignment_count'];
+                $total_assignment_submitted_for_classcode = 0;
+                $total_maximum_marks = 0;
+                $total_scored = 0;
+                // Assignment Type Overview
+                $subjective_assignment_count = 0;
+                $objective_assignment_count = 0;
+                $document_assignment_count = 0;
+                foreach ($class->assignment_classcodes as $key => $ac) {
+                    $assignment = $ac->assignment;
+                    switch ($assignment->assignment_type) {
+                        case 'SUBJECTIVE':
+                            $subjective_assignment_count++;
+                            break;
 
-                //         }
-                //         return $assignment->user_assignments;
-                //     }
-                // }
+                        case 'OBJECTIVE':
+                            $objective_assignment_count++;
+                            break;
+
+                        case 'DOCUMENT':
+                            $document_assignment_count++;
+                            break;
+
+                        default:
+                            # code...
+                            break;
+                    }
+                    $total_maximum_marks += $assignment->maximum_marks;
+                    if (sizeOf($assignment->user_assignments)) {
+                        foreach ($assignment->user_assignments as $key => $ua) {
+                            $score = 0;
+                            if ($ua->user_id == $student_id) {
+                                $total_assignment_submitted_for_classcode++;
+                                $score = $ua->score;
+                                $total_scored += $score;
+                            }
+                        }
+                    }
+                }
             }
+            $average = 0;
+            if ($total_scored != 0 &&  $total_assignment_submitted_for_classcode != 0) {
+                $average = $total_scored / $total_assignment_submitted_for_classcode;
+            }
+            $class_details = [
+                'class_id' => $class['id'],
+                'classcode' => $class['classcode'],
+                'total_assignment_posted_for_classcode' => $total_assignment_posted_for_classcode,
+                'total_assignment_submitted_for_classcode' => $total_assignment_submitted_for_classcode,
+                'total_maximum_marks' => $total_maximum_marks,
+                'total_scored' => $total_scored,
+                'average' => $average,
+                // Assignment Type Overview
+                'subjective_assignment_count'      => $subjective_assignment_count,
+                'objective_assignment_count'       => $objective_assignment_count,
+                'document_assignment_count'        => $document_assignment_count,
+            ];
+            // Total of All Class Details
+            $total_classes[] = $class_details;
             // Top Classcodes Based on Number of Assignment posted
             $top_classes[] = $class;
 
@@ -741,16 +789,18 @@ class DashboardsController extends Controller
                 $total_teachers[] = $teacher;
             }
         }
+
         // Sorting Descending by Average
         usort($top_teachers, function ($a, $b) {
             return $b['assignment_count'] - $a['assignment_count'];
         });
 
         // Sorting Descending by Average
-        usort($top_classes, function ($a, $b) {
-            return $b['assignment_count'] - $a['assignment_count'];
+        usort($total_classes, function ($a, $b) {
+            return $b['average'] - $a['average'];
         });
 
+        $top_classes = array_slice($total_classes, 0, 10);
         // Assignment Type Overview
         $subjective_assignment_count = 0;
         $objective_assignment_count = 0;
@@ -775,6 +825,7 @@ class DashboardsController extends Controller
             }
         }
 
+
         $data = [
             'teachers'      =>  $total_teachers,
             'teachersCount' =>  sizeOf($total_teachers),
@@ -784,12 +835,12 @@ class DashboardsController extends Controller
             'classesCount'  =>  $classes->count(),
             'top_10_teachers'  =>  array_slice($top_teachers, 0, 10),  //  Top 10 Teachers
             'top_10_students'  =>  array_slice($top_students, 0, 10),  //  Top 10 Students
-            'top_10_classes'   =>  array_slice($top_classes, 0, 10),   //  Top 10 Classes
+            'top_10_classes'   =>  $top_classes,   //  Top 10 Classes
             //Student Wise Performance 
-            'top_students_count'            => $top_students_count,
-            'avg_students_count'            => $avg_students_count,
-            'below_avg_students_count'      => $below_avg_students_count,
-            'weak_students_count'           => $weak_students_count,
+            // 'top_students_count'            => $top_students_count,
+            // 'avg_students_count'            => $avg_students_count,
+            // 'below_avg_students_count'      => $below_avg_students_count,
+            // 'weak_students_count'           => $weak_students_count,
             // Assignment Type Overview
             'subjective_assignment_count'      => $subjective_assignment_count,
             'objective_assignment_count'       => $objective_assignment_count,
