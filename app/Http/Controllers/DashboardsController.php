@@ -837,6 +837,7 @@ class DashboardsController extends Controller
             'top_10_students'  =>  array_slice($top_students, 0, 10),  //  Top 10 Students
             'top_10_classes'   =>  $top_classes,   //  Top 10 Classes
             //Student Wise Performance 
+            'final_classes' => $total_classes,
             // 'top_students_count'            => $top_students_count,
             // 'avg_students_count'            => $avg_students_count,
             // 'below_avg_students_count'      => $below_avg_students_count,
@@ -848,6 +849,11 @@ class DashboardsController extends Controller
             // Total Content Read
             'total_teacher_read_count'      => $total_teacher_read_count,
             'total_student_read_count'      => $total_student_read_count,
+            // Counts
+            'total_assignment_completed' => sizeOf($assignments),
+            'total_assignment_completed' => $total_student_read_count,
+            'video_watched' => 0,
+            'assignment_pending' => 0,
         ];
         return response()->json([
             'data'  =>  $data
