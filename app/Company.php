@@ -182,4 +182,8 @@ class Company extends Model
   {
     return $this->hasMany(ContentAssignToRead::class);
   }
+  public function content_metadatas()
+  {
+    return $this->hasMany(ContentMetadata::class);
+  }
 }
