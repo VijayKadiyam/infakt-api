@@ -705,6 +705,7 @@ class DashboardsController extends Controller
         $top_teachers = [];
         $total_teachers = [];
         $total_teacher_read_count = 0;
+        $upcoming_assignments = [];
         foreach ($classes as $key => $class) {
             $class['assignment_count'] = 0;
             if ($class->assignment_classcodes) {
@@ -719,6 +720,13 @@ class DashboardsController extends Controller
                 $document_assignment_count = 0;
                 foreach ($class->assignment_classcodes as $key => $ac) {
                     $assignment = $ac->assignment;
+                    $start_date = $ac->start_date;
+                    $date1 = date_create(date('Y-m-d'));
+                    $date2 = date_create($start_date);
+                    $diff = date_diff($date1, $date2);
+                    if ($diff->format("%a") > 0) {
+                        $upcoming_assignments[] = $assignment;
+                    }
                     switch ($assignment->assignment_type) {
                         case 'SUBJECTIVE':
                             $subjective_assignment_count++;
@@ -854,6 +862,7 @@ class DashboardsController extends Controller
             'article_read' => $total_student_read_count,
             'video_watched' => 0,
             'assignment_pending' => 0,
+            'upcoming_assignments' => $upcoming_assignments,
         ];
         return response()->json([
             'data'  =>  $data
