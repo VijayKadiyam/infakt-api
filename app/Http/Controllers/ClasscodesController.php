@@ -28,7 +28,7 @@ class ClasscodesController extends Controller
             } else {
                 $classcodes = request()->company->classcodes()->where('is_deleted', false);
             }
-            
+
             if (request()->classcode_id) {
                 $classcodes = $classcodes->where('id', request()->classcode_id);
             }

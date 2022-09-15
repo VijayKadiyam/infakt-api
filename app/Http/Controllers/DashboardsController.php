@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Assignment;
 use App\CareerRequest;
+use App\Classcode;
 use App\Company;
 use App\ContactRequest;
 use App\Content;
@@ -46,6 +47,23 @@ class DashboardsController extends Controller
             'years'       =>  $years,
             'schools'   =>  $schools
         ], 200);
+    }
+
+    public function getSubTypes(Request $request)
+    {
+        $request->validate([
+            'schoolId'  =>  'required',
+            'type'  =>  'required'
+        ]);
+        $subTypes = [];
+        if($request->type == 'Classcode') {
+            $subTypes = Classcode::where('company_id', '=', $request->schoolId)
+                ->get();
+        }
+
+        return response()->json([
+            'data'  =>  $subTypes
+        ]);
     }
 
     public function superadminDashboard(Request $request)
@@ -696,7 +714,7 @@ class DashboardsController extends Controller
                 //     $assignment = $ac->assignment;
                 //     if (sizeOf($assignment->user_assignments)) {
                 //         foreach ($assignment->user_assignments as $key => $ua) {
-                            
+
                 //         }
                 //         return $assignment->user_assignments;
                 //     }
