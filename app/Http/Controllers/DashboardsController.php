@@ -8,6 +8,7 @@ use App\Classcode;
 use App\Company;
 use App\ContactRequest;
 use App\Content;
+use App\ContentMetadata;
 use App\ContentSubject;
 use App\EtArticle;
 use App\Subject;
@@ -56,8 +57,16 @@ class DashboardsController extends Controller
             'type'  =>  'required'
         ]);
         $subTypes = [];
-        if($request->type == 'Classcode') {
+        if ($request->type == 'Classcode') {
             $subTypes = Classcode::where('company_id', '=', $request->schoolId)
+                ->get();
+        }
+        if ($request->type == 'Teacher') {
+            $company = Company::find($request->schoolId);
+            $subTypes = $company->users()
+                ->whereHas('roles', function ($q) {
+                    $q->where('name', '=', 'TEACHER');
+                })
                 ->get();
         }
 
@@ -480,6 +489,7 @@ class DashboardsController extends Controller
         $top_classes = [];
         $total_students = [];
         $total_student_read_count = 0;
+
         foreach ($classes as $key => $class) {
             $class_tsc = 'top_students_count_' . $class->id;
             $class_asc = 'avg_students_count_' . $class->id;
@@ -552,10 +562,14 @@ class DashboardsController extends Controller
 
             // Top 10 Students of that Class
             $top_students = array_slice($$class_ts, 0, 10);
-            $final_top_student[] = $top_students;
+            $final_top_student[] = [
+                "classcode"  =>   $class->classcode,
+                "students" =>  $top_students
+            ];
             //Student Wise Performance 
             $student_performance = [
                 'id'                       => $class->id,
+                'classcode'                =>  $class->classcode,
                 'top_students_count'       => $$class_tsc,
                 'avg_students_count'       => $$class_asc,
                 'below_avg_students_count' => $$class_basc,
@@ -801,5 +815,27 @@ class DashboardsController extends Controller
         return response()->json([
             'data'  =>  $data
         ], 200);
+    }
+
+    public function contentMetadataWise(Request $request)
+    {
+        $request->validate([
+            'company_id'    =>  'required',
+            'type_id'       =>  'required'
+        ]);
+
+        $contentMetadatas = ContentMetadata::
+            // where('metadata_type', '=', 'ANNOTATION')
+            // ->where('company_id', '=', $request->company_id)
+            // ->
+            get();
+
+
+
+        return response()->json([
+            'annotationsCount'  =>  $contentMetadatas->where('metadata_type', '=', 'ANNOTATION')->count(),
+            'highlightsCount'  =>  $contentMetadatas->where('metadata_type', '=', 'HIGHLIGHT')->count(),
+            'dictionariesCount'  =>  $contentMetadatas->where('metadata_type', '=', 'DICTIONARY')->count()
+        ]);
     }
 }
