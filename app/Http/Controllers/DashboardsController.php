@@ -851,7 +851,7 @@ class DashboardsController extends Controller
             'total_student_read_count'      => $total_student_read_count,
             // Counts
             'total_assignment_completed' => sizeOf($assignments),
-            'total_assignment_completed' => $total_student_read_count,
+            'article_read' => $total_student_read_count,
             'video_watched' => 0,
             'assignment_pending' => 0,
         ];
