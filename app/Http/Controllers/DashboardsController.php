@@ -314,7 +314,7 @@ class DashboardsController extends Controller
         ], 200);
     }
 
-    public function topSchoolBasedOnAssignments()
+    public function topSchoolBasedOnAssignments1()
     {
         $schools = Company::get();
         $topSchool = [];
@@ -335,6 +335,79 @@ class DashboardsController extends Controller
 
         $data = [
             'top_schools'  =>  $topSchool,
+        ];
+        return response()->json([
+            'data'  =>  $data
+        ], 200);
+    }
+
+    public function topSchoolBasedOnAssignments()
+    {
+        $schools = Company::get();
+        $topSchool = [];
+        $total_schools = [];
+        foreach ($schools as $key => $school) {
+            $submission_count = 0;
+            $total_score = 0;
+            $assignments = Assignment::where('company_id', $school->id)
+                ->whereMonth('created_at', request()->month)
+                ->whereYear('created_at', request()->year)
+                ->get();
+            $teachers = $school->teachers;
+            $students = $school->students;
+            foreach ($assignments as $key => $assignment) {
+                $user_assignments = $assignment->user_assignments;
+                foreach ($user_assignments as $key => $ua) {
+                    // $total_maximum_marks += $ua->assignment->maximum_marks;
+                    $total_score += $ua->score;
+                }
+                $submission_count += sizeOf($user_assignments);
+            }
+
+            $assignment_count = sizeof($assignments);
+            $teacher_count = sizeof($teachers);
+            $student_count = sizeof($students);
+
+            $posting_average = 0;
+            if ($teacher_count != 0 && $assignment_count != 0) {
+                // Assignment Posting AVG based on total assingment / total Teacher
+                $posting_average = $assignment_count / $teacher_count;
+            }
+            $submission_average = 0;
+            if ($student_count != 0 && $submission_count != 0) {
+                // Assignment Posting AVG based on total Scored / total assingment Submitted by Student
+                $submission_average = $total_score / $submission_count;
+            }
+            $school_details = [
+                'name'               => $school->name,
+                'assignment_count'   => $assignment_count,
+                'total_score'        => $total_score,
+                'submission_count'   => $submission_count,
+                'teacher_count'      => $teacher_count,
+                'student_count'      => $student_count,
+                'posting_average'    => $posting_average,
+                'submission_average' => $submission_average,
+            ];
+            $total_schools[] = $school_details;
+        }
+        $top_schools_based_on_posted = $total_schools;
+        $top_schools_based_on_submission = $total_schools;
+        usort($top_schools_based_on_posted, function ($a, $b) {
+            return $b['posting_average'] - $a['posting_average'];
+        });
+        usort($top_schools_based_on_submission, function ($a, $b) {
+            return $b['submission_average'] - $a['submission_average'];
+        });
+
+        if (request()->is_show_all != 'true') {
+            // Show only TOP 10
+            $top_schools_based_on_submission = array_slice($top_schools_based_on_submission, 0, 10);
+            $top_schools_based_on_posted = array_slice($top_schools_based_on_posted, 0, 10);
+        }
+        $data = [
+            'top_schools_based_on_submission' =>  $top_schools_based_on_submission,
+            'top_schools_based_on_posted'     =>  $top_schools_based_on_posted,
+            'total_schools'                   =>  $total_schools,
         ];
         return response()->json([
             'data'  =>  $data
