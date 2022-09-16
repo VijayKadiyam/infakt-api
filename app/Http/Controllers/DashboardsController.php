@@ -104,47 +104,85 @@ class DashboardsController extends Controller
         $toi_papersCount = ToiArticle::all()->count();
         $et_papersCount = EtArticle::all()->count();
         // Contact Request Count Section
-        $contactRequestsCount = ContactRequest::where('is_deleted', false)->get();
-        $settled_contact_request = 0;
-        $pending_contact_request = 0;
-        foreach ($contactRequestsCount as $key => $request) {
+        $contactRequests = ContactRequest::where('is_deleted', false)->get();
+        $settled_contact_request = [];
+        $pending_contact_request = [];
+        foreach ($contactRequests as $key => $request) {
             if ($request->status == "SETTLED") {
-                $settled_contact_request++;
+                $settled_contact_request[] = $request;
             } else {
-                $pending_contact_request++;
+                $pending_contact_request[] = $request;
             }
+            $all_requests[] = $request;
         }
-        // Career Request Count Section
-        $careerRequestsCount = CareerRequest::where('is_deleted', false)->get();
-        $settled_career_request = 0;
-        $pending_career_request = 0;
-        foreach ($careerRequestsCount as $key => $request) {
-            if ($request->status == "SETTLED") {
-                $settled_career_request++;
-            } else {
-                $pending_career_request++;
-            }
-        }
+        $contact_requests = [
+            [
+                'name' => "PENDING",
+                'count' => sizeOf($pending_contact_request),
+                'request' => $pending_contact_request
+            ],
+            [
+                'name' => "SETTLED",
+                'count' => sizeOf($settled_contact_request),
+                'request' => $settled_contact_request
+            ],
+            [
+                'name' => "TOTAL",
+                'count' => sizeof($contactRequests),
+                'request' => $contactRequests
+            ]
+        ];
 
+        // Career Request Count Section
+        $careerRequests = CareerRequest::where('is_deleted', false)->get();
+        $settled_career_request = [];
+        $pending_career_request = [];
+        foreach ($careerRequests as $key => $request) {
+            if ($request->status == "SETTLED") {
+                $settled_career_request[] = $request;
+            } else {
+                $pending_career_request[] = $request;
+            }
+            $all_requests[] = $request;
+        }
+        $career_requests = [
+            [
+                'name' => "PENDING",
+                'count' => sizeOf($pending_career_request),
+                'request' => $pending_career_request
+            ],
+            [
+                'name' => "SETTLED",
+                'count' => sizeOf($settled_career_request),
+                'request' => $settled_career_request
+            ],
+            [
+                'name' => "TOTAL",
+                'count' => sizeof($careerRequests),
+                'request' => $careerRequests
+            ]
+        ];
+
+        $total_requests = [
+            'name' => 'TOTAL',
+            'count' => sizeof($all_requests),
+            'request' => $all_requests
+        ];
         $RequestsCount = [
-            'settled_contact_request' => $settled_contact_request,
-            'pending_contact_request' => $pending_contact_request,
-            'total_contact_request' => $contactRequestsCount->count(),
-            'settled_career_request' => $settled_career_request,
-            'pending_career_request' => $pending_career_request,
-            'total_career_request' => $careerRequestsCount->count(),
-            'total' => $contactRequestsCount->count() + $careerRequestsCount->count(),
+            'contact_request' => $contact_requests,
+            'career_request' => $career_requests,
+            'total_request' => $total_requests,
         ];
         $data = [
             'BoardSchoolCount'  =>  $BoardSchoolCount,
-            'studentsCount'  =>  $studentsCount,
-            'paidStudentsCount'  =>  $studentsCount,
-            'freeStudentsCount'  =>  0,
-            'teachersCount'  =>  $teachersCount,
-            'contentsCount'   =>  $contentsCount,
+            'studentsCount'     =>  $studentsCount,
+            'paidStudentsCount' =>  $studentsCount,
+            'freeStudentsCount' =>  0,
+            'teachersCount'     =>  $teachersCount,
+            'contentsCount'     =>  $contentsCount,
             'toi_papersCount'   =>  $toi_papersCount,
-            'et_papersCount'   =>  $et_papersCount,
-            'RequestsCount'   =>  $RequestsCount,
+            'et_papersCount'    =>  $et_papersCount,
+            'RequestsCount'     =>  $RequestsCount,
         ];
         return response()->json([
             'data'  =>  $data
