@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\CollectionClasscode;
+use App\UserClasscode;
 use Illuminate\Http\Request;
 
 class CollectionClasscodesController extends Controller
@@ -16,6 +17,19 @@ class CollectionClasscodesController extends Controller
     {
         $count = 0;
         $collection_classcodes = $request->company->collection_classcodes;
+        // $collection_classcodes = $collection_classcodes->whereHas(''); 
+        if (request()->user_role == 'STUDENT') {
+            $user_classcodes = UserClasscode::where('user_id', request()->user_id)->get();
+            foreach ($user_classcodes as $key => $classcode) {
+                $collection_classcodes = $collection_classcodes->where('classcode_id', $classcode->classcode_id);
+                $count = $collection_classcodes->count();
+                return response()->json([
+                    'data'     =>  $collection_classcodes,
+                    'count'    =>   $count
+                ], 200);
+            }
+            // return $abc;
+        }
         $count = $collection_classcodes->count();
 
         return response()->json([
