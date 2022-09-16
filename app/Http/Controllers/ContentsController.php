@@ -355,6 +355,27 @@ class ContentsController extends Controller
      */
     public function show(Content $content)
     {
+        $user = \Auth::user();
+        $user_role = $user->roles[0]->name;
+        $user_id = $user->id;
+        if ($user_role == 'STUDENT') {
+            $user_classcodes =  UserClasscode::where('user_id', $user_id)->get();
+            $content_locks = [];
+
+            foreach ($user_classcodes as $key => $classcode) {
+                $content_locks = $content->content_lock_classcodes()->where('content_lock_classcodes.classcode_id', $classcode->classcode_id)->get();
+                foreach ($content_locks as $key => $content_lock) {
+                    $content_description = $content->content_descriptions()->where('content_descriptions.level', $content_lock->level)->get();
+                    $content->content_descriptions = $content_description;
+                    // $content->content_subjects = $content->content_subjects;
+                    // $content->content_medias = $content->content_medias;
+                    // $content->content_metadatas = $content->content_metadatas;
+                    // $content->content_hidden_classcodes = $content->content_hidden_classcodes;
+                    // $content->content_lock_classcodes = $content->content_lock_classcodes;
+                    // $content->content_assign_to_reads = $content->content_assign_to_reads;
+                }
+            }
+        }
         $content->content_subjects = $content->content_subjects;
         $content->content_medias = $content->content_medias;
         $content->content_metadatas = $content->content_metadatas;
