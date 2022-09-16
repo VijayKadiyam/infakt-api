@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Assignment;
+use App\Board;
 use App\CareerRequest;
 use App\Classcode;
 use App\Company;
@@ -77,7 +78,15 @@ class DashboardsController extends Controller
 
     public function superadminDashboard(Request $request)
     {
-        $schoolsCount =   Company::all()->count();
+        // Board Wise School Count
+        $boards = Board::where('is_active', TRUE)->get();
+        $BoardSchoolCount = [];
+        foreach ($boards as $key => $board) {
+            $schools = $board->schools;
+            $name = $board->name . "_school_count";
+            $$name = sizeof($schools);
+            $BoardSchoolCount[$name] = $$name;
+        }
         $teachersCount =  User::where('is_deleted', false)
             ->whereHas('roles', function ($q) {
                 $q->where('name', '=', 'TEACHER');
@@ -122,7 +131,7 @@ class DashboardsController extends Controller
             'total' => $contactRequestsCount->count() + $careerRequestsCount->count(),
         ];
         $data = [
-            'schoolsCount'  =>  $schoolsCount,
+            'BoardSchoolCount'  =>  $BoardSchoolCount,
             'studentsCount'  =>  $studentsCount,
             'paidStudentsCount'  =>  $studentsCount,
             'freeStudentsCount'  =>  0,

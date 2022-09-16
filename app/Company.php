@@ -186,4 +186,9 @@ class Company extends Model
   {
     return $this->hasMany(ContentMetadata::class);
   }
+  public function my_boards()
+  {
+    return $this->belongsToMany(Board::class, 'company_boards', 'company_id', 'board_id');
+  }
+
 }
