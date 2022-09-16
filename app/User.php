@@ -162,4 +162,8 @@ class User extends Authenticatable
   {
     return $this->hasMany(ContentAssignToRead::class);
   }
+  public function collection_classcodes()
+  {
+    return $this->hasMany(CollectionClasscode::class);
+  }
 }
