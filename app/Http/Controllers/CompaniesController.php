@@ -49,16 +49,8 @@ class CompaniesController extends Controller
             $q->where('name', '=', 'Admin');
           });
         },
-        'teachers'  => function ($query) {
-          $query->whereHas('roles',  function ($q) {
-            $q->where('name', '=', 'TEACHER');
-          });
-        },
-        'students'  => function ($query) {
-          $query->whereHas('roles',  function ($q) {
-            $q->where('name', '=', 'STUDENT');
-          });
-        }
+        'teachers',
+        'students'
       ])->paginate(request()->rowsPerPage)->toArray();
       $companies = $companies['data'];
     } else {

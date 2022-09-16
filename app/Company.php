@@ -36,13 +36,19 @@ class Company extends Model
   {
     return $this->belongsToMany(User::class)
       ->where('is_deleted', false)
-      ->with('roles', 'companies', 'user_classcodes');
+      ->with('roles', 'companies', 'user_classcodes')
+      ->whereHas('roles', function ($q) {
+        $q->where('name', '=', 'TEACHER');
+      });
   }
   public function students()
   {
     return $this->belongsToMany(User::class)
       ->where('is_deleted', false)
-      ->with('roles', 'companies', 'user_classcodes');
+      ->with('roles', 'companies', 'user_classcodes')
+      ->whereHas('roles', function ($q) {
+        $q->where('name', '=', 'STUDENT');
+      });
   }
 
   public function allUsers()
