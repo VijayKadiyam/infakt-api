@@ -882,7 +882,16 @@ class DashboardsController extends Controller
         $total_teachers = [];
         $total_teacher_read_count = 0;
         $upcoming_assignments = [];
+        $overdued_assignments = [];
+        $pending_assignments = [];
+        $completed_assignments = [];
+        $total_assigments = [];
         foreach ($classes as $key => $class) {
+            $class_total_assigments = [];
+            $class_upcoming_assignments = [];
+            $class_overdued_assignments = [];
+            $class_pending_assignments = [];
+            $class_completed_assignments = [];
             $class['assignment_count'] = 0;
             if ($class->assignment_classcodes) {
                 $class['assignment_count'] = sizeof($class->assignment_classcodes);
@@ -897,11 +906,22 @@ class DashboardsController extends Controller
                 foreach ($class->assignment_classcodes as $key => $ac) {
                     $assignment = $ac->assignment;
                     $start_date = $ac->start_date;
+                    $end_date = $ac->end_date;
                     $date1 = date_create(date('Y-m-d'));
+                    // Comparing Current Date with Starting Date
                     $date2 = date_create($start_date);
-                    $diff = date_diff($date1, $date2);
-                    if ($diff->format("%a") > 0) {
+                    $start_diff = date_diff($date1, $date2)->format("%R%a");
+                    $is_Upcoming = $start_diff > 0 ? true : false;
+                    // Comparing Current Date with Ending Date
+                    $date2 = date_create($end_date);
+                    $end_diff = date_diff($date1, $date2)->format("%R%a");
+                    $is_Due = $end_diff < 0 ? true : false;
+                    // return "AC id" . $ac->id . " Current Date=" . date('Y-m-d') . ' Start Date=' . $start_date . ' End Date= ' . $end_date . ' Start Diff=' . $start_diff . ' End Diff=' . $end_diff;
+                    $is_ongoing = $start_diff < 0 && $end_diff > 0 ? true : false;
+
+                    if ($is_Upcoming == true) {
                         $upcoming_assignments[] = $assignment;
+                        $class_upcoming_assignments[] = $assignment;
                     }
                     switch ($assignment->assignment_type) {
                         case 'SUBJECTIVE':
@@ -922,21 +942,60 @@ class DashboardsController extends Controller
                     }
                     $total_maximum_marks += $assignment->maximum_marks;
                     if (sizeOf($assignment->user_assignments)) {
+                        $is_submitted = false;
                         foreach ($assignment->user_assignments as $key => $ua) {
                             $score = 0;
                             if ($ua->user_id == $student_id) {
+                                // Student Submitted
+                                $is_submitted = true;
                                 $total_assignment_submitted_for_classcode++;
                                 $score = $ua->score;
                                 $total_scored += $score;
+                                $completed_assignments[] = $assignment;
+                                $class_completed_assignments[] = $assignment;
                             }
                         }
+                        if ($is_ongoing == true && $is_submitted == false) {
+                            // Student Hadn't submitted the Ongoing Assignment hence Add to Pending Assignment
+                            $pending_assignments[] = $assignment;
+                            $class_pending_assignments[] = $assignment;
+                        }
+                        if ($is_Due == true && $is_submitted == false) {
+                            // Student Hadn't submitted the Assignment And end date has been past hence Add to Overdue Assignment
+                            $overdued_assignments[] = $assignment;
+                            $class_overdued_assignments[] = $assignment;
+                        }
                     }
+                    $class_total_assigments[] = $assignment;
+                    $total_assigments[] = $assignment;
                 }
             }
             $average = 0;
             if ($total_scored != 0 &&  $total_assignment_submitted_for_classcode != 0) {
                 $average = $total_scored / $total_assignment_submitted_for_classcode;
             }
+            $student_assignment_overview = [
+                [
+                    'name' => "UPCOMING",
+                    'count' => sizeof($class_upcoming_assignments),
+                    'values' => $class_upcoming_assignments,
+                ],
+                [
+                    'name' => "OVERDUE",
+                    'count' => sizeof($class_overdued_assignments),
+                    'values' => $class_overdued_assignments,
+                ],
+                [
+                    'name' => "PENDING",
+                    'count' => sizeof($class_pending_assignments),
+                    'values' => $class_pending_assignments,
+                ],
+                [
+                    'name' => "COMPLETED",
+                    'count' => sizeof($class_completed_assignments),
+                    'values' => $class_completed_assignments,
+                ],
+            ];
             $class_details = [
                 'class_id' => $class['id'],
                 'classcode' => $class['classcode'],
@@ -945,6 +1004,9 @@ class DashboardsController extends Controller
                 'total_maximum_marks' => $total_maximum_marks,
                 'total_scored' => $total_scored,
                 'average' => $average,
+                'assignments' => $class_total_assigments,
+                // Student Wise_
+                'student_assignment_overview' => $student_assignment_overview,
                 // Assignment Type Overview
                 'subjective_assignment_count'      => $subjective_assignment_count,
                 'objective_assignment_count'       => $objective_assignment_count,
@@ -1009,6 +1071,28 @@ class DashboardsController extends Controller
             }
         }
 
+        $assignment_overview = [
+            [
+                'name' => "UPCOMING",
+                'count' => sizeof($upcoming_assignments),
+                'values' => $upcoming_assignments,
+            ],
+            [
+                'name' => "OVERDUE",
+                'count' => sizeof($overdued_assignments),
+                'values' => $overdued_assignments,
+            ],
+            [
+                'name' => "PENDING",
+                'count' => sizeof($pending_assignments),
+                'values' => $pending_assignments,
+            ],
+            [
+                'name' => "COMPLETED",
+                'count' => sizeof($completed_assignments),
+                'values' => $completed_assignments,
+            ],
+        ];
 
         $data = [
             'teachers'      =>  $total_teachers,
@@ -1038,7 +1122,8 @@ class DashboardsController extends Controller
             'article_read' => $total_student_read_count,
             'video_watched' => 0,
             'assignment_pending' => 0,
-            'upcoming_assignments' => $upcoming_assignments,
+            'assignment_overview' => $assignment_overview,
+            // 'upcoming_assignments' => $upcoming_assignments,
         ];
         return response()->json([
             'data'  =>  $data
