@@ -94,9 +94,47 @@ class ContentsController extends Controller
                 }
             }
         }
+        $article_contents = [];
+        $infographic_contents = [];
+        $video_contents = [];
+        foreach ($contents as $key => $content) {
+            switch ($content->content_type) {
+                case 'ARTICLE':
+                    $article_contents[] = $content;
+                    break;
+                case 'INFOGRAPHIC':
+                    $infographic_contents[] = $content;
+                    break;
+                case 'VIDEO':
+                    $video_contents[] = $content;
+                    break;
+
+                default:
+                    # code...
+                    break;
+            }
+        }
+        $content_types = [
+            [
+                'name' => "ARTICLE",
+                'count' => sizeof($article_contents),
+                'values' => $article_contents
+            ],
+            [
+                'name' => "INFOGRAPHIC",
+                'count' => sizeof($infographic_contents),
+                'values' => $infographic_contents
+            ],
+            [
+                'name' => "VIDEO",
+                'count' => sizeof($video_contents),
+                'values' => $video_contents
+            ]
+        ];
         return response()->json([
             'data'  =>  $contents,
             'count' =>   sizeof($contents),
+            'content_types' => $content_types,
             'success' =>  true,
         ], 200);
     }
