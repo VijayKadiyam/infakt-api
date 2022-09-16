@@ -82,10 +82,16 @@ class DashboardsController extends Controller
         $boards = Board::where('is_active', TRUE)->get();
         $BoardSchoolCount = [];
         foreach ($boards as $key => $board) {
+            $board_detail = [];
             $schools = $board->schools;
-            $name = $board->name . "_school_count";
-            $$name = sizeof($schools);
-            $BoardSchoolCount[$name] = $$name;
+            $board_name = $board->name;
+            $board_detail = [
+                'name' => $board_name,
+                'count' => sizeof($schools),
+            ];
+            // $name = $board_name . "_school_count";
+            // $$name = sizeof($schools);
+            $BoardSchoolCount[] = $board_detail;
         }
         $teachersCount =  User::where('is_deleted', false)
             ->whereHas('roles', function ($q) {
