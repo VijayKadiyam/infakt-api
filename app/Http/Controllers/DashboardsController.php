@@ -10,6 +10,7 @@ use App\Company;
 use App\ContactRequest;
 use App\Content;
 use App\ContentMetadata;
+use App\ContentRead;
 use App\ContentSubject;
 use App\EtArticle;
 use App\Subject;
@@ -289,9 +290,11 @@ class DashboardsController extends Controller
         if (request()->company_id) {
             $company = Company::find(request()->company_id);
             $L3M_Assignment_contents_count = $company->assignments()->where('is_deleted', false);
+            $article_read_count = $company->content_reads();
             $assignments_count = $company->assignments()->where('is_deleted', false);
         } else {
             $L3M_Assignment_contents_count = Assignment::where('is_deleted', false);
+            $article_read_count = ContentRead::where('content_id', '!=', null);
             $assignments_count = Assignment::where('is_deleted', false);
         }
 
@@ -299,6 +302,9 @@ class DashboardsController extends Controller
             ->whereBetween("created_at", [$start_date, $end_date])
             ->count();
 
+        $article_read_count = $article_read_count
+            ->whereMonth("created_at", $month)
+            ->count();
         $assignments_count = $assignments_count
             ->whereMonth("created_at", $month)
             ->count();
@@ -307,6 +313,7 @@ class DashboardsController extends Controller
             'avg_time_spent_by_student'  =>  0,
             'avg_time_spent_by_teacher'  =>  0,
             'L3M_Assignment_contents_count'  =>  $L3M_Assignment_contents_count,
+            'article_read_count'  =>  $article_read_count,
             'assignments_count'  =>  $assignments_count,
         ];
         return response()->json([
