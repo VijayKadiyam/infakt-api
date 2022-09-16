@@ -16,6 +16,7 @@ use App\EtArticle;
 use App\Subject;
 use App\ToiArticle;
 use App\User;
+use App\UserClasscode;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -1180,7 +1181,7 @@ class DashboardsController extends Controller
         ], 200);
     }
 
-    public function contentMetadataWise(Request $request)
+    public function contentMetadataWise_1(Request $request)
     {
         $request->validate([
             'company_id'    =>  'required',
@@ -1199,6 +1200,74 @@ class DashboardsController extends Controller
             'annotationsCount'  =>  $contentMetadatas->where('metadata_type', '=', 'ANNOTATION')->count(),
             'highlightsCount'  =>  $contentMetadatas->where('metadata_type', '=', 'HIGHLIGHT')->count(),
             'dictionariesCount'  =>  $contentMetadatas->where('metadata_type', '=', 'DICTIONARY')->count()
+        ]);
+    }
+
+    public function contentMetadataWise(Request $request)
+    {
+        $request->validate([
+            'company_id'    =>  'required',
+            'type_id'       =>  'required'
+        ]);
+        $contentMetadatas = [];
+        $annotation_content_metadatas = [];
+        $highlight_content_metadatas = [];
+        $dictionary_content_metadatas = [];
+
+        $user_classcodes = UserClasscode::where('user_id', request()->user_id)->get();
+        foreach ($user_classcodes as $key => $uc) {
+            $classcode_id = $uc->classcode_id;
+
+            $annotation = ContentMetadata::where('metadata_type', '=', 'ANNOTATION')
+                ->with('content')
+                ->whereHas('content_metadata_classcodes', function ($q) use ($classcode_id) {
+                    $q->where('classcode_id', '=', $classcode_id);
+                })
+                ->get();
+            if (sizeOf($annotation)) {
+                $annotation_content_metadatas[] = $annotation;
+            }
+
+            $highlight = ContentMetadata::where('metadata_type', '=', 'HIGHLIGHT')
+                ->with('content')
+                ->whereHas('content_metadata_classcodes', function ($q) use ($classcode_id) {
+                    $q->where('classcode_id', '=', $classcode_id);
+                })
+                ->get();
+            if (sizeOf($highlight)) {
+                $highlight_content_metadatas[] = $highlight;
+            }
+
+            $dictionary = ContentMetadata::where('metadata_type', '=', 'DICTIONARY')
+                ->with('content')
+                ->whereHas('content_metadata_classcodes', function ($q) use ($classcode_id) {
+                    $q->where('classcode_id', '=', $classcode_id);
+                })
+                ->get();
+            if (sizeOf($dictionary)) {
+                $dictionary_content_metadatas[] = $dictionary;
+            }
+        }
+        $total_content_metadatas = [
+            [
+                'name' => 'ANNOTATION',
+                'count' => sizeOF($annotation_content_metadatas),
+                'values' => $annotation_content_metadatas,
+            ],
+            [
+                'name' => 'HIGHLIGHT',
+                'count' => sizeOF($highlight_content_metadatas),
+                'values' => $highlight_content_metadatas,
+            ],
+            [
+                'name' => 'DICTIONARY',
+                'count' => sizeOF($dictionary_content_metadatas),
+                'values' => $dictionary_content_metadatas,
+            ],
+        ];
+
+        return response()->json([
+            'total_content_metadatas'  => $total_content_metadatas
         ]);
     }
 }
