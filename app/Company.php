@@ -154,7 +154,7 @@ class Company extends Model
 
   public function collection_classcodes()
   {
-    return $this->hasMany(CollectionClasscode::class);
+    return $this->hasMany(CollectionClasscode::class)->with('shared_by', 'collection', 'classcode');
   }
 
   public function content_classcodes()
@@ -190,5 +190,4 @@ class Company extends Model
   {
     return $this->belongsToMany(Board::class, 'company_boards', 'company_id', 'board_id');
   }
-
 }
