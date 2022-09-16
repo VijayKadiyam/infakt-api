@@ -89,8 +89,6 @@ class DashboardsController extends Controller
                 'name' => $board_name,
                 'count' => sizeof($schools),
             ];
-            // $name = $board_name . "_school_count";
-            // $$name = sizeof($schools);
             $BoardSchoolCount[] = $board_detail;
         }
         $teachersCount =  User::where('is_deleted', false)
