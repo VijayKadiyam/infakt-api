@@ -938,8 +938,10 @@ class DashboardsController extends Controller
                 $class['assignment_count'] = sizeof($class->assignment_classcodes);
                 $total_assignment_posted_for_classcode = $class['assignment_count'];
                 $total_assignment_submitted_for_classcode = 0;
+                $class_total_assignment_submitted = 0;
                 $total_maximum_marks = 0;
                 $total_scored = 0;
+                $class_total_scored = 0;
                 // Assignment Type Overview
                 $subjective_assignment_count = 0;
                 $objective_assignment_count = 0;
@@ -993,6 +995,9 @@ class DashboardsController extends Controller
                                 $total_scored += $score;
                                 $completed_assignments[] = $assignment;
                                 $class_completed_assignments[] = $assignment;
+                            } else {
+                                $class_total_scored += $ua->score;
+                                $class_total_assignment_submitted++;
                             }
                         }
                         if ($is_ongoing == true && $is_submitted == false) {
@@ -1013,6 +1018,10 @@ class DashboardsController extends Controller
             $average = 0;
             if ($total_scored != 0 &&  $total_assignment_submitted_for_classcode != 0) {
                 $average = $total_scored / $total_assignment_submitted_for_classcode;
+            }
+            $class_average = 0;
+            if ($class_total_scored != 0 &&  $class_total_assignment_submitted != 0) {
+                $class_average = $class_total_scored / $class_total_assignment_submitted;
             }
             $student_assignment_overview = [
                 [
@@ -1044,6 +1053,7 @@ class DashboardsController extends Controller
                 'total_maximum_marks' => $total_maximum_marks,
                 'total_scored' => $total_scored,
                 'average' => $average,
+                'class_average' => $class_average,
                 'assignments' => $class_total_assigments,
                 // Student Wise_
                 'student_assignment_overview' => $student_assignment_overview,
