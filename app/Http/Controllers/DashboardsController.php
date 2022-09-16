@@ -88,6 +88,7 @@ class DashboardsController extends Controller
             $board_detail = [
                 'name' => $board_name,
                 'count' => sizeof($schools),
+                'values' => $schools,
             ];
             $BoardSchoolCount[] = $board_detail;
         }
