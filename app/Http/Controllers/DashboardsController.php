@@ -867,8 +867,49 @@ class DashboardsController extends Controller
             //  Total Student Content read Count
             $student['read_count'] = 0;
             if ($student->content_reads) {
+
+                $student_content_read = $student->content_reads;
+                $article_contents = [];
+                $infographic_contents = [];
+                $video_contents = [];
+                foreach ($student_content_read as $key => $scr) {
+                    $content = $scr->content;
+                    switch ($content->content_type) {
+                        case 'ARTICLE':
+                            $article_contents[] = $content;
+                            break;
+                        case 'INFOGRAPHIC':
+                            $infographic_contents[] = $content;
+                            break;
+                        case 'VIDEO':
+                            $video_contents[] = $content;
+                            break;
+
+                        default:
+                            # code...
+                            break;
+                    }
+                }
                 $student['read_count'] = sizeof($student->content_reads);
             }
+            $content_types = [
+                [
+                    'name' => "ARTICLE",
+                    'count' => sizeof($article_contents),
+                    'values' => $article_contents
+                ],
+                [
+                    'name' => "INFOGRAPHIC",
+                    'count' => sizeof($infographic_contents),
+                    'values' => $infographic_contents
+                ],
+                [
+                    'name' => "VIDEO",
+                    'count' => sizeof($video_contents),
+                    'values' => $video_contents
+                ]
+            ];
+            $student['content_types'] = $content_types;
             $total_student_read_count += $student['read_count'];
         }
         // Sorting Descending by Average
@@ -918,7 +959,6 @@ class DashboardsController extends Controller
                     $is_Due = $end_diff < 0 ? true : false;
                     // return "AC id" . $ac->id . " Current Date=" . date('Y-m-d') . ' Start Date=' . $start_date . ' End Date= ' . $end_date . ' Start Diff=' . $start_diff . ' End Diff=' . $end_diff;
                     $is_ongoing = $start_diff < 0 && $end_diff > 0 ? true : false;
-
                     if ($is_Upcoming == true) {
                         $upcoming_assignments[] = $assignment;
                         $class_upcoming_assignments[] = $assignment;

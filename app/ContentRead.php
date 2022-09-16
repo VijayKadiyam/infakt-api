@@ -17,12 +17,12 @@ class ContentRead extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function contents()
+    public function content()
     {
         return $this->belongsTo(Content::class)->with('content_subjects', 'content_medias');
     }
 
-    public function users()
+    public function user()
     {
         return $this->belongsTo(User::class)->with('roles');
     }
