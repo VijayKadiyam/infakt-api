@@ -367,12 +367,12 @@ class ContentsController extends Controller
                 foreach ($content_locks as $key => $content_lock) {
                     $content_description = $content->content_descriptions()->where('content_descriptions.level', $content_lock->level)->get();
                     $content->content_descriptions = $content_description;
-                    // $content->content_subjects = $content->content_subjects;
-                    // $content->content_medias = $content->content_medias;
-                    // $content->content_metadatas = $content->content_metadatas;
-                    // $content->content_hidden_classcodes = $content->content_hidden_classcodes;
-                    // $content->content_lock_classcodes = $content->content_lock_classcodes;
-                    // $content->content_assign_to_reads = $content->content_assign_to_reads;
+                    $content->content_subjects = $content->content_subjects;
+                    $content->content_medias = $content->content_medias;
+                    $content->content_metadatas = $content->content_metadatas;
+                    $content->content_hidden_classcodes = $content->content_hidden_classcodes;
+                    $content->content_lock_classcodes = $content->content_lock_classcodes;
+                    $content->content_assign_to_reads = $content->content_assign_to_reads;
                 }
             }
         }
