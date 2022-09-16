@@ -89,8 +89,38 @@ class DashboardsController extends Controller
         $contentsCount = Content::all()->count();
         $toi_papersCount = ToiArticle::all()->count();
         $et_papersCount = EtArticle::all()->count();
-        $contactRequestsCount = ContactRequest::where('is_deleted', false)->count();
-        $careerRequestsCount = CareerRequest::where('is_deleted', false)->count();
+        // Contact Request Count Section
+        $contactRequestsCount = ContactRequest::where('is_deleted', false)->get();
+        $settled_contact_request = 0;
+        $pending_contact_request = 0;
+        foreach ($contactRequestsCount as $key => $request) {
+            if ($request->status == "SETTLED") {
+                $settled_contact_request++;
+            } else {
+                $pending_contact_request++;
+            }
+        }
+        // Career Request Count Section
+        $careerRequestsCount = CareerRequest::where('is_deleted', false)->get();
+        $settled_career_request = 0;
+        $pending_career_request = 0;
+        foreach ($careerRequestsCount as $key => $request) {
+            if ($request->status == "SETTLED") {
+                $settled_career_request++;
+            } else {
+                $pending_career_request++;
+            }
+        }
+
+        $RequestsCount = [
+            'settled_contact_request' => $settled_contact_request,
+            'pending_contact_request' => $pending_contact_request,
+            'total_contact_request' => $contactRequestsCount->count(),
+            'settled_career_request' => $settled_career_request,
+            'pending_career_request' => $pending_career_request,
+            'total_career_request' => $careerRequestsCount->count(),
+            'total' => $contactRequestsCount->count() + $careerRequestsCount->count(),
+        ];
         $data = [
             'schoolsCount'  =>  $schoolsCount,
             'studentsCount'  =>  $studentsCount,
@@ -100,7 +130,7 @@ class DashboardsController extends Controller
             'contentsCount'   =>  $contentsCount,
             'toi_papersCount'   =>  $toi_papersCount,
             'et_papersCount'   =>  $et_papersCount,
-            'RequestsCount'   =>  $contactRequestsCount + $careerRequestsCount,
+            'RequestsCount'   =>  $RequestsCount,
         ];
         return response()->json([
             'data'  =>  $data
