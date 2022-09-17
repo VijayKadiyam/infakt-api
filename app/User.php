@@ -166,4 +166,8 @@ class User extends Authenticatable
   {
     return $this->hasMany(CollectionClasscode::class);
   }
+  public function searches()
+  {
+    return $this->hasMany(Search::class);
+  }
 }

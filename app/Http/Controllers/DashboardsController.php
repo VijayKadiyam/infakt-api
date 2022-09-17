@@ -674,7 +674,7 @@ class DashboardsController extends Controller
         $top_classes = [];
         $total_students = [];
         $total_student_read_count = 0;
-
+        $total_assigments = [];
         foreach ($classes as $key => $class) {
             $class_tsc = 'top_students_count_' . $class->id;
             $class_asc = 'avg_students_count_' . $class->id;
@@ -686,8 +686,110 @@ class DashboardsController extends Controller
             if ($class->assignment_classcodes) {
                 $class['assignment_count'] = sizeof($class->assignment_classcodes);
             }
-            // Top Classcodes Based on Number of Assignment posted
-            $top_classes[] = $class;
+
+            /******* Class wise Assignment Overview */
+            $class_upcoming_assignments = [];
+            $class_overdued_assignments = [];
+            $class_ongoing_assignments = [];
+            $class_subjective_assignments = [];
+            $class_objective_assignments = [];
+            $class_document_assignments = [];
+            $class_total_assigments = [];
+            if ($class->assignment_classcodes) {
+                foreach ($class->assignment_classcodes as $key => $ac) {
+                    $assignment = $ac->assignment;
+                    $start_date = $ac->start_date;
+                    $end_date = $ac->end_date;
+                    $date1 = date_create(date('Y-m-d'));
+                    // Comparing Current Date with Starting Date
+                    $date2 = date_create($start_date);
+                    $start_diff = date_diff($date1, $date2)->format("%R%a");
+                    $is_Upcoming = $start_diff > 0 ? true : false;
+                    // Comparing Current Date with Ending Date
+                    $date2 = date_create($end_date);
+                    $end_diff = date_diff($date1, $date2)->format("%R%a");
+                    $is_Due = $end_diff < 0 ? true : false;
+                    // return "AC id" . $ac->id . " Current Date=" . date('Y-m-d') . ' Start Date=' . $start_date . ' End Date= ' . $end_date . ' Start Diff=' . $start_diff . ' End Diff=' . $end_diff;
+                    $is_ongoing = $start_diff < 0 && $end_diff > 0 ? true : false;
+                    if ($is_Upcoming == true) {
+                        // Assignment not Started Yet
+                        $class_upcoming_assignments[] = $assignment;
+                    }
+                    if ($is_ongoing == true) {
+                        // Assignment Already Started
+                        $class_ongoing_assignments[] = $assignment;
+                    }
+                    if ($is_Due == true) {
+                        // Assignment Already Dued
+                        $class_overdued_assignments[] = $assignment;
+                    }
+
+                    // Assignment Type Overview
+
+                    switch ($assignment->assignment_type) {
+                        case 'SUBJECTIVE':
+                            $class_subjective_assignments[] = $assignment;
+                            break;
+
+                        case 'OBJECTIVE':
+                            $class_objective_assignments[] = $assignment;
+                            break;
+
+                        case 'DOCUMENT':
+                            $class_document_assignments[] = $assignment;
+                            break;
+
+                        default:
+                            # code...
+                            break;
+                    }
+                    $class_total_assigments[] = $assignment;
+                    $total_assigments[] = $assignment;
+                }
+            }
+            $class_assignment_overview = [
+                [
+                    'name' => "UPCOMING",
+                    'count' => sizeof($class_upcoming_assignments),
+                    'values' => $class_upcoming_assignments,
+                ],
+                [
+                    'name' => "ONGOING",
+                    'count' => sizeof($class_ongoing_assignments),
+                    'values' => $class_ongoing_assignments,
+                ],
+                [
+                    'name' => "OVERDUE",
+                    'count' => sizeof($class_overdued_assignments),
+                    'values' => $class_overdued_assignments,
+                ],
+
+            ];
+
+            $class_assignment_type_overview = [
+                [
+                    'name' => 'SUBJECTIVE',
+                    'count' => sizeof($class_subjective_assignments),
+                    'values' => $class_subjective_assignments,
+                ],
+                [
+                    'name' => 'OBJECTIVE',
+                    'count' => sizeof($class_objective_assignments),
+                    'values' => $class_objective_assignments,
+                ],
+                [
+                    'name' => 'DOCUMENT',
+                    'count' => sizeof($class_document_assignments),
+                    'values' => $class_document_assignments,
+                ],
+                [
+                    'name' => 'TOTAL',
+                    'count' => sizeof($class_total_assigments),
+                    'values' => $class_total_assigments,
+                ],
+            ];
+            $class['class_assignment_overview'] = $class_assignment_overview;
+            $class['class_assignment_type_overview'] = $class_assignment_type_overview;
 
             /******** Top Student */
             $students = $class->students;
@@ -761,7 +863,11 @@ class DashboardsController extends Controller
                 'weak_students_count'      => $$class_wsc,
             ];
             $final_student_performance[] = $student_performance;
+            // Top Classcodes Based on Number of Assignment posted
+            $top_classes[] = $class;
         }
+
+
         // Sorting Descending by Average
         usort($top_classes, function ($a, $b) {
             return $b['assignment_count'] - $a['assignment_count'];
@@ -803,12 +909,11 @@ class DashboardsController extends Controller
             //Student Wise Performance Array
             'final_student_performance' => $final_student_performance,
             // Assignment Type Overview
-            'subjective_assignment_count'      => $subjective_assignment_count,
-            'objective_assignment_count'       => $objective_assignment_count,
-            'document_assignment_count'        => $document_assignment_count,
+            'class_assignment_type_overview'      => $class_assignment_type_overview,
             // Total Content Read
             'total_teacher_read_count'      => $total_teacher_read_count,
             'total_student_read_count'      => $total_student_read_count,
+            'class_assignment_overview'      => $class_assignment_overview,
 
         ];
         return response()->json([
