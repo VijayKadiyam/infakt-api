@@ -550,21 +550,21 @@ class DashboardsController extends Controller
         });
 
         // Assignment Type Overview
-        $subjective_assignment_count = 0;
-        $objective_assignment_count = 0;
-        $document_assignment_count = 0;
+        $subjective_assignments = [];
+        $objective_assignments = [];
+        $document_assignments = [];
         foreach ($assignments as $key => $assignment) {
             switch ($assignment->assignment_type) {
                 case 'SUBJECTIVE':
-                    $subjective_assignment_count++;
+                    $subjective_assignments[] = $assignment;
                     break;
 
                 case 'OBJECTIVE':
-                    $objective_assignment_count++;
+                    $objective_assignments[] = $assignment;
                     break;
 
                 case 'DOCUMENT':
-                    $document_assignment_count++;
+                    $document_assignments[] = $assignment;
                     break;
 
                 default:
@@ -572,6 +572,30 @@ class DashboardsController extends Controller
                     break;
             }
         }
+
+        $assignment_type_overview = [
+            [
+                'name' => 'SUBJECTIVE',
+                'count' => sizeof($subjective_assignments),
+                'values' => $subjective_assignments,
+            ],
+            [
+                'name' => 'OBJECTIVE',
+                'count' => sizeof($objective_assignments),
+                'values' => $objective_assignments,
+            ],
+            [
+                'name' => 'DOCUMENT',
+                'count' => sizeof($document_assignments),
+                'values' => $document_assignments,
+            ],
+            [
+                'name' => 'TOTAL',
+                'count' => sizeof($assignments),
+                'values' => $assignments,
+            ],
+        ];
+
 
         $data = [
             'teachers'      =>  $teachers,
@@ -589,9 +613,7 @@ class DashboardsController extends Controller
             'below_avg_students_count'      => $below_avg_students_count,
             'weak_students_count'           => $weak_students_count,
             // Assignment Type Overview
-            'subjective_assignment_count'      => $subjective_assignment_count,
-            'objective_assignment_count'       => $objective_assignment_count,
-            'document_assignment_count'        => $document_assignment_count,
+            'assignment_type_overview'      => $assignment_type_overview,
             // Total Content Read
             'total_teacher_read_count'      => $total_teacher_read_count,
             'total_student_read_count'      => $total_student_read_count,
@@ -939,16 +961,11 @@ class DashboardsController extends Controller
             $class['assignment_count'] = 0;
             if ($class->assignment_classcodes) {
                 $class['assignment_count'] = sizeof($class->assignment_classcodes);
-                $total_assignment_posted_for_classcode = $class['assignment_count'];
                 $total_assignment_submitted_for_classcode = 0;
                 $class_total_assignment_submitted = 0;
                 $total_maximum_marks = 0;
                 $total_scored = 0;
                 $class_total_scored = 0;
-                // Assignment Type Overview
-                $subjective_assignment_count = 0;
-                $objective_assignment_count = 0;
-                $document_assignment_count = 0;
                 foreach ($class->assignment_classcodes as $key => $ac) {
                     $assignment = $ac->assignment;
                     $start_date = $ac->start_date;
@@ -968,17 +985,20 @@ class DashboardsController extends Controller
                         $upcoming_assignments[] = $assignment;
                         $class_upcoming_assignments[] = $assignment;
                     }
+                    $class_subjective_assignments = [];
+                    $class_objective_assignments = [];
+                    $class_document_assignments = [];
                     switch ($assignment->assignment_type) {
                         case 'SUBJECTIVE':
-                            $subjective_assignment_count++;
+                            $class_subjective_assignments[] = $assignment;
                             break;
 
                         case 'OBJECTIVE':
-                            $objective_assignment_count++;
+                            $class_objective_assignments[] = $assignment;
                             break;
 
                         case 'DOCUMENT':
-                            $document_assignment_count++;
+                            $class_document_assignments[] = $assignment;
                             break;
 
                         default:
@@ -1014,10 +1034,32 @@ class DashboardsController extends Controller
                             $class_overdued_assignments[] = $assignment;
                         }
                     }
-                    $class_total_assigments[] = $assignment;
-                    $total_assigments[] = $assignment;
                 }
+                $class_total_assigments[] = $assignment;
+                $total_assigments[] = $assignment;
             }
+            $class_assignment_type_overview = [
+                [
+                    'name' => 'SUBJECTIVE',
+                    'count' => sizeof($class_subjective_assignments),
+                    'values' => $class_subjective_assignments,
+                ],
+                [
+                    'name' => 'OBJECTIVE',
+                    'count' => sizeof($class_objective_assignments),
+                    'values' => $class_objective_assignments,
+                ],
+                [
+                    'name' => 'DOCUMENT',
+                    'count' => sizeof($class_document_assignments),
+                    'values' => $class_document_assignments,
+                ],
+                [
+                    'name' => 'TOTAL',
+                    'count' => sizeof($class_total_assigments),
+                    'values' => $class_total_assigments,
+                ],
+            ];
             $average = 0;
             if ($total_scored != 0 &&  $total_assignment_submitted_for_classcode != 0) {
                 $average = $total_scored / $total_assignment_submitted_for_classcode;
@@ -1077,22 +1119,20 @@ class DashboardsController extends Controller
                 ],
             ];
             $class_details = [
-                'class_id' => $class['id'],
-                'classcode' => $class['classcode'],
-                'total_assignment_posted_for_classcode' => $total_assignment_posted_for_classcode,
+                'class_id'                                 => $class['id'],
+                'classcode'                                => $class['classcode'],
+                'total_assignment_posted_for_classcode'    => sizeof($assignments),
                 'total_assignment_submitted_for_classcode' => $total_assignment_submitted_for_classcode,
-                'total_maximum_marks' => $total_maximum_marks,
-                'total_scored' => $total_scored,
-                'average' => $average,
-                'class_average' => $class_average,
-                'assignments' => $class_total_assigments,
+                'total_maximum_marks'                      => $total_maximum_marks,
+                'total_scored'                             => $total_scored,
+                'average'                                  => $average,
+                'class_average'                            => $class_average,
+                'assignments'                              => $class_total_assigments,
                 // Student Wise_
-                'student_assignment_overview' => $student_assignment_overview,
-                'class_metadata_type_overview' => $class_metadata_type_overview,
+                'student_assignment_overview'              => $student_assignment_overview,
+                'class_metadata_type_overview'             => $class_metadata_type_overview,
                 // Assignment Type Overview
-                'subjective_assignment_count'      => $subjective_assignment_count,
-                'objective_assignment_count'       => $objective_assignment_count,
-                'document_assignment_count'        => $document_assignment_count,
+                'class_assignment_type_overview'           => $class_assignment_type_overview
             ];
             // Total of All Class Details
             $total_classes[] = $class_details;
@@ -1129,22 +1169,23 @@ class DashboardsController extends Controller
         });
 
         $top_classes = array_slice($total_classes, 0, 10);
+
         // Assignment Type Overview
-        $subjective_assignment_count = 0;
-        $objective_assignment_count = 0;
-        $document_assignment_count = 0;
+        $subjective_assignments = [];
+        $objective_assignments = [];
+        $document_assignments = [];
         foreach ($assignments as $key => $assignment) {
             switch ($assignment->assignment_type) {
                 case 'SUBJECTIVE':
-                    $subjective_assignment_count++;
+                    $subjective_assignments[] = $assignment;
                     break;
 
                 case 'OBJECTIVE':
-                    $objective_assignment_count++;
+                    $objective_assignments[] = $assignment;
                     break;
 
                 case 'DOCUMENT':
-                    $document_assignment_count++;
+                    $document_assignments[] = $assignment;
                     break;
 
                 default:
@@ -1152,6 +1193,29 @@ class DashboardsController extends Controller
                     break;
             }
         }
+
+        $assignment_type_overview = [
+            [
+                'name' => 'SUBJECTIVE',
+                'count' => sizeof($subjective_assignments),
+                'values' => $subjective_assignments,
+            ],
+            [
+                'name' => 'OBJECTIVE',
+                'count' => sizeof($objective_assignments),
+                'values' => $objective_assignments,
+            ],
+            [
+                'name' => 'DOCUMENT',
+                'count' => sizeof($document_assignments),
+                'values' => $document_assignments,
+            ],
+            [
+                'name' => 'TOTAL',
+                'count' => sizeof($assignments),
+                'values' => $assignments,
+            ],
+        ];
 
         // Metadata Type Overview
         $metadata_type_overview = [
@@ -1209,9 +1273,7 @@ class DashboardsController extends Controller
             //Student Wise Performance 
             'final_classes' => $total_classes,
             // Assignment Type Overview
-            'subjective_assignment_count'      => $subjective_assignment_count,
-            'objective_assignment_count'       => $objective_assignment_count,
-            'document_assignment_count'        => $document_assignment_count,
+            'assignment_type_overview' => $assignment_type_overview,
             // Total Content Read
             'total_teacher_read_count'      => $total_teacher_read_count,
             'total_student_read_count'      => $total_student_read_count,
