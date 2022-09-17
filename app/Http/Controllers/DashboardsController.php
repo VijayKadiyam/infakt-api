@@ -841,6 +841,7 @@ class DashboardsController extends Controller
                 $score = $ua->score;
                 $total_scored += $score;
             }
+
             if ($assignment_submitted != 0) {
                 $average = $total_scored / $assignment_submitted;
                 $student['average'] = $average;
@@ -929,6 +930,7 @@ class DashboardsController extends Controller
         $completed_assignments = [];
         $total_assigments = [];
         foreach ($classes as $key => $class) {
+            $classcode_id = $class->id;
             $class_total_assigments = [];
             $class_upcoming_assignments = [];
             $class_overdued_assignments = [];
@@ -1024,6 +1026,34 @@ class DashboardsController extends Controller
             if ($class_total_scored != 0 &&  $class_total_assignment_submitted != 0) {
                 $class_average = $class_total_scored / $class_total_assignment_submitted;
             }
+
+            /******** Class Meta data type Overview */
+            $class_annotations = $class->annotations;
+            $class_highlights = $class->highlights;
+            $class_dictionaries = $class->dictionaries;
+
+            $class_metadata_type_overview = [
+                [
+                    'name' => 'ANNOTATION',
+                    'count' => sizeOf($class_annotations),
+                    'values' => $class_annotations,
+                ],
+                [
+                    'name' => 'HIGHLIGHT',
+                    'count' => sizeOf($class_highlights),
+                    'values' => $class_highlights,
+                ],
+                [
+                    'name' => 'DICTIONARY',
+                    'count' => sizeOf($class_dictionaries),
+                    'values' => $class_dictionaries,
+                ],
+            ];
+
+            $annotations[] = $class_annotations;
+            $highlights[] = $class_highlights;
+            $dictionaries[] = $class_dictionaries;
+
             $student_assignment_overview = [
                 [
                     'name' => "UPCOMING",
@@ -1058,6 +1088,7 @@ class DashboardsController extends Controller
                 'assignments' => $class_total_assigments,
                 // Student Wise_
                 'student_assignment_overview' => $student_assignment_overview,
+                'class_metadata_type_overview' => $class_metadata_type_overview,
                 // Assignment Type Overview
                 'subjective_assignment_count'      => $subjective_assignment_count,
                 'objective_assignment_count'       => $objective_assignment_count,
@@ -1122,6 +1153,26 @@ class DashboardsController extends Controller
             }
         }
 
+        // Metadata Type Overview
+        $metadata_type_overview = [
+            [
+                'name' => 'ANNOTATION',
+                'count' => sizeOf($annotations),
+                'values' => $annotations,
+            ],
+            [
+                'name' => 'HIGHLIGHT',
+                'count' => sizeOf($highlights),
+                'values' => $highlights,
+            ],
+            [
+                'name' => 'DICTIONARY',
+                'count' => sizeOf($dictionaries),
+                'values' => $dictionaries,
+            ],
+        ];
+
+        // Assignment Overview
         $assignment_overview = [
             [
                 'name' => "UPCOMING",
@@ -1157,10 +1208,6 @@ class DashboardsController extends Controller
             'top_10_classes'   =>  $top_classes,   //  Top 10 Classes
             //Student Wise Performance 
             'final_classes' => $total_classes,
-            // 'top_students_count'            => $top_students_count,
-            // 'avg_students_count'            => $avg_students_count,
-            // 'below_avg_students_count'      => $below_avg_students_count,
-            // 'weak_students_count'           => $weak_students_count,
             // Assignment Type Overview
             'subjective_assignment_count'      => $subjective_assignment_count,
             'objective_assignment_count'       => $objective_assignment_count,
@@ -1174,7 +1221,8 @@ class DashboardsController extends Controller
             'video_watched' => 0,
             'assignment_pending' => 0,
             'assignment_overview' => $assignment_overview,
-            // 'upcoming_assignments' => $upcoming_assignments,
+            'metadata_type_overview' => $metadata_type_overview,
+
         ];
         return response()->json([
             'data'  =>  $data
