@@ -61,4 +61,19 @@ class Classcode extends Model
                 $q->where('name', 'TEACHER');
             });
     }
+    public function annotations()
+    {
+        return $this->belongsToMany(ContentMetadata::class, 'content_metadata_classcodes', 'classcode_id', 'content_metadata_id')
+            ->where('metadata_type', 'ANNOTATION');
+    }
+    public function highlights()
+    {
+        return $this->belongsToMany(ContentMetadata::class, 'content_metadata_classcodes', 'classcode_id', 'content_metadata_id')
+            ->where('metadata_type', 'HIGHLIGHT');
+    }
+    public function dictionaries()
+    {
+        return $this->belongsToMany(ContentMetadata::class, 'content_metadata_classcodes', 'classcode_id', 'content_metadata_id')
+            ->where('metadata_type', 'DICTIONARY');
+    }
 }
