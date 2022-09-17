@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Search extends Model
 {
-    protected $fillable =[
+    protected $fillable = [
         'user_id',
         'search_type',
         'search',
@@ -14,5 +14,9 @@ class Search extends Model
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
