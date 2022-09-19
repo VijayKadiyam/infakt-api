@@ -18,6 +18,7 @@ use App\Subject;
 use App\ToiArticle;
 use App\User;
 use App\UserClasscode;
+use App\UserTimestamp;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -326,6 +327,7 @@ class DashboardsController extends Controller
             $searched_categories = $company->searched_categories();
             $searched_subjects = $company->searched_subjects();
             $searched_keywords = $company->searched_keywords();
+            $visitors = $company->visitors();
             $assignments_count = $company->assignments()->where('is_deleted', false);
         } else {
             $L3M_Assignment_contents_count = Assignment::where('is_deleted', false);
@@ -333,6 +335,7 @@ class DashboardsController extends Controller
             $searched_categories = Search::where('search_type', 'CATEGORY');
             $searched_subjects = Search::where('search_type', 'SUBJECT');
             $searched_keywords = Search::where('search_type', 'KEYWORD');
+            $visitors = UserTimestamp::where('user_id', '!=', null);
             $assignments_count = Assignment::where('is_deleted', false);
         }
 
@@ -347,6 +350,8 @@ class DashboardsController extends Controller
             ->whereMonth("created_at", $month)
             ->count();
 
+        $visitors = $visitors->whereMonth("created_at", $month)
+            ->get();
         $searched_categories = $searched_categories
             ->whereMonth("created_at", $month)
             ->get();
@@ -357,6 +362,7 @@ class DashboardsController extends Controller
             ->whereMonth("created_at", $month)
             ->get();
 
+        // Most Looked Categories
         $most_looked_categories = [];
         foreach ($searched_categories as $key => $category) {
             $category_name = $category->search;
@@ -379,6 +385,7 @@ class DashboardsController extends Controller
             return $b['count'] - $a['count'];
         });
 
+        // Most Looked Subjects
         $most_looked_subjects = [];
         foreach ($searched_subjects as $key => $subject) {
             $subject_name = $subject->search;
@@ -401,6 +408,7 @@ class DashboardsController extends Controller
             return $b['count'] - $a['count'];
         });
 
+        // Most Looked Keywords
         $most_looked_keywords = [];
         foreach ($searched_keywords as $key => $keyword) {
             $keyword_name = $keyword->search;
@@ -422,6 +430,31 @@ class DashboardsController extends Controller
         usort($most_looked_keywords, function ($a, $b) {
             return $b['count'] - $a['count'];
         });
+
+        // Most Frequent Visitors
+        $most_frequent_visitors = [];
+        foreach ($visitors as $key => $visitor) {
+            $visitor_id = $visitor->user_id;
+            $visitor_name = $visitor->user->name;
+            $count = 1;
+            $visitor_key = array_search($visitor_id, array_column($most_frequent_visitors, 'user_id'));
+            if ($visitor_key != null || $visitor_key !== false) {
+                // Increase Category Looked Count 
+                $most_frequent_visitors[$visitor_key]['count']++;
+            } else {
+                // Category Not Added
+                $visitor_details = [
+                    'user_id' => $visitor_id,
+                    'name' => $visitor_name,
+                    'count' => $count,
+                ];
+                $most_frequent_visitors[] = $visitor_details;
+            }
+        }
+        // Sorting Descending by Count
+        usort($most_frequent_visitors, function ($a, $b) {
+            return $b['count'] - $a['count'];
+        });
         $data = [
             'avg_time_spent_by_student'     =>  0,
             'avg_time_spent_by_teacher'     =>  0,
@@ -430,6 +463,7 @@ class DashboardsController extends Controller
             'most_looked_categories'        =>  $most_looked_categories,
             'most_looked_subjects'          =>  $most_looked_subjects,
             'most_looked_keywords'          =>  $most_looked_keywords,
+            'most_frequent_visitors'        =>  $most_frequent_visitors,
             'assignments_count'             =>  $assignments_count,
         ];
         return response()->json([
