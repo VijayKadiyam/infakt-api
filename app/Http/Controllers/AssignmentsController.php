@@ -55,8 +55,8 @@ class AssignmentsController extends Controller
                     ->with('my_results', 'my_assignment_classcodes')
                     ->get();
                 // return $assignments;
-                array_merge($assignments, $classcodeAssignments);
-                // $assignments = [...$assignments, ...$classcodeAssignments];
+                // array_merge($assignments, $classcodeAssignments);
+                $assignments = [...$assignments, ...$classcodeAssignments];
             }
         }
 

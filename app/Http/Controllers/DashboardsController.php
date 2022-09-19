@@ -18,6 +18,7 @@ use App\Subject;
 use App\ToiArticle;
 use App\User;
 use App\UserClasscode;
+use App\UserTimestamp;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -326,6 +327,7 @@ class DashboardsController extends Controller
             $searched_categories = $company->searched_categories();
             $searched_subjects = $company->searched_subjects();
             $searched_keywords = $company->searched_keywords();
+            $visitors = $company->visitors();
             $assignments_count = $company->assignments()->where('is_deleted', false);
         } else {
             $L3M_Assignment_contents_count = Assignment::where('is_deleted', false);
@@ -333,6 +335,7 @@ class DashboardsController extends Controller
             $searched_categories = Search::where('search_type', 'CATEGORY');
             $searched_subjects = Search::where('search_type', 'SUBJECT');
             $searched_keywords = Search::where('search_type', 'KEYWORD');
+            $visitors = UserTimestamp::where('user_id', '!=', null);
             $assignments_count = Assignment::where('is_deleted', false);
         }
 
@@ -347,6 +350,8 @@ class DashboardsController extends Controller
             ->whereMonth("created_at", $month)
             ->count();
 
+        $visitors = $visitors->whereMonth("created_at", $month)
+            ->get();
         $searched_categories = $searched_categories
             ->whereMonth("created_at", $month)
             ->get();
@@ -357,6 +362,7 @@ class DashboardsController extends Controller
             ->whereMonth("created_at", $month)
             ->get();
 
+        // Most Looked Categories
         $most_looked_categories = [];
         foreach ($searched_categories as $key => $category) {
             $category_name = $category->search;
@@ -379,6 +385,7 @@ class DashboardsController extends Controller
             return $b['count'] - $a['count'];
         });
 
+        // Most Looked Subjects
         $most_looked_subjects = [];
         foreach ($searched_subjects as $key => $subject) {
             $subject_name = $subject->search;
@@ -401,6 +408,7 @@ class DashboardsController extends Controller
             return $b['count'] - $a['count'];
         });
 
+        // Most Looked Keywords
         $most_looked_keywords = [];
         foreach ($searched_keywords as $key => $keyword) {
             $keyword_name = $keyword->search;
@@ -422,6 +430,31 @@ class DashboardsController extends Controller
         usort($most_looked_keywords, function ($a, $b) {
             return $b['count'] - $a['count'];
         });
+
+        // Most Frequent Visitors
+        $most_frequent_visitors = [];
+        foreach ($visitors as $key => $visitor) {
+            $visitor_id = $visitor->user_id;
+            $visitor_name = $visitor->user->name;
+            $count = 1;
+            $visitor_key = array_search($visitor_id, array_column($most_frequent_visitors, 'user_id'));
+            if ($visitor_key != null || $visitor_key !== false) {
+                // Increase Category Looked Count 
+                $most_frequent_visitors[$visitor_key]['count']++;
+            } else {
+                // Category Not Added
+                $visitor_details = [
+                    'user_id' => $visitor_id,
+                    'name' => $visitor_name,
+                    'count' => $count,
+                ];
+                $most_frequent_visitors[] = $visitor_details;
+            }
+        }
+        // Sorting Descending by Count
+        usort($most_frequent_visitors, function ($a, $b) {
+            return $b['count'] - $a['count'];
+        });
         $data = [
             'avg_time_spent_by_student'     =>  0,
             'avg_time_spent_by_teacher'     =>  0,
@@ -430,6 +463,7 @@ class DashboardsController extends Controller
             'most_looked_categories'        =>  $most_looked_categories,
             'most_looked_subjects'          =>  $most_looked_subjects,
             'most_looked_keywords'          =>  $most_looked_keywords,
+            'most_frequent_visitors'        =>  $most_frequent_visitors,
             'assignments_count'             =>  $assignments_count,
         ];
         return response()->json([
@@ -790,6 +824,9 @@ class DashboardsController extends Controller
         $total_students = [];
         $total_student_read_count = 0;
         $total_assigments = [];
+        $annotations = [];
+        $highlights = [];
+        $dictionaries = [];
         foreach ($classes as $key => $class) {
             $class_tsc = 'top_students_count_' . $class->id;
             $class_asc = 'avg_students_count_' . $class->id;
@@ -962,6 +999,34 @@ class DashboardsController extends Controller
                 return $b['average'] - $a['average'];
             });
 
+
+            $class_annotations = $class->annotations;
+            $class_highlights = $class->highlights;
+            $class_dictionaries = $class->dictionaries;
+
+            $class_metadata_type_overview = [
+                [
+                    'name' => 'ANNOTATION',
+                    'count' => sizeOf($class_annotations),
+                    'values' => $class_annotations,
+                ],
+                [
+                    'name' => 'HIGHLIGHT',
+                    'count' => sizeOf($class_highlights),
+                    'values' => $class_highlights,
+                ],
+                [
+                    'name' => 'DICTIONARY',
+                    'count' => sizeOf($class_dictionaries),
+                    'values' => $class_dictionaries,
+                ],
+            ];
+
+            array_push($annotations, ...$class_annotations);
+            array_push($highlights, ...$class_highlights);
+            array_push($dictionaries, ...$class_dictionaries);
+
+            $class['class_metadata_type_overview'] = $class_metadata_type_overview;
             // Top 10 Students of that Class
             $top_students = array_slice($$class_ts, 0, 10);
             $final_top_student[] = [
@@ -1011,6 +1076,26 @@ class DashboardsController extends Controller
                     break;
             }
         }
+
+        // Metadata Type Overview
+        $metadata_type_overview = [
+            [
+                'name' => 'ANNOTATION',
+                'count' => sizeOf($annotations),
+                'values' => $annotations,
+            ],
+            [
+                'name' => 'HIGHLIGHT',
+                'count' => sizeOf($highlights),
+                'values' => $highlights,
+            ],
+            [
+                'name' => 'DICTIONARY',
+                'count' => sizeOf($dictionaries),
+                'values' => $dictionaries,
+            ],
+        ];
+
         $data = [
             'teachers'      =>  $teachers,
             'teachersCount' =>  $teachers->count(),
@@ -1028,7 +1113,8 @@ class DashboardsController extends Controller
             // Total Content Read
             'total_teacher_read_count'      => $total_teacher_read_count,
             'total_student_read_count'      => $total_student_read_count,
-            'class_assignment_overview'      => $class_assignment_overview,
+            'class_assignment_overview'     => $class_assignment_overview,
+            'metadata_type_overview'        => $metadata_type_overview
 
         ];
         return response()->json([
@@ -1072,7 +1158,9 @@ class DashboardsController extends Controller
         $total_maximum_marks = 0;
         $top_students = [];
         $total_student_read_count = 0;
-
+        $annotations = [];
+        $highlights = [];
+        $dictionaries = [];
         foreach ($students as $key => $student) {
             $student['average'] = 0;
             $total_scored = 0;
@@ -1237,6 +1325,7 @@ class DashboardsController extends Controller
                                 $total_assignment_submitted_for_classcode++;
                                 $score = $ua->score;
                                 $total_scored += $score;
+                                $assignment['my_submission']    =   $ua;
                                 $completed_assignments[] = $assignment;
                                 $class_completed_assignments[] = $assignment;
                             }
@@ -1282,9 +1371,12 @@ class DashboardsController extends Controller
                     'values' => $class_total_assigments,
                 ],
             ];
-            $average = 0;
             $totalAverage = 0;
-            $totalAverage = $total_maximum_marks / $total_assignment_submitted_for_classcode;
+            if ($total_maximum_marks != 0 && $class_total_assignment_submitted != 0) {
+                $totalAverage = $total_maximum_marks / $class_total_assignment_submitted;
+            }
+
+            $average = 0;
             if ($total_scored != 0 &&  $total_assignment_submitted_for_classcode != 0) {
                 $average = $total_scored / $total_assignment_submitted_for_classcode;
             }
@@ -1316,9 +1408,9 @@ class DashboardsController extends Controller
                 ],
             ];
 
-            $annotations[] = $class_annotations;
-            $highlights[] = $class_highlights;
-            $dictionaries[] = $class_dictionaries;
+            array_push($annotations, ...$class_annotations);
+            array_push($highlights, ...$class_highlights);
+            array_push($dictionaries, ...$class_dictionaries);
 
             $student_assignment_overview = [
                 [

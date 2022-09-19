@@ -4,13 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ContentGrade extends Model
+class ContentInfoBoard extends Model
 {
     protected $fillable = [
         'content_id',
-        'grade_id',
+        'board_id',
     ];
-
     public function content()
     {
         return $this->belongsTo(Content::class);

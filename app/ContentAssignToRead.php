@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class ContentAssignToRead extends Model
 {
     protected $fillable = [
-
         'company_id',
         'content_id',
         'collection_id',
         'classcode_id',
         'created_by_id',
+        'student_instructions',
     ];
 
     public function content()
