@@ -1106,7 +1106,9 @@ class DashboardsController extends Controller
         $total_maximum_marks = 0;
         $top_students = [];
         $total_student_read_count = 0;
-
+        $annotations = [];
+        $highlights = [];
+        $dictionaries = [];
         foreach ($students as $key => $student) {
             $student['average'] = 0;
             $total_scored = 0;
@@ -1316,9 +1318,12 @@ class DashboardsController extends Controller
                     'values' => $class_total_assigments,
                 ],
             ];
-            $average = 0;
             $totalAverage = 0;
-            $totalAverage = $total_maximum_marks / $total_assignment_submitted_for_classcode;
+            if ($total_maximum_marks != 0 && $class_total_assignment_submitted != 0) {
+                $totalAverage = $total_maximum_marks / $class_total_assignment_submitted;
+            }
+
+            $average = 0;
             if ($total_scored != 0 &&  $total_assignment_submitted_for_classcode != 0) {
                 $average = $total_scored / $total_assignment_submitted_for_classcode;
             }
@@ -1350,9 +1355,9 @@ class DashboardsController extends Controller
                 ],
             ];
 
-            $annotations[] = $class_annotations;
-            $highlights[] = $class_highlights;
-            $dictionaries[] = $class_dictionaries;
+            array_push($annotations, ...$class_annotations);
+            array_push($highlights, ...$class_highlights);
+            array_push($dictionaries, ...$class_dictionaries);
 
             $student_assignment_overview = [
                 [
