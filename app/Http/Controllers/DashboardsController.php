@@ -930,6 +930,7 @@ class DashboardsController extends Controller
             $classes     = $company->classcodes()->where('is_deleted', false);
             $assignments = $company->assignments();
         }
+
         if ($student_id) {
             // Student 
             $students = $students->where('users.id', $student_id);
@@ -991,12 +992,13 @@ class DashboardsController extends Controller
                     $weak_students_count++;
                     break;
             }
+
             // Top Students Based on Average
             $top_students[] = $student;
+
             //  Total Student Content read Count
             $student['read_count'] = 0;
             if ($student->content_reads) {
-
                 $student_content_read = $student->content_reads;
                 $article_contents = [];
                 $infographic_contents = [];
@@ -1015,7 +1017,6 @@ class DashboardsController extends Controller
                             break;
 
                         default:
-                            # code...
                             break;
                     }
                 }
@@ -1123,10 +1124,11 @@ class DashboardsController extends Controller
                                 $total_scored += $score;
                                 $completed_assignments[] = $assignment;
                                 $class_completed_assignments[] = $assignment;
-                            } else {
+                            } 
+                            // else {
                                 $class_total_scored += $ua->score;
                                 $class_total_assignment_submitted++;
-                            }
+                            // }
                         }
                         if ($is_ongoing == true && $is_submitted == false) {
                             // Student Hadn't submitted the Ongoing Assignment hence Add to Pending Assignment
@@ -1166,6 +1168,8 @@ class DashboardsController extends Controller
                 ],
             ];
             $average = 0;
+            $totalAverage = 0;
+            $totalAverage = $total_maximum_marks / $total_assignment_submitted_for_classcode;
             if ($total_scored != 0 &&  $total_assignment_submitted_for_classcode != 0) {
                 $average = $total_scored / $total_assignment_submitted_for_classcode;
             }
@@ -1232,6 +1236,7 @@ class DashboardsController extends Controller
                 'total_scored'                             => $total_scored,
                 'average'                                  => $average,
                 'class_average'                            => $class_average,
+                'total_average'                             =>  $totalAverage,
                 'assignments'                              => $class_total_assigments,
                 // Student Wise_
                 'student_assignment_overview'              => $student_assignment_overview,
