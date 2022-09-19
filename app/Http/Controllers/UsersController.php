@@ -80,6 +80,7 @@ class UsersController extends Controller
           $q->where('name', '=', $role->name);
         });
     }
+
     if ($request->standard_id) {
       $users = $users->whereHas('user_classcodes', function ($uc) {
         $uc->where('standard_id', '=', request()->standard_id);
@@ -96,6 +97,33 @@ class UsersController extends Controller
       });
     }
     $users = $users->get();
+    return response()->json([
+      'data'  =>  $users,
+      'count' =>   sizeof($users),
+      'success' =>  true,
+    ], 200);
+  }
+
+  public function getMyStudents()
+  {
+    $users = [];
+
+    $teacher_classcodes = UserClasscode::with('classcode')->where('user_id', request()->teacher_id)->get();
+    foreach ($teacher_classcodes as $key => $tc) {
+      $class_students = $tc->classcode->students;
+
+      foreach ($class_students as $key => $student) {
+        $student_id = $student->id;
+        $student_key = array_search($student_id, array_column($users, 'id'));
+        if ($student_key != null || $student_key !== false) {
+          // if exist do nothng
+        } else {
+          // Category Not Added
+          $users[] = $student;
+        }
+      }
+    }
+
     return response()->json([
       'data'  =>  $users,
       'count' =>   sizeof($users),

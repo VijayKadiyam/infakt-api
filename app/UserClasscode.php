@@ -27,7 +27,7 @@ class UserClasscode extends Model
     }
     public function classcode()
     {
-        return $this->belongsTo(Classcode::class);
+        return $this->belongsTo(Classcode::class)->with('students');
     }
     public function standard()
     {
