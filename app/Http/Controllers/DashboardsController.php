@@ -1122,12 +1122,13 @@ class DashboardsController extends Controller
                                 $total_assignment_submitted_for_classcode++;
                                 $score = $ua->score;
                                 $total_scored += $score;
+                                $assignment['my_submission']    =   $ua;
                                 $completed_assignments[] = $assignment;
                                 $class_completed_assignments[] = $assignment;
-                            } 
+                            }
                             // else {
-                                $class_total_scored += $ua->score;
-                                $class_total_assignment_submitted++;
+                            $class_total_scored += $ua->score;
+                            $class_total_assignment_submitted++;
                             // }
                         }
                         if ($is_ongoing == true && $is_submitted == false) {
