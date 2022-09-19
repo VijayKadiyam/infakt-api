@@ -824,6 +824,9 @@ class DashboardsController extends Controller
         $total_students = [];
         $total_student_read_count = 0;
         $total_assigments = [];
+        $annotations = [];
+        $highlights = [];
+        $dictionaries = [];
         foreach ($classes as $key => $class) {
             $class_tsc = 'top_students_count_' . $class->id;
             $class_asc = 'avg_students_count_' . $class->id;
@@ -996,6 +999,34 @@ class DashboardsController extends Controller
                 return $b['average'] - $a['average'];
             });
 
+
+            $class_annotations = $class->annotations;
+            $class_highlights = $class->highlights;
+            $class_dictionaries = $class->dictionaries;
+
+            $class_metadata_type_overview = [
+                [
+                    'name' => 'ANNOTATION',
+                    'count' => sizeOf($class_annotations),
+                    'values' => $class_annotations,
+                ],
+                [
+                    'name' => 'HIGHLIGHT',
+                    'count' => sizeOf($class_highlights),
+                    'values' => $class_highlights,
+                ],
+                [
+                    'name' => 'DICTIONARY',
+                    'count' => sizeOf($class_dictionaries),
+                    'values' => $class_dictionaries,
+                ],
+            ];
+
+            array_push($annotations, ...$class_annotations);
+            array_push($highlights, ...$class_highlights);
+            array_push($dictionaries, ...$class_dictionaries);
+
+            $class['class_metadata_type_overview'] = $class_metadata_type_overview;
             // Top 10 Students of that Class
             $top_students = array_slice($$class_ts, 0, 10);
             $final_top_student[] = [
@@ -1045,6 +1076,26 @@ class DashboardsController extends Controller
                     break;
             }
         }
+
+        // Metadata Type Overview
+        $metadata_type_overview = [
+            [
+                'name' => 'ANNOTATION',
+                'count' => sizeOf($annotations),
+                'values' => $annotations,
+            ],
+            [
+                'name' => 'HIGHLIGHT',
+                'count' => sizeOf($highlights),
+                'values' => $highlights,
+            ],
+            [
+                'name' => 'DICTIONARY',
+                'count' => sizeOf($dictionaries),
+                'values' => $dictionaries,
+            ],
+        ];
+
         $data = [
             'teachers'      =>  $teachers,
             'teachersCount' =>  $teachers->count(),
@@ -1062,7 +1113,8 @@ class DashboardsController extends Controller
             // Total Content Read
             'total_teacher_read_count'      => $total_teacher_read_count,
             'total_student_read_count'      => $total_student_read_count,
-            'class_assignment_overview'      => $class_assignment_overview,
+            'class_assignment_overview'     => $class_assignment_overview,
+            'metadata_type_overview'        => $metadata_type_overview
 
         ];
         return response()->json([
