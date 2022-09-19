@@ -95,7 +95,7 @@ class Company extends Model
 
   public function user_assignments()
   {
-    return $this->hasMany(UserAssignment::class);
+    return $this->hasMany(UserAssignment::class)->with('user', 'assignment');
   }
 
   public function assignment_questions()
@@ -145,7 +145,7 @@ class Company extends Model
 
   public function content_reads()
   {
-    return $this->hasMany(ContentRead::class);
+    return $this->hasMany(ContentRead::class)->with('content');
   }
 
   public function notifications()
@@ -195,5 +195,39 @@ class Company extends Model
   public function my_boards()
   {
     return $this->belongsToMany(Board::class, 'company_boards', 'company_id', 'board_id');
+  }
+  public function searched_categories()
+  {
+    return $this->hasMany(Search::class)
+      ->where('search_type', 'CATEGORY');
+  }
+  public function searched_subjects()
+  {
+    return $this->hasMany(Search::class)
+      ->where('search_type', 'SUBJECT');
+  }
+  public function searched_keywords()
+  {
+    return $this->hasMany(Search::class)
+      ->where('search_type', 'KEYWORD');
+  }
+  public function annotations()
+  {
+    return $this->hasMany(ContentMetadata::class)->with('content')
+      ->where('metadata_type', 'ANNOTATION');
+  }
+  public function highlights()
+  {
+    return $this->hasMany(ContentMetadata::class)->with('content')
+      ->where('metadata_type', 'HIGHLIGHT');
+  }
+  public function dictionaries()
+  {
+    return $this->hasMany(ContentMetadata::class)->with('content')
+      ->where('metadata_type', 'DICTIONARY');
+  }
+  public function visitors()
+  {
+    return $this->hasMany(UserTimestamp::class)->with('user');
   }
 }

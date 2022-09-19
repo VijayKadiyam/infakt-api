@@ -4,9 +4,13 @@ namespace Tests\Feature;
 
 use App\Content;
 use App\ContentAssignToRead;
+use App\ContentBoard;
+use App\ContentGrade;
 use App\ContentHiddenClasscode;
+use App\ContentInfoBoard;
 use App\ContentLockClasscode;
 use App\ContentMedia;
+use App\ContentSchool;
 use App\ContentSubject;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -66,6 +70,26 @@ class ContentTest extends TestCase
                     'classcode_id' =>  1,
                 ]
             ],
+            'content_grades' =>  [
+                0 =>  [
+                    'grade_id' =>  1,
+                ]
+            ],
+            'content_boards' =>  [
+                0 =>  [
+                    'board_id' =>  1,
+                ]
+            ],
+            'content_info_boards' =>  [
+                0 =>  [
+                    'board_id' =>  1,
+                ]
+            ],
+            'content_schools' =>  [
+                0 =>  [
+                    'company_id' =>  1,
+                ]
+            ],
         ];
     }
 
@@ -100,7 +124,7 @@ class ContentTest extends TestCase
                     'original_content'     => 'original_content',
                     'content_subjects' =>  [
                         0 =>  [
-                            'subject_id' =>  1,
+                            'subject_id' =>  '1',
                         ]
                     ],
                     'content_medias' =>  [
@@ -110,7 +134,7 @@ class ContentTest extends TestCase
                     ],
                     'content_hidden_classcodes' =>  [
                         0 =>  [
-                            'classcode_id' =>  1,
+                            'classcode_id' =>  '1',
                         ]
                     ],
                     'content_lock_classcodes' =>  [
@@ -121,6 +145,26 @@ class ContentTest extends TestCase
                     'content_assign_to_reads' =>  [
                         0 =>  [
                             'classcode_id' =>  '1',
+                        ]
+                    ],
+                    'content_grades' =>  [
+                        0 =>  [
+                            'grade_id' =>  '1',
+                        ]
+                    ],
+                    'content_boards' =>  [
+                        0 =>  [
+                            'board_id' =>  '1',
+                        ]
+                    ],
+                    'content_info_boards' =>  [
+                        0 =>  [
+                            'board_id' =>  '1',
+                        ]
+                    ],
+                    'content_schools' =>  [
+                        0 =>  [
+                            'company_id' =>  '1',
                         ]
                     ],
                 ]
@@ -144,6 +188,10 @@ class ContentTest extends TestCase
                     'content_hidden_classcodes',
                     'content_lock_classcodes',
                     'content_assign_to_reads',
+                    'content_grades',
+                    'content_boards',
+                    'content_info_boards',
+                    'content_schools',
                 ]
             ]);
     }
@@ -203,7 +251,7 @@ class ContentTest extends TestCase
                     'learning_outcome',
                     'for_school_type',
                     'specific_to',
-                    'school_id',
+                    'company_id',
                     'original_content',
                     'written_by_name',
                     'grade_id',
@@ -257,6 +305,11 @@ class ContentTest extends TestCase
                     'classcode_id' =>  1,
                 ]
             ],
+            'content_grades' =>  [
+                0 =>  [
+                    'grade_id' =>  1,
+                ]
+            ],
         ];
 
         $this->json('patch', '/api/contents/1', $payload, $this->headers)
@@ -293,6 +346,8 @@ class ContentTest extends TestCase
                     'grade_id',
                     'board_id',
                     'info_board_id',
+                    'publication',
+                    'adapted_by',
                     // 'content_subjects',
                     // 'content_medias',
                     // 'content_metadatas',
@@ -329,6 +384,18 @@ class ContentTest extends TestCase
             'content_id' =>  $content->id
         ]);
         $contentAssignToRead = factory(ContentAssignToRead::class)->create([
+            'content_id' =>  $content->id
+        ]);
+        $contentGrade = factory(ContentGrade::class)->create([
+            'content_id' =>  $content->id
+        ]);
+        $contentBoard = factory(ContentBoard::class)->create([
+            'content_id' =>  $content->id
+        ]);
+        $contentInfoBoard = factory(ContentInfoBoard::class)->create([
+            'content_id' =>  $content->id
+        ]);
+        $contentSchool = factory(ContentSchool::class)->create([
             'content_id' =>  $content->id
         ]);
 
@@ -386,6 +453,42 @@ class ContentTest extends TestCase
                 ],
                 1 =>  [
                     'classcode_id'  =>  1
+                ]
+            ],
+            'content_grades' =>  [
+                0 =>  [
+                    'id'          =>  $contentGrade->id,
+                    'grade_id' =>  1,
+                ],
+                1 =>  [
+                    'grade_id'  =>  1
+                ]
+            ],
+            'content_boards' =>  [
+                0 =>  [
+                    'id'          =>  $contentBoard->id,
+                    'board_id' =>  1,
+                ],
+                1 =>  [
+                    'board_id'  =>  1
+                ]
+            ],
+            'content_info_boards' =>  [
+                0 =>  [
+                    'id'          =>  $contentInfoBoard->id,
+                    'board_id' =>  1,
+                ],
+                1 =>  [
+                    'board_id'  =>  1
+                ]
+            ],
+            'content_schools' =>  [
+                0 =>  [
+                    'id'          =>  $contentSchool->id,
+                    'company_id' =>  1,
+                ],
+                1 =>  [
+                    'company_id'  =>  1
                 ]
             ],
         ];
@@ -448,6 +551,42 @@ class ContentTest extends TestCase
                             'classcode_id'  =>  1
                         ]
                     ],
+                    'content_grades' =>  [
+                        0 =>  [
+                            'id'          =>  $contentGrade->id,
+                            'grade_id' =>  1,
+                        ],
+                        1 =>  [
+                            'grade_id'  =>  1
+                        ]
+                    ],
+                    'content_boards' =>  [
+                        0 =>  [
+                            'id'          =>  $contentBoard->id,
+                            'board_id' =>  1,
+                        ],
+                        1 =>  [
+                            'board_id'  =>  1
+                        ]
+                    ],
+                    'content_info_boards' =>  [
+                        0 =>  [
+                            'id'          =>  $contentInfoBoard->id,
+                            'board_id' =>  1,
+                        ],
+                        1 =>  [
+                            'board_id'  =>  1
+                        ]
+                    ],
+                    'content_schools' =>  [
+                        0 =>  [
+                            'id'          =>  $contentSchool->id,
+                            'company_id' =>  '1',
+                        ],
+                        1 =>  [
+                            'company_id'  =>  '1'
+                        ]
+                    ],
                 ]
             ])
             ->assertJsonStructureExact([
@@ -479,6 +618,10 @@ class ContentTest extends TestCase
                     'content_hidden_classcodes',
                     'content_lock_classcodes',
                     'content_assign_to_reads',
+                    'content_grades',
+                    'content_boards',
+                    'content_info_boards',
+                    'content_schools',
                 ]
             ]);
 
@@ -522,6 +665,30 @@ class ContentTest extends TestCase
                     'id' => $contentAssignToRead->id,
                     'classcode_id' =>  1,
                 ]
+            ],
+            'content_grades' =>  [
+                0 =>  [
+                    'id' => $contentGrade->id,
+                    'grade_id' =>  1,
+                ]
+            ],
+            'content_boards' =>  [
+                0 =>  [
+                    'id'          =>  $contentBoard->id,
+                    'board_id' =>  1,
+                ],
+            ],
+            'content_info_boards' =>  [
+                0 =>  [
+                    'id'          =>  $contentInfoBoard->id,
+                    'board_id' =>  1,
+                ],
+            ],
+            'content_schools' =>  [
+                0 =>  [
+                    'id'          =>  $contentBoard->id,
+                    'company_id' =>  1,
+                ],
             ],
         ];
 
@@ -568,6 +735,30 @@ class ContentTest extends TestCase
                             'classcode_id' =>  '1',
                         ]
                     ],
+                    'content_grades' =>  [
+                        0 =>  [
+                            'id' => $contentGrade->id,
+                            'grade_id' =>  '1',
+                        ]
+                    ],
+                    'content_boards' =>  [
+                        0 =>  [
+                            'id'          =>  $contentBoard->id,
+                            'board_id' =>  1,
+                        ],
+                    ],
+                    'content_info_boards' =>  [
+                        0 =>  [
+                            'id'          =>  $contentInfoBoard->id,
+                            'board_id' =>  1,
+                        ],
+                    ],
+                    'content_schools' =>  [
+                        0 =>  [
+                            'id'          =>  $contentBoard->id,
+                            'company_id' =>  1,
+                        ],
+                    ],
                 ]
             ])
             ->assertJsonStructureExact([
@@ -598,6 +789,10 @@ class ContentTest extends TestCase
                     'content_hidden_classcodes',
                     'content_lock_classcodes',
                     'content_assign_to_reads',
+                    'content_grades',
+                    'content_boards',
+                    'content_info_boards',
+                    'content_schools',
                 ]
             ]);
     }
