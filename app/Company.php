@@ -196,4 +196,19 @@ class Company extends Model
   {
     return $this->belongsToMany(Board::class, 'company_boards', 'company_id', 'board_id');
   }
+  public function searched_categories()
+  {
+    return $this->hasMany(Search::class)
+      ->where('search_type', 'CATEGORY');
+  }
+  public function searched_subjects()
+  {
+    return $this->hasMany(Search::class)
+      ->where('search_type', 'SUBJECT');
+  }
+  public function searched_keywords()
+  {
+    return $this->hasMany(Search::class)
+      ->where('search_type', 'KEYWORD');
+  }
 }
