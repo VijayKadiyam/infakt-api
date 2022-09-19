@@ -10,4 +10,8 @@ class ContentInfoBoard extends Model
         'content_id',
         'board_id',
     ];
+    public function content()
+    {
+        return $this->belongsTo(Content::class);
+    }
 }

@@ -4,13 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Content;
 use App\ContentAssignToRead;
+use App\ContentBoard;
 use App\ContentDescription;
+use App\ContentGrade;
 use App\ContentHiddenClasscode;
+use App\ContentInfoBoard;
 use App\ContentLockClasscode;
 use App\ContentMedia;
+use App\ContentSchool;
 use App\ContentSubject;
 use App\UserClasscode;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ContentsController extends Controller
 {
@@ -198,6 +203,34 @@ class ContentsController extends Controller
                     $content->content_assign_to_reads()->save($content_assign_to_read);
                 }
             // ---------------------------------------------------
+            // Save Content Grades
+            if (isset($request->content_grades))
+                foreach ($request->content_grades as $grade) {
+                    $content_grade = new ContentGrade($grade);
+                    $content->content_grades()->save($content_grade);
+                }
+            // ---------------------------------------------------
+            // Save Content Boards
+            if (isset($request->content_boards))
+                foreach ($request->content_boards as $board) {
+                    $content_board = new ContentBoard($board);
+                    $content->content_boards()->save($content_board);
+                }
+            // ---------------------------------------------------
+            // Save Content Info Boards
+            if (isset($request->content_info_boards))
+                foreach ($request->content_info_boards as $info_board) {
+                    $content_info_board = new ContentInfoBoard($info_board);
+                    $content->content_info_boards()->save($content_info_board);
+                }
+            // ---------------------------------------------------
+            // Save Content Schools
+            if (isset($request->content_schools))
+                foreach ($request->content_schools as $school) {
+                    $content_school = new ContentSchool($school);
+                    $content->content_schools()->save($content_school);
+                }
+            // ---------------------------------------------------
         } else {
             // Update Content
             $content = Content::find($request->id);
@@ -372,6 +405,117 @@ class ContentsController extends Controller
                 }
 
             // ---------------------------------------------------
+            // Check if Content Grade deleted
+            if (isset($request->content_grades)) {
+                $contentGradeIdResponseArray = array_pluck($request->content_grades, 'id');
+            } else
+                $contentGradeIdResponseArray = [];
+            $contentId = $content->id;
+            $contentGradeIdArray = array_pluck(ContentGrade::where('content_id', '=', $contentId)->get(), 'id');
+            $differenceContentGradeIds = array_diff($contentGradeIdArray, $contentGradeIdResponseArray);
+            // Delete which is there in the database but not in the response
+            if ($differenceContentGradeIds)
+                foreach ($differenceContentGradeIds as $differenceContentGradeId) {
+                    $contentGrade = ContentGrade::find($differenceContentGradeId);
+                    $contentGrade->delete();
+                }
+
+            // Update Content Grade
+            if (isset($request->content_grades))
+                foreach ($request->content_grades as $grade) {
+                    if (!isset($grade['id'])) {
+                        $content_grade = new ContentGrade($grade);
+                        $content->content_grades()->save($content_grade);
+                    } else {
+                        $content_grade = ContentGrade::find($grade['id']);
+                        $content_grade->update($grade);
+                    }
+                }
+            // ---------------------------------------------------
+            // Check if Content Board deleted
+            if (isset($request->content_boards)) {
+                $contentBoardIdResponseArray = array_pluck($request->content_boards, 'id');
+            } else
+                $contentBoardIdResponseArray = [];
+            $contentId = $content->id;
+            $contentBoardIdArray = array_pluck(ContentBoard::where('content_id', '=', $contentId)->get(), 'id');
+            $differenceContentBoardIds = array_diff($contentBoardIdArray, $contentBoardIdResponseArray);
+            // Delete which is there in the database but not in the response
+            if ($differenceContentBoardIds)
+                foreach ($differenceContentBoardIds as $differenceContentBoardId) {
+                    $contentBoard = ContentBoard::find($differenceContentBoardId);
+                    $contentBoard->delete();
+                }
+
+            // Update Content Board
+            if (isset($request->content_boards))
+                foreach ($request->content_boards as $board) {
+                    if (!isset($board['id'])) {
+                        $content_board = new ContentBoard($board);
+                        $content->content_boards()->save($content_board);
+                    } else {
+                        $content_board = ContentBoard::find($board['id']);
+                        $content_board->update($board);
+                    }
+                }
+
+            // ---------------------------------------------------
+            // Check if Content InfoBoard deleted
+            if (isset($request->content_info_boards)) {
+                $contentInfoBoardIdResponseArray = array_pluck($request->content_info_boards, 'id');
+            } else
+                $contentInfoBoardIdResponseArray = [];
+            $contentId = $content->id;
+            $contentInfoBoardIdArray = array_pluck(ContentInfoBoard::where('content_id', '=', $contentId)->get(), 'id');
+            $differenceContentInfoBoardIds = array_diff($contentInfoBoardIdArray, $contentInfoBoardIdResponseArray);
+            // Delete which is there in the database but not in the response
+            if ($differenceContentInfoBoardIds)
+                foreach ($differenceContentInfoBoardIds as $differenceContentInfoBoardId) {
+                    $contentInfoBoard = ContentInfoBoard::find($differenceContentInfoBoardId);
+                    $contentInfoBoard->delete();
+                }
+
+            // Update Content Info Board
+            if (isset($request->content_info_boards))
+                foreach ($request->content_info_boards as $info_board) {
+                    if (!isset($info_board['id'])) {
+                        $content_info_board = new ContentInfoBoard($info_board);
+                        $content->content_info_boards()->save($content_info_board);
+                    } else {
+                        $content_info_board = ContentInfoBoard::find($info_board['id']);
+                        $content_info_board->update($info_board);
+                    }
+                }
+
+            // ---------------------------------------------------
+            // Check if Content School deleted
+            if (isset($request->content_schools)) {
+                $contentSchoolIdResponseArray = array_pluck($request->content_schools, 'id');
+            } else
+                $contentSchoolIdResponseArray = [];
+            $contentId = $content->id;
+            $contentSchoolIdArray = array_pluck(ContentSchool::where('content_id', '=', $contentId)->get(), 'id');
+            $differenceContentSchoolIds = array_diff($contentSchoolIdArray, $contentSchoolIdResponseArray);
+            // Delete which is there in the database but not in the response
+            if ($differenceContentSchoolIds)
+                foreach ($differenceContentSchoolIds as $differenceContentSchoolId) {
+                    $contentSchool = ContentSchool::find($differenceContentSchoolId);
+                    $contentSchool->delete();
+                }
+
+            // Update Content School
+            if (isset($request->content_schools))
+                foreach ($request->content_schools as $school) {
+                    if (!isset($school['id'])) {
+                        $content_school = new ContentSchool($school);
+                        $content->content_schools()->save($content_school);
+                    } else {
+                        $content_school = ContentSchool::find($school['id']);
+                        $content_school->update($school);
+                    }
+                }
+
+            // ---------------------------------------------------
         }
 
         $content->content_subjects = $content->content_subjects;
@@ -380,6 +524,10 @@ class ContentsController extends Controller
         $content->content_hidden_classcodes = $content->content_hidden_classcodes;
         $content->content_lock_classcodes = $content->content_lock_classcodes;
         $content->content_assign_to_reads = $content->content_assign_to_reads;
+        $content->content_grades = $content->content_grades;
+        $content->content_boards = $content->content_boards;
+        $content->content_info_boards = $content->content_info_boards;
+        $content->content_schools = $content->content_schools;
         return response()->json([
             'data'  =>  $content
         ], 201);
@@ -393,7 +541,7 @@ class ContentsController extends Controller
      */
     public function show(Content $content)
     {
-        $user = \Auth::user();
+        $user = Auth::user();
         $user_role = $user->roles[0]->name;
         $user_id = $user->id;
         if ($user_role == 'STUDENT') {
@@ -421,7 +569,10 @@ class ContentsController extends Controller
         $content->content_hidden_classcodes = $content->content_hidden_classcodes;
         $content->content_lock_classcodes = $content->content_lock_classcodes;
         $content->content_assign_to_reads = $content->content_assign_to_reads;
-
+        $content->content_grades = $content->content_grades;
+        $content->content_boards = $content->content_boards;
+        $content->content_info_boards = $content->content_info_boards;
+        $content->content_schools = $content->content_schools;
         return response()->json([
             'data'  =>  $content
         ], 200);

@@ -67,4 +67,20 @@ class Content extends Model
     {
         return $this->hasMany(ContentAssignToRead::class);
     }
+    public function content_grades()
+    {
+        return $this->hasMany(ContentGrade::class);
+    }
+    public function content_boards()
+    {
+        return $this->hasMany(ContentBoard::class);
+    }
+    public function content_info_boards()
+    {
+        return $this->hasMany(ContentInfoBoard::class);
+    }
+    public function content_schools()
+    {
+        return $this->hasMany(ContentSchool::class);
+    }
 }
