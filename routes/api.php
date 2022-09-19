@@ -258,3 +258,6 @@ Route::resource('content_grades', 'ContentGradesController');
 
 // content_boards
 Route::resource('content_boards', 'ContentBoardsController');
+
+// content_schools
+Route::resource('content_schools', 'ContentSchoolsController');
