@@ -255,3 +255,6 @@ Route::resource('jobs', 'JobsController');
 
 // jobs
 Route::resource('content_grades', 'ContentGradesController');
+
+//content_info_boards
+Route::resource('content_info_boards', 'ContentInfoBoardsController');
