@@ -226,4 +226,8 @@ class Company extends Model
     return $this->hasMany(ContentMetadata::class)->with('content')
       ->where('metadata_type', 'DICTIONARY');
   }
+  public function visitors()
+  {
+    return $this->hasMany(UserTimestamp::class)->with('user');
+  }
 }
