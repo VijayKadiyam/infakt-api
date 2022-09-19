@@ -252,3 +252,6 @@ Route::get('contentMetadataWise', 'DashboardsController@contentMetadataWise');
 
 // jobs
 Route::resource('jobs', 'JobsController');
+
+// jobs
+Route::resource('content_grades', 'ContentGradesController');
