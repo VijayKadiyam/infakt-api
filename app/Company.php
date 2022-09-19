@@ -95,7 +95,7 @@ class Company extends Model
 
   public function user_assignments()
   {
-    return $this->hasMany(UserAssignment::class);
+    return $this->hasMany(UserAssignment::class)->with('user', 'assignment');
   }
 
   public function assignment_questions()
@@ -145,7 +145,7 @@ class Company extends Model
 
   public function content_reads()
   {
-    return $this->hasMany(ContentRead::class);
+    return $this->hasMany(ContentRead::class)->with('content');
   }
 
   public function notifications()
