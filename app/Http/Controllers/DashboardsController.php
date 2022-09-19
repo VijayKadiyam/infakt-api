@@ -194,19 +194,48 @@ class DashboardsController extends Controller
 
     public function adminDashboard(Request $request)
     {
-        $studentsCount =  $request->company->allUsers()
-            ->whereHas('roles', function ($q) {
-                $q->where('name', '=', 'STUDENT');
-            })->count();
-        $teachersCount =  $request->company->allUsers()
-            ->whereHas('roles', function ($q) {
-                $q->where('name', '=', 'TEACHER');
-            })->count();
-        $classesCount = $request->company->classcodes()->count();
+
+        $students =  $request->company->students()->get();
+        $teachers =  $request->company->teachers()->get();
+        $classes = $request->company->classcodes()->get();
+
+        $assignments = $request->company->assignments()->where('is_deleted', false)->get();
+
+        $annotations = $request->company->annotations()->get();
+        $highlights = $request->company->highlights()->get();
+        $dictionaries = $request->company->dictionaries()->get();
+
+        $articleReads = $request->company->content_reads()->get();
+
+        $assignmentPosts = $request->company->user_assignments()->get();
+
         $data = [
-            'studentsCount'  =>  $studentsCount,
-            'teachersCount'  =>  $teachersCount,
-            'classesCount'   =>  $classesCount,
+            'total_studentsCount'  =>  sizeof($students),
+            'students'  =>  $students,
+
+            'teachersCount'  =>  sizeof($teachers),
+            'total_teachers'  =>  $teachers,
+
+            'classesCount'   =>  sizeof($classes),
+            'total_classes'   =>  $classes,
+
+            'assignmentsCount'   =>  sizeof($assignments),
+            'total_assignments'   =>  $assignments,
+
+            'annotationsCount'   =>  sizeof($annotations),
+            'total_annotations'   =>  $annotations,
+
+            'highlightsCount'   =>  sizeof($highlights),
+            'total_highlights'   =>  $highlights,
+
+            'dictionariesCount'   =>  sizeof($dictionaries),
+            'total_dictionaries'   =>  $dictionaries,
+
+            'articleReadsCount'   =>  sizeof($articleReads),
+            'total_article_reads'   =>  $articleReads,
+
+            'assignmentPostsCount'   =>  sizeof($assignmentPosts),
+            'total_assignment_posts'   =>  $assignmentPosts,
         ];
         return response()->json([
             'data'  =>  $data
@@ -215,6 +244,7 @@ class DashboardsController extends Controller
 
     public function teacherDashboard(Request $request)
     {
+
         $studentsCount =  $request->company->allUsers()
             ->whereHas('roles', function ($q) {
                 $q->where('name', '=', 'STUDENT');
