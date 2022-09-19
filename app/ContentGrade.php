@@ -10,4 +10,9 @@ class ContentGrade extends Model
         'content_id',
         'grade_id',
     ];
+
+    public function content()
+    {
+        return $this->belongsTo(Content::class);
+    }
 }
