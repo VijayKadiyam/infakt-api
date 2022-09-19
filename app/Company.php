@@ -211,4 +211,19 @@ class Company extends Model
     return $this->hasMany(Search::class)
       ->where('search_type', 'KEYWORD');
   }
+  public function annotations()
+  {
+    return $this->hasMany(ContentMetadata::class)->with('content')
+      ->where('metadata_type', 'ANNOTATION');
+  }
+  public function highlights()
+  {
+    return $this->hasMany(ContentMetadata::class)->with('content')
+      ->where('metadata_type', 'HIGHLIGHT');
+  }
+  public function dictionaries()
+  {
+    return $this->hasMany(ContentMetadata::class)->with('content')
+      ->where('metadata_type', 'DICTIONARY');
+  }
 }
