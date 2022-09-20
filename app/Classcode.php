@@ -35,6 +35,11 @@ class Classcode extends Model
     {
         return $this->hasMany(UserClasscode::class);
     }
+    public function assignments()
+    {
+        return $this->belongsToMany(Assignment::class, 'assignment_classcodes', 'classcode_id', 'assignment_id')
+            ->withTimestamps();;
+    }
     public function assignment_classcodes()
     {
         return $this->hasMany(AssignmentClasscode::class);
@@ -61,10 +66,16 @@ class Classcode extends Model
                 $q->where('name', 'TEACHER');
             });
     }
+    public function content_metadatas()
+    {
+        return $this->belongsToMany(ContentMetadata::class, 'content_metadata_classcodes', 'classcode_id', 'content_metadata_id')
+            ->with('user');
+    }
     public function annotations()
     {
         return $this->belongsToMany(ContentMetadata::class, 'content_metadata_classcodes', 'classcode_id', 'content_metadata_id')
-            ->where('metadata_type', 'ANNOTATION');
+            ->where('metadata_type', 'ANNOTATION')
+            ->with('user');
     }
     public function highlights()
     {

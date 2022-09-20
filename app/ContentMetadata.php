@@ -21,6 +21,12 @@ class ContentMetadata extends Model
         return $this->belongsTo(Content::class);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class)
+            ->with('roles');
+    }
+
     public function company()
     {
         return $this->belongsTo(Company::class);

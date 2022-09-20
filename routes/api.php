@@ -247,7 +247,7 @@ Route::get('teacher_wise_overview', 'DashboardsController@TeacherWiseOverview');
 Route::resource('features', 'FeaturesController');
 
 // Student Overview
-Route::get('student_wise_overview', 'DashboardsController@StudentWiseOverview');
+Route::get('student_wise_overview', 'StudentDashboardsController@StudentWiseOverview');
 Route::get('contentMetadataWise', 'DashboardsController@contentMetadataWise');
 
 // jobs
