@@ -52,18 +52,21 @@ class CollectionClasscodesController extends Controller
         //     'collection_id'        =>  'required',
         // ]);
 
-        // $collection_classcodes = new CollectionClasscode(request()->all());
-        // $request->company->collection_classcodes()->save($collection_classcodes);
-
-        if (isset(request()->collection_classcodes)) {
-            foreach ($request->collection_classcodes as $collection_classcode) {
-                $collection_classcodes = new CollectionClasscode($collection_classcode);
-                $request->company->collection_classcodes()->save($collection_classcodes);
+        $collectionClasscodeIdArray = array_pluck(CollectionClasscode::where('collection_id', '=', $request->collection_id)->get(), 'id');
+        if ($collectionClasscodeIdArray)
+            foreach ($collectionClasscodeIdArray as $differenceCollectionClasscodeId) {
+                $collectionClasscode = CollectionClasscode::find($differenceCollectionClasscodeId);
+                $collectionClasscode->delete();
             }
-        }
+
+        if (isset($request->collection_classcodes))
+            foreach ($request->collection_classcodes as $collecton) {
+                $collection_classcode = new CollectionClasscode($collecton);
+                $request->company->collection_classcodes()->save($collection_classcode);
+            }
 
         return response()->json([
-            'data'    =>  $collection_classcodes
+            'data'    =>  $collection_classcode
         ], 201);
     }
 
