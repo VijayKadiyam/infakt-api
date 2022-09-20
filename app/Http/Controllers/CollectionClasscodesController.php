@@ -17,7 +17,9 @@ class CollectionClasscodesController extends Controller
     {
         $count = 0;
         $collection_classcodes = $request->company->collection_classcodes;
-        // $collection_classcodes = $collection_classcodes->whereHas(''); 
+        if (request()->collection_id) {
+            $collection_classcodes = $collection_classcodes->where('collection_id', request()->collection_id);
+        }
         if (request()->user_role == 'STUDENT') {
             $user_classcodes = UserClasscode::where('user_id', request()->user_id)->get();
             foreach ($user_classcodes as $key => $classcode) {
@@ -28,7 +30,6 @@ class CollectionClasscodesController extends Controller
                     'count'    =>   $count
                 ], 200);
             }
-            // return $abc;
         }
         $count = $collection_classcodes->count();
 
@@ -45,12 +46,19 @@ class CollectionClasscodesController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'collection_id'        =>  'required',
-        ]);
+        // $request->validate([
+        //     'collection_id'        =>  'required',
+        // ]);
 
-        $collection_classcodes = new CollectionClasscode(request()->all());
-        $request->company->collection_classcodes()->save($collection_classcodes);
+        // $collection_classcodes = new CollectionClasscode(request()->all());
+        // $request->company->collection_classcodes()->save($collection_classcodes);
+
+        if (isset(request()->collection_classcodes)) {
+            foreach ($request->collection_classcodes as $collection_classcode) {
+                $collection_classcodes = new CollectionClasscode($collection_classcode);
+                $request->company->collection_classcodes()->save($collection_classcodes);
+            }
+        }
 
         return response()->json([
             'data'    =>  $collection_classcodes
