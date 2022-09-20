@@ -1289,7 +1289,9 @@ class DashboardsController extends Controller
                     $end_diff = date_diff($date1, $date2)->format("%R%a");
                     $is_Due = $end_diff < 0 ? true : false;
                     // return "AC id" . $ac->id . " Current Date=" . date('Y-m-d') . ' Start Date=' . $start_date . ' End Date= ' . $end_date . ' Start Diff=' . $start_diff . ' End Diff=' . $end_diff;
+                    // $is_ongoing = $start_diff < 0 && $end_diff > 0 ? true : false;
                     $is_ongoing = $start_diff < 0 && $end_diff > 0 ? true : false;
+                    // $is_ongoing = true;
                     if ($is_Upcoming == true) {
                         $upcoming_assignments[] = $assignment;
                         $class_upcoming_assignments[] = $assignment;
@@ -1315,62 +1317,76 @@ class DashboardsController extends Controller
                             break;
                     }
                     $total_maximum_marks += $assignment->maximum_marks;
-                    if (sizeOf($assignment->user_assignments)) {
-                        $is_submitted = false;
-                        foreach ($assignment->user_assignments as $key => $ua) {
-                            $score = 0;
-                            if ($ua->user_id == $student_id) {
-                                // Student Submitted
-                                $is_submitted = true;
-                                $total_assignment_submitted_for_classcode++;
-                                $score = $ua->score;
-                                $total_scored += $score;
-                                $assignment['my_submission']    =   $ua;
-                                $completed_assignments[] = $assignment;
-                                $class_completed_assignments[] = $assignment;
-                            }
-                            // else {
-                            $class_total_scored += $ua->score;
-                            $class_total_assignment_submitted++;
-                            // }
+                    // if (sizeOf($assignment->user_assignments)) {
+                    $is_submitted = false;
+                    foreach ($assignment->user_assignments as $key => $ua) {
+                        $score = 0;
+                        if ($ua->user_id == $student_id) {
+                            // Student Submitted
+                            $is_submitted = true;
+                            $total_assignment_submitted_for_classcode++;
+                            $score = $ua->score;
+                            $total_scored += $score;
+                            $assignment['my_submission']    =   $ua;
+                            $completed_assignments[] = $assignment;
+                            $class_completed_assignments[] = $assignment;
                         }
-                        if ($is_ongoing == true && $is_submitted == false) {
-                            // Student Hadn't submitted the Ongoing Assignment hence Add to Pending Assignment
-                            $pending_assignments[] = $assignment;
-                            $class_pending_assignments[] = $assignment;
-                        }
-                        if ($is_Due == true && $is_submitted == false) {
-                            // Student Hadn't submitted the Assignment And end date has been past hence Add to Overdue Assignment
-                            $overdued_assignments[] = $assignment;
-                            $class_overdued_assignments[] = $assignment;
-                        }
+                        // else {
+                        $class_total_scored += $ua->score;
+                        $class_total_assignment_submitted++;
+                        // }
                     }
+                    if ($is_ongoing == true && $is_submitted == false) {
+                        // Student Hadn't submitted the Ongoing Assignment hence Add to Pending Assignment
+                        $pending_assignments[] = $assignment;
+                        $class_pending_assignments[] = $assignment;
+                    }
+                    if ($is_Due == true && $is_submitted == false) {
+                        // Student Hadn't submitted the Assignment And end date has been past hence Add to Overdue Assignment
+                        $overdued_assignments[] = $assignment;
+                        $class_overdued_assignments[] = $assignment;
+                    }
+                    // } else {
+                    //     if ($is_ongoing == true && $is_submitted == false) {
+                    //         // Student Hadn't submitted the Ongoing Assignment hence Add to Pending Assignment
+                    //         $pending_assignments[] = $assignment;
+                    //         $class_pending_assignments[] = $assignment;
+                    //     }
+                    //     if ($is_Due == true && $is_submitted == false) {
+                    //         // Student Hadn't submitted the Assignment And end date has been past hence Add to Overdue Assignment
+                    //         $overdued_assignments[] = $assignment;
+                    //         $class_overdued_assignments[] = $assignment;
+                    //     }
+                    // }
+                    $class_total_assigments[] = $assignment;
+                    $total_assigments[] = $assignment;
+
+
+                    $class_assignment_type_overview = [
+                        [
+                            'name' => 'SUBJECTIVE',
+                            'count' => sizeof($class_subjective_assignments),
+                            'values' => $class_subjective_assignments,
+                        ],
+                        [
+                            'name' => 'OBJECTIVE',
+                            'count' => sizeof($class_objective_assignments),
+                            'values' => $class_objective_assignments,
+                        ],
+                        [
+                            'name' => 'DOCUMENT',
+                            'count' => sizeof($class_document_assignments),
+                            'values' => $class_document_assignments,
+                        ],
+                        [
+                            'name' => 'TOTAL',
+                            'count' => sizeof($class_total_assigments),
+                            'values' => $class_total_assigments,
+                        ],
+                    ];
                 }
-                $class_total_assigments[] = $assignment;
-                $total_assigments[] = $assignment;
             }
-            $class_assignment_type_overview = [
-                [
-                    'name' => 'SUBJECTIVE',
-                    'count' => sizeof($class_subjective_assignments),
-                    'values' => $class_subjective_assignments,
-                ],
-                [
-                    'name' => 'OBJECTIVE',
-                    'count' => sizeof($class_objective_assignments),
-                    'values' => $class_objective_assignments,
-                ],
-                [
-                    'name' => 'DOCUMENT',
-                    'count' => sizeof($class_document_assignments),
-                    'values' => $class_document_assignments,
-                ],
-                [
-                    'name' => 'TOTAL',
-                    'count' => sizeof($class_total_assigments),
-                    'values' => $class_total_assigments,
-                ],
-            ];
+
             $totalAverage = 0;
             if ($total_maximum_marks != 0 && $class_total_assignment_submitted != 0) {
                 $totalAverage = $total_maximum_marks / $class_total_assignment_submitted;
@@ -1437,7 +1453,7 @@ class DashboardsController extends Controller
             $class_details = [
                 'class_id'                                 => $class['id'],
                 'classcode'                                => $class['classcode'],
-                'total_assignment_posted_for_classcode'    => sizeof($assignments),
+                'total_assignment_posted_for_classcode'    => sizeof($class_total_assigments),
                 'total_assignment_submitted_for_classcode' => $total_assignment_submitted_for_classcode,
                 'total_maximum_marks'                      => $total_maximum_marks,
                 'total_scored'                             => $total_scored,
