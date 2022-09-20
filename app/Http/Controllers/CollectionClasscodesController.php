@@ -16,10 +16,8 @@ class CollectionClasscodesController extends Controller
     public function index(Request $request)
     {
         $count = 0;
-        $collection_classcodes = $request->company->collection_classcodes;
-        if (request()->collection_id) {
-            $collection_classcodes = $collection_classcodes->where('collection_id', request()->collection_id);
-        }
+        $collection_classcodes = $request->company->collection_classcodes();
+
         if (request()->user_role == 'STUDENT') {
             $user_classcodes = UserClasscode::where('user_id', request()->user_id)->get();
             foreach ($user_classcodes as $key => $classcode) {
@@ -31,6 +29,10 @@ class CollectionClasscodesController extends Controller
                 ], 200);
             }
         }
+        if (request()->collection_id) {
+            $collection_classcodes = $collection_classcodes->where('collection_id', request()->collection_id);
+        }
+        $collection_classcodes = $collection_classcodes->get();
         $count = $collection_classcodes->count();
 
         return response()->json([
@@ -50,18 +52,21 @@ class CollectionClasscodesController extends Controller
         //     'collection_id'        =>  'required',
         // ]);
 
-        // $collection_classcodes = new CollectionClasscode(request()->all());
-        // $request->company->collection_classcodes()->save($collection_classcodes);
-
-        if (isset(request()->collection_classcodes)) {
-            foreach ($request->collection_classcodes as $collection_classcode) {
-                $collection_classcodes = new CollectionClasscode($collection_classcode);
-                $request->company->collection_classcodes()->save($collection_classcodes);
+        $collectionClasscodeIdArray = array_pluck(CollectionClasscode::where('collection_id', '=', $request->collection_id)->get(), 'id');
+        if ($collectionClasscodeIdArray)
+            foreach ($collectionClasscodeIdArray as $differenceCollectionClasscodeId) {
+                $collectionClasscode = CollectionClasscode::find($differenceCollectionClasscodeId);
+                $collectionClasscode->delete();
             }
-        }
+
+        if (isset($request->collection_classcodes))
+            foreach ($request->collection_classcodes as $collecton) {
+                $collection_classcode = new CollectionClasscode($collecton);
+                $request->company->collection_classcodes()->save($collection_classcode);
+            }
 
         return response()->json([
-            'data'    =>  $collection_classcodes
+            'data'    =>  $collection_classcode
         ], 201);
     }
 
