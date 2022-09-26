@@ -7,8 +7,18 @@ use Illuminate\Http\Request;
 
 class TeacherDashboardsController extends Controller
 {
-    public function TeacherWiseOverview()
+    public function TeacherWiseOverview(Request $request)
     {
+        $request->validate([
+            'companyId'    =>  'required',
+            'teacherId'    =>  'required',
+        ]);
+
+        // ---------------------------------------------------------------------------------------------------------
+        // Controller Logic
+
+        return 1;
+
         $teacher_id = request()->type_id;
         if (request()->company_id) {
             $company     = Company::find(request()->company_id);

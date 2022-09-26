@@ -38,7 +38,8 @@ class Classcode extends Model
     public function assignments()
     {
         return $this->belongsToMany(Assignment::class, 'assignment_classcodes', 'classcode_id', 'assignment_id')
-            ->withTimestamps();;
+            ->latest()
+            ->withTimestamps();
     }
     public function assignment_classcodes()
     {
@@ -69,7 +70,7 @@ class Classcode extends Model
     public function content_metadatas()
     {
         return $this->belongsToMany(ContentMetadata::class, 'content_metadata_classcodes', 'classcode_id', 'content_metadata_id')
-            ->with('user');
+            ->with('user', 'content');
     }
     public function annotations()
     {

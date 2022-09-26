@@ -241,13 +241,14 @@ Route::resource('user_timestamps', 'UserTimestampsController');
 Route::resource('searches', 'SearchesController');
 
 // Teacher Overview
-Route::get('teacher_wise_overview', 'DashboardsController@TeacherWiseOverview');
 
 // features
 Route::resource('features', 'FeaturesController');
 
 // Student Overview
 Route::get('student_wise_overview', 'StudentDashboardsController@StudentWiseOverview');
+Route::get('teacher_wise_overview', 'TeacherDashboardsController@TeacherWiseOverview');
+
 Route::get('contentMetadataWise', 'DashboardsController@contentMetadataWise');
 
 // jobs
