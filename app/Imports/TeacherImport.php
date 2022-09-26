@@ -22,7 +22,7 @@ class TeacherImport implements ToModel, WithHeadingRow
             'email' =>  $row['Email'],
             'contact_number' =>  $row['Contact Number'],
             'gender' =>  $row['Gender'],
-            'active' =>  "yes",
+            'active' =>  "YES",
             // 'joining_date' =>  \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['Joining Date'])->format('Y-m-d'),
             // 'classcode_1' =>  $row['Classcode 1'],
             // 'classcode_2' =>  $row['Classcode 2'],
