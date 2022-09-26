@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Company;
 use App\ContentRead;
+use App\User;
 use Illuminate\Http\Request;
 
 class StudentDashboardsController extends Controller
@@ -13,7 +14,7 @@ class StudentDashboardsController extends Controller
         // ---------------------------------------------------------------------------------------------------------
         // Controller Logic
 
-        $myAssignments = [];
+        $allAssignments = [];
         foreach ($classcodes as $classcode) {
             $assignments = $classcode->assignments;
             foreach ($assignments as $assignment) {
@@ -21,20 +22,20 @@ class StudentDashboardsController extends Controller
                 // Class Average
                 $classTotalMarks = 0;
                 $totalStudentsSubmitted = $classAssignments->count();
-                $myAssignment = [];
+                $singleAssignment = [];
                 $isSubmitted = false;
                 foreach ($classAssignments as $userAssignment) {
                     $classTotalMarks += $userAssignment->score;
                     if ($userAssignment->user_id == $userId) {
                         $isSubmitted = true;
-                        $myAssignment = $userAssignment;
+                        $singleAssignment = $userAssignment;
                     }
                 }
                 $classAverage = $totalStudentsSubmitted == 0 ? 0 : $classTotalMarks / $totalStudentsSubmitted;
-                $myAssignment['isSubmitted'] = $isSubmitted;
-                $myAssignment['classAverage'] = $classAverage;
+                $singleAssignment['isSubmitted'] = $isSubmitted;
+                $singleAssignment['classAverage'] = $classAverage;
                 if (!$isSubmitted)
-                    $myAssignment['score'] = 0;
+                    $singleAssignment['score'] = 0;
                 // End Class Average
                 // Assignment Status
                 $currentDate = date_create(date('Y-m-d'));
@@ -48,27 +49,46 @@ class StudentDashboardsController extends Controller
                 $isUpcoming = $startDiff > 0 ? true : false;
                 $isDue = $endDiff < 0 ? true : false;
                 $inProgress = $startDiff < 0 && $endDiff >= 0 ? true : false;
-                if ($isUpcoming) $myAssignment['status'] = 'UPCOMING';
-                else if ($isDue && !$isSubmitted) $myAssignment['status'] = 'OVERDUE';
-                else if ($inProgress && !$isSubmitted) $myAssignment['status'] = 'IN PROGRESS';
-                else $myAssignment['status'] = 'COMPLETED';
+                if ($isUpcoming) $singleAssignment['status'] = 'UPCOMING';
+                else if ($isDue && !$isSubmitted) $singleAssignment['status'] = 'OVERDUE';
+                else if ($inProgress && !$isSubmitted) $singleAssignment['status'] = 'IN PROGRESS';
+                else $singleAssignment['status'] = 'COMPLETED';
                 // End Assignmet Status
-                $myAssignment['classcode'] = $classcode->classcode;
-                $myAssignment['assignment_type'] = $assignment->assignment_type;
-                $myAssignment['maximum_marks'] = $assignment->maximum_marks;
-                $myAssignment['assignment_title'] = $assignment->assignment_title;
-                $myAssignment['assignment_created_date'] = '';
-                $myAssignment['teachers'] = $classcode->teachers;
+                $singleAssignment['classcode'] = $classcode->classcode;
+                $singleAssignment['assignment_type'] = $assignment->assignment_type;
+                $singleAssignment['maximum_marks'] = $assignment->maximum_marks;
+                $singleAssignment['assignment_title'] = $assignment->assignment_title;
+                $singleAssignment['assignment_created_date'] = '';
+                $singleAssignment['teachers'] = $classcode->teachers;
 
-                $myAssignments[] = $myAssignment;
+                $allAssignments[] = $singleAssignment;
             }
         }
+
+        return $allAssignments;
+    }
+
+    public function StudentWiseOverview(Request $request)
+    {
+        $request->validate([
+            'companyId'    =>  'required',
+            'studentId'    =>  'required',
+        ]);
+
+        $studentId  = request()->studentId;
+        $student    = User::where('users.id', '=', $studentId)
+            ->first();
+        $classcodes = $student->classcodes;
+
+        // ---------------------------------------------------------------------------------------------------------
+        // Assignment Overwiew
+        $allAssignments = $this->assignmentOverview($classcodes, $studentId);
 
         // ---------------------------------------------------------------------------------------------------------
         // View Logic
 
         $assignmentOverview = [
-            'totalAssignmentsCount' =>  sizeof($myAssignments),
+            'totalAssignmentsCount' =>  sizeof($allAssignments),
             "statusWiseAssignments"  =>  [],
             "typeWiseAssignments"   =>  [],
             "classcodeWiseAssignments"  =>  [],
@@ -109,24 +129,24 @@ class StudentDashboardsController extends Controller
             'values'    =>  []
         ];
         $classcodeWise = [];
-        foreach ($myAssignments as $myAssignment) {
+        foreach ($allAssignments as $singleAssignment) {
             // Status Wise Bifurcation
-            switch ($myAssignment['status']) {
+            switch ($singleAssignment['status']) {
                 case 'UPCOMING':
                     $upcoming['count']++;
-                    $upcoming['values'][]   =   $myAssignment;
+                    $upcoming['values'][]   =   $singleAssignment;
                     break;
                 case 'OVERDUE':
                     $overdue['count']++;
-                    $overdue['values'][]   =   $myAssignment;
+                    $overdue['values'][]   =   $singleAssignment;
                     break;
                 case 'IN PROGRESS':
                     $inprogress['count']++;
-                    $inprogress['values'][]   =   $myAssignment;
+                    $inprogress['values'][]   =   $singleAssignment;
                     break;
                 case 'COMPLETED':
                     $completed['count']++;
-                    $completed['values'][]   =   $myAssignment;
+                    $completed['values'][]   =   $singleAssignment;
                     break;
                 default:
                     break;
@@ -134,18 +154,18 @@ class StudentDashboardsController extends Controller
             // End Status Wise Bifurcation/
 
             // Type Wise Bifurcation
-            switch ($myAssignment['assignment_type']) {
+            switch ($singleAssignment['assignment_type']) {
                 case 'SUBJECTIVE':
                     $subjective['count']++;
-                    $subjective['values'][]   =   $myAssignment;
+                    $subjective['values'][]   =   $singleAssignment;
                     break;
                 case 'OBJECTIVE':
                     $objective['count']++;
-                    $objective['values'][]   =   $myAssignment;
+                    $objective['values'][]   =   $singleAssignment;
                     break;
                 case 'DOCUMENT':
                     $document['count']++;
-                    $document['values'][]   =   $myAssignment;
+                    $document['values'][]   =   $singleAssignment;
                     break;
                 default:
                     break;
@@ -153,27 +173,27 @@ class StudentDashboardsController extends Controller
             // End Type Wise Bifurcation/
 
             // Classcode Wise Bifurcation
-            $contentKey = array_search($myAssignment['classcode'], array_column($classcodeWise, 'name'));
+            $contentKey = array_search($singleAssignment['classcode'], array_column($classcodeWise, 'name'));
             if ($contentKey != null || $contentKey !== false) {
                 $classcodeWise[$contentKey]['count']++;
                 $count  = $classcodeWise[$contentKey]['count'];
                 // My Average
                 $myAverage = $classcodeWise[$contentKey]['myAverage'];
-                $myAverage = (($myAverage * ($count - 1)) + $myAssignment['score'])  / $count;
+                $myAverage = (($myAverage * ($count - 1)) + $singleAssignment['score'])  / $count;
                 $classcodeWise[$contentKey]['myAverage'] =  $myAverage;
                 // Classcode Average
                 $classcodeAverage = $classcodeWise[$contentKey]['classcodeAverage'];
-                $classcodeAverage = (($classcodeAverage * ($count - 1)) + $myAssignment['classAverage'])  / $count;
+                $classcodeAverage = (($classcodeAverage * ($count - 1)) + $singleAssignment['classAverage'])  / $count;
                 $classcodeWise[$contentKey]['classcodeAverage'] =  $classcodeAverage;
-                $classcodeWise[$contentKey]['values'][] = $myAssignment;
+                $classcodeWise[$contentKey]['values'][] = $singleAssignment;
             } else {
                 $classcodeWise[] = [
-                    'name'  =>  $myAssignment['classcode'],
+                    'name'  =>  $singleAssignment['classcode'],
                     'count' =>  1,
-                    'teachers' =>  $myAssignment['teachers'],
-                    'myAverage' =>  $myAssignment['score'],
-                    'classcodeAverage' =>  $myAssignment['classAverage'],
-                    'values' => [$myAssignment],
+                    'teachers' =>  $singleAssignment['teachers'],
+                    'myAverage' =>  $singleAssignment['score'],
+                    'classcodeAverage' =>  $singleAssignment['classAverage'],
+                    'values' => [$singleAssignment],
                 ];
             }
             // End Classcode Wise Bifurcation
@@ -181,31 +201,6 @@ class StudentDashboardsController extends Controller
         $assignmentOverview['statusWiseAssignments'] = [$upcoming, $overdue, $inprogress, $completed];
         $assignmentOverview['typeWiseAssignments'] = [$subjective, $objective, $document];
         $assignmentOverview['classcodeWiseAssignments'] = $classcodeWise;
-
-        return $assignmentOverview;
-    }
-
-    public function StudentWiseOverview(Request $request)
-    {
-        $request->validate([
-            'companyId'    =>  'required',
-            'studentId'    =>  'required',
-        ]);
-
-        $studentId  = request()->studentId;
-        $company    = Company::find(request()->companyId);
-        $student    = $company->allUsers()
-            ->where('is_deleted', false)
-            ->with('classcodes')
-            ->where('users.id', $studentId)
-            ->whereHas('roles', function ($q) {
-                $q->where('name', '=', 'STUDENT');
-            })->first();
-        $classcodes = $student->classcodes;
-
-        // ---------------------------------------------------------------------------------------------------------
-        // Assignment Overwiew
-        $assignmentOverview = $this->assignmentOverview($classcodes, $studentId);
 
         // ---------------------------------------------------------------------------------------------------------
         // Metadata Overwiew

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Company;
+use App\User;
 use Illuminate\Http\Request;
 
 class TeacherDashboardsController extends Controller
@@ -14,10 +15,22 @@ class TeacherDashboardsController extends Controller
             'teacherId'    =>  'required',
         ]);
 
+        $teacherId = $request->teacherId;
+        $teacher = User::where('users.id', '=', $teacherId)
+            ->first();
+        $classcodes = $teacher->classcodes;
+        foreach($classcodes as $classcode) {
+            return response()->json([
+                'students'   =>  $classcode->students,
+            ]);
+        }
+
+        
+
         // ---------------------------------------------------------------------------------------------------------
         // Controller Logic
 
-        return 1;
+        return $teacherId;
 
         $teacher_id = request()->type_id;
         if (request()->company_id) {
