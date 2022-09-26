@@ -17,7 +17,12 @@ class CollectionClasscodesController extends Controller
     {
         $count = 0;
         $collection_classcodes = $request->company->collection_classcodes();
-
+        // return 1;
+        if (request()->collection_id) {
+            $collection_classcodes = $collection_classcodes->where('collection_id', request()->collection_id);
+        }
+        $collection_classcodes = $collection_classcodes->get();
+        $count = $collection_classcodes->count();
         if (request()->user_role == 'STUDENT') {
             $user_classcodes = UserClasscode::where('user_id', request()->user_id)->get();
             foreach ($user_classcodes as $key => $classcode) {
@@ -29,11 +34,6 @@ class CollectionClasscodesController extends Controller
                 ], 200);
             }
         }
-        if (request()->collection_id) {
-            $collection_classcodes = $collection_classcodes->where('collection_id', request()->collection_id);
-        }
-        $collection_classcodes = $collection_classcodes->get();
-        $count = $collection_classcodes->count();
 
         return response()->json([
             'data'     =>  $collection_classcodes,
