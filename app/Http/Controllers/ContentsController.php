@@ -64,7 +64,7 @@ class ContentsController extends Controller
      */
     public function index()
     {
-        $contents = Content::with('content_subjects', 'content_medias', 'content_reads', 'content_descriptions');
+        $contents = Content::with('content_subjects', 'content_medias', 'content_reads', 'content_descriptions', 'content_hidden_classcodes');
         if (request()->subject_id) {
             $subject = Subject::find(request()->subject_id);
             $contents = $contents->whereHas('content_subjects', function ($c) {
@@ -100,20 +100,18 @@ class ContentsController extends Controller
         $user_id = request()->user_id;
 
         if ($user_role == 'STUDENT') {
+            // If Role is Student// Show Filtered Content
             $user_classcodes =  UserClasscode::where('user_id', $user_id)->get();
-
-            foreach ($user_classcodes as $key => $classcode) {
-                $content_hidden_classcodes = ContentHiddenClasscode::where('classcode_id', $classcode->classcode_id)->get();
-                $filtered_contents = [];
-                foreach ($content_hidden_classcodes as  $content_hidden_classcode) {
-                    foreach ($contents as $key => $content) {
-                        if ($content->id != $content_hidden_classcode->content_id) {
-                            array_push($filtered_contents, $content);
-                            $contents = $filtered_contents;
-                        }
-                    }
+            $user_classcode_array = array_column($user_classcodes->toArray(), 'classcode_id');
+            $filtered_contents = [];
+            foreach ($contents as $key => $content) {
+                $content_hidden_classcodes = $content->content_hidden_classcodes;
+                $hidden_classcode_array = array_column($content_hidden_classcodes->toArray(), 'classcode_id');
+                if (!array_intersect($user_classcode_array, $hidden_classcode_array)) {
+                    $filtered_contents[] = $content;
                 }
             }
+            $contents = $filtered_contents;
         }
         $article_contents = [];
         $infographic_contents = [];

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\EtArticle;
 use App\EtXml;
+use App\ToiXml;
 use Illuminate\Http\Request;
 use Webklex\IMAP\Facades\Client;
 use Illuminate\Support\Facades\Storage;
@@ -22,9 +23,9 @@ class EtXmlsController extends Controller
      */
     public function index()
     {
-        // $et_xmls = EtXml::get();
+        $et_search = 'ET-Epaper';
         if (request()->page && request()->rowsPerPage) {
-            $et_xmls = new EtXml;
+            $et_xmls = ToiXml::where('xmlpath', 'LIKE', '%' . $et_search . '%');;
             if (request()->search_keyword) {
                 $et_xmls = $et_xmls
                     ->where('xmlpath', 'LIKE', '%' . request()->search_keyword . '%');

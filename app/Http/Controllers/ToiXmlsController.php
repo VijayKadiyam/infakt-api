@@ -22,9 +22,10 @@ class ToiXmlsController extends Controller
      */
     public function index()
     {
-        // $toi_xmls = ToiXml::get();
+        $toi_search = 'TOI-Epaper';
         if (request()->page && request()->rowsPerPage) {
-            $toi_xmls = new ToiXml;
+            // $toi_xmls = new ToiXml;
+            $toi_xmls = ToiXml::where('xmlpath', 'LIKE', '%' . $toi_search . '%');
             if (request()->search_keyword) {
                 $toi_xmls = $toi_xmls
                     ->where('xmlpath', 'LIKE', '%' . request()->search_keyword . '%');
@@ -133,14 +134,15 @@ class ToiXmlsController extends Controller
 
             //Get all Messages of the current Mailbox $folder
             /** @var \Webklex\PHPIMAP\Support\MessageCollection $messages */
-            $messages = $folder->messages()->get();
+            $messages = $folder->messages()->all()->get();
             // $messages = $folder->messages()->since($previous_date)->get();
             // dd($messages);
             /** @var \Webklex\PHPIMAP\Message $message */
             foreach ($messages as $message) {
                 // return $message;
                 $message->getAttachments()->each(function ($oAttachment) use ($message) {
-                    // echo $message;
+                    // print_r($message);
+                    // exit;
                     // return $message;
                     // if ($message->getSubject() == "TOI XML") {
                     $check_email_existing = ToiXml::where('message_id', $message->getMessageId())
@@ -148,7 +150,9 @@ class ToiXmlsController extends Controller
                     // // return $check_email_existing;
                     if (!$check_email_existing) {
                         // return 1;
-                        $path = 'infakt/toi-xmls/' . $message->getMessageId() . '/' . $oAttachment->name;
+                        // $path = 'infakt/xmls/' . $message->getMessageId() . '/' . $oAttachment->name;
+                        $path = 'infakt/xmls/' . $oAttachment->name;
+                        // Storage::disk('local')->put($path, $oAttachment->content, 'public');
                         Storage::disk('s3')->put($path, $oAttachment->content, 'public');
 
                         $data = [
