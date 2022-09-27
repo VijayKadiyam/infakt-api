@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Classcode;
 use App\Company;
 use App\ContentRead;
 use App\User;
@@ -9,13 +10,15 @@ use Illuminate\Http\Request;
 
 class StudentDashboardsController extends Controller
 {
-    public function assignmentOverview($classcodes, $userId)
+    public function assignmentOverview($classcodes, $student)
     {
         // ---------------------------------------------------------------------------------------------------------
         // Controller Logic
 
-        $allAssignments = [];
+        $myAssignments = [];
         foreach ($classcodes as $classcode) {
+            if (is_array($classcode))
+                $classcode = new Classcode($classcode);
             $assignments = $classcode->assignments;
             foreach ($assignments as $assignment) {
                 $classAssignments = $assignment->user_assignments;
@@ -26,7 +29,7 @@ class StudentDashboardsController extends Controller
                 $isSubmitted = false;
                 foreach ($classAssignments as $userAssignment) {
                     $classTotalMarks += $userAssignment->score;
-                    if ($userAssignment->user_id == $userId) {
+                    if ($userAssignment->user_id == $student['id']) {
                         $isSubmitted = true;
                         $singleAssignment = $userAssignment;
                     }
@@ -58,14 +61,16 @@ class StudentDashboardsController extends Controller
                 $singleAssignment['assignment_type'] = $assignment->assignment_type;
                 $singleAssignment['maximum_marks'] = $assignment->maximum_marks;
                 $singleAssignment['assignment_title'] = $assignment->assignment_title;
+                $singleAssignment['assignment_id'] = $assignment->id;
                 $singleAssignment['assignment_created_date'] = '';
                 $singleAssignment['teachers'] = $classcode->teachers;
+                $singleAssignment['student'] = $student;
 
-                $allAssignments[] = $singleAssignment;
+                $myAssignments[] = $singleAssignment;
             }
         }
 
-        return $allAssignments;
+        return $myAssignments;
     }
 
     public function StudentWiseOverview(Request $request)
@@ -82,13 +87,13 @@ class StudentDashboardsController extends Controller
 
         // ---------------------------------------------------------------------------------------------------------
         // Assignment Overwiew
-        $allAssignments = $this->assignmentOverview($classcodes, $studentId);
+        $myAssignments = $this->assignmentOverview($classcodes, $student->toArray());
 
         // ---------------------------------------------------------------------------------------------------------
         // View Logic
 
         $assignmentOverview = [
-            'totalAssignmentsCount' =>  sizeof($allAssignments),
+            'totalAssignmentsCount' =>  sizeof($myAssignments),
             "statusWiseAssignments"  =>  [],
             "typeWiseAssignments"   =>  [],
             "classcodeWiseAssignments"  =>  [],
@@ -129,7 +134,7 @@ class StudentDashboardsController extends Controller
             'values'    =>  []
         ];
         $classcodeWise = [];
-        foreach ($allAssignments as $singleAssignment) {
+        foreach ($myAssignments as $singleAssignment) {
             // Status Wise Bifurcation
             switch ($singleAssignment['status']) {
                 case 'UPCOMING':

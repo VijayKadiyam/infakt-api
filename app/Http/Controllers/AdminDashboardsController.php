@@ -12,8 +12,20 @@ use Illuminate\Http\Request;
 
 class AdminDashboardsController extends Controller
 {
-    public function adminDashboard(Request $request)
+    public function SchoolWiseOverview(Request $request)
     {
+        $request->validate([
+            'companyId'    =>  'required',
+        ]);
+
+        $counts = [];
+        $counts['avgTimeSpentByTeacher'] = '';
+        $counts['avgTimeSpentByStudent'] = '';
+        $counts['contentReads'] = '';
+        $counts['assignmentsPosted'] = '';
+
+        return $counts;
+
         if ($request->company_id) {
             $company     = Company::find(request()->company_id);
             $students =  $company->students()->get();
