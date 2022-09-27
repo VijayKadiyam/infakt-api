@@ -44,6 +44,8 @@ class CrudeTeachersController extends Controller
 
     public function processTeachers(Request $request)
     {
+        ini_set('max_execution_time', 0);
+        ini_set("memory_limit", "-1");
         $crude_teachers = CrudeTeacher::all();
         foreach ($crude_teachers as $teacher) {
             $us = User::where('email', '=', $teacher->email)

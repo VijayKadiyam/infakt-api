@@ -233,4 +233,22 @@ class StandardsController extends Controller
             'message' =>  'Deleted'
         ], 204);
     }
+
+    // Check Unique
+    public function checkUnique()
+    {
+        $column = request()->column;
+        $name = request()->text;
+        $id = request()->id;
+        $standards = request()->company->standards()->where($column, $name);
+        if ($id) {
+            $standards = $standards->where('standards.id', "!=", $id);
+        }
+        $standards = $standards->latest()->get();
+        if (sizeOf($standards)) {
+            return "The " . $column . " has already been taken.";
+        } else {
+            return "No Duplicate Entries";
+        }
+    }
 }

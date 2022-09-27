@@ -105,6 +105,7 @@ Route::resource('contents', 'ContentsController');
 
 // Standards
 Route::resource('standards', 'StandardsController');
+Route::post('standards/checkUnique', 'StandardsController@checkUnique');
 
 // ContentSubjects
 Route::resource('content_subjects', 'ContentSubjectsController');
