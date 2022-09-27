@@ -152,8 +152,8 @@ class ToiXmlsController extends Controller
                         // return 1;
                         // $path = 'infakt/xmls/' . $message->getMessageId() . '/' . $oAttachment->name;
                         $path = 'infakt/xmls/' . $oAttachment->name;
-                        Storage::disk('local')->put($path, $oAttachment->content, 'public');
-                        // Storage::disk('s3')->put($path, $oAttachment->content, 'public');
+                        // Storage::disk('local')->put($path, $oAttachment->content, 'public');
+                        Storage::disk('s3')->put($path, $oAttachment->content, 'public');
 
                         $data = [
                             // 'subject' => $message->getSubject(),
