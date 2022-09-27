@@ -62,8 +62,23 @@ class CompaniesController extends Controller
         }
       ])->get();
     }
+    // Board Wise School Count
+    $boards = Board::where('is_active', TRUE)->get();
+    $BoardSchoolCount = [];
+    foreach ($boards as $key => $board) {
+      $board_detail = [];
+      $schools = $board->schools;
+      $board_name = $board->name;
+      $board_detail = [
+        'name' => $board_name,
+        'count' => sizeof($schools),
+        'values' => $schools,
+      ];
+      $BoardSchoolCount[] = $board_detail;
+    }
     return response()->json([
       'data'     =>  $companies,
+      'BoardSchoolCount'  =>  $BoardSchoolCount,
       // 'count'    =>   $count,
       'success'   =>  true,
     ], 200);
