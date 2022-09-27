@@ -14,6 +14,7 @@ class ContentMetadata extends Model
         'annotation',
         'user_id',
         'company_id',
+        'meaning'
     ];
 
     public function content()
