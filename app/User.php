@@ -141,7 +141,8 @@ class User extends Authenticatable
 
   public function content_reads()
   {
-    return $this->hasMany(ContentRead::class)->with('content');
+    return $this->hasMany(ContentRead::class)->with('content')
+      ->latest();
   }
   public function user_classcodes()
   {

@@ -13,6 +13,8 @@ use App\ContentLockClasscode;
 use App\ContentMedia;
 use App\ContentSchool;
 use App\ContentSubject;
+use App\Search;
+use App\Subject;
 use App\UserClasscode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -64,15 +66,29 @@ class ContentsController extends Controller
     {
         $contents = Content::with('content_subjects', 'content_medias', 'content_reads', 'content_descriptions');
         if (request()->subject_id) {
+            $subject = Subject::find(request()->subject_id);
             $contents = $contents->whereHas('content_subjects', function ($c) {
                 $c->where('subject_id', '=', request()->subject_id);
             });
+            Search::create([
+                'company_id' =>  Auth::user()->companies[0]->id,
+                'user_id'   =>      Auth::user()->id,
+                'search_type'   =>  'SUBJECT',
+                'search'        =>  $subject->name
+            ]);
         }
         if (request()->search_keyword) {
             $contents = $contents
                 ->where('content_type', 'LIKE', '%' . request()->search_keyword . '%')
                 ->orWhere('content_name', 'LIKE', '%' . request()->search_keyword . '%')
                 ->orWhere('created_at', 'LIKE', '%' . request()->search_keyword . '%');
+
+            Search::create([
+                'company_id' =>  Auth::user()->companies[0]->id,
+                'user_id'   =>      Auth::user()->id,
+                'search_type'   =>  'KEYWORD',
+                'search'        =>  request()->search_keyword
+            ]);
         }
         if (request()->date_filter) {
             $contents = $contents

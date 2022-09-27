@@ -27,7 +27,8 @@ class Assignment extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function created_by() {
+    public function created_by()
+    {
         return $this->belongsTo(User::class)
             ->with('roles');
     }
@@ -55,10 +56,16 @@ class Assignment extends Model
             ->with('user');
     }
 
-    public function my_results() {
-        return $this->hasMany(UserAssignment::class)
-            ->with('user_assignment_selected_answers')
-            ->where('user_id', '=', request()->user()->id);
+    public function my_results($userId = '')
+    {
+        if ($userId == '')
+            return $this->hasMany(UserAssignment::class)
+                ->with('user_assignment_selected_answers')
+                ->where('user_id', '=', request()->user()->id);
+        else
+            return $this->hasMany(UserAssignment::class)
+                ->with('user_assignment_selected_answers')
+                ->where('user_id', '=', $userId);
     }
 
     public function my_assignment_classcodes()
@@ -67,7 +74,8 @@ class Assignment extends Model
     }
 
 
-    public function user_assignments() {
+    public function user_assignments()
+    {
         return $this->hasMany(UserAssignment::class)
             ->with('user');
     }

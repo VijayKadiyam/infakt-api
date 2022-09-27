@@ -61,11 +61,20 @@ class StudentDashboardsController extends Controller
                 $singleAssignment['assignment_type'] = $assignment->assignment_type;
                 $singleAssignment['maximum_marks'] = $assignment->maximum_marks;
                 $singleAssignment['assignment_title'] = $assignment->assignment_title;
+                $singleAssignment['my_results'] = $assignment->my_results($student['id'])->get();
                 $singleAssignment['assignment_id'] = $assignment->id;
                 $singleAssignment['assignment_created_date'] = '';
                 $singleAssignment['teachers'] = $classcode->teachers;
                 $singleAssignment['student'] = $student;
+                $singleAssignment['created_at'] = $assignment->toArray()['created_at'];
 
+                // Assignment Classcode End Date
+                $assignmentClasscode = $assignment->assignment_classcodes()
+                    ->where('classcode_id', '=', $classcode->id)
+                    ->first();
+                if ($assignmentClasscode)
+                    $singleAssignment['end_date'] = $assignmentClasscode->end_date;
+                // Assignment Classcode End Date
                 $myAssignments[] = $singleAssignment;
             }
         }
@@ -91,7 +100,6 @@ class StudentDashboardsController extends Controller
 
         // ---------------------------------------------------------------------------------------------------------
         // View Logic
-
         $assignmentOverview = [
             'totalAssignmentsCount' =>  sizeof($myAssignments),
             "statusWiseAssignments"  =>  [],
@@ -274,6 +282,9 @@ class StudentDashboardsController extends Controller
 
         $contentReads = $student->content_reads;
         foreach ($contentReads as $contentRead) {
+            $contentRead->content['content_metadatas'] = $contentRead->content->content_metadatas()
+                // ->where('user_id', '=', $student['id'])
+                ->get();
             switch ($contentRead->content->content_type) {
                 case 'ARTICLE':
                     $articles['count']++;

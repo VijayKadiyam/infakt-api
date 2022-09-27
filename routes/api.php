@@ -225,10 +225,10 @@ Route::get('et_xmls/emails', 'EtXmlsController@et_xml_imap');
 // Content Description
 Route::resource('user_timestamps', 'UserTimestampsController');
 // SUPERADMIN Dashboard
-Route::get('superadminDashboard', 'DashboardsController@superadminDashboard');
+Route::get('superadminDashboard', 'SuperAdminDashboardsController@superadminDashboard');
 
 // Dashboard (Content Based (Grade, Board, Subject and school))
-Route::get('content_based_counts', 'DashboardsController@contentBasedCount');
+Route::get('content_based_counts', 'SuperAdminDashboardsController@contentBasedCount');
 // School Wise Overview
 Route::get('school_wise_overview', 'AdminDashboardsController@SchoolWiseOverview');
 // Classcode Overview
