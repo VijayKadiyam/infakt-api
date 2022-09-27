@@ -76,7 +76,7 @@ class UsersController extends Controller
           $q->where('name', '=', $role->name);
         });
       else
-        $users = User::with('roles')->whereHas('roles', function ($q) use ($role) {
+        $users = User::with('roles', 'classcodes', 'board')->whereHas('roles', function ($q) use ($role) {
           $q->where('name', '=', $role->name);
         });
     }
