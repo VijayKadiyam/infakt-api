@@ -126,9 +126,11 @@ class ContentMetadataTest extends TestCase
                     'selected_text',
                     'created_at',
                     'updated_at',
-                    'annotation',
                     'user_id',
-                    // 'content_metadata_classcodes'
+                    'annotation',
+                    'company_id',
+                    'meaning',
+                    'selected_level',
                 ]
             ]);
     }
@@ -173,8 +175,11 @@ class ContentMetadataTest extends TestCase
                     'selected_text',
                     'created_at',
                     'updated_at',
-                    'annotation',
                     'user_id',
+                    'annotation',
+                    'company_id',
+                    'meaning',
+                    'selected_level',
                 ]
             ]);
     }
