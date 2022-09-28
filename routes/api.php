@@ -102,6 +102,7 @@ Route::resource('career_requests', 'CareerRequestsController');
 // Contents
 Route::get('contents/masters', 'ContentsController@masters');
 Route::resource('contents', 'ContentsController');
+Route::post('upload_content_featured_image', 'UploadsController@uploadContentFeaturedImage');
 
 // Standards
 Route::resource('standards', 'StandardsController');
