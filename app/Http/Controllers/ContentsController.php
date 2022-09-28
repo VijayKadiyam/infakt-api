@@ -136,16 +136,19 @@ class ContentsController extends Controller
         $content_types = [
             [
                 'name' => "ARTICLE",
+                'icon' => "mdi-script-text",
                 'count' => sizeof($article_contents),
                 'values' => $article_contents
             ],
             [
                 'name' => "INFOGRAPHIC",
+                'icon' => 'mdi-chart-bar',
                 'count' => sizeof($infographic_contents),
                 'values' => $infographic_contents
             ],
             [
                 'name' => "VIDEO",
+                'icon' => 'mdi-video-vintage',
                 'count' => sizeof($video_contents),
                 'values' => $video_contents
             ]
