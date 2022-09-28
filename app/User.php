@@ -181,4 +181,10 @@ class User extends Authenticatable
   {
     return $this->belongsTo(Board::class);
   }
+
+  public function content_metadatas()
+  {
+    return $this->hasMany(ContentMetadata::class)
+      ->with('content');
+  }
 }

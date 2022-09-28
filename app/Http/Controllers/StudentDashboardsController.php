@@ -235,8 +235,12 @@ class StudentDashboardsController extends Controller
         ];
         foreach ($classcodes as $classcode) {
             $classContentMetadatas = $classcode->content_metadatas;
+            $studentMetadatas = $student->content_metadatas;
 
-            foreach ($classContentMetadatas as $contentMetadata) {
+            $contentMetadatas = [...$classContentMetadatas, ...$studentMetadatas];
+
+
+            foreach ($contentMetadatas as $contentMetadata) {
                 if ($contentMetadata->user_id == $studentId || $contentMetadata->user->roles[0]->id == 3) {
                     $contentMetadata['postedBy'] = $contentMetadata->user_id == $studentId ? 'Student' : 'Teacher';
                     switch ($contentMetadata->metadata_type) {
