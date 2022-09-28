@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Assignment;
 use App\CareerRequest;
+use App\Content;
 use App\ContentMedia;
 use App\EtXml;
 use Illuminate\Http\Request;
@@ -275,6 +276,35 @@ class UploadsController extends Controller
       'data'  =>  $careers,
       'attachment'  =>  $attachment,
       'message' =>  "Career Attchament Upload Successfully",
+      'success' =>  true
+    ], 200);
+  }
+  // Upload Function For Assignment Document path
+  public function uploadContentFeaturedImage(Request $request)
+  {
+    $request->validate([
+      'contentid'             => 'required',
+      'featuredimagepath'     => 'required',
+    ]);
+
+    $featuredimagepath = '';
+    $content = [];
+    if ($request->hasFile('featuredimagepath')) {
+      $file = $request->file('featuredimagepath');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();
+      $featuredimagepath = 'infakt/contents/featured-images' .  $request->contentid . '/' . $name;
+      Storage::disk('local')->put($featuredimagepath, file_get_contents($file), 'public');
+      // Storage::disk('s3')->put($featuredimagepath, file_get_contents($file), 'public');
+
+      $content = Content::where('id', '=', request()->contentid)->first();
+      $content->featured_image_path = $featuredimagepath;
+      $content->update();
+    }
+    return response()->json([
+      'data'  =>  $content,
+      'image_path'  =>  $featuredimagepath,
+      'message' =>  "Content Featured Image Upload Successfully",
       'success' =>  true
     ], 200);
   }

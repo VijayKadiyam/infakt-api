@@ -24,6 +24,7 @@ class Content extends Model
         'info_board_id',
         'publication',
         'adapted_by',
+        'featured_image_path',
     ];
 
     // public function written_by()
