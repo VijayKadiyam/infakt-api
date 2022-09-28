@@ -42,6 +42,12 @@ class CompaniesController extends Controller
           ->where('name', 'LIKE', '%' . request()->search_keyword . '%')
           ->orWhere('email', 'LIKE', '%' . request()->search_keyword . '%');
       }
+      if (request()->board_id) {
+        $companies = $companies
+          ->whereHas('company_boards', function ($cb) {
+            $cb->where('board_id', '=', request()->board_id);
+          });
+      }
       $count = $companies->count();
       $companies = $companies->with([
         'users'  => function ($query) {
