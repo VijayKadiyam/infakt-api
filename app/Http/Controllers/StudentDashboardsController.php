@@ -233,12 +233,14 @@ class StudentDashboardsController extends Controller
             'count' =>  0,
             'values' =>  []
         ];
+
+        // Metadatas created by the student
+        $studentMetadatas = $student->content_metadatas;
+        $contentMetadatas = $studentMetadatas;
+
         foreach ($classcodes as $classcode) {
             $classContentMetadatas = $classcode->content_metadatas;
-            $studentMetadatas = $student->content_metadatas;
-
-            $contentMetadatas = [...$classContentMetadatas, ...$studentMetadatas];
-
+            $contentMetadatas = [...$contentMetadatas, ...$classContentMetadatas];
 
             foreach ($contentMetadatas as $contentMetadata) {
                 if ($contentMetadata->user_id == $studentId || $contentMetadata->user->roles[0]->id == 3) {
@@ -261,6 +263,7 @@ class StudentDashboardsController extends Controller
                     }
                 }
             }
+            $contentMetadatas  = [];
         }
         $metadataOverview = [$annotations, $highlights, $dictionaries];
 
