@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\CollectionClasscode;
+use App\Notification;
 use App\UserClasscode;
 use Illuminate\Http\Request;
 
@@ -60,10 +61,28 @@ class CollectionClasscodesController extends Controller
             }
 
         if (isset($request->collection_classcodes))
-            foreach ($request->collection_classcodes as $collecton) {
-                $collection_classcode = new CollectionClasscode($collecton);
-                $request->company->collection_classcodes()->save($collection_classcode);
+
+            foreach ($request->collection_classcodes as $collecton_classcode) {
+                $collection_classcode = new CollectionClasscode($collecton_classcode);
+                $strore = $request->company->collection_classcodes()->save($collection_classcode);
             }
+        if ($strore) {
+            if ($collection_classcode->shared_by_id) {
+                $user_classcodes = UserClasscode::where('classcode_id', $collection_classcode->classcode_id)->with('user')->get();
+                foreach ($user_classcodes as $key => $uc) {
+                    $description = "A new collection shared to you.";
+                    if ($uc->user->roles[0]->name == 'STUDENT') {
+                        $user_id = $uc->user->id;
+                        $notification_data = [
+                            'user_id' => $user_id,
+                            'description' => $description
+                        ];
+                        $notifications = new Notification($notification_data);
+                        $request->company->notifications()->save($notifications);
+                    }
+                }
+            }
+        }
 
         return response()->json([
             'data'    =>  $collection_classcode

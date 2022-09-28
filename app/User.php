@@ -172,7 +172,13 @@ class User extends Authenticatable
     return $this->hasMany(Search::class);
   }
 
-  public function classcodes() {
+  public function classcodes()
+  {
     return $this->belongsToMany(Classcode::class, 'user_classcodes', 'user_id', 'classcode_id');
+  }
+
+  public function board()
+  {
+    return $this->belongsTo(Board::class);
   }
 }
