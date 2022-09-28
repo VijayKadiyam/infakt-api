@@ -64,7 +64,7 @@ class ContentsController extends Controller
      */
     public function index()
     {
-        $contents = Content::with('content_subjects', 'content_medias', 'content_reads', 'content_descriptions', 'content_hidden_classcodes');
+        $contents = Content::with('content_subjects', 'content_medias', 'content_reads', 'content_descriptions', 'content_hidden_classcodes', 'content_grades', 'content_boards');
         if (request()->subject_id) {
             $subject = Subject::find(request()->subject_id);
             $contents = $contents->whereHas('content_subjects', function ($c) {

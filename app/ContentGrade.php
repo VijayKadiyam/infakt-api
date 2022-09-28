@@ -15,4 +15,9 @@ class ContentGrade extends Model
     {
         return $this->belongsTo(Content::class);
     }
+
+    public function grade()
+    {
+        return $this->belongsTo(Grade::class);
+    }
 }

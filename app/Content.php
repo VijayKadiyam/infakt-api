@@ -69,11 +69,13 @@ class Content extends Model
     }
     public function content_grades()
     {
-        return $this->hasMany(ContentGrade::class);
+        return $this->hasMany(ContentGrade::class)
+            ->with('grade');
     }
     public function content_boards()
     {
-        return $this->hasMany(ContentBoard::class);
+        return $this->hasMany(ContentBoard::class)
+            ->with('board');
     }
     public function content_info_boards()
     {

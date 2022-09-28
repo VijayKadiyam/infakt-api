@@ -15,4 +15,9 @@ class ContentBoard extends Model
    {
       return $this->belongsTo(Content::class);
    }
+
+   public function board()
+   {
+      return $this->belongsTo(Board::class);
+   }
 }
