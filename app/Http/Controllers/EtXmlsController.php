@@ -110,8 +110,9 @@ class EtXmlsController extends Controller
 
     public function processETXML()
     {
-        $xml =  EtXml::where('id', request()->id)->first();
+        $xml =  ToiXml::where('id', request()->id)->first();
         if ($xml->is_process != true) {
+
             $path = 'https://aaibuzz-spc-1.s3.ap-south-1.amazonaws.com/' . request()->xmlpath;
             $xmlString = file_get_contents($path);
             // $xmlString = file_get_contents("https://aaibuzz-spc-1.s3.ap-south-1.amazonaws.com/infakt-api/TOI-Epaper210722.xml");
