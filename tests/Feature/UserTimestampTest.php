@@ -24,15 +24,15 @@ class UserTimestampTest extends TestCase
 
         factory(UserTimestamp::class)->create([
             'company_id' =>  $this->company->id,
-            'user_id'=>1,
-        'timestamp'=>'timestamp',
-        'event'=>'event',
+            'user_id' => 1,
+            'timestamp' => 'timestamp',
+            'event' => 'event',
         ]);
 
         $this->payload = [
-            'user_id'=>1,
-            'timestamp'=>'timestamp',
-            'event'=>'event',
+            'user_id' => 1,
+            'timestamp' => 'timestamp',
+            'event' => 'event',
         ];
     }
 
@@ -58,9 +58,9 @@ class UserTimestampTest extends TestCase
             ->assertStatus(201)
             ->assertJson([
                 'data'   => [
-                    'user_id'=>1,
-                    'timestamp'=>'timestamp',
-                    'event'=>'event',
+                    'user_id' => 1,
+                    'timestamp' => 'timestamp',
+                    'event' => 'event',
                 ]
             ])
             ->assertJsonStructureExact([
@@ -91,7 +91,7 @@ class UserTimestampTest extends TestCase
                     ]
                 ]
             ]);
-        $this->assertCount(1, UserTimestamp::all());
+        $this->assertCount(2, UserTimestamp::all());
     }
 
     /** @test */
@@ -102,9 +102,9 @@ class UserTimestampTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'data'  => [
-                    'user_id'=>1,
-                    'timestamp'=>'timestamp',
-                    'event'=>'event',
+                    'user_id' => 1,
+                    'timestamp' => 'timestamp',
+                    'event' => 'event',
                 ]
             ]);
     }
@@ -113,18 +113,18 @@ class UserTimestampTest extends TestCase
     function update_single_user_timestamp()
     {
         $payload = [
-            'user_id'=>1,
-            'timestamp'=>'timestamp',
-            'event'=>'event',
+            'user_id' => 1,
+            'timestamp' => 'timestamp',
+            'event' => 'event',
         ];
 
         $this->json('patch', '/api/user_timestamps/1', $payload, $this->headers)
             ->assertStatus(200)
             ->assertJson([
                 'data'    => [
-                    'user_id'=>1,
-                    'timestamp'=>'timestamp',
-                    'event'=>'event',
+                    'user_id' => 1,
+                    'timestamp' => 'timestamp',
+                    'event' => 'event',
                 ]
             ])
             ->assertJsonStructureExact([
@@ -136,6 +136,7 @@ class UserTimestampTest extends TestCase
                     'event',
                     'created_at',
                     'updated_at',
+                    'total_time_spent',
                 ]
             ]);
     }
@@ -146,6 +147,6 @@ class UserTimestampTest extends TestCase
         $this->json('delete', '/api/user_timestamps/1', [], $this->headers)
             ->assertStatus(204);
 
-        $this->assertCount(0, UserTimestamp::all());
+        $this->assertCount(1, UserTimestamp::all());
     }
 }

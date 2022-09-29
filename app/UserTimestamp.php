@@ -11,6 +11,7 @@ class UserTimestamp extends Model
     'user_id',
     'timestamp',
     'event',
+    'total_time_spent',
   ];
 
   public function company()
