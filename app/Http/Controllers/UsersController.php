@@ -488,29 +488,30 @@ class UsersController extends Controller
   {
     $user_id = request()->user_id;
     $user = User::find($user_id);
-    $mail = Mail::to($user->email)->send(new RegistrationMail($user));
-    // return $mail;
-    // if ($mail) {
-    $user->is_mail_sent = true;
-    $user->update();
-    return $user;
-    // }
-  }
-  public function SendMailAll()
-  {
-    $users = request()->company->users()->where('is_deleted', false)->where('is_mail_sent', false)->with('roles');
-    $role = Role::find(request()->role_id);
-    $users = request()->company->users()->whereHas('roles', function ($q) use ($role) {
-      $q->where('name', '=', $role->name);
-    })->get();
-    foreach ($users as $key => $user) {
+    if ($user->email) {
       $mail = Mail::to($user->email)->send(new RegistrationMail($user));
       $user->is_mail_sent = true;
       $user->update();
     }
-    // return $mail;
-    // if ($mail) {
+    return $user;
+  }
+  public function SendMailAll()
+  {
+    $users = request()->company->users()->with('roles');
+    $role = Role::find(request()->role_id);
+    $users = request()->company->users()->whereHas('roles', function ($q) use ($role) {
+      $q->where('name', '=', $role->name);
+    })
+      ->where('is_deleted', false)
+      ->where('is_mail_sent', false)
+      ->get();
+    foreach ($users as $key => $user) {
+      if ($user->email) {
+        $mail = Mail::to($user->email)->send(new RegistrationMail($user));
+        $user->is_mail_sent = true;
+        $user->update();
+      }
+    }
     return $users;
-    // }
   }
 }
