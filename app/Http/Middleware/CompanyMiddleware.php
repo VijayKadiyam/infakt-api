@@ -19,7 +19,7 @@ class CompanyMiddleware
    */
   public function handle($request, Closure $next)
   {
-    $userId = Auth::user()->id;
+    $userId = optional(Auth::user())->id;
     if ($userId && request()->header('company-id')) {
       UserTimestamp::create([
         'company_id' =>  request()->header('company-id'),

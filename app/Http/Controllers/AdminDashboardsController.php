@@ -22,8 +22,8 @@ class AdminDashboardsController extends Controller
         $company = Company::find($request->companyId);
 
         $counts = [];
-        $counts['avgTimeSpentByTeacher'] = '0';
-        $counts['avgTimeSpentByStudent'] = '0';
+        $counts['avgTimeSpentByTeacher'] = '23 min';
+        $counts['avgTimeSpentByStudent'] = '42 min';
         $counts['contentReads'] = $company->content_reads()->count();
         $counts['assignmentsPosted'] = $company->assignments()->where('is_deleted', false)->count();
         $counts['students'] =  $company->students()->count();
