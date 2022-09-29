@@ -10,7 +10,7 @@ class CollectionContentsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['company']);
+        $this->middleware(['auth:api, company']);
     }
 
     public function index(Request $request)
@@ -33,6 +33,7 @@ class CollectionContentsController extends Controller
      */
     public function store(Request $request, Collection  $collection)
     {
+        // return request()->all();
         $request->validate([
             'collection_id'        =>  'required',
         ]);
