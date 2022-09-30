@@ -32,7 +32,7 @@ class RegistrationMail extends Mailable
     {
         // return  $this->user;
         return $this->view('mails.register')
-            ->from('demo.emailstest@gmail', 'Demo')
+            ->from('it@infakt.co.in', 'Infakt Team')
             ->subject('Welcome | ' . $this->user->first_name ? $this->user->first_name : $this->user->name);
     }
 }
