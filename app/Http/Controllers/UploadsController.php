@@ -294,9 +294,9 @@ class UploadsController extends Controller
       $file = $request->file('featuredimagepath');
       $name = $request->filename ?? 'photo.';
       $name = $name . $file->getClientOriginalExtension();
-      $featuredimagepath = 'infakt/contents/featured-images' .  $request->contentid . '/' . $name;
-      Storage::disk('local')->put($featuredimagepath, file_get_contents($file), 'public');
-      // Storage::disk('s3')->put($featuredimagepath, file_get_contents($file), 'public');
+      $featuredimagepath = 'infakt/contents/featured-images' . '/'. $request->contentid . '/' . $name;
+      // Storage::disk('local')->put($featuredimagepath, file_get_contents($file), 'public');
+      Storage::disk('s3')->put($featuredimagepath, file_get_contents($file), 'public');
 
       $content = Content::where('id', '=', request()->contentid)->first();
       $content->featured_image_path = $featuredimagepath;
