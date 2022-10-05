@@ -75,6 +75,14 @@ class DashboardsController extends Controller
                 })
                 ->get();
         }
+        if ($request->type == 'Student') {
+            $company = Company::find($request->schoolId);
+            $subTypes = $company->users()
+                ->whereHas('roles', function ($q) {
+                    $q->where('name', '=', 'STUDENT');
+                })
+                ->get();
+        }
 
         return response()->json([
             'data'  =>  $subTypes
