@@ -9,7 +9,7 @@ class CollectionsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:api','company']);
+        $this->middleware(['auth:api', 'company']);
     }
 
     public function index(Request $request)
@@ -17,7 +17,7 @@ class CollectionsController extends Controller
         $count = 0;
         if ($request->user_id) {
             $collections =  request()->company->collections()
-            ->where('user_id', '=', $request->user_id)
+                ->where('user_id', '=', $request->user_id)
                 ->where('is_deleted', false)
                 ->get();
         } else {
@@ -73,7 +73,7 @@ class CollectionsController extends Controller
     public function show(Collection $collection)
     {
         $collection->collection_contents = $collection->collection_contents;
-        
+
         return response()->json([
             'data'   =>  $collection,
             'success' =>  true

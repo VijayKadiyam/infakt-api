@@ -193,9 +193,9 @@ class ContentsController extends Controller
             // ---------------------------------------------------
             // Save Content Descriptions
             if (isset($request->content_descriptions))
-                foreach ($request->content_descriptions as $description) {
-                    $description = new ContentDescription($description);
-                    $content->content_descriptions()->save($description);
+                foreach ($request->content_descriptions as $cd) {
+                    $cd = new ContentDescription($cd);
+                    $content->content_descriptions()->save($cd);
                 }
             // ---------------------------------------------------
             // Save Content Hidden Classcode

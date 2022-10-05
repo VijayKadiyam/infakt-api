@@ -18,7 +18,7 @@ class CollectionClasscode extends Model
     }
     public function collection()
     {
-        return $this->belongsTo(Collection::class)->with('user');
+        return $this->belongsTo(Collection::class)->with('user', 'collection_contents');
     }
     public function classcode()
     {

@@ -84,6 +84,7 @@ Route::get('toi_xml', 'ToiXmlsController@index');
 Route::resource('toi_articles', 'ToiArticlesController');
 
 // Subjects
+Route::post('upload_subject_imagepath', 'UploadsController@upload_subject_imagepath');
 Route::resource('subjects', 'SubjectsController');
 
 Route::post('processTOIXML', 'ToiArticlesController@processTOIXML');

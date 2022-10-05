@@ -86,4 +86,8 @@ class Content extends Model
     {
         return $this->hasMany(ContentSchool::class);
     }
+    public function collection_contents()
+    {
+        return $this->hasMany(CollectionContent::class);
+    }
 }

@@ -7,6 +7,7 @@ use App\CareerRequest;
 use App\Content;
 use App\ContentMedia;
 use App\EtXml;
+use App\Subject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\ToiXml;
@@ -293,9 +294,9 @@ class UploadsController extends Controller
       $file = $request->file('featuredimagepath');
       $name = $request->filename ?? 'photo.';
       $name = $name . $file->getClientOriginalExtension();
-      $featuredimagepath = 'infakt/contents/featured-images' .  $request->contentid . '/' . $name;
-      Storage::disk('local')->put($featuredimagepath, file_get_contents($file), 'public');
-      // Storage::disk('s3')->put($featuredimagepath, file_get_contents($file), 'public');
+      $featuredimagepath = 'infakt/contents/featured-images' . '/'. $request->contentid . '/' . $name;
+      // Storage::disk('local')->put($featuredimagepath, file_get_contents($file), 'public');
+      Storage::disk('s3')->put($featuredimagepath, file_get_contents($file), 'public');
 
       $content = Content::where('id', '=', request()->contentid)->first();
       $content->featured_image_path = $featuredimagepath;
@@ -305,6 +306,35 @@ class UploadsController extends Controller
       'data'  =>  $content,
       'image_path'  =>  $featuredimagepath,
       'message' =>  "Content Featured Image Upload Successfully",
+      'success' =>  true
+    ], 200);
+  }
+  // Upload Function For Subject Image
+  public function upload_subject_imagepath(Request $request)
+  {
+    $request->validate([
+      'id'        => 'required',
+      'imagepath'        => 'required',
+    ]);
+
+    $imagepath = '';
+    $subject = [];
+    if ($request->hasFile('imagepath')) {
+      $file = $request->file('imagepath');
+      $name = $request->filename ?? 'photo.';
+      $name = $name . $file->getClientOriginalExtension();
+      $imagepath = 'infakt/subject-imagepath/' .  $request->id . '/' . $name;
+      // Storage::disk('local')->put($imagepath, file_get_contents($file), 'public');
+      Storage::disk('s3')->put($imagepath, file_get_contents($file), 'public');
+
+      $subject = Subject::where('id', '=', request()->id)->first();
+      $subject->imagepath = $imagepath;
+      $subject->update();
+    }
+    return response()->json([
+      'data'  =>  $subject,
+      'imagepath'  =>  $imagepath,
+      'message' =>  "Subject Imagepath Upload Successfully",
       'success' =>  true
     ], 200);
   }
