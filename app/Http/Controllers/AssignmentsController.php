@@ -17,7 +17,7 @@ class AssignmentsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:api', 'company']);
+        $this->middleware(['company']);
     }
 
     /**
@@ -92,11 +92,10 @@ class AssignmentsController extends Controller
         $request->validate([
             'assignment_type'  =>  'required',
         ]);
-
         if ($request->id == null || $request->id == '') {
             // Save Assignment
             $assignment = new Assignment(request()->all());
-            $request->company->assignments()->save($assignment);
+            $assignment->save();
             // Save Assignment Classcode
             if (isset($request->assignment_classcodes))
                 foreach ($request->assignment_classcodes as $classcode) {
