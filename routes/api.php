@@ -186,6 +186,7 @@ Route::get('studentDashboard', 'DashboardsController@studentDashboard');
 // notifications 
 Route::post('notifications/mark_all_read', 'NotificationsController@mark_all_read');
 Route::post('notifications/clear_all', 'NotificationsController@clear_all');
+Route::post('notifications/clear', 'NotificationsController@clear');
 Route::resource('notifications', 'NotificationsController');
 
 // Bookmark Classcodes 

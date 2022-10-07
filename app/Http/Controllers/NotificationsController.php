@@ -92,15 +92,25 @@ class NotificationsController extends Controller
         $user_id = request()->user_id;
         $notifications = Notification::where('user_id', $user_id)->update(['is_read' => true]);
         return response()->json([
+            'data' => $notifications,
             'message' =>  'Marked All Notifications as read'
-        ], 204);
+        ], 200);
     }
     public function clear_all()
     {
         $user_id = request()->user_id;
         $notifications = Notification::where('user_id', $user_id)->update(['is_deleted' => true]);
+
         return response()->json([
             'message' =>  'Cleared All Messages'
-        ], 204);
+        ], 200);
+    }
+    public function clear()
+    {
+        $id = request()->id;
+        $notifications = Notification::find($id)->update(['is_deleted' => true]);
+        return response()->json([
+            'message' =>  'Cleared All Messages'
+        ], 200);
     }
 }
