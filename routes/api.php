@@ -272,3 +272,5 @@ Route::get('getMyStudents', 'UsersController@getMyStudents');
 Route::resource('user_subjects', 'UserSubjectsController');
 // categories
 Route::resource('categories', 'CategoriesController');
+// content_categories
+Route::resource('content_categories', 'ContentCategoriesController');

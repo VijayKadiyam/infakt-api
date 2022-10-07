@@ -90,4 +90,9 @@ class Content extends Model
     {
         return $this->hasMany(CollectionContent::class);
     }
+    public function content_categories()
+    {
+        return $this->hasMany(ContentCategory::class)
+            ->with('category');
+    }
 }
