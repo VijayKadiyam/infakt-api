@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Content;
 use App\ContentAssignToRead;
 use App\ContentBoard;
+use App\ContentCategory;
 use App\ContentDescription;
 use App\ContentGrade;
 use App\ContentHiddenClasscode;
@@ -35,6 +36,9 @@ class ContentsController extends Controller
         $request->request->add(['role_id' => 4]);
         $usersResponse = $usersController->index($request);
 
+        $categoriesController = new CategoriesController();
+        $categoriesResponse = $categoriesController->index($request);
+
         $subjectsController = new SubjectsController();
         $subjectsResponse = $subjectsController->index($request);
 
@@ -49,11 +53,12 @@ class ContentsController extends Controller
 
         return response()->json([
             // 'collections'           =>  $collectionsResponse->getData()->data,
-            'users'     =>  $usersResponse->getData()->data,
-            'subjects'  =>  $subjectsResponse->getData()->data,
-            'grades'    =>  $gradesResponse->getData()->data,
-            'boards'    =>  $boardsResponse->getData()->data,
-            'schools'   =>  $schoolsResponse->getData()->data,
+            'users'      =>  $usersResponse->getData()->data,
+            'categories' =>  $categoriesResponse->getData()->data,
+            'subjects'   =>  $subjectsResponse->getData()->data,
+            'grades'     =>  $gradesResponse->getData()->data,
+            'boards'     =>  $boardsResponse->getData()->data,
+            'schools'    =>  $schoolsResponse->getData()->data,
         ], 200);
     }
 
@@ -177,6 +182,13 @@ class ContentsController extends Controller
             // Save Content
             $content = new Content(request()->all());
             $content->save();
+            // Save Content Categories
+            if (isset($request->content_categories))
+                foreach ($request->content_categories as $category) {
+                    $category = new ContentCategory($category);
+                    $content->content_categories()->save($category);
+                }
+            // ---------------------------------------------------
             // Save Content Subjects
             if (isset($request->content_subjects))
                 foreach ($request->content_subjects as $subject) {
@@ -253,6 +265,34 @@ class ContentsController extends Controller
             $content = Content::find($request->id);
             $content->update($request->all());
 
+            // Check if Content Category deleted
+            if (isset($request->content_categories)) {
+                $contentCategoryIdResponseArray = array_pluck($request->content_categories, 'id');
+            } else
+                $contentCategoryIdResponseArray = [];
+            $contentId = $content->id;
+            $contentCategoryIdArray = array_pluck(ContentCategory::where('content_id', '=', $contentId)->get(), 'id');
+            $differenceContentCategoryIds = array_diff($contentCategoryIdArray, $contentCategoryIdResponseArray);
+            // Delete which is there in the database but not in the response
+            if ($differenceContentCategoryIds)
+                foreach ($differenceContentCategoryIds as $differenceContentCategoryId) {
+                    $contentCategory = ContentCategory::find($differenceContentCategoryId);
+                    $contentCategory->delete();
+                }
+
+            // Update Content Category
+            if (isset($request->content_categories))
+                foreach ($request->content_categories as $category) {
+                    if (!isset($category['id'])) {
+                        $content_category = new ContentCategory($category);
+                        $content->content_categories()->save($content_category);
+                    } else {
+                        $content_category = ContentCategory::find($category['id']);
+                        $content_category->update($category);
+                    }
+                }
+
+            // ---------------------------------------------------
             // Check if Content Subject deleted
             if (isset($request->content_subjects)) {
                 $contentSubjectIdResponseArray = array_pluck($request->content_subjects, 'id');
@@ -535,6 +575,7 @@ class ContentsController extends Controller
             // ---------------------------------------------------
         }
 
+        $content->content_categories = $content->content_categories;
         $content->content_subjects = $content->content_subjects;
         $content->content_medias = $content->content_medias;
         $content->content_descriptions = $content->content_descriptions;
@@ -579,6 +620,7 @@ class ContentsController extends Controller
                 }
             }
         }
+        $content->content_categories = $content->content_categories;
         $content->content_subjects = $content->content_subjects;
         $content->content_medias = $content->content_medias;
         $content->content_metadatas = $content->content_metadatas;
