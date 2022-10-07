@@ -15,4 +15,8 @@ class Subject extends Model
         'imagepath_4',
         'imagepath_5',
     ];
+    public function user_subjects()
+  {
+    return $this->hasMany(UserSubject::class);
+  }
 }
