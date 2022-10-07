@@ -127,6 +127,8 @@ class NotificationTest extends TestCase
                     'description',
                     'created_at',
                     'updated_at',
+                    "is_read",
+                    "is_deleted",
                 ]
             ]);
     }
