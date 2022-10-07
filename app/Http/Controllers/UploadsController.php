@@ -294,7 +294,7 @@ class UploadsController extends Controller
       $file = $request->file('featuredimagepath');
       $name = $request->filename ?? 'photo.';
       $name = $name . $file->getClientOriginalExtension();
-      $featuredimagepath = 'infakt/contents/featured-images' . '/'. $request->contentid . '/' . $name;
+      $featuredimagepath = 'infakt/contents/featured-images' . '/' . $request->contentid . '/' . $name;
       // Storage::disk('local')->put($featuredimagepath, file_get_contents($file), 'public');
       Storage::disk('s3')->put($featuredimagepath, file_get_contents($file), 'public');
 
@@ -314,22 +314,24 @@ class UploadsController extends Controller
   {
     $request->validate([
       'id'        => 'required',
-      'imagepath'        => 'required',
+      // 'imagepath'        => 'required',
     ]);
 
     $imagepath = '';
     $subject = [];
-    if ($request->hasFile('imagepath')) {
-      $file = $request->file('imagepath');
-      $name = $request->filename ?? 'photo.';
-      $name = $name . $file->getClientOriginalExtension();
-      $imagepath = 'infakt/subject-imagepath/' .  $request->id . '/' . $name;
-      // Storage::disk('local')->put($imagepath, file_get_contents($file), 'public');
-      Storage::disk('s3')->put($imagepath, file_get_contents($file), 'public');
+    for ($i = 0; $i < 6; $i++) {
+      if ($request->hasFile('imagepath_' . $i)) {
+        $file = $request->file('imagepath_' . $i);
+        $f_name = 'imagepath_' . $i;
+        $name = $request->filename ?? "$f_name";
+        $name = $name . $file->getClientOriginalExtension();
+        $imagepath = 'infakt/subject-imagepath/' .  $request->id . '/' . $name;
+        Storage::disk('s3')->put($imagepath, file_get_contents($file), 'public');
 
-      $subject = Subject::where('id', '=', request()->id)->first();
-      $subject->imagepath = $imagepath;
-      $subject->update();
+        $subject = Subject::where('id', '=', request()->id)->first();
+        $subject->$f_name = $imagepath;
+        $subject->update();
+      }
     }
     return response()->json([
       'data'  =>  $subject,
