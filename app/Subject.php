@@ -11,4 +11,8 @@ class Subject extends Model
         'is_active',
         'imagepath',
     ];
+    public function user_subjects()
+  {
+    return $this->hasMany(UserSubject::class);
+  }
 }

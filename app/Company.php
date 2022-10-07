@@ -230,4 +230,9 @@ class Company extends Model
   {
     return $this->hasMany(UserTimestamp::class)->with('user');
   }
+  public function user_subjects()
+  {
+    return $this->hasMany(UserSubject::class);
+  }
+
 }

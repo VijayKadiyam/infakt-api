@@ -268,3 +268,5 @@ Route::resource('content_boards', 'ContentBoardsController');
 // content_schools
 Route::resource('content_schools', 'ContentSchoolsController');
 Route::get('getMyStudents', 'UsersController@getMyStudents');
+//User_subjects
+Route::resource('user_subjects', 'UserSubjectsController');
