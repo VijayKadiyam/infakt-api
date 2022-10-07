@@ -9,6 +9,8 @@ class Notification extends Model
   protected $fillable = [
     'user_id',
     'description',
+    "is_read",
+    "is_deleted",
   ];
 
   public function company()
