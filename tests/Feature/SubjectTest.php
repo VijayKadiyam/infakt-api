@@ -98,7 +98,12 @@ class SubjectTest extends TestCase
                     'name',
                     'is_active',
                     'created_at',
-                    'updated_at'
+                    'updated_at',
+                    'imagepath_1',
+                    'imagepath_2',
+                    'imagepath_3',
+                    'imagepath_4',
+                    'imagepath_5',
                 ]
             ]);
     }
@@ -126,7 +131,12 @@ class SubjectTest extends TestCase
                     'name',
                     'is_active',
                     'created_at',
-                    'updated_at'
+                    'updated_at',
+                    'imagepath_1',
+                    'imagepath_2',
+                    'imagepath_3',
+                    'imagepath_4',
+                    'imagepath_5',
                 ]
             ]);
     }

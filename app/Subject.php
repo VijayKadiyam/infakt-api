@@ -9,6 +9,10 @@ class Subject extends Model
     protected $fillable = [
         'name',
         'is_active',
-        'imagepath',
+        'imagepath_1',
+        'imagepath_2',
+        'imagepath_3',
+        'imagepath_4',
+        'imagepath_5',
     ];
 }
