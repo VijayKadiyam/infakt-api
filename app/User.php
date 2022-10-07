@@ -187,4 +187,8 @@ class User extends Authenticatable
     return $this->hasMany(ContentMetadata::class)
       ->with('content');
   }
+  public function user_subjects()
+  {
+    return $this->hasMany(UserSubject::class);
+  }
 }
