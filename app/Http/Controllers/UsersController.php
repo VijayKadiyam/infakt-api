@@ -13,6 +13,7 @@ use \Carbon\Carbon;
 use App\Sku;
 use App\Stock;
 use App\UserClasscode;
+use App\UserSubject;
 use App\Value;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
@@ -29,6 +30,9 @@ class UsersController extends Controller
     $rolesController = new RolesController();
     $rolesResponse = $rolesController->index($request);
 
+    $subjectsController = new SubjectsController();
+    $subjectsResponse = $subjectsController->index($request);
+
     if ($request->company) {
       $standardsController = new StandardsController();
       $standardsResponse = $standardsController->index($request);
@@ -44,16 +48,18 @@ class UsersController extends Controller
 
       return response()->json([
         'roles'      =>  $rolesResponse->getData()->data,
+        'subjects'   =>  $subjectsResponse->getData()->data,
         'standards'  =>  $standardsResponse->getData()->data,
         'sections'   =>  $sectionsResponse->getData()->data,
         'classcodes' =>  $classcodesResponse->getData()->data,
-        'boards' =>  $boardsResponse->getData()->data,
+        'boards'     =>  $boardsResponse->getData()->data,
       ], 200);
     }
 
 
     return response()->json([
-      'roles'      =>  $rolesResponse->getData()->data,
+      'roles'    =>  $rolesResponse->getData()->data,
+      'subjects' =>  $subjectsResponse->getData()->data,
     ], 200);
   }
 
@@ -282,7 +288,7 @@ class UsersController extends Controller
   public function show($id)
   {
     $user = User::where('id', '=', $id)
-      ->with('roles', 'companies', 'user_classcodes')->first();
+      ->with('roles', 'companies', 'user_classcodes', 'user_subjects')->first();
 
     return response()->json([
       'data'  =>  $user,
@@ -386,6 +392,13 @@ class UsersController extends Controller
           $request->company->notifications()->save($notifications);
         }
       // ---------------------------------------------------
+      // Save User Subjects
+      if (isset($request->user_subjects))
+        foreach ($request->user_subjects as $subject) {
+          $subject = new UserSubject($subject);
+          $user->user_subjects()->save($subject);
+        }
+      // ---------------------------------------------------
       // Send Regstration Emal
       if (request()->is_mail_sent == true) {
         $mail = Mail::to($request->email)->send(new RegistrationMail($user));
@@ -446,10 +459,38 @@ class UsersController extends Controller
         }
 
       // ---------------------------------------------------
+      // Check if User Subject deleted
+      if (isset($request->user_subjects)) {
+        $userSubjectIdResponseArray = array_pluck($request->user_subjects, 'id');
+      } else
+        $userSubjectIdResponseArray = [];
+      $userId = $user->id;
+      $userSubjectIdArray = array_pluck(UserSubject::where('user_id', '=', $userId)->get(), 'id');
+      $differenceUserSubjectIds = array_diff($userSubjectIdArray, $userSubjectIdResponseArray);
+      // Delete which is there in the database but not in the response
+      if ($differenceUserSubjectIds)
+        foreach ($differenceUserSubjectIds as $differenceUserSubjectId) {
+          $userSubject = UserSubject::find($differenceUserSubjectId);
+          $userSubject->delete();
+        }
+
+      // Update User Subject
+      if (isset($request->user_subjects))
+        foreach ($request->user_subjects as $subject) {
+          if (!isset($subject['id'])) {
+            $user_subject = new UserSubject($subject);
+            $user->user_subjects()->save($user_subject);
+          } else {
+            $user_subject = UserSubject::find($subject['id']);
+            $user_subject->update($subject);
+          }
+        }
+
+      // ---------------------------------------------------
     }
 
-
     $user->user_classcodes = $user->user_classcodes;
+    $user->user_subjects = $user->user_subjects;
     return response()->json([
       'data'  =>  $user
     ], 201);
