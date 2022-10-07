@@ -319,11 +319,11 @@ class UploadsController extends Controller
 
     $imagepath = '';
     $subject = [];
-    for ($i = 0; $i < 6; $i++) {
+    for ($i = 1; $i < 6; $i++) {
       if ($request->hasFile('imagepath_' . $i)) {
         $file = $request->file('imagepath_' . $i);
         $f_name = 'imagepath_' . $i;
-        $name = $request->filename ?? "$f_name";
+        $name = $request->filename ?? "$f_name.";
         $name = $name . $file->getClientOriginalExtension();
         $imagepath = 'infakt/subject-imagepath/' .  $request->id . '/' . $name;
         Storage::disk('s3')->put($imagepath, file_get_contents($file), 'public');
