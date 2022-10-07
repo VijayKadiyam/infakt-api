@@ -110,6 +110,13 @@ class ContentsController extends Controller
             $user_classcode_array = array_column($user_classcodes->toArray(), 'classcode_id');
             $filtered_contents = [];
             foreach ($contents as $key => $content) {
+                $content_assign_to_read = $content->content_assign_to_reads;
+                $assigned_to_read_array = array_column($content_assign_to_read->toArray(), 'classcode_id');
+                if (array_intersect($user_classcode_array, $assigned_to_read_array)) {
+                    $content['assign_to_read'] = true;
+                } else {
+                    $content['assign_to_read'] = false;
+                }
                 $content_hidden_classcodes = $content->content_hidden_classcodes;
                 $hidden_classcode_array = array_column($content_hidden_classcodes->toArray(), 'classcode_id');
                 if (!array_intersect($user_classcode_array, $hidden_classcode_array)) {
