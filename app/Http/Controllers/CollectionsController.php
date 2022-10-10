@@ -96,6 +96,22 @@ class CollectionsController extends Controller
                         }
                     }
                 }
+                // Random Subject Image 
+                $image_Array = [];
+                $collection_content->content->subject_image = "";
+                if (sizeOf($collection_content->content->content_subjects)) {
+                    for ($i = 1; $i < 6; $i++) {
+                        $name = "imagepath_" . $i;
+                        if ($collection_content->content->content_subjects[0]->subject->$name) {
+                            $image_Array[] = $collection_content->content->content_subjects[0]->subject->$name;
+                        }
+                    }
+                    $rand_subject_image = array_rand(
+                        $image_Array,
+                        1
+                    );
+                    $collection_content->content->subject_image = $image_Array[$rand_subject_image];
+                }
             }
         }
         $collection->assignments = $collection->assignments;
