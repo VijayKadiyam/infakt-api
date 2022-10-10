@@ -34,4 +34,9 @@ class Collection extends Model
    {
       return $this->hasMany(ContentAssignToRead::class);
    }
+
+   public function assignments()
+   {
+      return $this->hasMany(Assignment::class);
+   }
 }

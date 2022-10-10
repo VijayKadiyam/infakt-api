@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use App\Content;
 use App\ContentAssignToRead;
 use App\ContentBoard;
@@ -99,6 +100,11 @@ class ContentsController extends Controller
             $contents = $contents
                 ->Where('created_at', 'LIKE', '%' . request()->date_filter . '%');
         }
+        if (request()->category_id) {
+            $contents = $contents->whereHas('content_categories', function ($c) {
+                $c->where('category_id', '=', request()->category_id);
+            });
+        }
         $contents = $contents->get();
 
         $user_role = request()->roleName;
@@ -128,7 +134,25 @@ class ContentsController extends Controller
         $article_contents = [];
         $infographic_contents = [];
         $video_contents = [];
+        $CategoryWiseContent = [];
         foreach ($contents as $key => $content) {
+            // Random Subject Image 
+            $image_Array = [];
+            $content->subject_image = "";
+            if (sizeof($content->content_subjects)) {
+                for ($i = 1; $i < 6; $i++) {
+                    $name = "imagepath_" . $i;
+                    if ($content->content_subjects[0]->subject->$name) {
+                        $image_Array[] = $content->content_subjects[0]->subject->$name;
+                    }
+                }
+                $rand_subject_image = array_rand(
+                    $image_Array,
+                    1
+                );
+                $content->subject_image = $image_Array[$rand_subject_image];
+            }
+            // Content type Wise
             switch ($content->content_type) {
                 case 'ARTICLE':
                     $article_contents[] = $content;
@@ -143,6 +167,26 @@ class ContentsController extends Controller
                 default:
                     # code...
                     break;
+            }
+            // Category Wise  
+            if (sizeOf($content->content_categories)) {
+                // Select First Category 
+                $category = $content->content_categories[0]->category;
+                $category_key = array_search($category->id, array_column($CategoryWiseContent, 'id'));
+                if ($category_key != null || $category_key !== false) {
+                    // Increase Content Count 
+                    $CategoryWiseContent[$category_key]['count']++;
+                    $CategoryWiseContent[$category_key]['values'][] = $content;
+                } else {
+                    // Content Added
+                    $content_details = [
+                        'id' => $category->id,
+                        'category' => $category->name,
+                        'values' => [$content],
+                        'count' => 1,
+                    ];
+                    $CategoryWiseContent[] = $content_details;
+                }
             }
         }
         $content_types = [
@@ -165,10 +209,25 @@ class ContentsController extends Controller
                 'values' => $video_contents
             ]
         ];
+        // // Category Wise Content
+        // $categories = Category::where('is_active', TRUE)->get();
+        // $CategoryWiseContent = [];
+        // foreach ($categories as $key => $category) {
+        //     $category_detail = [];
+        //     $contents = $category->contents;
+        //     $category_name = $category->name;
+        //     $category_detail = [
+        //         'name' => $category_name,
+        //         'count' => sizeof($contents),
+        //         'values' => $contents,
+        //     ];
+        //     $CategoryWiseContent[] = $category_detail;
+        // }
         return response()->json([
             'data'  =>  $contents,
             'count' =>   sizeof($contents),
             'content_types' => $content_types,
+            'CategoryWiseContent' => $CategoryWiseContent,
             'success' =>  true,
         ], 200);
     }

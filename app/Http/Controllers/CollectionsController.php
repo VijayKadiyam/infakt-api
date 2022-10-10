@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Collection;
+use App\UserClasscode;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CollectionsController extends Controller
 {
@@ -73,6 +75,30 @@ class CollectionsController extends Controller
     public function show(Collection $collection)
     {
         $collection->collection_contents = $collection->collection_contents;
+        $user_role   =     Auth::user()->roles[0]->name;
+        if ($user_role == 'STUDENT') {
+            $user_id = Auth::user()->id;
+            $user_classcodes = UserClasscode::where('user_id', $user_id)->get();
+            $user_classcode_array = array_column($user_classcodes->toArray(), "classcode_id");
+            $currentDate = date_create(date('Y-m-d'));
+            foreach ($collection->collection_contents as $key => $collection_content) {
+                $content_assignments = $collection_content->content->assignments;
+                foreach ($content_assignments as $key => $assignment) {
+                    $assignment_classcodes = $assignment->my_assignment_classcodes()->whereIn('classcode_id', $user_classcode_array)->get();
+                    foreach ($assignment_classcodes as $key => $assignmentClasscode) {
+                        $startDate = date_create($assignmentClasscode->start_date);
+                        $endDate = date_create($assignmentClasscode->end_date);
+                        $startDiff = date_diff($currentDate, $startDate)->format("%R%a");
+                        $endDiff = date_diff($currentDate, $endDate)->format("%R%a");
+                        $inProgress = $startDiff < 0 && $endDiff >= 0 ? true : false;
+                        if ($inProgress == true) {
+                            $collection->student_instructions = $assignment->student_instructions;
+                        }
+                    }
+                }
+            }
+        }
+        $collection->assignments = $collection->assignments;
 
         return response()->json([
             'data'   =>  $collection,

@@ -130,7 +130,7 @@ class Company extends Model
   }
   public function collections()
   {
-    return $this->hasMany(Collection::class)->with('collection_contents');
+    return $this->hasMany(Collection::class)->with('collection_contents', 'assignments');
   }
 
   public function values()
