@@ -130,7 +130,7 @@ class Company extends Model
   }
   public function collections()
   {
-    return $this->hasMany(Collection::class)->with('collection_contents');
+    return $this->hasMany(Collection::class)->with('collection_contents', 'assignments');
   }
 
   public function values()
@@ -150,7 +150,8 @@ class Company extends Model
 
   public function notifications()
   {
-    return $this->hasMany(Notification::class);
+    return $this->hasMany(Notification::class)
+      ->where('is_deleted', false);
   }
 
   public function bookmark_classcodes()
@@ -234,5 +235,4 @@ class Company extends Model
   {
     return $this->hasMany(UserSubject::class);
   }
-
 }

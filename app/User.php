@@ -191,4 +191,10 @@ class User extends Authenticatable
   {
     return $this->hasMany(UserSubject::class);
   }
+  public function notifications()
+  {
+    return $this->hasMany(Notification::class)
+      ->where('is_deleted', false)
+      ->where('is_read', false);
+  }
 }
