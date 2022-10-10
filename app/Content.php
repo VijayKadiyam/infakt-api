@@ -95,4 +95,9 @@ class Content extends Model
         return $this->hasMany(ContentCategory::class)
             ->with('category');
     }
+
+    public function assignments()
+    {
+        return $this->hasMany(Assignment::class);
+    }
 }
