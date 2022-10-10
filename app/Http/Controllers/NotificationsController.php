@@ -107,7 +107,7 @@ class NotificationsController extends Controller
     }
     public function clear()
     {
-        $id = request()->id;
+        $id = request()->notification_id;
         $notifications = Notification::find($id)->update(['is_deleted' => true]);
         return response()->json([
             'message' =>  'Cleared All Messages'
