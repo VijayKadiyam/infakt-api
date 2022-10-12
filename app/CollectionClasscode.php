@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class CollectionClasscode extends Model
 {
     protected $fillable = [
+        'company_id',
         'collection_id',
         'classcode_id',
         'shared_by_id',

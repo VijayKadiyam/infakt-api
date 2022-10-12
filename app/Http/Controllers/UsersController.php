@@ -383,7 +383,7 @@ class UsersController extends Controller
 
           // Create Notification Log
           $c = Classcode::find($classcode->classcode_id);
-          $description = "A new Classcode[ $c->classcode ] has been assigned to you.";
+          $description = "A new Classcode [ $c->classcode ] has been assigned to you.";
           $notification_data = [
             'user_id' => $user->id,
             'description' => $description
@@ -428,7 +428,7 @@ class UsersController extends Controller
           $c = Classcode::find($userClasscode['classcode_id']);
           $userClasscode->delete();
           // Create Notification Log
-          $description = "An existing classcode[ $c->classcode ] has been unassigned.";
+          $description = "An existing classcode [ $c->classcode ] has been unassigned.";
           $notification_data = [
             'user_id' => $user->id,
             'description' => $description
@@ -445,7 +445,7 @@ class UsersController extends Controller
             $user->user_classcodes()->save($user_classcode);
             // Create Notification Log
             $c = Classcode::find($classcode['classcode_id']);
-            $description = "A new Classcode[ $c->classcode ] has been assigned to you.";
+            $description = "A new Classcode [ $c->classcode ] has been assigned to you.";
             $notification_data = [
               'user_id' => $user->id,
               'description' => $description

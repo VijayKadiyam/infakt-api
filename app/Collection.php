@@ -28,7 +28,7 @@ class Collection extends Model
    }
    public function collection_classcodes()
    {
-      return $this->hasMany(CollectionClasscode::class)->with('content');
+      return $this->hasMany(CollectionClasscode::class)->with('classcode');
    }
    public function content_assign_to_reads()
    {
