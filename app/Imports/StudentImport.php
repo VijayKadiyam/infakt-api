@@ -24,6 +24,7 @@ class StudentImport implements ToModel, WithHeadingRow
             'contact_number' =>  $row['Contact Number'],
             'gender' =>  $row['Gender'],
             'active' =>  "YES",
+            'board' =>  $row['Board'],
             // 'joining_date' =>  \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['Joining Date'])->format('Y-m-d'),
             'standard' =>  $row['Standard'],
             'section' =>  $row['Section'],

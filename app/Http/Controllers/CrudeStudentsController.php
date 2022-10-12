@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Board;
 use App\CrudeStudent;
 use App\Imports\StudentImport;
 use App\Mail\RegistrationMail;
@@ -52,14 +53,21 @@ class CrudeStudentsController extends Controller
                 ->first();
             $role_id = 5;
             $data = [
-                'name'               =>  $student->first_name . " " . $student->last_name,
-                'first_name'         =>  $student->first_name,
-                'last_name'          =>  $student->last_name,
-                'contact_number'     =>  $student->contact_number,
-                // 'joining_date'       =>  $student->joining_date,
-                'gender'             =>  $student->gender == 'MALE' ? 1 : 0,
-                'active'             =>  $student->active == 'YES' ? 1 : 0,
+                'name'           =>  $student->first_name . " " . $student->last_name,
+                'first_name'     =>  $student->first_name,
+                'last_name'      =>  $student->last_name,
+                'contact_number' =>  $student->contact_number,
+                'board_id'       =>  $student->board,
+                'gender'         =>  $student->gender == 'MALE' ? 1 : 0,
+                'active'         =>  $student->active == 'YES' ? 1 : 0,
             ];
+            if ($student->board) {
+                $board = Board::where('name', $student->board)
+                    ->where('is_active', true)->first();
+                if ($board) {
+                    $data['board_id'] = $board->id;
+                }
+            }
             if (!$us) {
                 // New Student
                 $data['email'] = $student->email;
@@ -75,8 +83,7 @@ class CrudeStudentsController extends Controller
                 $user = User::find($user_id);
                 $user->update($data);
             }
-
-            if ($request->is_mail_sent == true) {
+            if ($request->is_mail_sent == 'true') {
                 Mail::to($user->email)->send(new RegistrationMail($user));
                 $user->is_mail_sent = true;
                 $user->update();
