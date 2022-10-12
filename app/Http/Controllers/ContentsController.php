@@ -242,7 +242,8 @@ class ContentsController extends Controller
     {
 
         $request->validate([
-            'content_name'  =>  'required'
+            'content_name'  =>  'required',
+            'content_categories'  =>  'required'
         ]);
         if ($request->id == null || $request->id == '') {
             // Save Content
