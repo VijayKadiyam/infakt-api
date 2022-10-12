@@ -62,7 +62,7 @@ class ContentMetadatasController extends Controller
                     $c = Classcode::find($content_metadata_classcodes->classcode_id);
                     $students = $c->students;
                     foreach ($students as $key => $user) {
-                        $description = "A new $content_metadata->metadata_type has been posted for Classcode[ $c->classcode ].";
+                        $description = "A new $content_metadata->metadata_type has been posted for Classcode [ $c->classcode ].";
                         $notification_data = [
                             'user_id' => $user->id,
                             'description' => $description
@@ -95,7 +95,7 @@ class ContentMetadatasController extends Controller
                     // Create Notification Log
                     $students = $c->students;
                     foreach ($students as $key => $user) {
-                        $description = "An Existing $content_metadata->metadata_type has been removed for Classcode[ $c->classcode ].";
+                        $description = "An Existing $content_metadata->metadata_type has been removed for Classcode [ $c->classcode ].";
                         $notification_data = [
                             'user_id' => $user->id,
                             'description' => $description
@@ -115,7 +115,7 @@ class ContentMetadatasController extends Controller
                         $c = Classcode::find($content_metadata_classcode['classcode_id']);
                         $students = $c->students;
                         foreach ($students as $key => $user) {
-                            $description = "A new $content_metadata->metadata_type has been posted for Classcode[ $c->classcode ].";
+                            $description = "A new $content_metadata->metadata_type has been posted for Classcode [ $c->classcode ].";
                             $notification_data = [
                                 'user_id' => $user->id,
                                 'description' => $description

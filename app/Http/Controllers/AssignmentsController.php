@@ -106,7 +106,7 @@ class AssignmentsController extends Controller
                     $c = Classcode::find($assignment_classcode->classcode_id);
                     $students = $c->students;
                     foreach ($students as $key => $user) {
-                        $description = "A new Assignment[ $assignment->assignment_title ] has been posted for Classcode[ $c->classcode ].";
+                        $description = "A new Assignment [ $assignment->assignment_title ] has been posted for Classcode [ $c->classcode ].";
                         $notification_data = [
                             'user_id' => $user->id,
                             'description' => $description
@@ -164,7 +164,7 @@ class AssignmentsController extends Controller
                     $classcode->delete();
                     // Create Notification Log
                     foreach ($students as $key => $user) {
-                        $description = "An existing Assignment[ $assignment->assignment_title ] has been removed for Classcode[ $c->classcode ].";
+                        $description = "An existing Assignment [ $assignment->assignment_title ] has been removed for Classcode [ $c->classcode ].";
                         $notification_data = [
                             'user_id' => $user->id,
                             'description' => $description
@@ -184,7 +184,7 @@ class AssignmentsController extends Controller
                         $c = Classcode::find($classcode['classcode_id']);
                         $students = $c->students;
                         foreach ($students as $key => $user) {
-                            $description = "A new Assignment[ $assignment->assignment_title ] has been posted for Classcode[ $c->classcode ].";
+                            $description = "A new Assignment [ $assignment->assignment_title ] has been posted for Classcode [ $c->classcode ].";
                             $notification_data = [
                                 'user_id' => $user->id,
                                 'description' => $description

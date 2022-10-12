@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Classcode;
+use App\Collection;
 use App\CollectionClasscode;
 use App\Notification;
 use App\UserClasscode;
@@ -47,12 +49,11 @@ class CollectionClasscodesController extends Controller
      *
      *@
      */
-    public function store(Request $request)
+    public function store_1(Request $request)
     {
         // $request->validate([
         //     'collection_id'        =>  'required',
         // ]);
-
         $collectionClasscodeIdArray = array_pluck(CollectionClasscode::where('collection_id', '=', $request->collection_id)->get(), 'id');
         if ($collectionClasscodeIdArray)
             foreach ($collectionClasscodeIdArray as $differenceCollectionClasscodeId) {
@@ -70,7 +71,7 @@ class CollectionClasscodesController extends Controller
             if ($collection_classcode->shared_by_id) {
                 $user_classcodes = UserClasscode::where('classcode_id', $collection_classcode->classcode_id)->with('user')->get();
                 foreach ($user_classcodes as $key => $uc) {
-                    $description = "A new collection shared to you.";
+                    $description = "A new collection shared to you by .";
                     if ($uc->user->roles[0]->name == 'STUDENT') {
                         $user_id = $uc->user->id;
                         $notification_data = [
@@ -86,6 +87,65 @@ class CollectionClasscodesController extends Controller
 
         return response()->json([
             'data'    =>  $collection_classcode
+        ], 201);
+    }
+    public function store(Request $request)
+    {
+        $collection = Collection::find($request->collection_id);
+        if (isset($request->collection_classcodes)) {
+            $classcodeIdResponseArray = array_pluck($request->collection_classcodes, 'id');
+        } else
+            $classcodeIdResponseArray = [];
+        $collectionId = $collection->id;
+        $classcodeIdArray = array_pluck(CollectionClasscode::where('collection_id', '=', $collectionId)->get(), 'id');
+        $differenceCollectionClasscodeIds = array_diff($classcodeIdArray, $classcodeIdResponseArray);
+        // Delete which is there in the database but not in the response
+        if ($differenceCollectionClasscodeIds)
+            foreach ($differenceCollectionClasscodeIds as $differenceCollectionClasscodeId) {
+                $classcode = CollectionClasscode::find($differenceCollectionClasscodeId);
+                $c = Classcode::find($classcode['classcode_id']);
+                $students = $c->students;
+                $classcode->delete();
+                // Create Notification Log
+                foreach ($students as $key => $user) {
+                    $description = "An existing Collection [ $collection->collection_name ] has been removed for Classcode [ $c->classcode ].";
+                    $notification_data = [
+                        'user_id' => $user->id,
+                        'description' => $description
+                    ];
+                    $notifications = new Notification($notification_data);
+                    $request->company->notifications()->save($notifications);
+                }
+            }
+
+        // Update Collection Classcode
+        if (isset($request->collection_classcodes))
+            foreach ($request->collection_classcodes as $classcode) {
+                $classcode['company_id'] = $collection->company_id;
+                if (!isset($classcode['id'])) {
+                    $collection_classcode = new CollectionClasscode($classcode);
+                    $collection->collection_classcodes()->save($collection_classcode);
+                    // Create Notification Log
+                    $c = Classcode::find($classcode['classcode_id']);
+                    $students = $c->students;
+                    foreach ($students as $key => $user) {
+                        $description = "A new Collection [ $collection->collection_name ] has been shared to you for Classcode [ $c->classcode ].";
+                        $notification_data = [
+                            'user_id' => $user->id,
+                            'description' => $description
+                        ];
+                        $notifications = new Notification($notification_data);
+                        $request->company->notifications()->save($notifications);
+                    }
+                } else {
+                    $collection_classcode = CollectionClasscode::find($classcode['id']);
+                    $collection_classcode->update($classcode);
+                }
+            }
+        // ---------------------------------------------------
+        $collection->collection_classcodes = $collection->collection_classcodes;
+        return response()->json([
+            'data'    =>  $collection
         ], 201);
     }
 
