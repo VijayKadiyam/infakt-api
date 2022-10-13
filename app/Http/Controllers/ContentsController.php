@@ -101,9 +101,16 @@ class ContentsController extends Controller
                 ->Where('created_at', 'LIKE', '%' . request()->date_filter . '%');
         }
         if (request()->category_id) {
+            $category = Category::find(request()->category_id);
             $contents = $contents->whereHas('content_categories', function ($c) {
                 $c->where('category_id', '=', request()->category_id);
             });
+            Search::create([
+                'company_id' =>  Auth::user()->companies[0]->id,
+                'user_id'   =>      Auth::user()->id,
+                'search_type'   =>  'CATEGORY',
+                'search'        =>  $category->name
+            ]);
         }
         $contents = $contents->get();
 
