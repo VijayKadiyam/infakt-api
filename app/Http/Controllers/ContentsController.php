@@ -70,6 +70,9 @@ class ContentsController extends Controller
      */
     public function index()
     {
+        $content_limit_4 = request()->content_limit_4 ? request()->content_limit_4 : false;
+        $category_wise_limit_4 = request()->category_wise_limit_4 ? request()->category_wise_limit_4 : false;
+
         $contents = Content::with('content_subjects', 'content_medias', 'content_reads', 'content_descriptions', 'content_hidden_classcodes', 'content_grades', 'content_boards');
         if (request()->subject_id) {
             $subject = Subject::find(request()->subject_id);
@@ -100,6 +103,10 @@ class ContentsController extends Controller
             $contents = $contents
                 ->Where('created_at', 'LIKE', '%' . request()->date_filter . '%');
         }
+        if (request()->type) {
+            $contents = $contents
+                ->Where('content_type', request()->type);
+        }
         if (request()->category_id) {
             $category = Category::find(request()->category_id);
             $contents = $contents->whereHas('content_categories', function ($c) {
@@ -112,7 +119,10 @@ class ContentsController extends Controller
                 'search'        =>  $category->name
             ]);
         }
-        $contents = $contents->get();
+        if ($content_limit_4) {
+            $contents = $contents->limit(4);
+        }
+        $contents = $contents->latest()->get();
 
         $user_role = request()->roleName;
         $user_id = request()->user_id;
@@ -142,7 +152,6 @@ class ContentsController extends Controller
         $infographic_contents = [];
         $video_contents = [];
         $CategoryWiseContent = [];
-        $is_limited_4 = request()->is_limited_4 ? request()->is_limited_4 : false;
         foreach ($contents as $key => $content) {
             // Random Subject Image 
             $image_Array = [];
@@ -184,7 +193,7 @@ class ContentsController extends Controller
                 if (($category_key != null || $category_key !== false)) {
                     // Increase Content Count 
                     $CategoryWiseContent[$category_key]['count']++;
-                    if ($is_limited_4 != false) {
+                    if ($category_wise_limit_4 != false) {
                         // If Limit is set to 4
                         if ($CategoryWiseContent[$category_key]['count'] <= 4) {
                             // Check if Count is not Exceeding than 4 and And Content
