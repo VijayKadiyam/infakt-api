@@ -13,6 +13,7 @@ class ContentAssignToRead extends Model
         'classcode_id',
         'created_by_id',
         'student_instructions',
+        'due_date',
     ];
 
     public function content()

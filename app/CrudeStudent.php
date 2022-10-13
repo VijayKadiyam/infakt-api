@@ -29,5 +29,6 @@ class CrudeStudent extends Model
         "optional_classcode_8",
         "optional_classcode_9",
         "optional_classcode_10",
+        "board",
     ];
 }

@@ -101,9 +101,16 @@ class ContentsController extends Controller
                 ->Where('created_at', 'LIKE', '%' . request()->date_filter . '%');
         }
         if (request()->category_id) {
+            $category = Category::find(request()->category_id);
             $contents = $contents->whereHas('content_categories', function ($c) {
                 $c->where('category_id', '=', request()->category_id);
             });
+            Search::create([
+                'company_id' =>  Auth::user()->companies[0]->id,
+                'user_id'   =>      Auth::user()->id,
+                'search_type'   =>  'CATEGORY',
+                'search'        =>  $category->name
+            ]);
         }
         $contents = $contents->get();
 
@@ -135,6 +142,7 @@ class ContentsController extends Controller
         $infographic_contents = [];
         $video_contents = [];
         $CategoryWiseContent = [];
+        $is_limited_4 = request()->is_limited_4 ? request()->is_limited_4 : false;
         foreach ($contents as $key => $content) {
             // Random Subject Image 
             $image_Array = [];
@@ -173,10 +181,19 @@ class ContentsController extends Controller
                 // Select First Category 
                 $category = $content->content_categories[0]->category;
                 $category_key = array_search($category->id, array_column($CategoryWiseContent, 'id'));
-                if ($category_key != null || $category_key !== false) {
+                if (($category_key != null || $category_key !== false)) {
                     // Increase Content Count 
                     $CategoryWiseContent[$category_key]['count']++;
-                    $CategoryWiseContent[$category_key]['values'][] = $content;
+                    if ($is_limited_4 != false) {
+                        // If Limit is set to 4
+                        if ($CategoryWiseContent[$category_key]['count'] <= 4) {
+                            // Check if Count is not Exceeding than 4 and And Content
+                            $CategoryWiseContent[$category_key]['values'][] = $content;
+                        }
+                    } else {
+                        // Add Content in array
+                        $CategoryWiseContent[$category_key]['values'][] = $content;
+                    }
                 } else {
                     // Content Added
                     $content_details = [
@@ -209,20 +226,6 @@ class ContentsController extends Controller
                 'values' => $video_contents
             ]
         ];
-        // // Category Wise Content
-        // $categories = Category::where('is_active', TRUE)->get();
-        // $CategoryWiseContent = [];
-        // foreach ($categories as $key => $category) {
-        //     $category_detail = [];
-        //     $contents = $category->contents;
-        //     $category_name = $category->name;
-        //     $category_detail = [
-        //         'name' => $category_name,
-        //         'count' => sizeof($contents),
-        //         'values' => $contents,
-        //     ];
-        //     $CategoryWiseContent[] = $category_detail;
-        // }
         return response()->json([
             'data'  =>  $contents,
             'count' =>   sizeof($contents),
@@ -242,7 +245,8 @@ class ContentsController extends Controller
     {
 
         $request->validate([
-            'content_name'  =>  'required'
+            'content_name'  =>  'required',
+            'content_categories'  =>  'required'
         ]);
         if ($request->id == null || $request->id == '') {
             // Save Content
