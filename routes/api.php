@@ -278,3 +278,9 @@ Route::resource('user_subjects', 'UserSubjectsController');
 Route::resource('categories', 'CategoriesController');
 // content_categories
 Route::resource('content_categories', 'ContentCategoriesController');
+
+
+
+
+// Most Popular Article
+Route::get('most_popular_articles', 'ContentsController@mostContentRead');
