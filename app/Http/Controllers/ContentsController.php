@@ -17,6 +17,7 @@ use App\ContentSchool;
 use App\ContentSubject;
 use App\Search;
 use App\Subject;
+use App\User;
 use App\UserClasscode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,6 +31,15 @@ class ContentsController extends Controller
 
     public function masters(Request $request)
     {
+        $user = Auth::user();
+        $user_role = $user->roles[0]->name;
+        if ($user_role == "INFAKT TEACHER") {
+            $subjects = $user->subjects;
+        } else {
+            $subjectsController = new SubjectsController();
+            $subjectsResponse = $subjectsController->index($request);
+            $subjects = $subjectsResponse->getData()->data;
+        }
         // $collectionsController = new CollectionsController();
         // $request->request->add(['user_id' => $request->user_id]);
         // $collectionsResponse = $collectionsController->index($request);
@@ -40,8 +50,6 @@ class ContentsController extends Controller
         $categoriesController = new CategoriesController();
         $categoriesResponse = $categoriesController->index($request);
 
-        $subjectsController = new SubjectsController();
-        $subjectsResponse = $subjectsController->index($request);
 
         $gradesController = new GradesController();
         $gradesResponse = $gradesController->index($request);
@@ -56,7 +64,7 @@ class ContentsController extends Controller
             // 'collections'           =>  $collectionsResponse->getData()->data,
             'users'      =>  $usersResponse->getData()->data,
             'categories' =>  $categoriesResponse->getData()->data,
-            'subjects'   =>  $subjectsResponse->getData()->data,
+            'subjects'   =>  $subjects,
             'grades'     =>  $gradesResponse->getData()->data,
             'boards'     =>  $boardsResponse->getData()->data,
             'schools'    =>  $schoolsResponse->getData()->data,
@@ -72,7 +80,7 @@ class ContentsController extends Controller
     {
         $content_limit_4 = request()->content_limit_4 ? request()->content_limit_4 : false;
         $category_wise_limit_4 = request()->category_wise_limit_4 ? request()->category_wise_limit_4 : false;
-
+        $Assigned_to_read_articles = [];
         $contents = Content::with('content_subjects', 'content_medias', 'content_reads', 'content_descriptions', 'content_hidden_classcodes', 'content_grades', 'content_boards');
         if (request()->subject_id) {
             $subject = Subject::find(request()->subject_id);
@@ -132,11 +140,19 @@ class ContentsController extends Controller
             $user_classcodes =  UserClasscode::where('user_id', $user_id)->get();
             $user_classcode_array = array_column($user_classcodes->toArray(), 'classcode_id');
             $filtered_contents = [];
+            $currentDate = date_create(date('Y-m-d'));
             foreach ($contents as $key => $content) {
                 $content_assign_to_read = $content->content_assign_to_reads;
+                $endDiff = 0;
+                if (sizeof($content_assign_to_read) > 0) {
+                    $endDate = date_create($content_assign_to_read[0]['due_date']);
+                    $endDiff = date_diff($currentDate, $endDate)->format("%R%a");
+                }
+                $isDue = $endDiff < 0 ? true : false;
                 $assigned_to_read_array = array_column($content_assign_to_read->toArray(), 'classcode_id');
-                if (array_intersect($user_classcode_array, $assigned_to_read_array)) {
+                if (array_intersect($user_classcode_array, $assigned_to_read_array) && $isDue == false) {
                     $content['assign_to_read'] = true;
+                    $Assigned_to_read_articles[] = $content;
                 } else {
                     $content['assign_to_read'] = false;
                 }
@@ -240,6 +256,7 @@ class ContentsController extends Controller
             'count' =>   sizeof($contents),
             'content_types' => $content_types,
             'CategoryWiseContent' => $CategoryWiseContent,
+            'Assign_to_read_articles' => $Assigned_to_read_articles,
             'success' =>  true,
         ], 200);
     }
@@ -256,7 +273,7 @@ class ContentsController extends Controller
         $request->validate([
             'content_name'  =>  'required',
             'content_categories'  =>  'required',
-            // 'content_assign_to_reads.*.due_date'    =>  'required',
+            'content_assign_to_reads.*.due_date'    =>  'required',
         ]);
         if ($request->id == null || $request->id == '') {
             // Save Content
@@ -750,5 +767,180 @@ class ContentsController extends Controller
         return response()->json([
             'message' =>  'Deleted'
         ], 204);
+    }
+
+    public function assigned_to_read_articles()
+    {
+        $user = Auth::user();
+        $user_role = $user->roles[0]->name;
+        $user_classcodes =  UserClasscode::where('user_id', $user->id)->get();
+        $user_classcode_array = array_column($user_classcodes->toArray(), 'classcode_id');
+        $currentDate = date_create(date('Y-m-d'));
+        $contents = Content::with('content_subjects', 'content_medias', 'content_reads', 'content_descriptions', 'content_hidden_classcodes', 'content_grades', 'content_boards');
+
+        $contents = $contents->whereHas('content_assign_to_reads', function ($c) use ($user_classcode_array) {
+            $c->whereIn('classcode_id', $user_classcode_array);
+        });
+        if (request()->subject_id) {
+            $subject = Subject::find(request()->subject_id);
+            $contents = $contents->whereHas('content_subjects', function ($c) {
+                $c->where('subject_id', '=', request()->subject_id);
+            });
+            Search::create([
+                'company_id' =>  Auth::user()->companies[0]->id,
+                'user_id'   =>      Auth::user()->id,
+                'search_type'   =>  'SUBJECT',
+                'search'        =>  $subject->name
+            ]);
+        }
+        if (request()->search_keyword) {
+            $contents = $contents
+                ->where('content_type', 'LIKE', '%' . request()->search_keyword . '%')
+                ->orWhere('content_name', 'LIKE', '%' . request()->search_keyword . '%')
+                ->orWhere('created_at', 'LIKE', '%' . request()->search_keyword . '%');
+
+            Search::create([
+                'company_id' =>  Auth::user()->companies[0]->id,
+                'user_id'   =>      Auth::user()->id,
+                'search_type'   =>  'KEYWORD',
+                'search'        =>  request()->search_keyword
+            ]);
+        }
+        if (request()->date_filter) {
+            $contents = $contents
+                ->Where('created_at', 'LIKE', '%' . request()->date_filter . '%');
+        }
+        if (request()->type) {
+            $contents = $contents
+                ->Where('content_type', request()->type);
+        }
+        if (request()->category_id) {
+            $category = Category::find(request()->category_id);
+            $contents = $contents->whereHas('content_categories', function ($c) {
+                $c->where('category_id', '=', request()->category_id);
+            });
+            Search::create([
+                'company_id' =>  Auth::user()->companies[0]->id,
+                'user_id'   =>      Auth::user()->id,
+                'search_type'   =>  'CATEGORY',
+                'search'        =>  $category->name
+            ]);
+        }
+        $contents = $contents->latest()->get();
+        if ($user_role == 'STUDENT') {
+            // If Role is Student// Show Filtered Content
+            $filtered_contents = [];
+            foreach ($contents as $key => $content) {
+                $content_assign_to_read = $content->content_assign_to_reads;
+                $endDate = 0;
+                if (sizeof($content_assign_to_read) > 0) {
+                    $endDate = date_create($content_assign_to_read[0]->due_date);
+                    $endDiff = date_diff($currentDate, $endDate)->format("%R%a");
+                }
+                $isDue = $endDiff < 0 ? true : false;
+                if ($isDue == false) {
+                    $content_hidden_classcodes = $content->content_hidden_classcodes;
+                    $hidden_classcode_array = array_column($content_hidden_classcodes->toArray(), 'classcode_id');
+                    if (!array_intersect($user_classcode_array, $hidden_classcode_array)) {
+                        $filtered_contents[] = $content;
+                    }
+                }
+            }
+            $contents = $filtered_contents;
+        }
+        $article_contents = [];
+        $infographic_contents = [];
+        $video_contents = [];
+        $CategoryWiseContent = [];
+        foreach ($contents as $key => $content) {
+            // Random Subject Image 
+            $image_Array = [];
+            $content->subject_image = "";
+            if (sizeof($content->content_subjects)) {
+                for ($i = 1; $i < 6; $i++) {
+                    $name = "imagepath_" . $i;
+                    if ($content->content_subjects[0]->subject->$name) {
+                        $image_Array[] = $content->content_subjects[0]->subject->$name;
+                    }
+                }
+                $rand_subject_image = array_rand(
+                    $image_Array,
+                    1
+                );
+                $content->subject_image = $image_Array[$rand_subject_image];
+            }
+            // Content type Wise
+            switch ($content->content_type) {
+                case 'ARTICLE':
+                    $article_contents[] = $content;
+                    break;
+                case 'INFOGRAPHIC':
+                    $infographic_contents[] = $content;
+                    break;
+                case 'VIDEO':
+                    $video_contents[] = $content;
+                    break;
+
+                default:
+                    # code...
+                    break;
+            }
+            // Category Wise  
+            if (sizeOf($content->content_categories)) {
+                // Select First Category 
+                $category = $content->content_categories[0]->category;
+                $category_key = array_search($category->id, array_column($CategoryWiseContent, 'id'));
+                if (($category_key != null || $category_key !== false)) {
+                    // Increase Content Count 
+                    $CategoryWiseContent[$category_key]['count']++;
+                    if ($category_wise_limit_4 != false) {
+                        // If Limit is set to 4
+                        if ($CategoryWiseContent[$category_key]['count'] <= 4) {
+                            // Check if Count is not Exceeding than 4 and And Content
+                            $CategoryWiseContent[$category_key]['values'][] = $content;
+                        }
+                    } else {
+                        // Add Content in array
+                        $CategoryWiseContent[$category_key]['values'][] = $content;
+                    }
+                } else {
+                    // Content Added
+                    $content_details = [
+                        'id' => $category->id,
+                        'category' => $category->name,
+                        'values' => [$content],
+                        'count' => 1,
+                    ];
+                    $CategoryWiseContent[] = $content_details;
+                }
+            }
+        }
+        $content_types = [
+            [
+                'name' => "ARTICLE",
+                'icon' => "mdi-script-text",
+                'count' => sizeof($article_contents),
+                'values' => $article_contents
+            ],
+            [
+                'name' => "INFOGRAPHIC",
+                'icon' => 'mdi-chart-bar',
+                'count' => sizeof($infographic_contents),
+                'values' => $infographic_contents
+            ],
+            [
+                'name' => "VIDEO",
+                'icon' => 'mdi-video-vintage',
+                'count' => sizeof($video_contents),
+                'values' => $video_contents
+            ]
+        ];
+        return response()->json([
+            'data'  =>  $contents,
+            'count' =>   sizeof($contents),
+            'content_types' => $content_types,
+            'CategoryWiseContent' => $CategoryWiseContent,
+            'success' =>  true,
+        ], 200);
     }
 }

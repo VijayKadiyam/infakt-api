@@ -89,4 +89,8 @@ class Classcode extends Model
         return $this->belongsToMany(ContentMetadata::class, 'content_metadata_classcodes', 'classcode_id', 'content_metadata_id')
             ->where('metadata_type', 'DICTIONARY');
     }
+    public function atr_articles()
+    {
+        return $this->belongsToMany(Content::class, 'content_assign_to_reads', 'classcode_id', 'content_id');
+    }
 }
