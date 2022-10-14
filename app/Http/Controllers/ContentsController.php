@@ -893,16 +893,8 @@ class ContentsController extends Controller
                 if (($category_key != null || $category_key !== false)) {
                     // Increase Content Count 
                     $CategoryWiseContent[$category_key]['count']++;
-                    if ($category_wise_limit_4 != false) {
-                        // If Limit is set to 4
-                        if ($CategoryWiseContent[$category_key]['count'] <= 4) {
-                            // Check if Count is not Exceeding than 4 and And Content
-                            $CategoryWiseContent[$category_key]['values'][] = $content;
-                        }
-                    } else {
-                        // Add Content in array
-                        $CategoryWiseContent[$category_key]['values'][] = $content;
-                    }
+                    // Add Content in array
+                    $CategoryWiseContent[$category_key]['values'][] = $content;
                 } else {
                     // Content Added
                     $content_details = [
