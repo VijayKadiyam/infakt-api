@@ -17,6 +17,7 @@ use App\ContentSchool;
 use App\ContentSubject;
 use App\Search;
 use App\Subject;
+use App\User;
 use App\UserClasscode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,6 +31,15 @@ class ContentsController extends Controller
 
     public function masters(Request $request)
     {
+        $user = Auth::user();
+        $user_role = $user->roles[0]->name;
+        if ($user_role == "INFAKT TEACHER") {
+            $subjects = $user->subjects;
+        } else {
+            $subjectsController = new SubjectsController();
+            $subjectsResponse = $subjectsController->index($request);
+            $subjects = $subjectsResponse->getData()->data;
+        }
         // $collectionsController = new CollectionsController();
         // $request->request->add(['user_id' => $request->user_id]);
         // $collectionsResponse = $collectionsController->index($request);
@@ -40,8 +50,6 @@ class ContentsController extends Controller
         $categoriesController = new CategoriesController();
         $categoriesResponse = $categoriesController->index($request);
 
-        $subjectsController = new SubjectsController();
-        $subjectsResponse = $subjectsController->index($request);
 
         $gradesController = new GradesController();
         $gradesResponse = $gradesController->index($request);
@@ -56,7 +64,7 @@ class ContentsController extends Controller
             // 'collections'           =>  $collectionsResponse->getData()->data,
             'users'      =>  $usersResponse->getData()->data,
             'categories' =>  $categoriesResponse->getData()->data,
-            'subjects'   =>  $subjectsResponse->getData()->data,
+            'subjects'   =>  $subjects,
             'grades'     =>  $gradesResponse->getData()->data,
             'boards'     =>  $boardsResponse->getData()->data,
             'schools'    =>  $schoolsResponse->getData()->data,
