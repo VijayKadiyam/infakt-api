@@ -197,4 +197,9 @@ class User extends Authenticatable
       ->where('is_deleted', false)
       ->where('is_read', false);
   }
+
+  public function subjects()
+  {
+    return $this->belongsToMany(Subject::class, 'user_subjects', 'user_id', 'subject_id');
+  }
 }
