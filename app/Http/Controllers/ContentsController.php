@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Category;
+use App\Company;
 use App\Content;
 use App\ContentAssignToRead;
 use App\ContentBoard;
@@ -19,6 +20,7 @@ use App\Search;
 use App\Subject;
 use App\User;
 use App\UserClasscode;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -893,16 +895,8 @@ class ContentsController extends Controller
                 if (($category_key != null || $category_key !== false)) {
                     // Increase Content Count 
                     $CategoryWiseContent[$category_key]['count']++;
-                    if ($category_wise_limit_4 != false) {
-                        // If Limit is set to 4
-                        if ($CategoryWiseContent[$category_key]['count'] <= 4) {
-                            // Check if Count is not Exceeding than 4 and And Content
-                            $CategoryWiseContent[$category_key]['values'][] = $content;
-                        }
-                    } else {
-                        // Add Content in array
-                        $CategoryWiseContent[$category_key]['values'][] = $content;
-                    }
+                    // Add Content in array
+                    $CategoryWiseContent[$category_key]['values'][] = $content;
                 } else {
                     // Content Added
                     $content_details = [
@@ -942,5 +936,48 @@ class ContentsController extends Controller
             'CategoryWiseContent' => $CategoryWiseContent,
             'success' =>  true,
         ], 200);
+    }
+
+    public function mostContentRead(Request $request)
+    {
+        $currentDate = Carbon::now();
+        $to = date('Y-m-d', strtotime($currentDate));
+        $last_week = $currentDate->subDays($currentDate->dayOfWeek + 1);
+        $from = date('Y-m-d', strtotime($last_week));
+        $user = Auth::user();
+        $company = Company::find($user->companies[0]->id);
+
+        $content_reads = $company->content_reads()
+            // ->whereBetween('created_at', [$from, $to])
+            ->whereDate('created_at', ">=", $from)
+            ->whereDate('created_at', "<=", $to)
+            ->get();
+        $most_popular_articles = [];
+        foreach ($content_reads as $key => $content_read) {
+            $content = $content_read->content;
+            $content->content_reads = $content->content_reads;
+            $content_id = $content->id;
+            $content_key = array_search($content_id, array_column($most_popular_articles, 'id'));
+            if ($content_key != null || $content_key !== false) {
+                // Increase Category Looked Count 
+                $count = $most_popular_articles[$content_key]['count'];
+                $count++;
+                $most_popular_articles[$content_key]['count'] = $count;
+            } else {
+                // Category Not Added
+                $content['count'] = 1;
+                $most_popular_articles[] = $content;
+            }
+        }
+        // Sorting Descending by Count
+        usort($most_popular_articles, function ($a, $b) {
+            return $b['count'] - $a['count'];
+        });
+        $top_5_content_read = array_slice($most_popular_articles, 0, 5);
+
+        return response()->json([
+            'data'    => $top_5_content_read,
+            'count'   => sizeof($top_5_content_read),
+        ]);
     }
 }
