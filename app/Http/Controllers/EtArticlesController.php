@@ -31,15 +31,18 @@ class EtArticlesController extends Controller
                     ->orWhere('headline', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('byline', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('drophead', 'LIKE', '%' . request()->search_keyword . '%')
-                    ->orWhere('category', 'LIKE', '%' . request()->search_keyword . '%');
+                    ->orWhere('category', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->latest();
             }
             if (request()->word_count) {
-                $et_articles = $et_articles->where('word_count', '>', request()->word_count);
+                $et_articles = $et_articles->where('word_count', '>', request()->word_count)
+                    ->latest();
             }
             if (request()->date_filter) {
                 $date = date("F d Y", strtotime(request()->date_filter));
                 // return $date;
-                $et_articles = $et_articles->where('story_date', $date);
+                $et_articles = $et_articles->where('story_date', $date)
+                    ->latest();
                 // ->Where('story_date', $date);
             }
             // return $et_articles = $et_articles->get();
