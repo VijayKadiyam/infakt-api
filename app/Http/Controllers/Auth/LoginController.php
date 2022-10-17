@@ -41,20 +41,19 @@ class LoginController extends Controller
   public function login(Request $request)
   {
     $this->validateLogin($request);
-    if($this->attemptLogin($request)) {
+    if ($this->attemptLogin($request)) {
       $user = $this->guard()->user();
       $user->generateToken();
       $user->roles = $user->roles;
       $user->companies = $user->companies;
       return response()->json([
-          'data'    =>  $user->toArray(),
-          'message' =>  "User is Logged in Successfully",
-          'token'   =>  $user->api_token,
-          'success' =>  true,
-          'currentAndroidVersionFromApi' =>  '1.0.0',
+        'data'    =>  $user->toArray(),
+        'message' =>  "User is Logged in Successfully",
+        'token'   =>  $user->api_token,
+        'success' =>  true,
+        'currentAndroidVersionFromApi' =>  '1.0.0',
       ]);
-    }
-    else {
+    } else {
       $this->sendFailedLoginResponse($request);
     }
   }
@@ -72,16 +71,19 @@ class LoginController extends Controller
 
   public function logout()
   {
-    $user=\Auth::guard('api')->user();
-    if($user){
+    $user = \Auth::guard('api')->user();
+    if ($user) {
       // $user->api_token=null;
       $user->save();
       return response()->json([
-          'message'=>'user is logged out successfully'
-      ],200);
+        'data'    =>  $user->toArray(),
+        'message' => 'user is logged out successfully',
+        'success' =>  true,
+        'currentAndroidVersionFromApi' =>  '1.0.0',
+      ], 200);
     }
     return response()->json([
-        'message'=>'User is not logged in'
-    ],204);
+      'message' => 'User is not logged in'
+    ], 204);
   }
 }

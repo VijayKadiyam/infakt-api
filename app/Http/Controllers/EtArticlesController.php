@@ -121,9 +121,9 @@ class EtArticlesController extends Controller
     {
         $xml =  EtXml::where('id', request()->id)->first();
         if ($xml->is_process != true) {
-            $path = 'https://aaibuzz-spc-1.s3.ap-south-1.amazonaws.com/' . request()->xmlpath;
+            $path = 'https://az-medas.s3.ap-south-1.amazonaws.com/' . request()->xmlpath;
             $xmlString = file_get_contents($path);
-            // $xmlString = file_get_contents("https://aaibuzz-spc-1.s3.ap-south-1.amazonaws.com/infakt-api/TOI-Epaper210722.xml");
+            // $xmlString = file_get_contents("https://az-medas.s3.ap-south-1.amazonaws.com/infakt-api/TOI-Epaper210722.xml");
             $xmlObject = simplexml_load_string($xmlString, 'SimpleXMLElement', LIBXML_NOCDATA);
 
             $json = json_encode($xmlObject);
