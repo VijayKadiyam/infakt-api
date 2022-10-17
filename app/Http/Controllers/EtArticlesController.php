@@ -24,25 +24,24 @@ class EtArticlesController extends Controller
     {
         if (request()->page && request()->rowsPerPage) {
             $et_articles = new EtArticle();
-            $et_articles = $et_articles->where('word_count', '>', 100)->latest();
+            $et_articles = $et_articles->where('word_count', '>', 100)
+                ->orderBy('story_date',)
+                ->latest();
             if (request()->search_keyword) {
                 $et_articles = $et_articles->where('edition_name', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('story_date', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('headline', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('byline', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('drophead', 'LIKE', '%' . request()->search_keyword . '%')
-                    ->orWhere('category', 'LIKE', '%' . request()->search_keyword . '%')
-                    ->orderBy('story_date',);
+                    ->orWhere('category', 'LIKE', '%' . request()->search_keyword . '%');
             }
             if (request()->word_count) {
-                $et_articles = $et_articles->where('word_count', '>', request()->word_count)
-                    ->orderBy('story_date', 'DESC');
+                $et_articles = $et_articles->where('word_count', '>', request()->word_count);
             }
             if (request()->date_filter) {
                 $date = date("F d Y", strtotime(request()->date_filter));
                 // return $date;
-                $et_articles = $et_articles->where('story_date', $date)
-                    ->orderBy('story_date', 'DESC');
+                $et_articles = $et_articles->where('story_date', $date);
                 // ->Where('story_date', $date);
             }
             // return $et_articles = $et_articles->get();
