@@ -32,17 +32,17 @@ class EtArticlesController extends Controller
                     ->orWhere('byline', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('drophead', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('category', 'LIKE', '%' . request()->search_keyword . '%')
-                    ->latest();
+                    ->orderBy('story_date',);
             }
             if (request()->word_count) {
                 $et_articles = $et_articles->where('word_count', '>', request()->word_count)
-                    ->latest();
+                    ->orderBy('story_date', 'DESC');
             }
             if (request()->date_filter) {
                 $date = date("F d Y", strtotime(request()->date_filter));
                 // return $date;
                 $et_articles = $et_articles->where('story_date', $date)
-                    ->latest();
+                    ->orderBy('story_date', 'DESC');
                 // ->Where('story_date', $date);
             }
             // return $et_articles = $et_articles->get();
