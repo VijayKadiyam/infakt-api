@@ -946,8 +946,12 @@ class ContentsController extends Controller
         $from = date('Y-m-d', strtotime($last_week));
         $user = Auth::user();
         $company = Company::find($user->companies[0]->id);
+
         $content_reads = $company->content_reads()
-            ->whereBetween('created_at', [$from, $to])->get();
+            // ->whereBetween('created_at', [$from, $to])
+            ->whereDate('created_at', ">=", $from)
+            ->whereDate('created_at', "<=", $to)
+            ->get();
         $most_popular_articles = [];
         foreach ($content_reads as $key => $content_read) {
             $content = $content_read->content;
