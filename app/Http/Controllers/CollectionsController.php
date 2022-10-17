@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Assignment;
 use App\Collection;
 use App\UserClasscode;
 use Illuminate\Http\Request;
@@ -74,6 +75,7 @@ class CollectionsController extends Controller
      */
     public function show(Collection $collection)
     {
+        $assignment_id = request()->assignment_id;
         $collection->collection_contents = $collection->collection_contents;
         $user_role   =     Auth::user()->roles[0]->name;
         if ($user_role == 'STUDENT') {
@@ -81,9 +83,10 @@ class CollectionsController extends Controller
             $user_classcodes = UserClasscode::where('user_id', $user_id)->get();
             $user_classcode_array = array_column($user_classcodes->toArray(), "classcode_id");
             $currentDate = date_create(date('Y-m-d'));
+
             foreach ($collection->collection_contents as $key => $collection_content) {
-                $content_assignments = $collection_content->content->assignments;
-                foreach ($content_assignments as $key => $assignment) {
+                if ($assignment_id) {
+                    $assignment = Assignment::find($assignment_id);
                     $assignment_classcodes = $assignment->my_assignment_classcodes()->whereIn('classcode_id', $user_classcode_array)->get();
                     foreach ($assignment_classcodes as $key => $assignmentClasscode) {
                         $startDate = date_create($assignmentClasscode->start_date);
