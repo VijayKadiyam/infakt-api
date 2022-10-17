@@ -25,7 +25,7 @@ class EtArticlesController extends Controller
         if (request()->page && request()->rowsPerPage) {
             $et_articles = new EtArticle();
             $et_articles = $et_articles->where('word_count', '>', 100)
-                ->orderBy('story_date',)
+                ->orderBy('story_date', 'DESC')
                 ->latest();
             if (request()->search_keyword) {
                 $et_articles = $et_articles->where('edition_name', 'LIKE', '%' . request()->search_keyword . '%')
