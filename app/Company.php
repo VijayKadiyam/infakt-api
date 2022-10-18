@@ -235,4 +235,8 @@ class Company extends Model
   {
     return $this->hasMany(UserSubject::class);
   }
+  public function user_assignment_timings()
+  {
+    return $this->hasMany(UserAssignmentTiming::class);
+  }
 }
