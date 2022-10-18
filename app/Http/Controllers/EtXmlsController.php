@@ -129,7 +129,7 @@ class EtXmlsController extends Controller
                 foreach ($edition['body'] as $k => $content) {
                     $headline = is_array($content['body.head']['headline']['h1']) ? '' : $content['body.head']['headline']['h1'];
                     $story_id = $content['body.head']['dateline']['story-id'];
-                    $story_date = $content['body.head']['dateline']['storydate'];
+                    $story_date = date("Y-m-d", strtotime($content['body.head']['dateline']['storydate']));
                     $byline = is_array($content['body.head']['dateline']['byline']) ? '' : $content['body.head']['dateline']['byline'];
                     $category = is_array($content['body.head']['dateline']['category']) ? '' : $content['body.head']['dateline']['category'];
                     $drophead = is_array($content['body.head']['dateline']['drophead']) ? '' : $content['body.head']['dateline']['drophead'];

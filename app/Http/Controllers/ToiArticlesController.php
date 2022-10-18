@@ -25,23 +25,20 @@ class ToiArticlesController extends Controller
         if (request()->page && request()->rowsPerPage) {
             $toi_articles = new ToiArticle;
             $toi_articles = $toi_articles->where('word_count', '>', 100)
-                ->orderBy('story_date', 'DESC')
-                ->latest();
+                ->orderBy('story_date', 'DESC');
             if (request()->search_keyword) {
                 $toi_articles = $toi_articles->where('edition_name', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('story_date', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('headline', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('byline', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('drophead', 'LIKE', '%' . request()->search_keyword . '%')
-                    ->orWhere('category', 'LIKE', '%' . request()->search_keyword . '%')
-                    ->latest();
+                    ->orWhere('category', 'LIKE', '%' . request()->search_keyword . '%');
             }
             if (request()->word_count) {
-                $toi_articles = $toi_articles->where('word_count', '>', request()->word_count)->latest();
+                $toi_articles = $toi_articles->where('word_count', '>', request()->word_count);
             }
             if (request()->date_filter) {
-                $date = date("F d Y", strtotime(request()->date_filter));
-                $toi_articles = $toi_articles->where('story_date', $date)->latest();
+                $toi_articles = $toi_articles->where('story_date', request()->date_filter);
             }
             $count = $toi_articles->count();
             $toi_articles = $toi_articles->paginate(request()->rowsPerPage)->toArray();
@@ -135,7 +132,7 @@ class ToiArticlesController extends Controller
                 foreach ($edition['body'] as $k => $content) {
                     $headline = is_array($content['body.head']['headline']['h1']) ? '' : $content['body.head']['headline']['h1'];
                     $story_id = $content['body.head']['dateline']['story-id'];
-                    $story_date = $content['body.head']['dateline']['storydate'];
+                    $story_date = date("Y-m-d", strtotime($content['body.head']['dateline']['storydate']));
                     $byline = is_array($content['body.head']['dateline']['byline']) ? '' : $content['body.head']['dateline']['byline'];
                     $category = is_array($content['body.head']['dateline']['category']) ? '' : $content['body.head']['dateline']['category'];
                     $drophead = is_array($content['body.head']['dateline']['drophead']) ? '' : $content['body.head']['dateline']['drophead'];
