@@ -112,6 +112,8 @@ class UserAssignmentTest extends TestCase
                     'updated_at',
                     'created_at',
                     'id',
+                    'user',
+                    'assignment',
                     "user_assignment_selected_answers"
                 ]
             ]);
@@ -192,6 +194,13 @@ class UserAssignmentTest extends TestCase
                     'is_deleted',
                     'created_at',
                     'updated_at',
+                    'time_taken',
+                    'total_questions',
+                    'answered_questions',
+                    'right_questions',
+                    'wrong_questions',
+                    'result_declared',
+                    'feedback'
                 ]
             ]);
     }

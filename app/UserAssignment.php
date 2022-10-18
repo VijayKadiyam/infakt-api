@@ -13,7 +13,8 @@ class UserAssignment extends Model
         "score",
         "documentpath",
         'is_deleted',
-        'time_taken', 'total_questions', 'answered_questions', 'right_questions', 'wrong_questions', 'result_declared'
+        'time_taken', 'total_questions', 'answered_questions', 'right_questions', 'wrong_questions', 'result_declared',
+        'feedback'
     ];
 
     public function company()
