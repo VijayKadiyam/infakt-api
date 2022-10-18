@@ -279,8 +279,8 @@ Route::resource('categories', 'CategoriesController');
 // content_categories
 Route::resource('content_categories', 'ContentCategoriesController');
 
-
-
-
 // Most Popular Article
 Route::get('most_popular_articles', 'ContentsController@mostContentRead');
+
+// User Assignment Timing
+Route::resource('user_assignment_timings', 'UserAssignmentTimingsController');
