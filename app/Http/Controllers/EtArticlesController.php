@@ -22,11 +22,11 @@ class EtArticlesController extends Controller
 
     public function index(Request $request)
     {
+        // return 1;
         if (request()->page && request()->rowsPerPage) {
             $et_articles = new EtArticle();
             $et_articles = $et_articles->where('word_count', '>', 100)
-                ->orderBy('story_date', 'DESC')
-                ->latest();
+                ->orderBy('story_date', 'DESC');
             if (request()->search_keyword) {
                 $et_articles = $et_articles->where('edition_name', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('story_date', 'LIKE', '%' . request()->search_keyword . '%')
@@ -39,19 +39,12 @@ class EtArticlesController extends Controller
                 $et_articles = $et_articles->where('word_count', '>', request()->word_count);
             }
             if (request()->date_filter) {
-                $date = date("F d Y", strtotime(request()->date_filter));
-                // return $date;
-                $et_articles = $et_articles->where('story_date', $date);
-                // ->Where('story_date', $date);
+                $et_articles = $et_articles->where('story_date', request()->date_filter);
             }
-            // return $et_articles = $et_articles->get();
             $count = $et_articles->count();
             $et_articles = $et_articles->paginate(request()->rowsPerPage)->toArray();
             $et_articles = $et_articles['data'];
         }
-
-        // $et_articles = DB::select("call portal_et_articles()");
-
         return response()->json([
             'data'     =>  $et_articles,
             'count'    =>   $count,
