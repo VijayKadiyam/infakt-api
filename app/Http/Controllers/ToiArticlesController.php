@@ -24,7 +24,9 @@ class ToiArticlesController extends Controller
     {
         if (request()->page && request()->rowsPerPage) {
             $toi_articles = new ToiArticle;
-            $toi_articles = $toi_articles->where('word_count', '>', 100)->latest();
+            $toi_articles = $toi_articles->where('word_count', '>', 100)
+                ->orderBy('story_date', 'DESC')
+                ->latest();
             if (request()->search_keyword) {
                 $toi_articles = $toi_articles->where('edition_name', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('story_date', 'LIKE', '%' . request()->search_keyword . '%')
@@ -39,18 +41,12 @@ class ToiArticlesController extends Controller
             }
             if (request()->date_filter) {
                 $date = date("F d Y", strtotime(request()->date_filter));
-                // return $date;
                 $toi_articles = $toi_articles->where('story_date', $date)->latest();
-                // ->Where('story_date', $date);
             }
-            // return $toi_articles = $toi_articles->get();
             $count = $toi_articles->count();
             $toi_articles = $toi_articles->paginate(request()->rowsPerPage)->toArray();
             $toi_articles = $toi_articles['data'];
         }
-
-        // $toi_articles = DB::select("call portal_toi_articles()");
-
         return response()->json([
             'data'     =>  $toi_articles,
             'count'    =>   $count,
