@@ -31,14 +31,14 @@ class AssignmentsController extends Controller
         $roleName = request()->user()->roles[0]->name;
         if ($roleName == 'ADMIN') {
             $assignments = request()->company->assignments()
-                ->with('my_results', 'my_assignment_classcodes')
+                ->with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions')
                 ->get();
         } else if ($roleName == 'TEACHER') {
             $assignments = request()->company->assignments()
                 ->where('created_by_id', '=', request()->user()->id)
-                ->with('my_results', 'my_assignment_classcodes');
+                ->with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions');
             if (request()->classcode_id) {
-                $assignments = $assignments->wherehas('my_assignment_classcodes', function ($uc) {
+                $assignments = $assignments->wherehas('my_assignment_classcodes', 'my_assignment_extensions', function ($uc) {
                     $uc->where('classcode_id', '=', request()->classcode_id);
                 });
             }
@@ -53,7 +53,7 @@ class AssignmentsController extends Controller
                     ->whereHas('assignment_classcodes', function ($q) use ($classcode) {
                         $q->where('classcode_id', '=', $classcode);
                     })
-                    ->with('my_results', 'my_assignment_classcodes')
+                    ->with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions')
                     ->get();
                 // return $assignments;
                 // array_merge($assignments, $classcodeAssignments);

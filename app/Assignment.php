@@ -68,6 +68,16 @@ class Assignment extends Model
                 ->where('user_id', '=', $userId);
     }
 
+    public function my_assignment_extensions($userId = '')
+    {
+        if ($userId == '')
+            return $this->hasMany(AssignmentExtension::class)
+                ->where('user_id', '=', request()->user()->id);
+        else
+            return $this->hasMany(AssignmentExtension::class)
+                ->where('user_id', '=', $userId);
+    }
+
     public function my_assignment_classcodes()
     {
         return $this->hasMany(AssignmentClasscode::class);
