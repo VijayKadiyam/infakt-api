@@ -973,7 +973,7 @@ class ContentsController extends Controller
         usort($most_popular_articles, function ($a, $b) {
             return $b['count'] - $a['count'];
         });
-        $top_5_content_read = array_slice($most_popular_articles, 0, 5);
+        $top_5_content_read = array_slice($most_popular_articles, 0, 4);
 
         return response()->json([
             'data'    => $top_5_content_read,
