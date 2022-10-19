@@ -22,7 +22,7 @@ class NotificationsController extends Controller
         if ($user_id) {
             $notifications = $notifications->where('user_id', $user_id);
         }
-        $notifications = $notifications->get();
+        $notifications = $notifications->latest()->get();
         $count = $notifications->count();
 
         return response()->json([
