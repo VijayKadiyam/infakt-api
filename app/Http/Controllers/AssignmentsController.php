@@ -92,6 +92,7 @@ class AssignmentsController extends Controller
     {
         $request->validate([
             'assignment_type'  =>  'required',
+            'maximum_marks'  =>  'required',
             'assignment_classcodes.*.end_date'  =>  'required',
         ]);
         if ($request->id == null || $request->id == '') {
