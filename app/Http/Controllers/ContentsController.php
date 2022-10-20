@@ -83,6 +83,9 @@ class ContentsController extends Controller
         $content_limit_4 = request()->content_limit_4 ? request()->content_limit_4 : false;
         $category_wise_limit_4 = request()->category_wise_limit_4 ? request()->category_wise_limit_4 : false;
         $Assigned_to_read_articles = [];
+
+        $user = Auth::user();
+        $my_assignments = $user->assignments;
         $contents = Content::with('content_subjects', 'content_medias', 'content_reads', 'content_descriptions', 'content_hidden_classcodes', 'content_grades', 'content_boards');
         if (request()->subject_id) {
             $subject = Subject::find(request()->subject_id);
@@ -133,10 +136,8 @@ class ContentsController extends Controller
             $contents = $contents->limit(4);
         }
         $contents = $contents->latest()->get();
-
         $user_role = request()->roleName;
         $user_id = request()->user_id;
-
         if ($user_role == 'STUDENT') {
             // If Role is Student// Show Filtered Content
             $user_classcodes =  UserClasscode::where('user_id', $user_id)->get();
@@ -259,6 +260,7 @@ class ContentsController extends Controller
             'content_types' => $content_types,
             'CategoryWiseContent' => $CategoryWiseContent,
             'Assign_to_read_articles' => $Assigned_to_read_articles,
+            'assignments' => $my_assignments,
             'success' =>  true,
         ], 200);
     }
@@ -271,7 +273,6 @@ class ContentsController extends Controller
      */
     public function store(Request $request)
     {
-
         $request->validate([
             'content_name'  =>  'required',
             'content_categories'  =>  'required',
