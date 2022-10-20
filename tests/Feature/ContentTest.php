@@ -50,6 +50,11 @@ class ContentTest extends TestCase
                     'subject_id' =>  1,
                 ]
             ],
+            'content_categories' =>  [
+                0 =>  [
+                    'category_id' =>  '1',
+                ]
+            ],
             'content_medias' =>  [
                 0 =>  [
                     'mediapath' =>  'mediapath',
@@ -100,7 +105,8 @@ class ContentTest extends TestCase
             ->assertStatus(422)
             ->assertExactJson([
                 "errors"  =>  [
-                    "content_name"  =>  ["The content name field is required."]
+                    "content_name"  =>  ["The content name field is required."],
+                    "content_categories"  =>  ["The content categories field is required."]
                 ],
                 "message" =>  "The given data was invalid."
             ]);
@@ -125,6 +131,11 @@ class ContentTest extends TestCase
                     'content_subjects' =>  [
                         0 =>  [
                             'subject_id' =>  '1',
+                        ]
+                    ],
+                    'content_categories' =>  [
+                        0 =>  [
+                            'category_id' =>  '1',
                         ]
                     ],
                     'content_medias' =>  [
@@ -182,6 +193,7 @@ class ContentTest extends TestCase
                     'updated_at',
                     'created_at',
                     'id',
+                    'content_categories',
                     'content_subjects',
                     'content_medias',
                     'content_descriptions',
@@ -348,6 +360,8 @@ class ContentTest extends TestCase
                     'info_board_id',
                     'publication',
                     'adapted_by',
+                    'featured_image_path',
+                    'created_by_id'
                     // 'content_subjects',
                     // 'content_medias',
                     // 'content_metadatas',
