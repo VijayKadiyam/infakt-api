@@ -844,6 +844,7 @@ class ContentsController extends Controller
                     $content_hidden_classcodes = $content->content_hidden_classcodes;
                     $hidden_classcode_array = array_column($content_hidden_classcodes->toArray(), 'classcode_id');
                     if (!array_intersect($user_classcode_array, $hidden_classcode_array)) {
+                        $content['assign_to_read'] = true;
                         $filtered_contents[] = $content;
                     }
                 }
