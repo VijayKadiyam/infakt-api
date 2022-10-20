@@ -25,12 +25,14 @@ class Content extends Model
         'publication',
         'adapted_by',
         'featured_image_path',
+        'created_by_id',
     ];
 
-    // public function written_by()
-    // {
-    //     return $this->belongsTo(User::class);
-    // }
+    public function created_by()
+    {
+        return $this->belongsTo(User::class)
+            ->with('roles');
+    }
 
     public function content_subjects()
     {
