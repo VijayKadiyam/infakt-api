@@ -405,10 +405,21 @@ class UsersController extends Controller
       }
     } else {
       // Update User
-      $request->validate([
-        'name'                    => ['required', 'string', 'max:255'],
-        'email'                   => ['required', 'string', 'max:255'],
-      ]);
+      if ($request->role_id == '5') {
+        // Student
+        $request->validate([
+          'first_name' => ['required', 'string', 'max:255'],
+          'last_name'  => ['required', 'string', 'max:255'],
+          'email'      => ['required', 'string', 'max:255', 'unique:users'],
+          'board_id'   => 'required',
+        ]);
+      } else {
+        $request->validate([
+          'first_name' => ['required', 'string', 'max:255'],
+          'last_name'  => ['required', 'string', 'max:255'],
+          'email'      => ['required', 'string', 'max:255', 'unique:users'],
+        ]);
+      }
 
       $user = User::find($request->id);
       $user->update($request->all());
