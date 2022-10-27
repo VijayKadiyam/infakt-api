@@ -200,7 +200,9 @@ class UserAssignmentTest extends TestCase
                     'right_questions',
                     'wrong_questions',
                     'result_declared',
-                    'feedback'
+                    'feedback',
+                    'start_time',
+                    'time_data',
                 ]
             ]);
     }
