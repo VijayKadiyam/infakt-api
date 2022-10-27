@@ -16,12 +16,16 @@ class UserAssignmentsController extends Controller
     public function index(Request $request)
     {
         $count = 0;
-        if ($request->user_id) {
+        if ($request->user_id && $request->assignment_id) {
+            $user_assignments = request()->company->user_assignments()
+                ->where('user_id', '=', $request->user_id)
+                ->where('assignment_id', '=', $request->assignment_id)
+                ->get();
+        } else if ($request->user_id) {
             $user_assignments = request()->company->user_assignments()
                 ->where('user_id', '=', $request->user_id)
                 ->get();
         } else {
-
             $user_assignments = request()->company->user_assignments;
             $count = $user_assignments->count();
         }

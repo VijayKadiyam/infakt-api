@@ -95,7 +95,7 @@ class Company extends Model
 
   public function user_assignments()
   {
-    return $this->hasMany(UserAssignment::class)->with('user', 'assignment');
+    return $this->hasMany(UserAssignment::class)->with('user', 'assignment',  'user_assignment_selected_answers');
   }
 
   public function assignment_questions()
