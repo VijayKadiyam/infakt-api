@@ -14,7 +14,12 @@ class UserAssignment extends Model
         "documentpath",
         'is_deleted',
         'time_taken', 'total_questions', 'answered_questions', 'right_questions', 'wrong_questions', 'result_declared',
-        'feedback'
+        'feedback',
+        'start_time',
+        'time_data',
+    ];
+    protected $casts = [
+        'time_data'  =>  'array'
     ];
 
     public function company()
