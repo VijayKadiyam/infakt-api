@@ -20,6 +20,11 @@ class Assignment extends Model
         'assignment_title',
         'is_draft',
         'collection_id',
+        'start_time',
+        'time_data',
+    ];
+    protected $casts = [
+        'time_data'  =>  'array'
     ];
 
     public function company()
