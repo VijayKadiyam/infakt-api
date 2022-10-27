@@ -40,7 +40,8 @@ class AssignmentTest extends TestCase
             'collection_id' => 1,
             'assignment_classcodes' => [
                 0 => [
-                    'start_date' => 'start_date'
+                    'start_date' => 'start_date',
+                    'end_date' => 'end_date'
                 ]
             ],
             'assignment_questions' =>  [
@@ -69,7 +70,8 @@ class AssignmentTest extends TestCase
             ->assertStatus(422)
             ->assertExactJson([
                 "errors"  =>  [
-                    "assignment_type"  =>  ["The assignment type field is required."]
+                    "assignment_type"  =>  ["The assignment type field is required."],
+                    "maximum_marks"  =>  ["The maximum marks field is required."]
                 ],
                 "message" =>  "The given data was invalid."
             ]);
@@ -94,7 +96,8 @@ class AssignmentTest extends TestCase
                     'collection_id' => 1,
                     'assignment_classcodes' => [
                         0 => [
-                            'start_date' => 'start_date'
+                            'start_date' => 'start_date',
+                            'end_date' => 'end_date'
                         ]
                     ],
                     'assignment_questions' =>  [
@@ -133,8 +136,6 @@ class AssignmentTest extends TestCase
                     'assignment_questions',
                     'assignment_extensions',
                     'user_assignments',
-
-
                 ]
             ]);
     }
@@ -198,6 +199,8 @@ class AssignmentTest extends TestCase
                     'assignment_title',
                     'is_draft',
                     'collection_id',
+                    'start_time',
+                    'time_data',
                     'content',
                     'assignment_classcodes',
                     'assignment_questions',
@@ -253,6 +256,8 @@ class AssignmentTest extends TestCase
                     'assignment_title',
                     'is_draft',
                     'collection_id',
+                    'start_time',
+                    'time_data',
                 ]
             ]);
     }
