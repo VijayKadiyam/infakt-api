@@ -410,14 +410,12 @@ class UsersController extends Controller
         $request->validate([
           'first_name' => ['required', 'string', 'max:255'],
           'last_name'  => ['required', 'string', 'max:255'],
-          'email'      => ['required', 'string', 'max:255', 'unique:users'],
           'board_id'   => 'required',
         ]);
       } else {
         $request->validate([
           'first_name' => ['required', 'string', 'max:255'],
           'last_name'  => ['required', 'string', 'max:255'],
-          'email'      => ['required', 'string', 'max:255', 'unique:users'],
         ]);
       }
 

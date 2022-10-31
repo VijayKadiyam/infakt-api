@@ -284,3 +284,9 @@ Route::get('most_popular_articles', 'ContentsController@mostContentRead');
 
 // User Assignment Timing
 Route::resource('user_assignment_timings', 'UserAssignmentTimingsController');
+
+// Task Wise Overview
+Route::get('task_wise_overview', 'AdminDashboardsController@TaskWiseOverview');
+
+// Class Wise Overview
+Route::get('subject_wise_overview', 'AdminDashboardsController@subjectWiseOverview');
