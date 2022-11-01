@@ -11,6 +11,7 @@ use App\Search;
 use App\User;
 use App\UserAssignment;
 use Illuminate\Http\Request;
+use PhpParser\Node\Expr\AssignRef;
 
 class AdminDashboardsController extends Controller
 {
@@ -25,7 +26,7 @@ class AdminDashboardsController extends Controller
         $counts = [];
         $counts['avgTimeSpentByTeacher'] = '23 min';
         $counts['avgTimeSpentByStudent'] = '42 min';
-        $counts['contentReads'] = $company->content_reads()->count();
+        $counts['classcode_Reads'] = $company->classcode__reads()->count();
         $counts['assignmentsPosted'] = $company->assignments()->where('is_deleted', false)->count();
         $counts['students'] =  $company->students()->count();
         $counts['teachers'] = $company->teachers()->count();
@@ -218,6 +219,149 @@ class AdminDashboardsController extends Controller
         return response()->json([
             'data'  =>  $users,
             'count' =>   sizeof($users),
+            'success' =>  true,
+        ], 200);
+    }
+    public function assignmentWisePerformance(Request $request)
+    {
+        ini_set('max_execution_time', -1);
+        ini_set('memory_limit', '1000M');
+        set_time_limit(0);
+        // $assignment = request()->company->assignments()
+        // ->where('id', $request->assignment_id)
+        // ->get();
+        $assignment = Assignment::where('id', $request->assignment_id)
+            ->with('classcodes')->first();
+        $allAssignments = [];
+        foreach ($assignment->classcodes as $key => $classcode) {
+            $students = $classcode->students;
+
+            foreach ($students as $s => $student) {
+                $studentDashboarsController = new StudentDashboardsController();
+                $classcodes[] = $classcode;
+                $myAssignments = $studentDashboarsController->assignmentOverview($classcodes, $student);
+                $student['totalAssignmentsCount'] = sizeof($myAssignments);
+                $allAssignments = [...$allAssignments, ...$myAssignments];
+            }
+        }
+        $classcodeWise = [];
+        foreach ($allAssignments as $singleAssignment) {
+            // Classcode Wise Bifurcation
+            $classcode_Key = array_search($singleAssignment['classcode'], array_column($classcodeWise, 'name'));
+            if ($classcode_Key != null || $classcode_Key !== false) {
+                $classcodeWise[$classcode_Key]['count']++;
+                $count  = $classcodeWise[$classcode_Key]['count'];
+                // Classcode Average
+                $classcodeAverage = $classcodeWise[$classcode_Key]['classcodeAverage'];
+                $classcodeAverage = (($classcodeAverage * ($count - 1)) + $singleAssignment['classAverage'])  / $count;
+                $classcodeWise[$classcode_Key]['classcodeAverage'] =  $classcodeAverage;
+                // Students and their values
+                $studentContentKey = array_search($singleAssignment['student']['id'], array_column($classcodeWise[$classcode_Key]['students'], 'id'));
+                if ($studentContentKey != null || $studentContentKey !== false) {
+                    // My Average
+                    $myAverage = $classcodeWise[$classcode_Key]['students'][$studentContentKey]['myAverage'];
+                    $myAverage = (($myAverage * ($count - 1)) + $singleAssignment['score'])  / $count;
+                    $classcodeWise[$classcode_Key]['students'][$studentContentKey]['myAverage'] =  $myAverage;
+                    $classcodeWise[$classcode_Key]['students'][$studentContentKey]['values'][] = $singleAssignment;
+                } else {
+                    $classcodeWise[$classcode_Key]['students'][] = [
+                        'id'    =>  $singleAssignment['student']['id'],
+                        'name'  =>  $singleAssignment['student']['name'],
+                        'myAverage'  =>  $singleAssignment['score'],
+                        'values'    =>  [$singleAssignment]
+                    ];
+                }
+            } else {
+                $classcodeWise[] = [
+                    'name'  =>  $singleAssignment['classcode'],
+                    'count' =>  1,
+                    'teachers' =>  $singleAssignment['teachers'],
+                    'classcodeAverage' =>  $singleAssignment['classAverage'],
+                    'students' => [
+                        0   =>  [
+                            'id'    =>  $singleAssignment['student']['id'],
+                            'name'  =>  $singleAssignment['student']['name'],
+                            'myAverage' =>  $singleAssignment['score'],
+                            'values'    =>  [$singleAssignment]
+                        ]
+                    ],
+                ];
+            }
+            // End Classcode Wise Bifurcation
+        }
+        return response()->json([
+            'data'  =>  $classcodeWise,
+            'count' =>   sizeof($classcodeWise),
+            'success' =>  true,
+        ], 200);
+    }
+
+    public function assignmentWisePerformance_1(Request $request)
+    {
+        ini_set('max_execution_time', -1);
+        ini_set('memory_limit', '1000M');
+        set_time_limit(0);
+        $assignment = Assignment::where('id', $request->assignment_id)
+            ->with('classcodes')->first();
+        $allAssignments = [];
+        foreach ($assignment->classcodes as $key => $classcode) {
+            $students = $classcode->students;
+
+            foreach ($students as $s => $student) {
+                $studentDashboarsController = new StudentDashboardsController();
+                $myAssignments = $studentDashboarsController->singleAssignmentOverview($classcode, $student, $assignment);
+                $student['totalAssignmentsCount'] = sizeof($myAssignments);
+                $allAssignments = [...$allAssignments, ...$myAssignments];
+            }
+        }
+        $classcodeWise = [];
+        foreach ($allAssignments as $singleAssignment) {
+            // Classcode Wise Bifurcation
+            $classcode_Key = array_search($singleAssignment['classcode'], array_column($classcodeWise, 'name'));
+            if ($classcode_Key != null || $classcode_Key !== false) {
+                $classcodeWise[$classcode_Key]['count']++;
+                $count  = $classcodeWise[$classcode_Key]['count'];
+                // Classcode Average
+                $classcodeAverage = $classcodeWise[$classcode_Key]['classcodeAverage'];
+                $classcodeAverage = (($classcodeAverage * ($count - 1)) + $singleAssignment['classAverage'])  / $count;
+                $classcodeWise[$classcode_Key]['classcodeAverage'] =  $classcodeAverage;
+                // Students and their values
+                $studentContentKey = array_search($singleAssignment['student']['id'], array_column($classcodeWise[$classcode_Key]['students'], 'id'));
+                if ($studentContentKey != null || $studentContentKey !== false) {
+                    // My Average
+                    $myAverage = $classcodeWise[$classcode_Key]['students'][$studentContentKey]['myAverage'];
+                    $myAverage = (($myAverage * ($count - 1)) + $singleAssignment['score'])  / $count;
+                    $classcodeWise[$classcode_Key]['students'][$studentContentKey]['myAverage'] =  $myAverage;
+                    $classcodeWise[$classcode_Key]['students'][$studentContentKey]['values'][] = $singleAssignment;
+                } else {
+                    $classcodeWise[$classcode_Key]['students'][] = [
+                        'id'    =>  $singleAssignment['student']['id'],
+                        'name'  =>  $singleAssignment['student']['name'],
+                        'myAverage'  =>  $singleAssignment['score'],
+                        'values'    =>  [$singleAssignment]
+                    ];
+                }
+            } else {
+                $classcodeWise[] = [
+                    'name'  =>  $singleAssignment['classcode'],
+                    'count' =>  1,
+                    'teachers' =>  $singleAssignment['teachers'],
+                    'classcodeAverage' =>  $singleAssignment['classAverage'],
+                    'students' => [
+                        0   =>  [
+                            'id'    =>  $singleAssignment['student']['id'],
+                            'name'  =>  $singleAssignment['student']['name'],
+                            'myAverage' =>  $singleAssignment['score'],
+                            'values'    =>  [$singleAssignment]
+                        ]
+                    ],
+                ];
+            }
+            // End Classcode Wise Bifurcation
+        }
+        return response()->json([
+            'data'  =>  $classcodeWise,
+            'count' =>   sizeof($classcodeWise),
             'success' =>  true,
         ], 200);
     }

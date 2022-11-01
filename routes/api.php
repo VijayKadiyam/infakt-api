@@ -288,5 +288,8 @@ Route::resource('user_assignment_timings', 'UserAssignmentTimingsController');
 // Task Wise Overview
 Route::get('task_wise_overview', 'AdminDashboardsController@TaskWiseOverview');
 
-// Class Wise Overview
+// Subject Wise Overview
 Route::get('subject_wise_overview', 'AdminDashboardsController@subjectWiseOverview');
+
+// Assignment Wise Performance
+Route::get('assignment_wise_performance', 'AdminDashboardsController@assignmentWisePerformance');

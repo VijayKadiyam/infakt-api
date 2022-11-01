@@ -94,4 +94,9 @@ class Assignment extends Model
         return $this->hasMany(UserAssignment::class)
             ->with('user');
     }
+
+    public function classcodes()
+    {
+        return $this->belongsToMany(Classcode::class, 'assignment_classcodes', 'assignment_id', 'classcode_id')->with('students');
+    }
 }
