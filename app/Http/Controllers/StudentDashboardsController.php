@@ -323,4 +323,75 @@ class StudentDashboardsController extends Controller
             'contentWiseOverview'   =>  $contentWiseOverview,
         ]);
     }
+
+    public function singleAssignmentOverview($classcode, $student, $assignment)
+    {
+        // ---------------------------------------------------------------------------------------------------------
+        // Controller Logic
+
+        $myAssignments = [];
+        if (is_array($classcode))
+            $classcode = new Classcode($classcode);
+        $classAssignments = $assignment->user_assignments;
+        // Class Average
+        $classTotalMarks = 0;
+        $totalStudentsSubmitted = $classAssignments->count();
+        $singleAssignment = [];
+        $isSubmitted = false;
+        foreach ($classAssignments as $userAssignment) {
+            $classTotalMarks += $userAssignment->score;
+            if ($userAssignment->user_id == $student['id']) {
+                $isSubmitted = true;
+                $singleAssignment = $userAssignment;
+                $singleAssignment['percent'] =  $singleAssignment['score'] * 100 / $assignment->maximum_marks;
+            }
+        }
+        $classAverage = $totalStudentsSubmitted == 0 ? 0 : $classTotalMarks / $totalStudentsSubmitted;
+        $singleAssignment['isSubmitted'] = $isSubmitted;
+        $singleAssignment['classAverage'] = $classAverage;
+        $singleAssignment['classAveragePercent'] = $classAverage * 100 / $assignment->maximum_marks;
+        if (!$isSubmitted) {
+            $singleAssignment['score'] = 0;
+            $singleAssignment['percent'] = 0;
+        }
+        // End Class Average
+        // Assignment Status
+        $currentDate = date_create(date('Y-m-d'));
+        $assignmentClasscode = $assignment->my_assignment_classcodes()
+            ->where('classcode_id', '=', $classcode->id)
+            ->first();
+        $startDate = date_create($assignmentClasscode->start_date);
+        $endDate = date_create($assignmentClasscode->end_date);
+        $startDiff = date_diff($currentDate, $startDate)->format("%R%a");
+        $endDiff = date_diff($currentDate, $endDate)->format("%R%a");
+        $isUpcoming = $startDiff > 0 ? true : false;
+        $isDue = $endDiff < 0 ? true : false;
+        $inProgress = $startDiff < 0 && $endDiff >= 0 ? true : false;
+        if ($isUpcoming) $singleAssignment['status'] = 'UPCOMING';
+        else if ($isDue && !$isSubmitted) $singleAssignment['status'] = 'OVERDUE';
+        else if ($inProgress && !$isSubmitted) $singleAssignment['status'] = 'IN PROGRESS';
+        else $singleAssignment['status'] = 'COMPLETED';
+        // End Assignmet Status
+        $singleAssignment['classcode'] = $classcode->classcode;
+        $singleAssignment['assignment_type'] = $assignment->assignment_type;
+        $singleAssignment['maximum_marks'] = $assignment->maximum_marks;
+        $singleAssignment['assignment_title'] = $assignment->assignment_title;
+        $singleAssignment['my_results'] = $assignment->my_results($student['id'])->get();
+        $singleAssignment['assignment_id'] = $assignment->id;
+        $singleAssignment['assignment_created_date'] = '';
+        $singleAssignment['teachers'] = $classcode->teachers;
+        $singleAssignment['student'] = $student;
+        $singleAssignment['created_at'] = $assignment->toArray()['created_at'];
+
+        // Assignment Classcode End Date
+        $assignmentClasscode = $assignment->assignment_classcodes()
+            ->where('classcode_id', '=', $classcode->id)
+            ->first();
+        if ($assignmentClasscode)
+            $singleAssignment['end_date'] = $assignmentClasscode->end_date;
+        // Assignment Classcode End Date
+        $myAssignments[] = $singleAssignment;
+
+        return $myAssignments;
+    }
 }
