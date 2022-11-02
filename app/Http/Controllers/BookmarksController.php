@@ -24,10 +24,10 @@ class BookmarksController extends Controller
             $bookmarks = request()->company->bookmarks;
             $count = $bookmarks->count();
         }
-
         return response()->json([
             'data'     =>  $bookmarks,
-            'count'    =>   $count
+            'count'    =>   $count,
+            'success'  => true
         ], 200);
     }
 
