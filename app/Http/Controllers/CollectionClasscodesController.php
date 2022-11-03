@@ -28,19 +28,22 @@ class CollectionClasscodesController extends Controller
         $count = $collection_classcodes->count();
         if (request()->user_role == 'STUDENT') {
             $user_classcodes = UserClasscode::where('user_id', request()->user_id)->get();
-            foreach ($user_classcodes as $key => $classcode) {
-                $collection_classcodes = $collection_classcodes->where('classcode_id', $classcode->classcode_id);
-                $count = $collection_classcodes->count();
-                return response()->json([
-                    'data'     =>  $collection_classcodes,
-                    'count'    =>   $count
-                ], 200);
+            $user_classcode_array = array_column($user_classcodes->toArray(), 'classcode_id');
+
+            // return $user_classcodes;
+            $filtered_collection = [];
+            foreach ($collection_classcodes as $key => $cc) {
+                if (in_array($cc->classcode_id, $user_classcode_array)) {
+                    $filtered_collection[] = $cc;
+                }
             }
+            $collection_classcodes = $filtered_collection;
         }
 
         return response()->json([
             'data'     =>  $collection_classcodes,
-            'count'    =>   $count
+            'count'    =>   $count,
+            'success'  => true
         ], 200);
     }
 
