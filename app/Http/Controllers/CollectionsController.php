@@ -32,6 +32,7 @@ class CollectionsController extends Controller
 
         return response()->json([
             'data'     =>  $collections,
+            'success'     =>  true,
             'count'    =>   $count
         ], 200);
     }
