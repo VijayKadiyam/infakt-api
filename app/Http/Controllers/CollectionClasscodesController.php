@@ -40,6 +40,20 @@ class CollectionClasscodesController extends Controller
             $collection_classcodes = $filtered_collection;
         }
 
+        foreach ($collection_classcodes as $key => $collection_classcode) {
+            $collection_classcode->featured_image = '';
+            $is_featured_image = false;
+            $collection_contents = $collection_classcode->collection->collection_contents;
+            foreach ($collection_contents as $key => $cc) {
+                if (
+                    $cc->content->featured_image_path != null &&
+                    $is_featured_image != true
+                ) {
+                    $is_featured_image = true;
+                    $collection_classcode->featured_image_path = $cc->content->featured_image_path;
+                }
+            }
+        }
         return response()->json([
             'data'     =>  $collection_classcodes,
             'count'    =>   $count,
