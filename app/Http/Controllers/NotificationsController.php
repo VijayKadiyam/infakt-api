@@ -27,7 +27,8 @@ class NotificationsController extends Controller
 
         return response()->json([
             'data'     =>  $notifications,
-            'count'    =>   $count
+            'count'    =>   $count,
+            'success'   => true
         ], 200);
     }
 
