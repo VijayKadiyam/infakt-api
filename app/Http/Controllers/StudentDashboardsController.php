@@ -32,13 +32,13 @@ class StudentDashboardsController extends Controller
                     if ($userAssignment->user_id == $student['id']) {
                         $isSubmitted = true;
                         $singleAssignment = $userAssignment;
-                        $singleAssignment['percent'] =  $singleAssignment['score'] * 100 / $assignment->maximum_marks;
+                        $singleAssignment['percent'] = $assignment->maximum_marks  == 0 ?  0 : $singleAssignment['score'] * 100 / $assignment->maximum_marks;
                     }
                 }
                 $classAverage = $totalStudentsSubmitted == 0 ? 0 : $classTotalMarks / $totalStudentsSubmitted;
                 $singleAssignment['isSubmitted'] = $isSubmitted;
                 $singleAssignment['classAverage'] = $classAverage;
-                $singleAssignment['classAveragePercent'] = $classAverage * 100 / $assignment->maximum_marks;
+                $singleAssignment['classAveragePercent'] = $assignment->maximum_marks  == 0 ?  0 : $classAverage * 100 / $assignment->maximum_marks;
                 if (!$isSubmitted) {
                     $singleAssignment['score'] = 0;
                     $singleAssignment['percent'] = 0;
