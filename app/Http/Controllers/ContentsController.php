@@ -105,12 +105,13 @@ class ContentsController extends Controller
                 ->orWhere('content_name', 'LIKE', '%' . request()->search_keyword . '%')
                 ->orWhere('created_at', 'LIKE', '%' . request()->search_keyword . '%');
 
-            Search::create([
-                'company_id' =>  Auth::user()->companies[0]->id,
-                'user_id'   =>      Auth::user()->id,
-                'search_type'   =>  'KEYWORD',
-                'search'        =>  request()->search_keyword
-            ]);
+            if (isset(Auth::user()->companies))
+                Search::create([
+                    'company_id' =>  Auth::user()->companies[0]->id,
+                    'user_id'   =>      Auth::user()->id,
+                    'search_type'   =>  'KEYWORD',
+                    'search'        =>  request()->search_keyword
+                ]);
         }
         if (request()->date_filter) {
             $contents = $contents
