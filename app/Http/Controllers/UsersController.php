@@ -501,7 +501,8 @@ class UsersController extends Controller
     $user->user_classcodes = $user->user_classcodes;
     $user->user_subjects = $user->user_subjects;
     return response()->json([
-      'data'  =>  $user
+      'data'  =>  $user,
+      'success' => true
     ], 201);
   }
 
