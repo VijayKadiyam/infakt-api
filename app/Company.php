@@ -239,4 +239,8 @@ class Company extends Model
   {
     return $this->hasMany(UserAssignmentTiming::class);
   }
+  public function epaper_bookmarks()
+  {
+    return $this->hasMany(EpaperBookmark::class);
+  }
 }
