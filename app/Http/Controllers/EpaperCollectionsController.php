@@ -16,14 +16,14 @@ class EpaperCollectionsController extends Controller
     {
         $count = 0;
         if ($request->user_id) {
-            $epaper_collections =  request()->company->epaper_collections()
-                ->where('user_id', '=', $request->user_id)
+            $epaper_collections =  EpaperCollection::
+                // $epaper_collections =  request()->company->epaper_collections()
+                where('user_id', '=', $request->user_id)
                 ->where('is_deleted', false)
                 ->get();
         } else {
 
-            $epaper_collections =  $request->company->epaper_collections()
-                ->where('is_deleted', false)->get();
+            $epaper_collections =  EpaperCollection::where('is_deleted', false)->get();
             $count = $epaper_collections->count();
         }
         return response()->json([
@@ -47,12 +47,11 @@ class EpaperCollectionsController extends Controller
         ]);
         $epaper_collection = [];
         $msg = '';
-        $existing_epaper_collection = request()->company->epaper_collections()
-            ->where(['user_id' => $request->user_id, 'collection_name' => request()->collection_name])
+        $existing_epaper_collection = EpaperCollection::where(['user_id' => $request->user_id, 'collection_name' => request()->collection_name])
             ->first();
         if (!$existing_epaper_collection) {
             $epaper_collection = new EpaperCollection(request()->all());
-            $request->company->epaper_collections()->save($epaper_collection);
+            $epaper_collection->save();
         } else {
             $msg = request()->collection_name . ' is already exist. Please try other epaper collection name.';
         }
