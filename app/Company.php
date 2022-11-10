@@ -241,6 +241,10 @@ class Company extends Model
   }
   public function epaper_bookmarks()
   {
-    return $this->hasMany(EpaperBookmark::class);
+    return $this->hasMany(EpaperBookmark::class)->with('user', 'toi_article', 'et_article');
+  }
+  public function epaper_collections()
+  {
+    return $this->hasMany(EpaperBookmark::class)->with('user');
   }
 }

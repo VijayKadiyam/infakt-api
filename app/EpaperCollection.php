@@ -4,15 +4,15 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class EpaperBookmark extends Model
+class EpaperCollection extends Model
 {
     protected $fillable = [
         'company_id',
         'user_id',
-        'toi_article_id',
-        'et_article_id',
+        'collection_name',
         'is_deleted',
     ];
+
 
     public function company()
     {
@@ -21,13 +21,5 @@ class EpaperBookmark extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-    public function toi_article()
-    {
-        return $this->belongsTo(ToiArticle::class);
-    }
-    public function et_article()
-    {
-        return $this->belongsTo(EtArticle::class);
     }
 }

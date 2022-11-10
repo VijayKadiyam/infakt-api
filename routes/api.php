@@ -298,3 +298,6 @@ Route::get('assignment_wise_performance', 'AdminDashboardsController@assignmentW
 Route::post('epaper_bookmarks/toi_store', 'EpaperBookmarksController@toi_store');
 Route::post('epaper_bookmarks/et_store', 'EpaperBookmarksController@et_store');
 Route::resource('epaper_bookmarks', 'EpaperBookmarksController');
+
+// Epaper Collection
+Route::resource('epaper_collections', 'EpaperCollectionsController');
