@@ -17,12 +17,11 @@ class EpaperBookmarksController extends Controller
     {
         $count = 0;
         if ($request->user_id) {
-            $epaper_bookmarks = request()->company->epaper_bookmarks()
-                ->where('user_id', '=', $request->user_id)
+            $epaper_bookmarks = EpaperBookmark::with('user', 'toi_article', 'et_article')->where('user_id', '=', $request->user_id)
                 ->get();
         } else {
 
-            $epaper_bookmarks = request()->company->epaper_bookmarks;
+            $epaper_bookmarks = EpaperBookmark::all();
             $count = $epaper_bookmarks->count();
         }
         return response()->json([
@@ -46,12 +45,11 @@ class EpaperBookmarksController extends Controller
         $msg = '';
         // TOI Paper
         if (request()->toi_article_id) {
-            $toi_existing_epaper_bookmark = request()->company->epaper_bookmarks()
-                ->where(['user_id' => request()->user_id, 'toi_article_id' => request()->toi_article_id])->first();
+            $toi_existing_epaper_bookmark = EpaperBookmark::where(['user_id' => request()->user_id, 'toi_article_id' => request()->toi_article_id])->first();
             $epaper_bookmark = [];
             if (!$toi_existing_epaper_bookmark) {
                 $epaper_bookmark = new EpaperBookmark(request()->all());
-                $request->company->epaper_bookmarks()->save($epaper_bookmark);
+                $epaper_bookmark->save();
             } else {
                 $msg = 'TOI Epaper Bookmark already exist.';
             }
@@ -59,11 +57,10 @@ class EpaperBookmarksController extends Controller
 
         // ET Paper
         if (request()->et_article_id) {
-            $et_existing_epaper_bookmark = request()->company->epaper_bookmarks()
-                ->where(['user_id' => request()->user_id, 'et_article_id' => request()->et_article_id])->first();
+            $et_existing_epaper_bookmark = EpaperBookmark::where(['user_id' => request()->user_id, 'et_article_id' => request()->et_article_id])->first();
             if (!$et_existing_epaper_bookmark) {
                 $epaper_bookmark = new EpaperBookmark(request()->all());
-                $request->company->epaper_bookmarks()->save($epaper_bookmark);
+                $epaper_bookmark->save();
             } else {
                 $msg = 'ET Epaper Bookmark already exist.';
             }
