@@ -293,3 +293,16 @@ Route::get('subject_wise_overview', 'AdminDashboardsController@subjectWiseOvervi
 
 // Assignment Wise Performance
 Route::get('assignment_wise_performance', 'AdminDashboardsController@assignmentWisePerformance');
+
+// Epaper Bookmakrs 
+Route::post('epaper_bookmarks/toi_store', 'EpaperBookmarksController@toi_store');
+Route::post('epaper_bookmarks/et_store', 'EpaperBookmarksController@et_store');
+Route::resource('epaper_bookmarks', 'EpaperBookmarksController');
+
+// Epaper Collection
+Route::resource('epaper_collections', 'EpaperCollectionsController');
+
+// Collection Epaper 
+Route::post('collection_epapers/toi_store', 'CollectionEpapersController@toi_store');
+Route::post('collection_epapers/et_store', 'CollectionEpapersController@et_store');
+Route::resource('collection_epapers', 'CollectionEpapersController');
