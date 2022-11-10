@@ -301,3 +301,8 @@ Route::resource('epaper_bookmarks', 'EpaperBookmarksController');
 
 // Epaper Collection
 Route::resource('epaper_collections', 'EpaperCollectionsController');
+
+// Collection Epaper 
+Route::post('collection_epapers/toi_store', 'CollectionEpapersController@toi_store');
+Route::post('collection_epapers/et_store', 'CollectionEpapersController@et_store');
+Route::resource('collection_epapers', 'CollectionEpapersController');
