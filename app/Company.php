@@ -239,12 +239,13 @@ class Company extends Model
   {
     return $this->hasMany(UserAssignmentTiming::class);
   }
+
   public function epaper_bookmarks()
   {
     return $this->hasMany(EpaperBookmark::class)->with('user', 'toi_article', 'et_article');
   }
   public function epaper_collections()
   {
-    return $this->hasMany(EpaperBookmark::class)->with('user');
+    return $this->hasMany(EpaperCollection::class)->with('user');
   }
 }

@@ -40,6 +40,7 @@ class EpaperCollectionsController extends Controller
      */
     public function store(Request $request)
     {
+        // return 1;
         $request->validate([
             'user_id'        =>  'required',
             'collection_name'        =>  'required',
@@ -53,7 +54,7 @@ class EpaperCollectionsController extends Controller
             $epaper_collection = new EpaperCollection(request()->all());
             $request->company->epaper_collections()->save($epaper_collection);
         } else {
-            $msg = request()->epaper_collection_name . ' already exist.';
+            $msg = request()->collection_name . ' is already exist. Please try other epaper collection name.';
         }
 
 
