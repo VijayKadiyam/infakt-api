@@ -32,6 +32,39 @@ class CollectionEpapersController extends Controller
      *@
      */
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'epaper_collection_id'        =>  'required',
+        ]);
+
+        $collection_epapers  = [];
+        $msg = '';
+        if (request()->toi_article_id) {
+            $existing_collection_epaper = CollectionEpaper::where(['epaper_collection_id' => request()->epaper_collection_id, 'toi_article_id' => request()->toi_article_id])->first();
+            if (!$existing_collection_epaper) {
+                $collection_epapers = new CollectionEpaper(request()->all());
+                $collection_epapers->save();
+            } else {
+                $msg = 'TOI Epaper already exist';
+            }
+        }
+        if (request()->et_article_id) {
+            $existing_collection_epaper = CollectionEpaper::where(['epaper_collection_id' => request()->epaper_collection_id, 'et_article_id' => request()->et_article_id])->first();
+            if (!$existing_collection_epaper) {
+                $collection_epapers = new CollectionEpaper(request()->all());
+                $collection_epapers->save();
+            } else {
+                $msg = 'ET Epaper already exist';
+            }
+        }
+
+        return response()->json([
+            'data'    =>  $collection_epapers,
+            'msg' => $msg
+        ], 201);
+    }
+
     public function toi_store(Request $request)
     {
         // return request()->all();

@@ -37,7 +37,7 @@ class EpaperBookmarksController extends Controller
      *
      *@
      */
-    public function toi_store(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'user_id'        =>  'required',
@@ -47,37 +47,21 @@ class EpaperBookmarksController extends Controller
         // TOI Paper
         if (request()->toi_article_id) {
             $toi_existing_epaper_bookmark = request()->company->epaper_bookmarks()
-                ->where(['user_id' => request()->toi_article_id, 'toi_article_id' => request()->content_id])->first();
+                ->where(['user_id' => request()->user_id, 'toi_article_id' => request()->toi_article_id])->first();
             $epaper_bookmark = [];
             if (!$toi_existing_epaper_bookmark) {
                 $epaper_bookmark = new EpaperBookmark(request()->all());
                 $request->company->epaper_bookmarks()->save($epaper_bookmark);
             } else {
-                $epaper_bookmark = [];
                 $msg = 'TOI Epaper Bookmark already exist.';
             }
         }
 
-        return response()->json([
-            'data'    =>  $epaper_bookmark,
-            'msg' => $msg
-        ], 201);
-    }
-
-    public function et_store(Request $request)
-    {
-        $request->validate([
-            'user_id'        =>  'required',
-        ]);
-        $epaper_bookmark = [];
-        $msg = '';
-
         // ET Paper
-        $epaper_bookmark = [];
         if (request()->et_article_id) {
             $et_existing_epaper_bookmark = request()->company->epaper_bookmarks()
                 ->where(['user_id' => request()->user_id, 'et_article_id' => request()->et_article_id])->first();
-            if (!isset($et_existing_epaper_bookmark)) {
+            if (!$et_existing_epaper_bookmark) {
                 $epaper_bookmark = new EpaperBookmark(request()->all());
                 $request->company->epaper_bookmarks()->save($epaper_bookmark);
             } else {
