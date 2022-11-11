@@ -19,7 +19,7 @@ class ContentRead extends Model
 
     public function content()
     {
-        return $this->belongsTo(Content::class)->with('content_subjects', 'content_medias');
+        return $this->belongsTo(Content::class)->with('content_subjects', 'content_medias')->where('is_active', true);
     }
 
     public function user()

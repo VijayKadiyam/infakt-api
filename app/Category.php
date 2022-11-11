@@ -13,6 +13,6 @@ class Category extends Model
     ];
     public function contents()
     {
-        return $this->belongsToMany(Content::class, 'content_categories', 'category_id', 'content_id');
+        return $this->belongsToMany(Content::class, 'content_categories', 'category_id', 'content_id')->where('is_active', true);
     }
 }
