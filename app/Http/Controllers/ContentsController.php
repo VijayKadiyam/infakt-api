@@ -105,13 +105,15 @@ class ContentsController extends Controller
                 ->orWhere('content_name', 'LIKE', '%' . request()->search_keyword . '%')
                 ->orWhere('created_at', 'LIKE', '%' . request()->search_keyword . '%');
 
-            if (isset(Auth::user()->companies))
-                Search::create([
-                    'company_id' =>  Auth::user()->companies[0]->id,
-                    'user_id'   =>      Auth::user()->id,
-                    'search_type'   =>  'KEYWORD',
-                    'search'        =>  request()->search_keyword
-                ]);
+            if (isset(Auth::user()->roles[0]->name) != 'ACADEMIC TEAM') {
+                if (isset(Auth::user()->companies))
+                    Search::create([
+                        'company_id' =>  Auth::user()->companies[0]->id,
+                        'user_id'   =>      Auth::user()->id,
+                        'search_type'   =>  'KEYWORD',
+                        'search'        =>  request()->search_keyword
+                    ]);
+            }
         }
         if (request()->date_filter) {
             $contents = $contents
@@ -120,6 +122,10 @@ class ContentsController extends Controller
         if (request()->academic_team) {
             $contents = $contents
                 ->Where('is_draft', false);
+        }
+        if (request()->academic_team_approval) {
+            $contents = $contents
+                ->Where('is_approved', false);
         }
         if (request()->type) {
             $contents = $contents
