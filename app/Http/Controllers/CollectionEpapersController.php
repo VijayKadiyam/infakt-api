@@ -16,9 +16,26 @@ class CollectionEpapersController extends Controller
     public function index(Request $request)
     {
         $count = 0;
+        if (request()->epaper_collection_id) {
+            $collection_epapers = CollectionEpaper::with('epaper_collection', 'toi_article', 'et_article')->where('epaper_collection_id', request()->epaper_collection_id)->get();
+            $epapers = [];
+            foreach ($collection_epapers as $key => $collection_epaper) {
+                if ($collection_epaper->toi_article_id != '' && $collection_epaper->toi_article_id != null) {
+                    $epapers[] = $collection_epaper->toi_article;
+                }
+                if ($collection_epaper->et_article_id != '' && $collection_epaper->et_article_id != null) {
+                    $epapers[] = $collection_epaper->et_article;
+                }
+                $collection_epapers['epapers'] = $epapers;
+            }
+            $count = $collection_epapers->count();
+            // return $collection_epapers;
+        } else {
+            $collection_epapers = CollectionEpaper::all();
+            $count = $collection_epapers->count();
+        }
 
-        $collection_epapers = CollectionEpaper::all();
-        $count = $collection_epapers->count();
+
 
         return response()->json([
             'data'     =>  $collection_epapers,
