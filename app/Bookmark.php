@@ -25,6 +25,6 @@ class Bookmark extends Model
   public function content()
   {
     return $this->belongsTo(Content::class)
-      ->with('content_subjects', 'content_medias', 'content_metadatas', 'content_descriptions', 'content_hidden_classcodes', 'content_lock_classcodes', 'content_reads');
+      ->with('content_subjects', 'content_medias', 'content_metadatas', 'content_descriptions', 'content_hidden_classcodes', 'content_lock_classcodes', 'content_reads')->where('is_active', true);
   }
 }

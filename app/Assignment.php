@@ -40,7 +40,7 @@ class Assignment extends Model
 
     public function content()
     {
-        return $this->belongsTo(Content::class);
+        return $this->belongsTo(Content::class)->where('is_active', true);
     }
 
     public function assignment_classcodes()
