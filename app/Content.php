@@ -26,6 +26,9 @@ class Content extends Model
         'adapted_by',
         'featured_image_path',
         'created_by_id',
+        'is_active',
+        'is_draft',
+        'is_approved',
     ];
 
     public function created_by()

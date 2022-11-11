@@ -86,7 +86,7 @@ class ContentsController extends Controller
 
         $user = Auth::user();
         $my_assignments = $user->assignments;
-        $contents = Content::with('content_subjects', 'content_medias', 'content_reads', 'content_descriptions', 'content_hidden_classcodes', 'content_grades', 'content_boards');
+        $contents = Content::with('content_subjects', 'content_medias', 'content_reads', 'content_descriptions', 'content_hidden_classcodes', 'content_grades', 'content_boards', 'created_by');
         if (request()->subject_id) {
             $subject = Subject::find(request()->subject_id);
             $contents = $contents->whereHas('content_subjects', function ($c) {
@@ -117,9 +117,33 @@ class ContentsController extends Controller
             $contents = $contents
                 ->Where('created_at', 'LIKE', '%' . request()->date_filter . '%');
         }
+        if (request()->academic_team) {
+            $contents = $contents
+                ->Where('is_draft', false);
+        }
         if (request()->type) {
             $contents = $contents
                 ->Where('content_type', request()->type);
+        }
+        if (request()->user_id) {
+            $contents = $contents
+                ->Where('created_by_id', request()->user_id);
+        }
+        if (request()->approved_id == 'APPROVED') {
+            $contents = $contents
+                ->Where('is_approved', true);
+        }
+        if (request()->approved_id == 'PENDING') {
+            $contents = $contents
+                ->Where('is_approved', false);
+        }
+        if (request()->active_id == "ACTIVE") {
+            $contents = $contents
+                ->Where('is_active', true);
+        }
+        if (request()->active_id == "INACTIVE") {
+            $contents = $contents
+                ->Where('is_active', false);
         }
         if (request()->category_id) {
             $category = Category::find(request()->category_id);
