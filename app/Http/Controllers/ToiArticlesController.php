@@ -25,8 +25,7 @@ class ToiArticlesController extends Controller
         if (request()->page && request()->rowsPerPage) {
             $toi_articles = new ToiArticle;
             $toi_articles = $toi_articles->with('contents')->where('word_count', '>', 100)
-                ->orderBy('story_date', 'DESC')
-                ->limit(10);
+                ->orderBy('story_date', 'DESC');
             if (request()->search_keyword) {
                 $toi_articles = $toi_articles->where('edition_name', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('id', 'LIKE', '%' . request()->search_keyword . '%')

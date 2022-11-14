@@ -18,4 +18,9 @@ class EtArticle extends Model
         'content',
         'word_count',
     ];
+
+    public function contents()
+    {
+        return $this->hasMany(Content::class);
+    }
 }
