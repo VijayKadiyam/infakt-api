@@ -30,12 +30,15 @@ class CollectionsController extends Controller
             $count = $collections->count();
         }
 
+        // return $collections;
+
         foreach ($collections as $key => $collection) {
-            $collection->featured_image = '';
+            $collection->featured_image_path = '';
             $is_featured_image = false;
             $collection_contents = $collection->collection_contents;
             foreach ($collection_contents as $key => $cc) {
                 if (
+                    $cc->content &&
                     $cc->content->featured_image_path != null &&
                     $is_featured_image != true
                 ) {
