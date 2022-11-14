@@ -16,8 +16,10 @@ use App\ContentLockClasscode;
 use App\ContentMedia;
 use App\ContentSchool;
 use App\ContentSubject;
+use App\EtArticle;
 use App\Search;
 use App\Subject;
+use App\ToiArticle;
 use App\User;
 use App\UserClasscode;
 use Carbon\Carbon;
@@ -1012,5 +1014,44 @@ class ContentsController extends Controller
             'data'    => $top_5_content_read,
             'count'   => sizeof($top_5_content_read),
         ]);
+    }
+
+    public function search_mother_articles(Request $request)
+    {
+        // Search TOI ARTICLE
+        $toi_articles = new ToiArticle();
+        $toi_articles = $toi_articles->with('contents')->where('word_count', '>', 100)
+            ->orderBy('story_date', 'DESC');
+        if (request()->search_keyword) {
+            $toi_articles = $toi_articles->where('edition_name', 'LIKE', '%' . request()->search_keyword . '%')
+                ->orWhere('id', 'LIKE', '%' . request()->search_keyword . '%')
+                ->orWhere('story_date', 'LIKE', '%' . request()->search_keyword . '%')
+                ->orWhere('headline', 'LIKE', '%' . request()->search_keyword . '%')
+                ->orWhere('byline', 'LIKE', '%' . request()->search_keyword . '%')
+                ->orWhere('drophead', 'LIKE', '%' . request()->search_keyword . '%')
+                ->orWhere('category', 'LIKE', '%' . request()->search_keyword . '%');
+        }
+        $toi_articles = $toi_articles->get();
+
+        // Search ET ARTICLE
+        $et_articles = new EtArticle();
+        $et_articles = $et_articles->where('word_count', '>', 100)
+            ->orderBy('story_date', 'DESC');
+        if (request()->search_keyword) {
+            $et_articles = $et_articles->where('edition_name', 'LIKE', '%' . request()->search_keyword . '%')
+                ->orWhere('id', 'LIKE', '%' . request()->search_keyword . '%')
+                ->orWhere('story_date', 'LIKE', '%' . request()->search_keyword . '%')
+                ->orWhere('headline', 'LIKE', '%' . request()->search_keyword . '%')
+                ->orWhere('byline', 'LIKE', '%' . request()->search_keyword . '%')
+                ->orWhere('drophead', 'LIKE', '%' . request()->search_keyword . '%')
+                ->orWhere('category', 'LIKE', '%' . request()->search_keyword . '%');
+        }
+        $et_articles = $et_articles->get();
+        $articles = [...$et_articles, ...$toi_articles];
+        return response()->json([
+            'data'     =>  $articles,
+            'count'    =>   sizeof($articles),
+            'success'   =>  true,
+        ], 200);
     }
 }

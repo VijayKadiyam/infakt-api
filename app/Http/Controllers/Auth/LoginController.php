@@ -45,14 +45,23 @@ class LoginController extends Controller
       $user = $this->guard()->user();
       $user->generateToken();
       $user->roles = $user->roles;
-      $user->companies = $user->companies;
-      return response()->json([
-        'data'    =>  $user->toArray(),
-        'message' =>  "User is Logged in Successfully",
-        'token'   =>  $user->api_token,
-        'success' =>  true,
-        'currentAndroidVersionFromApi' =>  '1.0.0',
-      ]);
+      $user->is_valid_role = 'false';
+      if ($user->roles[0]->name == $request->role) {
+        $user->is_valid_role = 'true';
+        $user->companies = $user->companies;
+        return response()->json([
+          'data'    =>  $user->toArray(),
+          'message' =>  "User is Logged in Successfully",
+          'token'   =>  $user->api_token,
+          'success' =>  true,
+          'currentAndroidVersionFromApi' =>  '1.0.0',
+        ]);
+      } else {
+        return response()->json([
+          'message' => 'invalid User Credential',
+          'success' => false,
+        ], 400);
+      }
     } else {
       $this->sendFailedLoginResponse($request);
     }
@@ -67,6 +76,7 @@ class LoginController extends Controller
   protected function credentials(Request $request)
   {
     return ['email' => $request->{$this->username()}, 'password' => $request->password, 'active' => 1];
+    // return ['email' => $request->{$this->username()}, 'password' => $request->password, 'role' => $request->role, 'active' => 1];
   }
 
   public function logout()

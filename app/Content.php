@@ -29,6 +29,8 @@ class Content extends Model
         'is_active',
         'is_draft',
         'is_approved',
+        'toi_article_id',
+        'et_article_id',
     ];
 
     public function created_by()

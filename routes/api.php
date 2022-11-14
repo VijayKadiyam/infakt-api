@@ -100,7 +100,11 @@ Route::resource('user_standards', 'UserStandardsController');
 Route::post('upload_career_attachment', 'UploadsController@upload_career_attachment');
 Route::resource('career_requests', 'CareerRequestsController');
 
+
+// Search Mother [TOI + ET] Article
+Route::get('contents/search_mother_articles', 'ContentsController@search_mother_articles');
 // Contents
+Route::get('contents/masters', 'ContentsController@masters');
 Route::get('contents/masters', 'ContentsController@masters');
 Route::get('contents/assigned_to_read_articles', 'ContentsController@assigned_to_read_articles');
 Route::resource('contents', 'ContentsController');

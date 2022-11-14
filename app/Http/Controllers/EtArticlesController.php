@@ -29,6 +29,7 @@ class EtArticlesController extends Controller
                 ->orderBy('story_date', 'DESC');
             if (request()->search_keyword) {
                 $et_articles = $et_articles->where('edition_name', 'LIKE', '%' . request()->search_keyword . '%')
+                    ->orWhere('id', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('story_date', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('headline', 'LIKE', '%' . request()->search_keyword . '%')
                     ->orWhere('byline', 'LIKE', '%' . request()->search_keyword . '%')
