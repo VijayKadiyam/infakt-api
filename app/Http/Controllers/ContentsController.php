@@ -80,6 +80,223 @@ class ContentsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    // public function index()
+    // {
+    //     $content_limit_4 = request()->content_limit_4 ? request()->content_limit_4 : false;
+    //     $category_wise_limit_4 = request()->category_wise_limit_4 ? request()->category_wise_limit_4 : false;
+    //     $Assigned_to_read_articles = [];
+
+    //     $user = Auth::user();
+    //     $my_assignments = $user->assignments;
+    //     $contents = Content::with('content_subjects', 'content_medias', 'content_reads', 'content_descriptions', 'content_hidden_classcodes', 'content_grades', 'content_boards', 'created_by');
+    //     if (request()->subject_id) {
+    //         $subject = Subject::find(request()->subject_id);
+    //         $contents = $contents->whereHas('content_subjects', function ($c) {
+    //             $c->where('subject_id', '=', request()->subject_id);
+    //         });
+    //         Search::create([
+    //             'company_id' =>  Auth::user()->companies[0]->id,
+    //             'user_id'   =>      Auth::user()->id,
+    //             'search_type'   =>  'SUBJECT',
+    //             'search'        =>  $subject->name
+    //         ]);
+    //     }
+    //     if (request()->search_keyword) {
+    //         $contents = $contents
+    //             ->where('content_type', 'LIKE', '%' . request()->search_keyword . '%')
+    //             ->orWhere('content_name', 'LIKE', '%' . request()->search_keyword . '%')
+    //             ->orWhere('created_at', 'LIKE', '%' . request()->search_keyword . '%');
+
+    //         if (isset(Auth::user()->roles[0]->name) != 'ACADEMIC TEAM') {
+    //             if (isset(Auth::user()->companies))
+    //                 Search::create([
+    //                     'company_id' =>  Auth::user()->companies[0]->id,
+    //                     'user_id'   =>      Auth::user()->id,
+    //                     'search_type'   =>  'KEYWORD',
+    //                     'search'        =>  request()->search_keyword
+    //                 ]);
+    //         }
+    //     }
+    //     if (request()->date_filter) {
+    //         $contents = $contents
+    //             ->Where('created_at', 'LIKE', '%' . request()->date_filter . '%');
+    //     }
+    //     if (request()->academic_team) {
+    //         $contents = $contents
+    //             ->Where('is_draft', false);
+    //     }
+    //     if (request()->academic_team_approval) {
+    //         $contents = $contents
+    //             ->Where('is_approved', false);
+    //     }
+    //     if (request()->type) {
+    //         $contents = $contents
+    //             ->Where('content_type', request()->type);
+    //     }
+    //     if (request()->user_id) {
+    //         $contents = $contents
+    //             ->Where('created_by_id', request()->user_id);
+    //     }
+    //     if (request()->approved_id == 'APPROVED') {
+    //         $contents = $contents
+    //             ->Where('is_approved', true);
+    //     }
+    //     if (request()->approved_id == 'PENDING') {
+    //         $contents = $contents
+    //             ->Where('is_approved', false);
+    //     }
+    //     if (request()->active_id == "ACTIVE") {
+    //         $contents = $contents
+    //             ->Where('is_active', true);
+    //     }
+    //     if (request()->active_id == "INACTIVE") {
+    //         $contents = $contents
+    //             ->Where('is_active', false);
+    //     }
+    //     if (request()->category_id) {
+    //         $category = Category::find(request()->category_id);
+    //         $contents = $contents->whereHas('content_categories', function ($c) {
+    //             $c->where('category_id', '=', request()->category_id);
+    //         });
+    //         Search::create([
+    //             'company_id' =>  Auth::user()->companies[0]->id,
+    //             'user_id'   =>      Auth::user()->id,
+    //             'search_type'   =>  'CATEGORY',
+    //             'search'        =>  $category->name
+    //         ]);
+    //     }
+    //     if ($content_limit_4) {
+    //         $contents = $contents->limit(4);
+    //     }
+    //     $contents = $contents->latest()->get();
+    //     $user_role = request()->roleName;
+    //     $user_id = request()->user_id;
+    //     if ($user_role == 'STUDENT') {
+    //         // If Role is Student// Show Filtered Content
+    //         $user_classcodes =  UserClasscode::where('user_id', $user_id)->get();
+    //         $user_classcode_array = array_column($user_classcodes->toArray(), 'classcode_id');
+    //         $filtered_contents = [];
+    //         $currentDate = date_create(date('Y-m-d'));
+    //         foreach ($contents as $key => $content) {
+    //             $content_assign_to_read = $content->content_assign_to_reads;
+    //             $endDiff = 0;
+    //             if (sizeof($content_assign_to_read) > 0) {
+    //                 $endDate = date_create($content_assign_to_read[0]['due_date']);
+    //                 $endDiff = date_diff($currentDate, $endDate)->format("%R%a");
+    //             }
+    //             $isDue = $endDiff < 0 ? true : false;
+    //             $assigned_to_read_array = array_column($content_assign_to_read->toArray(), 'classcode_id');
+    //             if (array_intersect($user_classcode_array, $assigned_to_read_array) && $isDue == false) {
+    //                 $content['assign_to_read'] = true;
+    //                 $Assigned_to_read_articles[] = $content;
+    //             } else {
+    //                 $content['assign_to_read'] = false;
+    //             }
+    //             $content_hidden_classcodes = $content->content_hidden_classcodes;
+    //             $hidden_classcode_array = array_column($content_hidden_classcodes->toArray(), 'classcode_id');
+    //             if (!array_intersect($user_classcode_array, $hidden_classcode_array)) {
+    //                 $filtered_contents[] = $content;
+    //             }
+    //         }
+    //         $contents = $filtered_contents;
+    //     }
+    //     $article_contents = [];
+    //     $infographic_contents = [];
+    //     $video_contents = [];
+    //     $CategoryWiseContent = [];
+    //     foreach ($contents as $key => $content) {
+    //         // Random Subject Image 
+    //         $image_Array = [];
+    //         $content->subject_image = "";
+    //         if (sizeof($content->content_subjects)) {
+    //             for ($i = 1; $i < 6; $i++) {
+    //                 $name = "imagepath_" . $i;
+    //                 if ($content->content_subjects[0]->subject->$name) {
+    //                     $image_Array[] = $content->content_subjects[0]->subject->$name;
+    //                 }
+    //             }
+    //             $rand_subject_image = array_rand(
+    //                 $image_Array,
+    //                 1
+    //             );
+    //             $content->subject_image = $image_Array[$rand_subject_image];
+    //         }
+    //         // Content type Wise
+    //         switch ($content->content_type) {
+    //             case 'ARTICLE':
+    //                 $article_contents[] = $content;
+    //                 break;
+    //             case 'INFOGRAPHIC':
+    //                 $infographic_contents[] = $content;
+    //                 break;
+    //             case 'VIDEO':
+    //                 $video_contents[] = $content;
+    //                 break;
+
+    //             default:
+    //                 # code...
+    //                 break;
+    //         }
+    //         // Category Wise  
+    //         if (sizeOf($content->content_categories)) {
+    //             // Select First Category 
+    //             $category = $content->content_categories[0]->category;
+    //             $category_key = array_search($category->id, array_column($CategoryWiseContent, 'id'));
+    //             if (($category_key != null || $category_key !== false)) {
+    //                 // Increase Content Count 
+    //                 $CategoryWiseContent[$category_key]['count']++;
+    //                 if ($category_wise_limit_4 != false) {
+    //                     // If Limit is set to 4
+    //                     if ($CategoryWiseContent[$category_key]['count'] <= 4) {
+    //                         // Check if Count is not Exceeding than 4 and And Content
+    //                         $CategoryWiseContent[$category_key]['values'][] = $content;
+    //                     }
+    //                 } else {
+    //                     // Add Content in array
+    //                     $CategoryWiseContent[$category_key]['values'][] = $content;
+    //                 }
+    //             } else {
+    //                 // Content Added
+    //                 $content_details = [
+    //                     'id' => $category->id,
+    //                     'category' => $category->name,
+    //                     'values' => [$content],
+    //                     'count' => 1,
+    //                 ];
+    //                 $CategoryWiseContent[] = $content_details;
+    //             }
+    //         }
+    //     }
+    //     $content_types = [
+    //         [
+    //             'name' => "ARTICLE",
+    //             'icon' => "mdi-script-text",
+    //             'count' => sizeof($article_contents),
+    //             'values' => $article_contents
+    //         ],
+    //         [
+    //             'name' => "INFOGRAPHIC",
+    //             'icon' => 'mdi-chart-bar',
+    //             'count' => sizeof($infographic_contents),
+    //             'values' => $infographic_contents
+    //         ],
+    //         [
+    //             'name' => "VIDEO",
+    //             'icon' => 'mdi-video-vintage',
+    //             'count' => sizeof($video_contents),
+    //             'values' => $video_contents
+    //         ]
+    //     ];
+    //     return response()->json([
+    //         'data'  =>  $contents,
+    //         'count' =>   sizeof($contents),
+    //         'content_types' => $content_types,
+    //         'CategoryWiseContent' => $CategoryWiseContent,
+    //         'Assign_to_read_articles' => $Assigned_to_read_articles,
+    //         'assignments' => $my_assignments,
+    //         'success' =>  true,
+    //     ], 200);
+    // }
     public function index()
     {
         $content_limit_4 = request()->content_limit_4 ? request()->content_limit_4 : false;
@@ -121,37 +338,9 @@ class ContentsController extends Controller
             $contents = $contents
                 ->Where('created_at', 'LIKE', '%' . request()->date_filter . '%');
         }
-        if (request()->academic_team) {
-            $contents = $contents
-                ->Where('is_draft', false);
-        }
-        if (request()->academic_team_approval) {
-            $contents = $contents
-                ->Where('is_approved', false);
-        }
         if (request()->type) {
             $contents = $contents
                 ->Where('content_type', request()->type);
-        }
-        if (request()->user_id) {
-            $contents = $contents
-                ->Where('created_by_id', request()->user_id);
-        }
-        if (request()->approved_id == 'APPROVED') {
-            $contents = $contents
-                ->Where('is_approved', true);
-        }
-        if (request()->approved_id == 'PENDING') {
-            $contents = $contents
-                ->Where('is_approved', false);
-        }
-        if (request()->active_id == "ACTIVE") {
-            $contents = $contents
-                ->Where('is_active', true);
-        }
-        if (request()->active_id == "INACTIVE") {
-            $contents = $contents
-                ->Where('is_active', false);
         }
         if (request()->category_id) {
             $category = Category::find(request()->category_id);
@@ -757,6 +946,12 @@ class ContentsController extends Controller
         $content->content_subjects = $content->content_subjects;
         $content->content_medias = $content->content_medias;
         $content->content_metadatas = $content->content_metadatas;
+        // Sorting Descending by level
+        // $descriptions = $content->content_descriptions->toArray();
+        // usort($descriptions, function ($a, $b) {
+        //     return $b['level'] - $a['level'];
+        // });
+        // $content['content_descriptionsad'] = $descriptions;
         $content->content_descriptions = $content->content_descriptions;
         $content->content_hidden_classcodes = $content->content_hidden_classcodes;
         $content->content_lock_classcodes = $content->content_lock_classcodes;
