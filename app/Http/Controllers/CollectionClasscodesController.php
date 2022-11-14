@@ -41,11 +41,12 @@ class CollectionClasscodesController extends Controller
         }
 
         foreach ($collection_classcodes as $key => $collection_classcode) {
-            $collection_classcode->featured_image = '';
+            $collection_classcode->featured_image_path = '';
             $is_featured_image = false;
             $collection_contents = $collection_classcode->collection->collection_contents;
             foreach ($collection_contents as $key => $cc) {
                 if (
+                    $cc->content &&
                     $cc->content->featured_image_path != null &&
                     $is_featured_image != true
                 ) {
