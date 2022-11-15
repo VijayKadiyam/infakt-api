@@ -342,6 +342,32 @@ class ContentsController extends Controller
             $contents = $contents
                 ->Where('content_type', request()->type);
         }
+        if (request()->academic_team) {
+            $contents = $contents->where('is_draft', false);
+        }
+        if (request()->academic_team_approval) {
+            $contents = $contents->where('is_approved', false);
+        }
+        // if (request()->user_id) {
+        //     $contents = $contents
+        //         ->where('created_by_id', request()->user_id);
+        // }
+        if (request()->approved_id == 'APPROVED') {
+            $contents = $contents
+                ->where('is_approved', true);
+        }
+        if (request()->approved_id == 'PENDING') {
+            $contents = $contents
+                ->where('is_approved', false);
+        }
+        if (request()->active_id == "ACTIVE") {
+            $contents = $contents
+                ->where('is_active', true);
+        }
+        if (request()->active_id == "INACTIVE") {
+            $contents = $contents
+                ->where('is_active', false);
+        }
         if (request()->category_id) {
             $category = Category::find(request()->category_id);
             $contents = $contents->whereHas('content_categories', function ($c) {
@@ -951,7 +977,9 @@ class ContentsController extends Controller
         // usort($descriptions, function ($a, $b) {
         //     return $b['level'] - $a['level'];
         // });
-        // $content['content_descriptionsad'] = $descriptions;
+        // $content->content_descriptions = $descriptions;
+        // return $content->content_descriptions;
+        // $content['content_descriptions'] = $descriptions;
         $content->content_descriptions = $content->content_descriptions;
         $content->content_hidden_classcodes = $content->content_hidden_classcodes;
         $content->content_lock_classcodes = $content->content_lock_classcodes;

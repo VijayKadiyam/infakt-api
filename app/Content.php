@@ -61,7 +61,8 @@ class Content extends Model
     }
     public function content_descriptions()
     {
-        return $this->hasMany(ContentDescription::class);
+        return $this->hasMany(ContentDescription::class)
+            ->orderBy('level', 'DESC');
     }
     public function content_hidden_classcodes()
     {
