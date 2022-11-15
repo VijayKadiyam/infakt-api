@@ -88,6 +88,7 @@ class ContentsController extends Controller
 
         $user = Auth::user();
         $my_assignments = $user->assignments;
+        $user_role = $user->roles[0]->name;
         $contents = Content::with('content_subjects', 'content_medias', 'content_reads', 'content_descriptions', 'content_hidden_classcodes', 'content_grades', 'content_boards', 'created_by');
         if (request()->subject_id) {
             $subject = Subject::find(request()->subject_id);
@@ -131,25 +132,20 @@ class ContentsController extends Controller
         if (request()->academic_team_approval) {
             $contents = $contents->where('is_approved', false);
         }
-        // if (request()->user_id) {
-        //     $contents = $contents
-        //         ->where('created_by_id', request()->user_id);
-        // }
-        if (request()->approved_id == 'APPROVED') {
-            $contents = $contents
-                ->where('is_approved', true);
+        if (request()->created_by_id) {
+            $contents = $contents->where('created_by_id', request()->created_by_id);
         }
-        if (request()->approved_id == 'PENDING') {
+        if ($user_role == 'INFAKT TEACHER') {
             $contents = $contents
-                ->where('is_approved', false);
+                ->where('created_by_id', Auth::user()->id);
         }
-        if (request()->active_id == "ACTIVE") {
+        if (request()->is_approved != null && request()->is_approved != 'null') {
             $contents = $contents
-                ->where('is_active', true);
+                ->where('is_approved', request()->is_approved);
         }
-        if (request()->active_id == "INACTIVE") {
+        if (request()->is_active != null && request()->is_active != 'null') {
             $contents = $contents
-                ->where('is_active', false);
+                ->where('is_active', request()->is_active);
         }
         if (request()->category_id) {
             $category = Category::find(request()->category_id);
@@ -737,7 +733,6 @@ class ContentsController extends Controller
         if ($user_role == 'STUDENT') {
             $user_classcodes =  UserClasscode::where('user_id', $user_id)->get();
             $content_locks = [];
-
             foreach ($user_classcodes as $key => $classcode) {
                 $content_locks = $content->content_lock_classcodes()->where('content_lock_classcodes.classcode_id', $classcode->classcode_id)->get();
                 foreach ($content_locks as $key => $content_lock) {
@@ -756,14 +751,6 @@ class ContentsController extends Controller
         $content->content_subjects = $content->content_subjects;
         $content->content_medias = $content->content_medias;
         $content->content_metadatas = $content->content_metadatas;
-        // Sorting Descending by level
-        // $descriptions = $content->content_descriptions->toArray();
-        // usort($descriptions, function ($a, $b) {
-        //     return $b['level'] - $a['level'];
-        // });
-        // $content->content_descriptions = $descriptions;
-        // return $content->content_descriptions;
-        // $content['content_descriptions'] = $descriptions;
         $content->content_descriptions = $content->content_descriptions;
         $content->content_hidden_classcodes = $content->content_hidden_classcodes;
         $content->content_lock_classcodes = $content->content_lock_classcodes;
@@ -824,51 +811,6 @@ class ContentsController extends Controller
         $contents = $contents->whereHas('content_assign_to_reads', function ($c) use ($user_classcode_array) {
             $c->whereIn('classcode_id', $user_classcode_array);
         });
-        if (request()->subject_id) {
-            $subject = Subject::find(request()->subject_id);
-            $contents = $contents->whereHas('content_subjects', function ($c) {
-                $c->where('subject_id', '=', request()->subject_id);
-            });
-            Search::create([
-                'company_id' =>  Auth::user()->companies[0]->id,
-                'user_id'   =>      Auth::user()->id,
-                'search_type'   =>  'SUBJECT',
-                'search'        =>  $subject->name
-            ]);
-        }
-        if (request()->search_keyword) {
-            $contents = $contents
-                ->where('content_type', 'LIKE', '%' . request()->search_keyword . '%')
-                ->orWhere('content_name', 'LIKE', '%' . request()->search_keyword . '%')
-                ->orWhere('created_at', 'LIKE', '%' . request()->search_keyword . '%');
-
-            Search::create([
-                'company_id' =>  Auth::user()->companies[0]->id,
-                'user_id'   =>      Auth::user()->id,
-                'search_type'   =>  'KEYWORD',
-                'search'        =>  request()->search_keyword
-            ]);
-        }
-        if (request()->date_filter) {
-            $contents = $contents
-                ->Where('created_at', 'LIKE', '%' . request()->date_filter . '%');
-        }
-        if (request()->type) {
-            $contents = $contents
-                ->Where('content_type', request()->type);
-        }
-        if (request()->category_id) {
-            $category = Category::find(request()->category_id);
-            $contents = $contents->whereHas('content_categories', function ($c) {
-                $c->where('category_id', '=', request()->category_id);
-            });
-            Search::create([
-                'company_id' =>  Auth::user()->companies[0]->id,
-                'user_id'   =>      Auth::user()->id,
-                'search_type'   =>  'CATEGORY',
-                'search'        =>  $category->name
-            ]);
-        }
         $contents = $contents->latest()->get();
         if ($user_role == 'STUDENT') {
             // If Role is Student// Show Filtered Content
@@ -990,7 +932,6 @@ class ContentsController extends Controller
         $company = Company::find($user->companies[0]->id);
 
         $content_reads = $company->content_reads()
-            // ->whereBetween('created_at', [$from, $to])
             ->whereDate('created_at', ">=", $from)
             ->whereDate('created_at', "<=", $to)
             ->get();
