@@ -25,6 +25,7 @@ use App\UserClasscode;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ContentsController extends Controller
 {
@@ -701,6 +702,13 @@ class ContentsController extends Controller
                 }
 
             // ---------------------------------------------------
+        }
+
+        if ($content->is_active == false) {
+            // IF Content is Inactive then Inactive all assignments based on it
+            $InActive_Assignments = DB::table('assignments')
+                ->where('content_id', $content->id)
+                ->update(['is_active' => false]);
         }
 
         $content->content_categories = $content->content_categories;
