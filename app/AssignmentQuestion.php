@@ -20,6 +20,7 @@ class AssignmentQuestion extends Model
         'option4',
         'option5',
         'option6',
+        'model_answer'
     ];
 
     public function company()

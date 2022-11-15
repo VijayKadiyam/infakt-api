@@ -40,6 +40,8 @@ class Classcode extends Model
     {
         return $this->belongsToMany(Assignment::class, 'assignment_classcodes', 'classcode_id', 'assignment_id')
             ->latest()
+            ->where('is_active', true)
+            ->where('is_deleted', false)
             ->withTimestamps();
     }
     public function assignment_classcodes()

@@ -85,7 +85,9 @@ class Company extends Model
 
   public function assignments()
   {
-    return $this->hasMany(Assignment::class)->with('assignment_questions', 'assignment_extensions', 'created_by', 'assignment_classcodes');
+    return $this->hasMany(Assignment::class)->with('assignment_questions', 'assignment_extensions', 'created_by', 'assignment_classcodes')
+      ->where('is_deleted', false)
+      ->where('is_active', true);
   }
 
   public function assignment_classcodes()
