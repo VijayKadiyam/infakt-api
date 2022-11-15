@@ -34,7 +34,8 @@ class UserAssignment extends Model
 
     public function assignment()
     {
-        return $this->belongsTo(Assignment::class);
+        return $this->belongsTo(Assignment::class)
+            ->where('is_deleted', false);
     }
 
     public function user_assignment_selected_answers()

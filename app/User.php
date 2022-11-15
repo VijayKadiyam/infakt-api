@@ -157,7 +157,8 @@ class User extends Authenticatable
   }
   public function assignments()
   {
-    return $this->hasMany(Assignment::class, 'created_by_id')->where('is_deleted', false);
+    return $this->hasMany(Assignment::class, 'created_by_id')
+      ->where('is_deleted', false);
   }
   public function content_assign_to_reads()
   {
