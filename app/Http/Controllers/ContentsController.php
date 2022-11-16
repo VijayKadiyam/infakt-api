@@ -91,6 +91,18 @@ class ContentsController extends Controller
         $my_assignments = $user->assignments;
         $user_role = $user->roles[0]->name;
         $contents = Content::with('content_subjects', 'content_medias', 'content_reads', 'content_descriptions', 'content_hidden_classcodes', 'content_grades', 'content_boards', 'created_by');
+
+        if (!in_array($user_role, ['INFAKT TEACHER', 'ACADEMIC TEAM', 'SUPERADMIN'])) {
+            //Admin , Teacher & Student Should only view Approved & Active Content
+            $contents = $contents
+                ->where('is_active', true)
+                ->where('is_approved', true);
+        }
+        if ($user_role == 'INFAKT TEACHER') {
+            $contents = $contents->where('created_by_id', Auth::user()->id);
+        } else {
+            $contents = $contents->where('is_draft', false);
+        }
         if (request()->subject_id) {
             $subject = Subject::find(request()->subject_id);
             $contents = $contents->whereHas('content_subjects', function ($c) {
@@ -109,7 +121,7 @@ class ContentsController extends Controller
                 ->orWhere('content_name', 'LIKE', '%' . request()->search_keyword . '%')
                 ->orWhere('created_at', 'LIKE', '%' . request()->search_keyword . '%');
 
-            if (isset(Auth::user()->roles[0]->name) != 'ACADEMIC TEAM') {
+            if (isset($user_role) != 'ACADEMIC TEAM') {
                 if (isset(Auth::user()->companies))
                     Search::create([
                         'company_id' =>  Auth::user()->companies[0]->id,
@@ -118,35 +130,6 @@ class ContentsController extends Controller
                         'search'        =>  request()->search_keyword
                     ]);
             }
-        }
-        if (request()->date_filter) {
-            $contents = $contents
-                ->Where('created_at', 'LIKE', '%' . request()->date_filter . '%');
-        }
-        if (request()->type) {
-            $contents = $contents
-                ->Where('content_type', request()->type);
-        }
-        if (request()->academic_team) {
-            $contents = $contents->where('is_draft', false);
-        }
-        if (request()->academic_team_approval) {
-            $contents = $contents->where('is_approved', false);
-        }
-        if (request()->created_by_id) {
-            $contents = $contents->where('created_by_id', request()->created_by_id);
-        }
-        if ($user_role == 'INFAKT TEACHER') {
-            $contents = $contents
-                ->where('created_by_id', Auth::user()->id);
-        }
-        if (request()->is_approved != null && request()->is_approved != 'null') {
-            $contents = $contents
-                ->where('is_approved', request()->is_approved);
-        }
-        if (request()->is_active != null && request()->is_active != 'null') {
-            $contents = $contents
-                ->where('is_active', request()->is_active);
         }
         if (request()->category_id) {
             $category = Category::find(request()->category_id);
@@ -160,6 +143,25 @@ class ContentsController extends Controller
                 'search'        =>  $category->name
             ]);
         }
+        if (request()->date_filter) {
+            $contents = $contents->Where('created_at', 'LIKE', '%' . request()->date_filter . '%');
+        }
+        if (request()->type) {
+            $contents = $contents->Where('content_type', request()->type);
+        }
+        if (request()->academic_team_approval) {
+            $contents = $contents->where('is_approved', false);
+        }
+        if (request()->created_by_id) {
+            $contents = $contents->where('created_by_id', request()->created_by_id);
+        }
+        if (request()->is_approved != null) {
+            $contents = $contents->where('is_approved', request()->is_approved);
+        }
+        if (request()->is_active != null) {
+            $contents = $contents->where('is_active', request()->is_active);
+        }
+
         if ($content_limit_4) {
             $contents = $contents->limit(4);
         }
@@ -705,7 +707,7 @@ class ContentsController extends Controller
         }
 
         if ($content->is_active == false) {
-            // IF Content is Inactive then Inactive all assignments based on it
+            // IF Content is Inactive then Inactive all assignments based on it 
             $InActive_Assignments = DB::table('assignments')
                 ->where('content_id', $content->id)
                 ->update(['is_active' => false]);
