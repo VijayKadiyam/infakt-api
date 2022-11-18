@@ -6,6 +6,7 @@ use App\Assignment;
 use App\AssignmentClasscode;
 use App\AssignmentExtension;
 use App\AssignmentQuestion;
+use App\AssignmentQuestionCorrectOption;
 use App\AssignmentQuestionOption;
 use App\Classcode;
 use App\Notification;
@@ -135,6 +136,15 @@ class AssignmentsController extends Controller
                         }
                     // ---------------------------------------------------
 
+                    // Save Assignment Question Correct Options
+                    $question_correct_options = $question['assignment_question_correct_options'];
+                    if (isset($question_correct_options))
+                        foreach ($question_correct_options as $option) {
+                            $assignment_question_correct_option = new AssignmentQuestionCorrectOption($option);
+                            $assignment_question->assignment_question_correct_options()->save($assignment_question_correct_option);
+                        }
+                    // ---------------------------------------------------
+
                 }
             // ---------------------------------------------------
             // Save Assignment Extensions
@@ -256,6 +266,65 @@ class AssignmentsController extends Controller
                                 $assignmentQuestionOption->update($question_option);
                             }
                         }
+
+                    // Check if Assignment Question Correct Option deleted
+                    $assignment_question_correct_options = $question['assignment_question_correct_options'];
+                    if (isset($assignment_question_correct_options))
+                        $optionIdResponseArray = array_pluck($assignment_question_correct_options, 'id');
+                    else
+                        $optionIdResponseArray = [];
+                    $questionId = $assignmentQuestion->id;
+                    $optionIdArray = array_pluck(AssignmentQuestionCorrectOption::where('assignment_question_id', '=', $questionId)->get(), 'id');
+                    $differenceQuestionIds = array_diff($optionIdArray, $optionIdResponseArray);
+                    // Delete which is there in the database but not in the response
+                    if ($differenceQuestionIds)
+                        foreach ($differenceQuestionIds as $differenceQuestionId) {
+                            $option = AssignmentQuestionCorrectOption::find($differenceQuestionId);
+                            $option->delete();
+                        }
+                    // Update Assignment Question Correct Option
+                    if (isset($options))
+                        foreach ($options as $question_correct_option) {
+                            if (!isset($question_correct_option['id'])) {
+                                $option = new AssignmentQuestionCorrectOption($question_correct_option);
+                                $question->assignment_question_correct_options()->save($option);
+                            } else {
+                                $assignmentQuestionCorrectOption = AssignmentQuestionCorrectOption::find($question_correct_option['id']);
+                                $assignmentQuestionCorrectOption->update($question_correct_option);
+                            }
+                        }
+
+                    // // Check if Assignmnet Correct Option deleted
+                    // $assignment_question_correct_options = $question['assignment_question_correct_options'];
+
+                    // if (isset($assignment_question_correct_options)) {
+                    //     $question_correct_optionIdResponseArray = array_pluck($assignment_question_correct_options, 'id');
+                    // } else
+                    //     $question_correct_optionIdResponseArray = [];
+                    // $assignmentId = $assignment->id;
+                    // $question_correct_optionIdArray = array_pluck(AssignmentQuestionCorrectOption::where('assignment_question_id', '=', $assignmentId)->get(), 'id');
+                    // $differenceAssignmentQuestionCorrectOptionIds = array_diff($question_correct_optionIdArray, $question_correct_optionIdResponseArray);
+                    // // Delete which is there in the database but not in the response
+                    // if ($differenceAssignmentQuestionCorrectOptionIds)
+                    //     foreach ($differenceAssignmentQuestionCorrectOptionIds as $differenceAssignmentQuestionCorrectOptionId) {
+                    //         $question_correct_option = AssignmentQuestionCorrectOption::find($differenceAssignmentQuestionCorrectOptionId);
+                    //         $question_correct_option->delete();
+                    //     }
+
+                    // // Update Assignmnet Correct Option
+                    // if (isset($assignment_question_correct_options))
+                    //     foreach ($assignment_question_correct_options as $question_correct_option) {
+                    //         if (!isset($question_correct_option['id'])) {
+                    //             $assignment_question_correct_option = new AssignmentQuestionCorrectOption($question_correct_option);
+                    //             $assignment->assignment_question_correct_options()->save($assignment_question_correct_option);
+                    //         } else {
+                    //             $assignment_question_correct_option = AssignmentQuestionCorrectOption::find($question_correct_option['id']);
+                    //             $assignment_question_correct_option->update($question_correct_option);
+                    //         }
+                    //     }
+
+                    // // ---------------------------------------------------
+
                 }
 
             // ---------------------------------------------------
