@@ -313,6 +313,9 @@ class ContentsController extends Controller
             'content_name'  =>  'required',
             'content_categories'  =>  'required',
             'content_assign_to_reads.*.due_date'    =>  'required',
+            'content_descriptions.*.level'    =>  'required',
+            'content_descriptions.*.title'    =>  'required',
+            'content_descriptions.*.description'    =>  'required',
         ]);
         if ($request->id == null || $request->id == '') {
             // Save Content
@@ -711,12 +714,12 @@ class ContentsController extends Controller
             // ---------------------------------------------------
         }
 
-        if ($content->is_active == false) {
-            // IF Content is Inactive then Inactive all assignments based on it 
-            $InActive_Assignments = DB::table('assignments')
-                ->where('content_id', $content->id)
-                ->update(['is_active' => false]);
-        }
+        // if ($content->is_active == false) {
+        //     // IF Content is Inactive then Inactive all assignments based on it 
+        //     $InActive_Assignments = DB::table('assignments')
+        //         ->where('content_id', $content->id)
+        //         ->update(['is_active' => false]);
+        // }
 
         $content->content_categories = $content->content_categories;
         $content->content_subjects = $content->content_subjects;
