@@ -156,7 +156,12 @@ class ContentsController extends Controller
             $contents = $contents->where('created_by_id', request()->created_by_id);
         }
         if (request()->is_approved != null) {
-            $contents = $contents->where('is_approved', request()->is_approved);
+            if (request()->is_approved != '3') {
+                $contents = $contents->where('is_approved', request()->is_approved)
+                    ->where('is_draft', false);
+            } else {
+                $contents = $contents->where('is_draft', true);
+            }
         }
         if (request()->is_active != null) {
             $contents = $contents->where('is_active', request()->is_active);
