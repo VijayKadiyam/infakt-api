@@ -60,6 +60,10 @@ class AssignmentsController extends Controller
                 // array_merge($assignments, $classcodeAssignments);
                 $assignments = [...$assignments, ...$classcodeAssignments];
             }
+        } else {
+            $assignments = Assignment::where('created_by_id', '=', request()->user()->id)
+                ->with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions')
+                ->get();
         }
 
         return response()->json([
