@@ -19,8 +19,7 @@ class CollectionsController extends Controller
     {
         $count = 0;
         if ($request->user_id) {
-            $collections =  request()->company->collections()
-                ->where('user_id', '=', $request->user_id)
+            $collections =  Collection::where('user_id', '=', $request->user_id)
                 ->where('is_deleted', false)
                 ->get();
         } else {
@@ -68,12 +67,24 @@ class CollectionsController extends Controller
         ]);
         $collection = [];
         $msg = '';
-        $existing_collection = request()->company->collections()
-            ->where(['user_id' => $request->user_id, 'collection_name' => request()->collection_name])
+        $user = Auth::user();
+        $user_role = $user->roles[0]->name;
+        $existing_collection = Collection::where(['user_id' => $request->user_id, 'collection_name' => request()->collection_name])
             ->first();
         if (!$existing_collection) {
-            $collection = new Collection(request()->all());
-            $request->company->collections()->save($collection);
+            if ($user_role == "ACADEMIC TEAM") {
+                // If role is Academic Team, Then All Collection are approved 
+                $status = true;
+            } else if ($user_role == "INFAKT TEACHER") {
+                // If role is INFAKT TEACHER, Then All Collection are in pending 
+                $status = false;
+            } else {
+                $status = true;
+                $request->request->add(['company_id' => $user->companies[0]->id]);
+            }
+            $request->request->add(['status' => $status]);
+            $collection = new Collection($request->all());
+            $collection->save();
         } else {
             $msg = request()->collection_name . ' already exist.';
         }

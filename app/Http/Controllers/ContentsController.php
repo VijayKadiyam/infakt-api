@@ -17,6 +17,7 @@ use App\ContentMedia;
 use App\ContentSchool;
 use App\ContentSubject;
 use App\EtArticle;
+use App\Notification;
 use App\Search;
 use App\Subject;
 use App\ToiArticle;
@@ -321,6 +322,19 @@ class ContentsController extends Controller
             // Save Content
             $content = new Content(request()->all());
             $content->save();
+            $description = "A new Content [ $content->id ] has been uploaded. Waiting for your approval.";
+            // fetch Infakt Teacher 
+            $usersController = new UsersController();
+            $request->request->add(['role_id' => 6]);
+            $users = $usersController->index($request)->getData()->data;
+            foreach ($users as $key => $user) {
+                $notification_data = [
+                    'user_id' => $user->id,
+                    'description' => $description
+                ];
+                $notifications = new Notification($notification_data);
+                $notifications->save();
+            }
             // Save Content Categories
             if (isset($request->content_categories))
                 foreach ($request->content_categories as $category) {
@@ -402,6 +416,21 @@ class ContentsController extends Controller
         } else {
             // Update Content
             $content = Content::find($request->id);
+            if ($content->is_approved != $request->is_approved) {
+                // If Existing Is Approved Status differs from the request
+                if ($request->is_approved == 1) {
+                    $description = "Hurray! Content [ $content->id ] has been approved.";
+                }
+                if ($request->is_approved == 2) {
+                    $description = "Oops, Looks like your Content [$content->id ] has been rejected by the Academic Team. Kindly review the remark.";
+                }
+                $notification_data = [
+                    'user_id' => $content->created_by_id,
+                    'description' => $description
+                ];
+                $notifications = new Notification($notification_data);
+                $notifications->save();
+            }
             $content->update($request->all());
 
             // Check if Content Category deleted

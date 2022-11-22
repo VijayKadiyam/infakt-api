@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Collection extends Model
 {
    protected $fillable = [
+      'company_id',
       'user_id',
       'collection_name',
       'is_deleted',
+      'status'
    ];
 
    public function company()

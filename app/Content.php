@@ -31,6 +31,7 @@ class Content extends Model
         'is_approved',
         'toi_article_id',
         'et_article_id',
+        'remarks'
     ];
 
     public function created_by()

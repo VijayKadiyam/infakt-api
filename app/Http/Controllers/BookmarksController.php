@@ -90,11 +90,18 @@ class BookmarksController extends Controller
 
     public function destroy($id)
     {
-        $bookmark = Bookmark::find($id);
-        $bookmark->delete();
-
+        $bookmark = Bookmark::find($id)->update(['is_deleted' => true]);
         return response()->json([
             'message' =>  'Deleted'
         ], 204);
     }
+
+    // public function clear()
+    // {
+    //     $id = request()->notification_id;
+    //     $notifications = Notification::find($id)->update(['is_deleted' => true]);
+    //     return response()->json([
+    //         'message' =>  'Cleared All Messages'
+    //     ], 200);
+    // }
 }

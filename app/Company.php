@@ -128,7 +128,7 @@ class Company extends Model
 
   public function bookmarks()
   {
-    return $this->hasMany(Bookmark::class)->with('content');
+    return $this->hasMany(Bookmark::class)->with('content')->where('is_deleted', false);
   }
   public function collections()
   {

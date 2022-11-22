@@ -18,7 +18,7 @@ class NotificationsController extends Controller
     {
         $count = 0;
         $user_id = Auth::user()->id;
-        $notifications = $request->company->notifications();
+        $notifications = Notification::where('is_deleted', false);
         if ($user_id) {
             $notifications = $notifications->where('user_id', $user_id);
         }
