@@ -62,7 +62,12 @@ class AssignmentsController extends Controller
             }
         } else {
             $assignments = Assignment::where('created_by_id', '=', request()->user()->id)
-                ->with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions')
+                ->with(
+                    'my_results',
+                    'my_assignment_classcodes',
+                    'my_assignment_extensions',
+                    'content_description'
+                )
                 ->get();
         }
 
@@ -383,6 +388,7 @@ class AssignmentsController extends Controller
     public function show(Assignment $assignment)
     {
         $assignment->content = $assignment->content;
+        $assignment->content_description = $assignment->content_description;
         $assignment->assignment_classcodes = $assignment->assignment_classcodes;
         $assignment->assignment_questions = $assignment->assignment_questions;
         $assignment->assignment_extensions = $assignment->assignment_extensions;
