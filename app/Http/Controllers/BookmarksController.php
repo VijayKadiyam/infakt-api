@@ -16,11 +16,9 @@ class BookmarksController extends Controller
     {
         $count = 0;
         if ($request->user_id) {
-            $bookmarks = request()->company->bookmarks()
-                ->where('user_id', '=', $request->user_id)
+            $bookmarks = Bookmark::where('user_id', '=', $request->user_id)
                 ->get();
         } else {
-
             $bookmarks = request()->company->bookmarks;
             $count = $bookmarks->count();
         }
@@ -43,18 +41,19 @@ class BookmarksController extends Controller
         ]);
         $bookmark = [];
         $msg = '';
-        $existing_bookmark = request()->company->bookmarks()
-            ->where(['user_id' => request()->user_id, 'content_id' => request()->content_id])->first();
+        $existing_bookmark = Bookmark::where(['user_id' => request()->user_id, 'content_id' => request()->content_id])->first();
         $bookmark = [];
         if (!$existing_bookmark) {
-            $bookmark = new Bookmark(request()->all());
-            $request->company->bookmarks()->save($bookmark);
+            if ($request->company_id) {
+                $bookmark = new Bookmark(request()->all());
+                $request->company->bookmarks()->save($bookmark);
+            } else {
+                $bookmark = new Bookmark(request()->all());
+                $bookmark->save();
+            }
         } else {
             $msg = 'Bookmark already exist.';
         }
-
-
-
         return response()->json([
             'data'    =>  $bookmark,
             'msg' => $msg

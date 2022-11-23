@@ -27,8 +27,12 @@ class CollectionsController extends Controller
                 ->where('is_deleted', false)
                 ->where('status', true)
                 ->get();
+        } elseif ($request->is_pending_collection) {
+            $collections =  Collection::where('company_id', '=', null)
+                ->where('is_deleted', false)
+                ->where('status', false)
+                ->get();
         } else {
-
             $collections =  $request->company->collections()
                 ->where('is_deleted', false)->get();
             $count = $collections->count();
