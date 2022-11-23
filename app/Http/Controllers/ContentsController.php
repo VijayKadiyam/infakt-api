@@ -91,7 +91,7 @@ class ContentsController extends Controller
         $user = Auth::user();
         $my_assignments = $user->assignments;
         $user_role = $user->roles[0]->name;
-        $contents = Content::with('content_subjects', 'content_medias', 'content_reads', 'content_descriptions', 'content_hidden_classcodes', 'content_grades', 'content_boards', 'created_by');
+        $contents = Content::with('content_subjects', 'content_medias', 'content_reads', 'content_descriptions', 'content_hidden_classcodes', 'content_grades', 'content_boards', 'created_by', 'assignments');
 
         if (!in_array($user_role, ['INFAKT TEACHER', 'ACADEMIC TEAM', 'SUPERADMIN'])) {
             //Admin , Teacher & Student Should only view Approved & Active Content

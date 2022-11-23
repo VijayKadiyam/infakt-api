@@ -11,7 +11,8 @@ class Collection extends Model
       'user_id',
       'collection_name',
       'is_deleted',
-      'status'
+      'status',
+      'remarks',
    ];
 
    public function company()

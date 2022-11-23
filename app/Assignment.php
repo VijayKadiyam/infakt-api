@@ -13,6 +13,7 @@ class Assignment extends Model
         'created_by_id',
         'student_instructions',
         'content_id',
+        'content_description_id',
         'duration',
         'documentpath',
         'maximum_marks',
@@ -43,6 +44,11 @@ class Assignment extends Model
     public function content()
     {
         return $this->belongsTo(Content::class)->where('is_active', true);
+    }
+
+    public function content_description()
+    {
+        return $this->belongsTo(ContentDescription::class);
     }
 
     public function assignment_classcodes()
