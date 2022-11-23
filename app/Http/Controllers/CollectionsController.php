@@ -22,6 +22,11 @@ class CollectionsController extends Controller
             $collections =  Collection::where('user_id', '=', $request->user_id)
                 ->where('is_deleted', false)
                 ->get();
+        } elseif ($request->all_collection_by_AT_IT) {
+            $collections =  Collection::where('company_id', '=', null)
+                ->where('is_deleted', false)
+                ->where('status', true)
+                ->get();
         } else {
 
             $collections =  $request->company->collections()
@@ -50,7 +55,7 @@ class CollectionsController extends Controller
         return response()->json([
             'data'     =>  $collections,
             'success'     =>  true,
-            'count'    =>   $count
+            'count'    =>   sizeof($collections)
         ], 200);
     }
 
