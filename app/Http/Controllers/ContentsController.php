@@ -12,6 +12,9 @@ use App\ContentDescription;
 use App\ContentGrade;
 use App\ContentHiddenClasscode;
 use App\ContentInfoBoard;
+use App\ContentInfoBoardGrade;
+use App\ContentInfoBoardSchool;
+use App\ContentInfoBoardSubject;
 use App\ContentLockClasscode;
 use App\ContentMedia;
 use App\ContentSchool;
@@ -91,7 +94,7 @@ class ContentsController extends Controller
         $user = Auth::user();
         $my_assignments = $user->assignments;
         $user_role = $user->roles[0]->name;
-        $contents = Content::with('content_subjects', 'content_medias', 'content_reads', 'content_descriptions', 'content_hidden_classcodes', 'content_grades', 'content_boards', 'created_by', 'assignments');
+        $contents = Content::with('content_subjects', 'content_medias', 'content_reads', 'content_descriptions', 'content_hidden_classcodes', 'content_grades', 'content_boards', 'created_by', 'assignments', 'my_assignments');
 
         if (!in_array($user_role, ['INFAKT TEACHER', 'ACADEMIC TEAM', 'SUPERADMIN'])) {
             //Admin , Teacher & Student Should only view Approved & Active Content
@@ -404,6 +407,24 @@ class ContentsController extends Controller
                 foreach ($request->content_info_boards as $info_board) {
                     $content_info_board = new ContentInfoBoard($info_board);
                     $content->content_info_boards()->save($content_info_board);
+
+                    // Save Content Info Board Schools
+                    $info_board_grades = $info_board['content_info_board_grades'];
+                    if (isset($info_board_grades))
+                        foreach ($info_board_grades as $grade) {
+                            $content_info_board_grade = new ContentInfoBoardGrade($grade);
+                            $content_info_board->content_info_board_grades()->save($content_info_board_grade);
+                        }
+                    // ---------------------------------------------------
+
+                    // Save Content Info Board Subjects
+                    $info_board_subjects = $info_board['content_info_board_subjects'];
+                    if (isset($info_board_subjects))
+                        foreach ($info_board_subjects as $subject) {
+                            $content_info_board_subject = new ContentInfoBoardSubject($subject);
+                            $content_info_board->content_info_board_subjects()->save($content_info_board_subject);
+                        }
+                    // ---------------------------------------------------
                 }
             // ---------------------------------------------------
             // Save Content Schools
