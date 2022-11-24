@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Assignment;
 use App\Collection;
+use App\Notification;
 use App\UserClasscode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -87,6 +88,19 @@ class CollectionsController extends Controller
             } else if ($user_role == "INFAKT TEACHER") {
                 // If role is INFAKT TEACHER, Then All Collection are in pending 
                 $status = false;
+                $description = "A new collection is created. Waiting for your approval.";
+                // fetch Academic Team 
+                $usersController = new UsersController();
+                $request->request->add(['role_id' => 6]);
+                $users = $usersController->index($request)->getData()->data;
+                foreach ($users as $key => $user) {
+                    $notification_data = [
+                        'user_id' => $user->id,
+                        'description' => $description
+                    ];
+                    $notifications = new Notification($notification_data);
+                    $notifications->save();
+                }
             } else {
                 $status = true;
                 $request->request->add(['company_id' => $user->companies[0]->id]);
@@ -171,8 +185,22 @@ class CollectionsController extends Controller
      */
     public function update(Request $request, Collection $collection)
     {
+        if ($collection->status != $request->status) {
+            // If Existing Is Approved Status differs from the request
+            if ($request->status == 1) {
+                $description = "Hurray! Collection [ $collection->collection_name ] has been approved.";
+            }
+            if ($request->status == 2) {
+                $description = "Oops, Looks like your Collection [ $collection->collection_name ] has been rejected by the Academic Team. Kindly review the remark.";
+            }
+            $notification_data = [
+                'user_id' => $collection->user_id,
+                'description' => $description
+            ];
+            $notifications = new Notification($notification_data);
+            $notifications->save();
+        }
         $collection->update($request->all());
-
         return response()->json([
             'data'  =>  $collection
         ], 200);
