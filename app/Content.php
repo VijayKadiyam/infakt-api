@@ -109,4 +109,8 @@ class Content extends Model
     {
         return $this->hasMany(Assignment::class);
     }
+    public function my_assignments()
+    {
+        return $this->hasMany(Assignment::class)->where('created_by_id', request()->user()->id);
+    }
 }

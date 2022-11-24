@@ -32,8 +32,11 @@ class AssignmentsController extends Controller
         $roleName = request()->user()->roles[0]->name;
         if ($roleName == 'ADMIN') {
             $assignments = request()->company->assignments()
-                ->with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions')
-                ->get();
+                ->with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions');
+            if (request()->articleId) {
+                $assignments = $assignments->where('content_id', request()->articleId);
+            }
+            $assignments = $assignments->get();
         } else if ($roleName == 'TEACHER') {
             $assignments = request()->company->assignments()
                 ->where('created_by_id', '=', request()->user()->id)
@@ -42,6 +45,9 @@ class AssignmentsController extends Controller
                 $assignments = $assignments->wherehas('my_assignment_classcodes', 'my_assignment_extensions', function ($uc) {
                     $uc->where('classcode_id', '=', request()->classcode_id);
                 });
+            }
+            if (request()->articleId) {
+                $assignments = $assignments->where('content_id', request()->articleId);
             }
             $assignments = $assignments->get();
         } else if ($roleName == 'STUDENT') {
@@ -67,8 +73,11 @@ class AssignmentsController extends Controller
                     'my_assignment_classcodes',
                     'my_assignment_extensions',
                     'content_description'
-                )
-                ->get();
+                );
+            if (request()->articleId) {
+                $assignments = $assignments->where('content_id', request()->articleId);
+            }
+            $assignments = $assignments->get();
         }
 
         return response()->json([
