@@ -323,7 +323,7 @@ class ContentsController extends Controller
             $content = new Content(request()->all());
             $content->save();
             $description = "A new Content [ $content->id ] has been uploaded. Waiting for your approval.";
-            // fetch Infakt Teacher 
+            // fetch Academic Team 
             $usersController = new UsersController();
             $request->request->add(['role_id' => 6]);
             $users = $usersController->index($request)->getData()->data;
