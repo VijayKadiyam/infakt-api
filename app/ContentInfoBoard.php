@@ -34,7 +34,7 @@ class ContentInfoBoard extends Model
     {
         return $this->hasMany(ContentInfoBoardSubject::class)->with('subject');
     }
-    public function board() {
-        return $this->belongsTo(Board::class);
-    }
+    // public function board() {
+    //     return $this->belongsTo(Board::class);
+    // }
 }
