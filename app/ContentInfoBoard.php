@@ -22,13 +22,17 @@ class ContentInfoBoard extends Model
     {
         return $this->belongsTo(Content::class)->where('is_active', true);
     }
+    public function board()
+    {
+        return $this->belongsTo(Board::class);
+    }
     public function content_info_board_grades()
     {
-        return $this->hasMany(ContentInfoBoardGrade::class);
+        return $this->hasMany(ContentInfoBoardGrade::class)->with('grade');
     }
     public function content_info_board_subjects()
     {
-        return $this->hasMany(ContentInfoBoardSubject::class);
+        return $this->hasMany(ContentInfoBoardSubject::class)->with('subject');
     }
     public function board() {
         return $this->belongsTo(Board::class);
