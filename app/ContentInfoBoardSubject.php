@@ -15,4 +15,8 @@ class ContentInfoBoardSubject extends Model
     {
         return $this->belongsTo(ContentInfoBoard::class);
     }
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class);
+    }
 }
