@@ -15,4 +15,8 @@ class ContentInfoBoardGrade extends Model
     {
         return $this->belongsTo(ContentInfoBoard::class);
     }
+    public function grade()
+    {
+        return $this->belongsTo(Grade::class);
+    }
 }
