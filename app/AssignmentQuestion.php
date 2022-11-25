@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class AssignmentQuestion extends Model
 {
+    protected $casts = [
+        'correct_options' => 'array'
+    ];
+
     protected $fillable = [
         'assignment_id',
         'description',
@@ -20,7 +24,9 @@ class AssignmentQuestion extends Model
         'option4',
         'option5',
         'option6',
-        'model_answer'
+        'model_answer',
+        'question_type',
+        'correct_options',
     ];
 
     public function company()

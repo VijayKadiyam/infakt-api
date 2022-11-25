@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserAssignmentSelectedAnswer extends Model
 {
+
+    protected $casts = [
+        'selected_options' => 'array'
+    ];
+
     protected $fillable = [
         "user_id",
         "assignment_id",
@@ -27,6 +32,9 @@ class UserAssignmentSelectedAnswer extends Model
         'feedback',
         'option5',
         'option6',
+        'selected_options',
+        'question_type',
+        'model_answer'
     ];
 
     public function company()

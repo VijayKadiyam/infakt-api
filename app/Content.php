@@ -89,7 +89,7 @@ class Content extends Model
     }
     public function content_info_boards()
     {
-        return $this->hasMany(ContentInfoBoard::class)->with('content_info_board_grades', 'content_info_board_subjects');
+        return $this->hasMany(ContentInfoBoard::class)->with('board');
     }
     public function content_schools()
     {

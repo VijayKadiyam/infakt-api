@@ -408,23 +408,23 @@ class ContentsController extends Controller
                     $content_info_board = new ContentInfoBoard($info_board);
                     $content->content_info_boards()->save($content_info_board);
 
-                    // Save Content Info Board Schools
-                    $info_board_grades = $info_board['content_info_board_grades'];
-                    if (isset($info_board_grades))
-                        foreach ($info_board_grades as $grade) {
-                            $content_info_board_grade = new ContentInfoBoardGrade($grade);
-                            $content_info_board->content_info_board_grades()->save($content_info_board_grade);
-                        }
-                    // ---------------------------------------------------
+                    // // Save Content Info Board Schools
+                    // $info_board_grades = $info_board['content_info_board_grades'];
+                    // if (isset($info_board_grades))
+                    //     foreach ($info_board_grades as $grade) {
+                    //         $content_info_board_grade = new ContentInfoBoardGrade($grade);
+                    //         $content_info_board->content_info_board_grades()->save($content_info_board_grade);
+                    //     }
+                    // // ---------------------------------------------------
 
-                    // Save Content Info Board Subjects
-                    $info_board_subjects = $info_board['content_info_board_subjects'];
-                    if (isset($info_board_subjects))
-                        foreach ($info_board_subjects as $subject) {
-                            $content_info_board_subject = new ContentInfoBoardSubject($subject);
-                            $content_info_board->content_info_board_subjects()->save($content_info_board_subject);
-                        }
-                    // ---------------------------------------------------
+                    // // Save Content Info Board Subjects
+                    // $info_board_subjects = $info_board['content_info_board_subjects'];
+                    // if (isset($info_board_subjects))
+                    //     foreach ($info_board_subjects as $subject) {
+                    //         $content_info_board_subject = new ContentInfoBoardSubject($subject);
+                    //         $content_info_board->content_info_board_subjects()->save($content_info_board_subject);
+                    //     }
+                    // // ---------------------------------------------------
                 }
             // ---------------------------------------------------
             // Save Content Schools

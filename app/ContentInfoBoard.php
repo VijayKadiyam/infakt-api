@@ -6,10 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class ContentInfoBoard extends Model
 {
+    protected $casts = [
+        'grades' => 'array',
+        'subjects' => 'array',
+    ];
+
     protected $fillable = [
         'content_id',
         'board_id',
         'learning_outcome',
+        'grades',
+        'subjects',
     ];
     public function content()
     {
@@ -22,5 +29,8 @@ class ContentInfoBoard extends Model
     public function content_info_board_subjects()
     {
         return $this->hasMany(ContentInfoBoardSubject::class);
+    }
+    public function board() {
+        return $this->belongsTo(Board::class);
     }
 }
