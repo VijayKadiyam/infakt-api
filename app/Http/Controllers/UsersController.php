@@ -87,6 +87,13 @@ class UsersController extends Controller
         });
     }
 
+    if (request()->is_superadmin == true) {
+      $users = User::with('roles', 'classcodes', 'board')->whereHas('roles', function ($q) {
+        $q->where('name', '=', 'INFAKT TEACHER');
+        $q->orwhere('name', '=', 'ACADEMIC TEAM');
+      });
+    }
+
     if ($request->standard_id) {
       $users = $users->whereHas('user_classcodes', function ($uc) {
         $uc->where('standard_id', '=', request()->standard_id);
