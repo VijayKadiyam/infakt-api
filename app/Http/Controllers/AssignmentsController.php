@@ -66,7 +66,7 @@ class AssignmentsController extends Controller
                 // array_merge($assignments, $classcodeAssignments);
                 $assignments = [...$assignments, ...$classcodeAssignments];
             }
-        } else {
+        } else if ($roleName == 'INFAKT TEACHER') {
             $assignments = Assignment::where('created_by_id', '=', request()->user()->id)
                 ->with(
                     'my_results',
@@ -74,6 +74,17 @@ class AssignmentsController extends Controller
                     'my_assignment_extensions',
                     'content_description'
                 );
+            if (request()->articleId) {
+                $assignments = $assignments->where('content_id', request()->articleId);
+            }
+            $assignments = $assignments->get();
+        } else {
+            $assignments = Assignment::with(
+                'my_results',
+                'my_assignment_classcodes',
+                'my_assignment_extensions',
+                'content_description'
+            );
             if (request()->articleId) {
                 $assignments = $assignments->where('content_id', request()->articleId);
             }
