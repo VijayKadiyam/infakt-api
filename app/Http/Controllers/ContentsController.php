@@ -92,8 +92,8 @@ class ContentsController extends Controller
         $Assigned_to_read_articles = [];
 
         $user = Auth::user();
-        $my_assignments = $user->assignments;
         $user_role = $user->roles[0]->name;
+
         $contents = Content::with('content_subjects', 'content_medias', 'content_reads', 'content_descriptions', 'content_hidden_classcodes', 'content_grades', 'content_boards', 'created_by', 'assignments', 'my_assignments', 'content_info_boards');
 
         if (!in_array($user_role, ['INFAKT TEACHER', 'ACADEMIC TEAM', 'SUPERADMIN'])) {
@@ -175,7 +175,7 @@ class ContentsController extends Controller
             $contents = $contents->limit(4);
         }
         $contents = $contents->latest()->get();
-        $user_role = request()->roleName;
+        $user_role = request()->roleName ? request()->roleName : $user_role;
         $user_id = request()->user_id;
         if ($user_role == 'STUDENT') {
             // If Role is Student// Show Filtered Content
@@ -210,6 +210,7 @@ class ContentsController extends Controller
         $infographic_contents = [];
         $video_contents = [];
         $CategoryWiseContent = [];
+        $total_assignments = [];
         foreach ($contents as $key => $content) {
             // Random Subject Image 
             $image_Array = [];
@@ -245,7 +246,7 @@ class ContentsController extends Controller
                     break;
             }
             // Category Wise  
-            if (sizeOf($content->content_categories)) {
+            if (sizeOf($content->content_categories) && sizeOf($content->content_descriptions)) {
                 // Select First Category 
                 $category = $content->content_categories[0]->category;
                 $category_key = array_search($category->id, array_column($CategoryWiseContent, 'id'));
@@ -273,6 +274,7 @@ class ContentsController extends Controller
                     $CategoryWiseContent[] = $content_details;
                 }
             }
+            $total_assignments = [...$total_assignments, ...$content->assignments];
         }
         $content_types = [
             [
@@ -294,13 +296,20 @@ class ContentsController extends Controller
                 'values' => $video_contents
             ]
         ];
+        if ($user_role == 'ACADEMIC TEAM') {
+            // If role is Academic Team then total assignments means all the assignment Combined 
+            $assignments = $total_assignments;
+        } else {
+            // If role is not Academic Team then assignments means all the assignment created by them 
+            $assignments = $user->assignments;
+        }
         return response()->json([
             'data'  =>  $contents,
             'count' =>   sizeof($contents),
             'content_types' => $content_types,
             'CategoryWiseContent' => $CategoryWiseContent,
             'Assign_to_read_articles' => $Assigned_to_read_articles,
-            'assignments' => $my_assignments,
+            'assignments' => $assignments,
             'success' =>  true,
         ], 200);
     }

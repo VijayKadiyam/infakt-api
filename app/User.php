@@ -186,7 +186,7 @@ class User extends Authenticatable
   public function content_metadatas()
   {
     return $this->hasMany(ContentMetadata::class)
-      ->with('content');
+      ->with('content')->orderBy('id', 'DESC');
   }
   public function user_subjects()
   {
