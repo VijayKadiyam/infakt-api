@@ -438,6 +438,7 @@ class ContentsController extends Controller
             // Update Content
             $content = Content::find($request->id);
             if ($content->is_approved != $request->is_approved) {
+                $description = '';
                 // If Existing Is Approved Status differs from the request
                 if ($request->is_approved == 1) {
                     $description = "Hurray! Content [ $content->id ] has been approved.";
