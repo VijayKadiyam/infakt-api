@@ -732,59 +732,59 @@ class ContentsController extends Controller
                         $content_info_board->update($info_board);
                     }
 
-                    // Check if Content InfoBoard Grade deleted
-                    $content_info_board_grades = $info_board['content_info_board_grades'];
-                    if (isset($content_info_board_grades))
-                        $gradeIdResponseArray = array_pluck($content_info_board_grades, 'id');
-                    else
-                        $gradeIdResponseArray = [];
-                    $info_boardId = $contentInfoBoard->id;
-                    $gradeIdArray = array_pluck(ContentInfoBoardGrade::where('content_info_board_id', '=', $info_boardId)->get(), 'id');
-                    $differenceInfoBoardIds = array_diff($gradeIdArray, $gradeIdResponseArray);
-                    // Delete which is there in the database but not in the response
-                    if ($differenceInfoBoardIds)
-                        foreach ($differenceInfoBoardIds as $differenceInfoBoardId) {
-                            $grade = ContentInfoBoardGrade::find($differenceInfoBoardId);
-                            $grade->delete();
-                        }
-                    // Update Content InfoBoard Grade
-                    if (isset($grades))
-                        foreach ($grades as $info_board_grade) {
-                            if (!isset($info_board_grade['id'])) {
-                                $grade = new ContentInfoBoardGrade($info_board_grade);
-                                $info_board->content_info_board_grades()->save($grade);
-                            } else {
-                                $contentInfoBoardGrade = ContentInfoBoardGrade::find($info_board_grade['id']);
-                                $contentInfoBoardGrade->update($info_board_grade);
-                            }
-                        }
+                    // // Check if Content InfoBoard Grade deleted
+                    // $content_info_board_grades = $info_board['content_info_board_grades'];
+                    // if (isset($content_info_board_grades))
+                    //     $gradeIdResponseArray = array_pluck($content_info_board_grades, 'id');
+                    // else
+                    //     $gradeIdResponseArray = [];
+                    // $info_boardId = $contentInfoBoard->id;
+                    // $gradeIdArray = array_pluck(ContentInfoBoardGrade::where('content_info_board_id', '=', $info_boardId)->get(), 'id');
+                    // $differenceInfoBoardIds = array_diff($gradeIdArray, $gradeIdResponseArray);
+                    // // Delete which is there in the database but not in the response
+                    // if ($differenceInfoBoardIds)
+                    //     foreach ($differenceInfoBoardIds as $differenceInfoBoardId) {
+                    //         $grade = ContentInfoBoardGrade::find($differenceInfoBoardId);
+                    //         $grade->delete();
+                    //     }
+                    // // Update Content InfoBoard Grade
+                    // if (isset($grades))
+                    //     foreach ($grades as $info_board_grade) {
+                    //         if (!isset($info_board_grade['id'])) {
+                    //             $grade = new ContentInfoBoardGrade($info_board_grade);
+                    //             $info_board->content_info_board_grades()->save($grade);
+                    //         } else {
+                    //             $contentInfoBoardGrade = ContentInfoBoardGrade::find($info_board_grade['id']);
+                    //             $contentInfoBoardGrade->update($info_board_grade);
+                    //         }
+                    //     }
 
-                    // Check if Content InfoBoard Subject deleted
-                    $content_info_board_subjects = $info_board['content_info_board_subjects'];
-                    if (isset($content_info_board_subjects))
-                        $subjectIdResponseArray = array_pluck($content_info_board_subjects, 'id');
-                    else
-                        $subjectIdResponseArray = [];
-                    $info_boardId = $contentInfoBoard->id;
-                    $subjectIdArray = array_pluck(ContentInfoBoardSubject::where('content_info_board_id', '=', $info_boardId)->get(), 'id');
-                    $differenceInfoBoardIds = array_diff($subjectIdArray, $subjectIdResponseArray);
-                    // Delete which is there in the database but not in the response
-                    if ($differenceInfoBoardIds)
-                        foreach ($differenceInfoBoardIds as $differenceInfoBoardId) {
-                            $subject = ContentInfoBoardSubject::find($differenceInfoBoardId);
-                            $subject->delete();
-                        }
-                    // Update Content InfoBoard Subject
-                    if (isset($subjects))
-                        foreach ($subjects as $info_board_subject) {
-                            if (!isset($info_board_subject['id'])) {
-                                $subject = new ContentInfoBoardSubject($info_board_subject);
-                                $info_board->content_info_board_subjects()->save($subject);
-                            } else {
-                                $contentInfoBoardSubject = ContentInfoBoardSubject::find($info_board_subject['id']);
-                                $contentInfoBoardSubject->update($info_board_subject);
-                            }
-                        }
+                    // // Check if Content InfoBoard Subject deleted
+                    // $content_info_board_subjects = $info_board['content_info_board_subjects'];
+                    // if (isset($content_info_board_subjects))
+                    //     $subjectIdResponseArray = array_pluck($content_info_board_subjects, 'id');
+                    // else
+                    //     $subjectIdResponseArray = [];
+                    // $info_boardId = $contentInfoBoard->id;
+                    // $subjectIdArray = array_pluck(ContentInfoBoardSubject::where('content_info_board_id', '=', $info_boardId)->get(), 'id');
+                    // $differenceInfoBoardIds = array_diff($subjectIdArray, $subjectIdResponseArray);
+                    // // Delete which is there in the database but not in the response
+                    // if ($differenceInfoBoardIds)
+                    //     foreach ($differenceInfoBoardIds as $differenceInfoBoardId) {
+                    //         $subject = ContentInfoBoardSubject::find($differenceInfoBoardId);
+                    //         $subject->delete();
+                    //     }
+                    // // Update Content InfoBoard Subject
+                    // if (isset($subjects))
+                    //     foreach ($subjects as $info_board_subject) {
+                    //         if (!isset($info_board_subject['id'])) {
+                    //             $subject = new ContentInfoBoardSubject($info_board_subject);
+                    //             $info_board->content_info_board_subjects()->save($subject);
+                    //         } else {
+                    //             $contentInfoBoardSubject = ContentInfoBoardSubject::find($info_board_subject['id']);
+                    //             $contentInfoBoardSubject->update($info_board_subject);
+                    //         }
+                    //     }
                 }
 
             // ---------------------------------------------------
