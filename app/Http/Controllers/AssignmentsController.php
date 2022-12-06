@@ -13,6 +13,7 @@ use App\Notification;
 use App\Role;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AssignmentsController extends Controller
 {
@@ -69,6 +70,7 @@ class AssignmentsController extends Controller
         } else if ($roleName == 'INFAKT TEACHER') {
             $assignments = Assignment::where('created_by_id', '=', request()->user()->id)
                 ->with(
+                    'created_by',
                     'my_results',
                     'my_assignment_classcodes',
                     'my_assignment_extensions',
@@ -126,8 +128,34 @@ class AssignmentsController extends Controller
             'assignment_classcodes.*.end_date'  =>  'required',
         ]);
         if ($request->id == null || $request->id == '') {
+            $user = Auth::user();
+            $user_role = $user->roles[0]->name;
+            if ($user_role == "ACADEMIC TEAM") {
+                // If role is Academic Team, Then All Assignment are approved 
+                $status = true;
+            } else if ($user_role == "INFAKT TEACHER") {
+                // If role is INFAKT TEACHER, Then All Assignment are in pending 
+                $status = false;
+                $description = "A new assignment is created. Waiting for your approval.";
+                // fetch Academic Team 
+                $usersController = new UsersController();
+                $request->request->add(['role_id' => 6]);
+                $users = $usersController->index($request)->getData()->data;
+                foreach ($users as $key => $user) {
+                    $notification_data = [
+                        'user_id' => $user->id,
+                        'description' => $description
+                    ];
+                    $notifications = new Notification($notification_data);
+                    $notifications->save();
+                }
+            } else {
+                $status = true;
+                $request->request->add(['company_id' => $user->companies[0]->id]);
+            }
+            $request->request->add(['status' => $status]);
             // Save Assignment
-            $assignment = new Assignment(request()->all());
+            $assignment = new Assignment($request->all());
             $assignment->save();
             // Save Assignment Classcode
             if (isset($request->assignment_classcodes))

@@ -25,6 +25,8 @@ class Assignment extends Model
         'time_data',
         'model_answer',
         'is_active',
+        'status',
+        'remarks',
     ];
     protected $casts = [
         'time_data'  =>  'array'
