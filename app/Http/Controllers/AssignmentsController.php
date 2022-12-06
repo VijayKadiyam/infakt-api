@@ -82,6 +82,7 @@ class AssignmentsController extends Controller
             $assignments = $assignments->get();
         } else {
             $assignments = Assignment::with(
+                'created_by',
                 'my_results',
                 'my_assignment_classcodes',
                 'my_assignment_extensions',
