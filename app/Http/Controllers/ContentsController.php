@@ -450,8 +450,8 @@ class ContentsController extends Controller
             $content = Content::find($request->id);
             if ($user_role == "ACADEMIC TEAM") {
                 // If role is Academic Team, Then Sent Status Notification
-                $status = $request->status;
-                if ($content->is_approved != $request->is_approved && $request->status) {
+                $is_approved = $request->is_approved;
+                if ($content->is_approved != $request->is_approved && $request->is_approved) {
                     $description = '';
                     // If Existing Is Approved Status differs from the request
                     if ($request->is_approved == 1) {
@@ -469,7 +469,7 @@ class ContentsController extends Controller
                 }
             } else if ($user_role == "INFAKT TEACHER") {
                 // If role is INFAKT TEACHER, Then All Assignment are in pending 
-                $status = false;
+                $is_approved = false;
                 $description = "A new assignment is created. Waiting for your approval.";
                 // fetch Academic Team 
                 $usersController = new UsersController();
@@ -484,10 +484,10 @@ class ContentsController extends Controller
                     $notifications->save();
                 }
             } else {
-                $status = true;
+                $is_approved = true;
                 $request->request->add(['company_id' => $user->companies[0]->id]);
             }
-            $request->request->add(['is_approved' => $status]);
+            $request->request->add(['is_approved' => $is_approved]);
             $content->update($request->all());
 
             // Check if Content Category deleted
