@@ -109,6 +109,7 @@ Route::get('contents/masters', 'ContentsController@masters');
 Route::get('contents/assigned_to_read_articles', 'ContentsController@assigned_to_read_articles');
 Route::resource('contents', 'ContentsController');
 Route::post('upload_content_featured_image', 'UploadsController@uploadContentFeaturedImage');
+Route::post('upload_editor_image', 'UploadsController@uploadEditorImage');
 
 // Standards
 Route::resource('standards', 'StandardsController');

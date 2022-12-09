@@ -108,7 +108,7 @@ class UploadsController extends Controller
         $name = $request->filename ?? "$f_name.";
         $name = $name . $file->getClientOriginalExtension();
         $mediapath = 'infakt/content-medias/' .  $request->id . '/' . $name;
-        Storage::disk('local')->put($mediapath, file_get_contents($file), 'public');
+        Storage::disk('s3')->put($mediapath, file_get_contents($file), 'public');
         // Storage::disk('s3')->put($mediapath, file_get_contents($file), 'public');
 
         $content_media = ContentMedia::where('id', '=', $request->$id)->first();
@@ -339,5 +339,26 @@ class UploadsController extends Controller
       'message' =>  "Subject Imagepath Upload Successfully",
       'success' =>  true
     ], 200);
+  }
+
+  // Upload Function For Editor Image
+  public function uploadEditorImage(Request $request)
+  {
+    $mediapath = '';
+    if ($request->hasFile('file')) {
+      $file = $request->file('file');
+      $f_name = 'file';
+      $name = $request->filename ?? "$f_name";
+      $name = $name . time() . ".";
+      $name = $name . $file->getClientOriginalExtension();
+      $mediapath = 'infakt/editor-medias/' . $name;
+      Storage::disk('s3')->put($mediapath, file_get_contents($file), 'public');
+    }
+
+    $response = [
+      'link'  =>  env('AWS_LINK') . $mediapath
+    ];
+
+    return stripslashes(json_encode($response));
   }
 }
