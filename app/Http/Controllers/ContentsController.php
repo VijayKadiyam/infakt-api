@@ -92,8 +92,8 @@ class ContentsController extends Controller
         $Assigned_to_read_articles = [];
 
         $user = Auth::user();
-        $my_assignments = $user->assignments;
         $user_role = $user->roles[0]->name;
+
         $contents = Content::with('content_subjects', 'content_medias', 'content_reads', 'content_descriptions', 'content_hidden_classcodes', 'content_grades', 'content_boards', 'created_by', 'assignments', 'my_assignments', 'content_info_boards');
 
         if (!in_array($user_role, ['INFAKT TEACHER', 'ACADEMIC TEAM', 'SUPERADMIN'])) {
@@ -175,7 +175,7 @@ class ContentsController extends Controller
             $contents = $contents->limit(4);
         }
         $contents = $contents->latest()->get();
-        $user_role = request()->roleName;
+        $user_role = request()->roleName ? request()->roleName : $user_role;
         $user_id = request()->user_id;
         if ($user_role == 'STUDENT') {
             // If Role is Student// Show Filtered Content
@@ -210,6 +210,7 @@ class ContentsController extends Controller
         $infographic_contents = [];
         $video_contents = [];
         $CategoryWiseContent = [];
+        $total_assignments = [];
         foreach ($contents as $key => $content) {
             // Random Subject Image 
             $image_Array = [];
@@ -245,7 +246,7 @@ class ContentsController extends Controller
                     break;
             }
             // Category Wise  
-            if (sizeOf($content->content_categories)) {
+            if (sizeOf($content->content_categories) && sizeOf($content->content_descriptions)) {
                 // Select First Category 
                 $category = $content->content_categories[0]->category;
                 $category_key = array_search($category->id, array_column($CategoryWiseContent, 'id'));
@@ -273,6 +274,7 @@ class ContentsController extends Controller
                     $CategoryWiseContent[] = $content_details;
                 }
             }
+            $total_assignments = [...$total_assignments, ...$content->assignments];
         }
         $content_types = [
             [
@@ -294,13 +296,20 @@ class ContentsController extends Controller
                 'values' => $video_contents
             ]
         ];
+        if ($user_role == 'ACADEMIC TEAM') {
+            // If role is Academic Team then total assignments means all the assignment Combined 
+            $assignments = $total_assignments;
+        } else {
+            // If role is not Academic Team then assignments means all the assignment created by them 
+            $assignments = $user->assignments;
+        }
         return response()->json([
             'data'  =>  $contents,
             'count' =>   sizeof($contents),
             'content_types' => $content_types,
             'CategoryWiseContent' => $CategoryWiseContent,
             'Assign_to_read_articles' => $Assigned_to_read_articles,
-            'assignments' => $my_assignments,
+            'assignments' => $assignments,
             'success' =>  true,
         ], 200);
     }
@@ -315,12 +324,16 @@ class ContentsController extends Controller
     {
         $request->validate([
             'content_name'  =>  'required',
+            'content_type'  =>  'required',
             'content_categories'  =>  'required',
             'content_assign_to_reads.*.due_date'    =>  'required',
+            'content_descriptions'    =>  'required',
             'content_descriptions.*.level'    =>  'required',
             'content_descriptions.*.title'    =>  'required',
             'content_descriptions.*.description'    =>  'required',
         ]);
+        $user = Auth::user();
+        $user_role = $user->roles[0]->name;
         if ($request->id == null || $request->id == '') {
             // Save Content
             $content = new Content(request()->all());
@@ -437,22 +450,46 @@ class ContentsController extends Controller
         } else {
             // Update Content
             $content = Content::find($request->id);
-            if ($content->is_approved != $request->is_approved) {
-                $description = '';
-                // If Existing Is Approved Status differs from the request
-                if ($request->is_approved == 1) {
-                    $description = "Hurray! Content [ $content->id ] has been approved.";
+            if ($user_role == "ACADEMIC TEAM") {
+                // If role is Academic Team, Then Sent Status Notification
+                $is_approved = $request->is_approved;
+                if ($content->is_approved != $request->is_approved && $request->is_approved) {
+                    $description = '';
+                    // If Existing Is Approved Status differs from the request
+                    if ($request->is_approved == 1) {
+                        $description = "Hurray! Content [ $content->id ] has been approved.";
+                    }
+                    if ($request->is_approved == 2) {
+                        $description = "Oops, Looks like your Content [$content->id ] has been rejected by the Academic Team. Kindly review the remark.";
+                    }
+                    $notification_data = [
+                        'user_id' => $content->created_by_id,
+                        'description' => $description
+                    ];
+                    $notifications = new Notification($notification_data);
+                    $notifications->save();
                 }
-                if ($request->is_approved == 2) {
-                    $description = "Oops, Looks like your Content [$content->id ] has been rejected by the Academic Team. Kindly review the remark.";
+            } else if ($user_role == "INFAKT TEACHER") {
+                // If role is INFAKT TEACHER, Then All Assignment are in pending 
+                $is_approved = false;
+                $description = "A new assignment is created. Waiting for your approval.";
+                // fetch Academic Team 
+                $usersController = new UsersController();
+                $request->request->add(['role_id' => 6]);
+                $users = $usersController->index($request)->getData()->data;
+                foreach ($users as $key => $user) {
+                    $notification_data = [
+                        'user_id' => $user->id,
+                        'description' => $description
+                    ];
+                    $notifications = new Notification($notification_data);
+                    $notifications->save();
                 }
-                $notification_data = [
-                    'user_id' => $content->created_by_id,
-                    'description' => $description
-                ];
-                $notifications = new Notification($notification_data);
-                $notifications->save();
+            } else {
+                $is_approved = true;
+                $request->request->add(['company_id' => $user->companies[0]->id]);
             }
+            $request->request->add(['is_approved' => $is_approved]);
             $content->update($request->all());
 
             // Check if Content Category deleted

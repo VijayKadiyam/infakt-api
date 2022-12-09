@@ -26,7 +26,8 @@ class AdminDashboardsController extends Controller
         $counts = [];
         $counts['avgTimeSpentByTeacher'] = '23 min';
         $counts['avgTimeSpentByStudent'] = '42 min';
-        $counts['classcode_Reads'] = $company->classcode__reads()->count();
+        // $counts['classcode_Reads'] = $company->classcode__reads()->count();
+        $counts['classcode_Reads'] = "0";
         $counts['assignmentsPosted'] = $company->assignments()->where('is_deleted', false)->count();
         $counts['students'] =  $company->students()->count();
         $counts['teachers'] = $company->teachers()->count();
