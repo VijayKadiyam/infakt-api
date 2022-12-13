@@ -325,6 +325,7 @@ class ContentsController extends Controller
         $request->validate([
             'content_name'  =>  'required',
             'content_type'  =>  'required',
+            'content_schools'  =>  'required_if:specific_to,SCHOOL,false',
             'content_categories'  =>  'required',
             'content_assign_to_reads.*.due_date'    =>  'required',
             'content_descriptions'    =>  'required',
