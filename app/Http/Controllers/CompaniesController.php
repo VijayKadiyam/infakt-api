@@ -102,8 +102,8 @@ class CompaniesController extends Controller
       'email'   =>  'required',
       'phone'   =>  'required',
       'address' =>  'required',
-      'city' =>  'required',
-      'state' =>  'required',
+      'city'    =>  'required',
+      'state'   =>  'required',
       'pincode' =>  'required',
     ]);
 
@@ -160,7 +160,7 @@ class CompaniesController extends Controller
       $user['last_name'] = "Admin";
       $user['name'] =  $request->first_name . 'Admin';
       $user['email'] = $request->email;
-      $user['active'] = true;
+      $user['active'] = $request->is_active;
       $user['password'] = bcrypt('123456');
       $user = new User($user);
       $user->save();
