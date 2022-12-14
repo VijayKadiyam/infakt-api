@@ -18,7 +18,8 @@ class Company extends Model
     'state',
     'pincode',
     'code',
-    'is_mail_sent'
+    'is_active',
+    'is_mail_sent',
   ];
 
   /*
