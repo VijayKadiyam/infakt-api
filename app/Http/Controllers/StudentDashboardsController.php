@@ -55,7 +55,7 @@ class StudentDashboardsController extends Controller
                 $endDiff = date_diff($currentDate, $endDate)->format("%R%a");
                 $isUpcoming = $startDiff > 0 ? true : false;
                 $isDue = $endDiff < 0 ? true : false;
-                $inProgress = $startDiff < 0 && $endDiff >= 0 ? true : false;
+                $inProgress = $startDiff <= 0 && $endDiff >= 0 ? true : false;
                 if ($isUpcoming) $singleAssignment['status'] = 'UPCOMING';
                 else if ($isDue && !$isSubmitted) $singleAssignment['status'] = 'OVERDUE';
                 else if ($inProgress && !$isSubmitted) $singleAssignment['status'] = 'IN PROGRESS';
