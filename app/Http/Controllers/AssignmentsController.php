@@ -39,16 +39,23 @@ class AssignmentsController extends Controller
             }
             $assignments = $assignments->get();
         } else if ($roleName == 'TEACHER') {
-            $assignments = request()->company->assignments()
-                ->where('created_by_id', '=', request()->user()->id)
-                ->with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions');
-            if (request()->classcode_id) {
-                $assignments = $assignments->wherehas('my_assignment_classcodes', 'my_assignment_extensions', function ($uc) {
-                    $uc->where('classcode_id', '=', request()->classcode_id);
-                });
-            }
             if (request()->articleId) {
+                $assignments = Assignment::with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions');
+                if (request()->classcode_id) {
+                    $assignments = $assignments->wherehas('my_assignment_classcodes', 'my_assignment_extensions', function ($uc) {
+                        $uc->where('classcode_id', '=', request()->classcode_id);
+                    });
+                }
                 $assignments = $assignments->where('content_id', request()->articleId);
+            } else {
+                $assignments = request()->company->assignments()
+                    ->where('created_by_id', '=', request()->user()->id)
+                    ->with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions');
+                if (request()->classcode_id) {
+                    $assignments = $assignments->wherehas('my_assignment_classcodes', 'my_assignment_extensions', function ($uc) {
+                        $uc->where('classcode_id', '=', request()->classcode_id);
+                    });
+                }
             }
             $assignments = $assignments->get();
         } else if ($roleName == 'STUDENT') {
