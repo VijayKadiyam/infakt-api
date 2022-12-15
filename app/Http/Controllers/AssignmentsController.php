@@ -40,7 +40,8 @@ class AssignmentsController extends Controller
             $assignments = $assignments->get();
         } else if ($roleName == 'TEACHER') {
             if (request()->articleId) {
-                $assignments = Assignment::with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions');
+                $assignments = Assignment::with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions')
+                    ->where('status', true);
                 if (request()->classcode_id) {
                     $assignments = $assignments->wherehas('my_assignment_classcodes', 'my_assignment_extensions', function ($uc) {
                         $uc->where('classcode_id', '=', request()->classcode_id);
@@ -50,6 +51,7 @@ class AssignmentsController extends Controller
             } else {
                 $assignments = request()->company->assignments()
                     ->where('created_by_id', '=', request()->user()->id)
+                    ->where('status', true)
                     ->with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions');
                 if (request()->classcode_id) {
                     $assignments = $assignments->wherehas('my_assignment_classcodes', 'my_assignment_extensions', function ($uc) {
@@ -61,6 +63,7 @@ class AssignmentsController extends Controller
         } else if ($roleName == 'STUDENT') {
             $assignments = [];
             $userClascodes = request()->user()->user_classcodes;
+            // return $userClascodes;
             foreach ($userClascodes as $userClascode) {
                 $classcode = $userClascode->classcode_id;
 
@@ -69,6 +72,7 @@ class AssignmentsController extends Controller
                         $q->where('classcode_id', '=', $classcode);
                     })
                     ->with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions')
+                    ->where('status', true)
                     ->get();
                 // return $assignments;
                 // array_merge($assignments, $classcodeAssignments);
