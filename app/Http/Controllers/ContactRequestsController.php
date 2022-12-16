@@ -12,7 +12,7 @@ class ContactRequestsController extends Controller
         $this->middleware(['auth:api']);
     }
 
-    /**
+    /** 
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
