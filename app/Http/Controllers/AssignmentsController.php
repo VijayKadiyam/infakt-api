@@ -40,7 +40,7 @@ class AssignmentsController extends Controller
             $assignments = $assignments->get();
         } else if ($roleName == 'TEACHER') {
             if (request()->articleId) {
-                $assignments = Assignment::with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions', 'content_description')
+                $assignments = Assignment::with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions', 'content_description', 'assignment_classcodes')
                     ->where('status', true);
                 if (request()->classcode_id) {
                     $assignments = $assignments->wherehas('my_assignment_classcodes', 'my_assignment_extensions', function ($uc) {
