@@ -39,21 +39,31 @@ class AssignmentsController extends Controller
             }
             $assignments = $assignments->get();
         } else if ($roleName == 'TEACHER') {
-            $assignments = request()->company->assignments()
-                ->where('created_by_id', '=', request()->user()->id)
-                ->with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions');
-            if (request()->classcode_id) {
-                $assignments = $assignments->wherehas('my_assignment_classcodes', 'my_assignment_extensions', function ($uc) {
-                    $uc->where('classcode_id', '=', request()->classcode_id);
-                });
-            }
             if (request()->articleId) {
+                $assignments = Assignment::with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions', 'content_description')
+                    ->where('status', true);
+                if (request()->classcode_id) {
+                    $assignments = $assignments->wherehas('my_assignment_classcodes', 'my_assignment_extensions', function ($uc) {
+                        $uc->where('classcode_id', '=', request()->classcode_id);
+                    });
+                }
                 $assignments = $assignments->where('content_id', request()->articleId);
+            } else {
+                $assignments = request()->company->assignments()
+                    ->where('created_by_id', '=', request()->user()->id)
+                    ->where('status', true)
+                    ->with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions', 'content_description');
+                if (request()->classcode_id) {
+                    $assignments = $assignments->wherehas('my_assignment_classcodes', 'my_assignment_extensions', function ($uc) {
+                        $uc->where('classcode_id', '=', request()->classcode_id);
+                    });
+                }
             }
             $assignments = $assignments->get();
         } else if ($roleName == 'STUDENT') {
             $assignments = [];
             $userClascodes = request()->user()->user_classcodes;
+            // return $userClascodes;
             foreach ($userClascodes as $userClascode) {
                 $classcode = $userClascode->classcode_id;
 
@@ -62,6 +72,7 @@ class AssignmentsController extends Controller
                         $q->where('classcode_id', '=', $classcode);
                     })
                     ->with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions')
+                    ->where('status', true)
                     ->get();
                 // return $assignments;
                 // array_merge($assignments, $classcodeAssignments);
@@ -127,6 +138,10 @@ class AssignmentsController extends Controller
             'assignment_type'  =>  'required',
             'maximum_marks'  =>  'required',
             'assignment_classcodes.*.end_date'  =>  'required',
+            'assignment_questions.*.marks'  =>  'required_unless:assignment_type,==,DOCUMENT',
+            'assignment_questions.*.description'  =>  'required_unless:assignment_type,==,DOCUMENT',
+            'assignment_questions.*.option1'  =>  'required_if:assignment_questions.*.question_type,==,OBJECTIVE',
+            'assignment_questions.*.option2'  =>  'required_if:assignment_questions.*.question_type,==,OBJECTIVE',
         ]);
         $user = Auth::user();
         $user_role = $user->roles[0]->name;
