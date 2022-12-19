@@ -138,6 +138,10 @@ class AssignmentsController extends Controller
             'assignment_type'  =>  'required',
             'maximum_marks'  =>  'required',
             'assignment_classcodes.*.end_date'  =>  'required',
+            'assignment_questions.*.marks'  =>  'required_unless:assignment_type,==,DOCUMENT',
+            'assignment_questions.*.description'  =>  'required_unless:assignment_type,==,DOCUMENT',
+            'assignment_questions.*.option1'  =>  'required_if:assignment_questions.*.question_type,==,OBJECTIVE',
+            'assignment_questions.*.option2'  =>  'required_if:assignment_questions.*.question_type,==,OBJECTIVE',
         ]);
         $user = Auth::user();
         $user_role = $user->roles[0]->name;
