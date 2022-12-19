@@ -34,7 +34,8 @@ class UserAssignmentSelectedAnswer extends Model
         'option6',
         'selected_options',
         'question_type',
-        'model_answer'
+        'model_answer',
+        'correct_options',
     ];
 
     public function company()
