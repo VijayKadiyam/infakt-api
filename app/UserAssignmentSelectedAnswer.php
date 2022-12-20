@@ -8,7 +8,8 @@ class UserAssignmentSelectedAnswer extends Model
 {
 
     protected $casts = [
-        'selected_options' => 'array'
+        'selected_options' => 'array',
+        'correct_options' => 'array',
     ];
 
     protected $fillable = [

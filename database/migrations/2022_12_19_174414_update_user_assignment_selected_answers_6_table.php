@@ -14,7 +14,7 @@ class UpdateUserAssignmentSelectedAnswers6Table extends Migration
     public function up()
     {
         Schema::table('user_assignment_selected_answers', function (Blueprint $table) {
-            $table->longText('correct_options')->nullable();
+            $table->json('correct_options')->nullable();
         });
     }
 
