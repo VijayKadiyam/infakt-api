@@ -59,7 +59,7 @@ class AssignmentsController extends Controller
                     });
                 }
             }
-            $assignments = $assignments->get();
+            $assignments = $assignments->latest()->get();
         } else if ($roleName == 'STUDENT') {
             $assignments = [];
             $userClascodes = request()->user()->user_classcodes;
