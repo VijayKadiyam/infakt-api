@@ -218,7 +218,7 @@ class StudentDashboardsController extends Controller
             }
             // End Classcode Wise Bifurcation
         }
-        $assignmentOverview['statusWiseAssignments'] = [$upcoming, $overdue, $inprogress, $completed];
+        $assignmentOverview['statusWiseAssignments'] = [$inprogress, $overdue, $completed, $upcoming];
         $assignmentOverview['typeWiseAssignments'] = [$subjective, $objective, $document];
         $assignmentOverview['classcodeWiseAssignments'] = $classcodeWise;
 
