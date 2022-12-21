@@ -110,23 +110,24 @@ class StudentDashboardsController extends Controller
             "typeWiseAssignments"   =>  [],
             "classcodeWiseAssignments"  =>  [],
         ];
-        $upcoming = [
-            'name'  =>  'UPCOMING',
-            'count' =>  0,
-            'values'    =>  []
-        ];
-        $overdue = [
-            'name'  =>  'OVERDUE',
-            'count' =>  0,
-            'values'    =>  []
-        ];
         $inprogress = [
             'name'  =>  'IN PROGRESS',
             'count' =>  0,
             'values'    =>  []
         ];
+        
+        $overdue = [
+            'name'  =>  'OVERDUE',
+            'count' =>  0,
+            'values'    =>  []
+        ];
         $completed = [
             'name'  =>  'COMPLETED',
+            'count' =>  0,
+            'values'    =>  []
+        ];
+        $upcoming = [
+            'name'  =>  'UPCOMING',
             'count' =>  0,
             'values'    =>  []
         ];
