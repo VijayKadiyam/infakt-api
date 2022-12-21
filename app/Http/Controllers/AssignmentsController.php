@@ -71,7 +71,7 @@ class AssignmentsController extends Controller
                     ->whereHas('assignment_classcodes', function ($q) use ($classcode) {
                         $q->where('classcode_id', '=', $classcode);
                     })
-                    ->with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions')
+                    ->with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions', 'content_description')
                     ->where('status', true)
                     ->latest()
                     ->get();
