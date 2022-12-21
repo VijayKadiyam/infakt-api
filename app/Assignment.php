@@ -27,6 +27,8 @@ class Assignment extends Model
         'is_active',
         'status',
         'remarks',
+        'copied_from_assignment_id',
+        'is_modified',
     ];
     protected $casts = [
         'time_data'  =>  'array'
