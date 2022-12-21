@@ -37,7 +37,7 @@ class AssignmentsController extends Controller
             if (request()->articleId) {
                 $assignments = $assignments->where('content_id', request()->articleId);
             }
-            $assignments = $assignments->get();
+            $assignments = $assignments->latest()->get();
         } else if ($roleName == 'TEACHER') {
             if (request()->articleId) {
                 $assignments = Assignment::with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions', 'content_description', 'assignment_classcodes')
@@ -59,7 +59,7 @@ class AssignmentsController extends Controller
                     });
                 }
             }
-            $assignments = $assignments->get();
+            $assignments = $assignments->latest()->get();
         } else if ($roleName == 'STUDENT') {
             $assignments = [];
             $userClascodes = request()->user()->user_classcodes;
@@ -71,8 +71,9 @@ class AssignmentsController extends Controller
                     ->whereHas('assignment_classcodes', function ($q) use ($classcode) {
                         $q->where('classcode_id', '=', $classcode);
                     })
-                    ->with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions')
+                    ->with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions', 'content_description')
                     ->where('status', true)
+                    ->latest()
                     ->get();
                 // return $assignments;
                 // array_merge($assignments, $classcodeAssignments);
@@ -90,7 +91,7 @@ class AssignmentsController extends Controller
             if (request()->articleId) {
                 $assignments = $assignments->where('content_id', request()->articleId);
             }
-            $assignments = $assignments->get();
+            $assignments = $assignments->latest()->get();
         } else {
             $assignments = Assignment::with(
                 'created_by',
@@ -102,7 +103,7 @@ class AssignmentsController extends Controller
             if (request()->articleId) {
                 $assignments = $assignments->where('content_id', request()->articleId);
             }
-            $assignments = $assignments->get();
+            $assignments = $assignments->latest()->get();
         }
 
         return response()->json([
