@@ -115,7 +115,7 @@ class StudentDashboardsController extends Controller
             'count' =>  0,
             'values'    =>  []
         ];
-        
+
         $overdue = [
             'name'  =>  'OVERDUE',
             'count' =>  0,
@@ -150,21 +150,21 @@ class StudentDashboardsController extends Controller
         foreach ($myAssignments as $singleAssignment) {
             // Status Wise Bifurcation
             switch ($singleAssignment['status']) {
-                case 'UPCOMING':
-                    $upcoming['count']++;
-                    $upcoming['values'][]   =   $singleAssignment;
+                case 'IN PROGRESS':
+                    $inprogress['count']++;
+                    $inprogress['values'][]   =   $singleAssignment;
                     break;
                 case 'OVERDUE':
                     $overdue['count']++;
                     $overdue['values'][]   =   $singleAssignment;
                     break;
-                case 'IN PROGRESS':
-                    $inprogress['count']++;
-                    $inprogress['values'][]   =   $singleAssignment;
-                    break;
                 case 'COMPLETED':
                     $completed['count']++;
                     $completed['values'][]   =   $singleAssignment;
+                    break;
+                case 'UPCOMING':
+                    $upcoming['count']++;
+                    $upcoming['values'][]   =   $singleAssignment;
                     break;
                 default:
                     break;
