@@ -62,12 +62,9 @@ class AssignmentsController extends Controller
             $assignments = $assignments->latest()->get();
         } else if ($roleName == 'STUDENT') {
             $assignments = [];
-            $userClascodes = request()->user()->user_classcodes;
-            // return $userClascodes;
-            foreach ($userClascodes as $userClascode) {
-                $classcode = $userClascode->classcode_id;
-
-                $classcodeAssignments = request()->company->assignments()
+            if (request()->classcode_id) {
+                $classcode = request()->classcode_id;
+                $assignments = request()->company->assignments()
                     ->whereHas('assignment_classcodes', function ($q) use ($classcode) {
                         $q->where('classcode_id', '=', $classcode);
                     })
@@ -75,9 +72,24 @@ class AssignmentsController extends Controller
                     ->where('status', true)
                     ->latest()
                     ->get();
-                // return $assignments;
-                // array_merge($assignments, $classcodeAssignments);
-                $assignments = [...$assignments, ...$classcodeAssignments];
+            } else {
+
+                $userClascodes = request()->user()->user_classcodes;
+                foreach ($userClascodes as $userClascode) {
+                    $classcode = $userClascode->classcode_id;
+
+                    $classcodeAssignments = request()->company->assignments()
+                        ->whereHas('assignment_classcodes', function ($q) use ($classcode) {
+                            $q->where('classcode_id', '=', $classcode);
+                        })
+                        ->with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions', 'content_description')
+                        ->where('status', true)
+                        ->latest()
+                        ->get();
+                    // return $assignments;
+                    // array_merge($assignments, $classcodeAssignments);
+                    $assignments = [...$assignments, ...$classcodeAssignments];
+                }
             }
         } else if ($roleName == 'INFAKT TEACHER') {
             $assignments = Assignment::where('created_by_id', '=', request()->user()->id)
