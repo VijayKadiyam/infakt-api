@@ -110,23 +110,24 @@ class StudentDashboardsController extends Controller
             "typeWiseAssignments"   =>  [],
             "classcodeWiseAssignments"  =>  [],
         ];
-        $upcoming = [
-            'name'  =>  'UPCOMING',
-            'count' =>  0,
-            'values'    =>  []
-        ];
-        $overdue = [
-            'name'  =>  'OVERDUE',
-            'count' =>  0,
-            'values'    =>  []
-        ];
         $inprogress = [
             'name'  =>  'IN PROGRESS',
             'count' =>  0,
             'values'    =>  []
         ];
+
+        $overdue = [
+            'name'  =>  'OVERDUE',
+            'count' =>  0,
+            'values'    =>  []
+        ];
         $completed = [
             'name'  =>  'COMPLETED',
+            'count' =>  0,
+            'values'    =>  []
+        ];
+        $upcoming = [
+            'name'  =>  'UPCOMING',
             'count' =>  0,
             'values'    =>  []
         ];
@@ -149,21 +150,21 @@ class StudentDashboardsController extends Controller
         foreach ($myAssignments as $singleAssignment) {
             // Status Wise Bifurcation
             switch ($singleAssignment['status']) {
-                case 'UPCOMING':
-                    $upcoming['count']++;
-                    $upcoming['values'][]   =   $singleAssignment;
+                case 'IN PROGRESS':
+                    $inprogress['count']++;
+                    $inprogress['values'][]   =   $singleAssignment;
                     break;
                 case 'OVERDUE':
                     $overdue['count']++;
                     $overdue['values'][]   =   $singleAssignment;
                     break;
-                case 'IN PROGRESS':
-                    $inprogress['count']++;
-                    $inprogress['values'][]   =   $singleAssignment;
-                    break;
                 case 'COMPLETED':
                     $completed['count']++;
                     $completed['values'][]   =   $singleAssignment;
+                    break;
+                case 'UPCOMING':
+                    $upcoming['count']++;
+                    $upcoming['values'][]   =   $singleAssignment;
                     break;
                 default:
                     break;
@@ -217,7 +218,7 @@ class StudentDashboardsController extends Controller
             }
             // End Classcode Wise Bifurcation
         }
-        $assignmentOverview['statusWiseAssignments'] = [$upcoming, $overdue, $inprogress, $completed];
+        $assignmentOverview['statusWiseAssignments'] = [$inprogress, $overdue, $completed, $upcoming];
         $assignmentOverview['typeWiseAssignments'] = [$subjective, $objective, $document];
         $assignmentOverview['classcodeWiseAssignments'] = $classcodeWise;
 
