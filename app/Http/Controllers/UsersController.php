@@ -320,12 +320,6 @@ class UsersController extends Controller
     if ($request->role_id)
       $user->assignRole($request->role_id);
 
-    if ($request->user_classcodes) {
-      foreach ($request->user_classcodes as $key => $uc) {
-        $user_classcodes = new UserClasscode($uc);
-        $user->user_classcodes()->save($user_classcodes);
-      }
-    }
     // $user->assignCompany(1);
     $user->roles = $user->roles;
     $user->companies = $user->companies;
