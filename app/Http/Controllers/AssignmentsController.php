@@ -43,7 +43,7 @@ class AssignmentsController extends Controller
                 $assignments = Assignment::with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions', 'content_description', 'assignment_classcodes')
                     ->where('status', true);
                 if (request()->classcode_id) {
-                    $assignments = $assignments->wherehas('my_assignment_classcodes', 'my_assignment_extensions', function ($uc) {
+                    $assignments = $assignments->wherehas('my_assignment_classcodes', function ($uc) {
                         $uc->where('classcode_id', '=', request()->classcode_id);
                     });
                 }
@@ -51,10 +51,11 @@ class AssignmentsController extends Controller
             } else {
                 $assignments = request()->company->assignments()
                     ->where('created_by_id', '=', request()->user()->id)
-                    ->where('status', true)
+                    ->where('status', '!=', false)
+                    ->where('status', '!=', 2)
                     ->with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions', 'content_description');
                 if (request()->classcode_id) {
-                    $assignments = $assignments->wherehas('my_assignment_classcodes', 'my_assignment_extensions', function ($uc) {
+                    $assignments = $assignments->wherehas('my_assignment_classcodes', function ($uc) {
                         $uc->where('classcode_id', '=', request()->classcode_id);
                     });
                 }
@@ -159,28 +160,32 @@ class AssignmentsController extends Controller
         $user = Auth::user();
         $user_role = $user->roles[0]->name;
         if ($request->id == null || $request->id == '') {
-            if ($user_role == "ACADEMIC TEAM") {
-                // If role is Academic Team, Then All Assignment are approved 
-                $status = true;
-            } else if ($user_role == "INFAKT TEACHER") {
-                // If role is INFAKT TEACHER, Then All Assignment are in pending 
-                $status = false;
-                $description = "A new assignment is created. Waiting for your approval.";
-                // fetch Academic Team 
-                $usersController = new UsersController();
-                $request->request->add(['role_id' => 6]);
-                $users = $usersController->index($request)->getData()->data;
-                foreach ($users as $key => $user) {
-                    $notification_data = [
-                        'user_id' => $user->id,
-                        'description' => $description
-                    ];
-                    $notifications = new Notification($notification_data);
-                    $notifications->save();
+            $status = $request->status;
+            if ($status != 3) {
+                # code...
+                if ($user_role == "ACADEMIC TEAM") {
+                    // If role is Academic Team, Then All Assignment are approved 
+                    $status = true;
+                } else if ($user_role == "INFAKT TEACHER") {
+                    // If role is INFAKT TEACHER, Then All Assignment are in pending 
+                    $status = false;
+                    $description = "A new assignment is created. Waiting for your approval.";
+                    // fetch Academic Team 
+                    $usersController = new UsersController();
+                    $request->request->add(['role_id' => 6]);
+                    $users = $usersController->index($request)->getData()->data;
+                    foreach ($users as $key => $user) {
+                        $notification_data = [
+                            'user_id' => $user->id,
+                            'description' => $description
+                        ];
+                        $notifications = new Notification($notification_data);
+                        $notifications->save();
+                    }
+                } else {
+                    $status = true;
+                    $request->request->add(['company_id' => $user->companies[0]->id]);
                 }
-            } else {
-                $status = true;
-                $request->request->add(['company_id' => $user->companies[0]->id]);
             }
             $request->request->add(['status' => $status]);
             // Save Assignment
@@ -243,44 +248,48 @@ class AssignmentsController extends Controller
         } else {
             // Update Assignmnet
             $assignment = Assignment::find($request->id);
-            if ($user_role == "ACADEMIC TEAM") {
-                // If role is Academic Team, Then Sent Status Notification
-                $status = $request->status;
-                if ($assignment->status != $request->status && $request->status) {
-                    $description = '';
-                    // If Existing Is Approved Status differs from the request
-                    if ($request->status == 1) {
-                        $description = "Hurray! Assignment [ $assignment->id ] has been approved.";
+            $status = $request->status;
+            if ($status != 3) {
+                # code...
+
+                if ($user_role == "ACADEMIC TEAM") {
+                    // If role is Academic Team, Then Sent Status Notification
+                    if ($assignment->status != $request->status && $request->status) {
+                        $description = '';
+                        // If Existing Is Approved Status differs from the request
+                        if ($request->status == 1) {
+                            $description = "Hurray! Assignment [ $assignment->id ] has been approved.";
+                        }
+                        if ($request->status == 2) {
+                            $description = "Oops, Looks like your Assignment [$assignment->id ] has been rejected by the Academic Team. Kindly review the remark.";
+                        }
+                        $notification_data = [
+                            'user_id' => $assignment->created_by_id,
+                            'description' => $description
+                        ];
+                        $notifications = new Notification($notification_data);
+                        $notifications->save();
                     }
-                    if ($request->status == 2) {
-                        $description = "Oops, Looks like your Assignment [$assignment->id ] has been rejected by the Academic Team. Kindly review the remark.";
+                } else if ($user_role == "INFAKT TEACHER") {
+                    // If role is INFAKT TEACHER, Then All Assignment are in pending 
+                    $status = false;
+                    $description = "A new assignment is created. Waiting for your approval.";
+                    // fetch Academic Team 
+                    $usersController = new UsersController();
+                    $request->request->add(['role_id' => 6]);
+                    $users = $usersController->index($request)->getData()->data;
+                    foreach ($users as $key => $user) {
+                        $notification_data = [
+                            'user_id' => $user->id,
+                            'description' => $description
+                        ];
+                        $notifications = new Notification($notification_data);
+                        $notifications->save();
                     }
-                    $notification_data = [
-                        'user_id' => $assignment->created_by_id,
-                        'description' => $description
-                    ];
-                    $notifications = new Notification($notification_data);
-                    $notifications->save();
+                } else {
+                    $status = true;
+                    $request->request->add(['company_id' => $user->companies[0]->id]);
                 }
-            } else if ($user_role == "INFAKT TEACHER") {
-                // If role is INFAKT TEACHER, Then All Assignment are in pending 
-                $status = false;
-                $description = "A new assignment is created. Waiting for your approval.";
-                // fetch Academic Team 
-                $usersController = new UsersController();
-                $request->request->add(['role_id' => 6]);
-                $users = $usersController->index($request)->getData()->data;
-                foreach ($users as $key => $user) {
-                    $notification_data = [
-                        'user_id' => $user->id,
-                        'description' => $description
-                    ];
-                    $notifications = new Notification($notification_data);
-                    $notifications->save();
-                }
-            } else {
-                $status = true;
-                $request->request->add(['company_id' => $user->companies[0]->id]);
             }
             $request->request->add(['status' => $status]);
             $assignment->update($request->all());
