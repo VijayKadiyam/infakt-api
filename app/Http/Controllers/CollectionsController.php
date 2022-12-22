@@ -200,6 +200,14 @@ class CollectionsController extends Controller
             $notifications = new Notification($notification_data);
             $notifications->save();
         }
+        $user = Auth::user();
+        $user_role = $user->roles[0]->name;
+        if ($user_role == "INFAKT TEACHER") {
+            // If role is INFAKT TEACHER, Then All Collection are in pending 
+            $status = false;
+            $request->request->add(['status' => $status]);
+        }
+
         $collection->update($request->all());
         return response()->json([
             'data'  =>  $collection

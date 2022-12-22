@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Collection;
 use App\CollectionContent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CollectionContentsController extends Controller
 {
@@ -43,6 +44,12 @@ class CollectionContentsController extends Controller
         if (!$existing_collection_content) {
             $collection_contents = new CollectionContent(request()->all());
             $collection_contents->save();
+            $user = Auth::user();
+            $user_role = $user->roles[0]->name;
+            if ($user_role == "INFAKT TEACHER") {
+                // If role is INFAKT TEACHER, Then All Collection are in pending
+                $collection = Collection::find(request()->collection_id)->update(['status' => false]);
+            }
         } else {
             $msg = 'Content already exist';
         }
