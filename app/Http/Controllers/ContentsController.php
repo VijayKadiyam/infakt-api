@@ -96,7 +96,7 @@ class ContentsController extends Controller
 
         $contents = Content::with('content_subjects', 'content_medias', 'content_reads', 'content_descriptions', 'content_hidden_classcodes', 'content_grades', 'content_boards', 'created_by', 'assignments', 'my_assignments', 'content_info_boards');
 
-        if (!in_array($user_role, ['INFAKT TEACHER', 'ACADEMIC TEAM', 'SUPERADMIN'])) {
+        if (!in_array($user_role, ['INFAKT TEACHER', 'ACADEMIC TEAM', 'SUPER ADMIN'])) {
             //Admin , Teacher & Student Should only view Approved & Active Content
             $contents = $contents
                 ->where('is_active', true)
