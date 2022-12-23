@@ -49,10 +49,16 @@ class AssignmentsController extends Controller
                 }
                 $assignments = $assignments->where('content_id', request()->articleId);
             } else {
-                $assignments = request()->company->assignments()
-                    ->where('created_by_id', '=', request()->user()->id)
+                $assignments = Assignment::with('assignment_questions', 'assignment_extensions', 'created_by', 'assignment_classcodes')
+                    ->where(function ($query) {
+                        $query->where(function ($q) {
+                            $q->where('created_by_id', '=', request()->user()->id);
+                        })->orwhere(function ($q) {
+                            $q->where('company_id', null)
+                                ->where('status', true);
+                        });
+                    })
                     ->where('status', '!=', false)
-                    ->where('status', '!=', 2)
                     ->with('my_results', 'my_assignment_classcodes', 'my_assignment_extensions', 'content_description');
                 if (request()->classcode_id) {
                     $assignments = $assignments->wherehas('my_assignment_classcodes', function ($uc) {
@@ -112,7 +118,16 @@ class AssignmentsController extends Controller
                 'my_assignment_classcodes',
                 'my_assignment_extensions',
                 'content_description'
-            );
+            )
+                // Disable Draft from Other Users
+                ->where(function ($query) {
+                    $query->where(function ($q) {
+                        $q->where('created_by_id', '=', request()->user()->id);
+                    })->orwhere(function ($q) {
+                        $q->where('company_id', null)
+                            ->where('status', '!=', 3);
+                    });
+                });
             if (request()->articleId) {
                 $assignments = $assignments->where('content_id', request()->articleId);
             }
