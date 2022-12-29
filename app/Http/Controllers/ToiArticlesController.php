@@ -26,21 +26,39 @@ class ToiArticlesController extends Controller
             $toi_articles = new ToiArticle;
             $toi_articles = $toi_articles->with('contents')->where('word_count', '>', 100)
                 ->orderBy('story_date', 'DESC');
-            if (request()->search_keyword) {
-                $toi_articles = $toi_articles->where('edition_name', 'LIKE', '%' . request()->search_keyword . '%')
-                    ->orWhere('id', 'LIKE', '%' . request()->search_keyword . '%')
-                    ->orWhere('story_date', 'LIKE', '%' . request()->search_keyword . '%')
-                    ->orWhere('headline', 'LIKE', '%' . request()->search_keyword . '%')
-                    ->orWhere('byline', 'LIKE', '%' . request()->search_keyword . '%')
-                    ->orWhere('drophead', 'LIKE', '%' . request()->search_keyword . '%')
-                    ->orWhere('category', 'LIKE', '%' . request()->search_keyword . '%');
-            }
-            if (request()->word_count) {
-                $toi_articles = $toi_articles->where('word_count', '>', request()->word_count);
-            }
-            if (request()->date_filter) {
-                $toi_articles = $toi_articles->where('story_date', request()->date_filter);
-            }
+            $toi_articles = $toi_articles->where(function ($query) {
+                if (request()->search_keyword) {
+                    $query->where(function ($q) {
+                        $q->where('edition_name', 'LIKE', '%' . request()->search_keyword . '%')
+                            ->orWhere('id', 'LIKE', '%' . request()->search_keyword . '%')
+                            ->orWhere('story_date', 'LIKE', '%' . request()->search_keyword . '%')
+                            ->orWhere('headline', 'LIKE', '%' . request()->search_keyword . '%')
+                            ->orWhere('byline', 'LIKE', '%' . request()->search_keyword . '%')
+                            ->orWhere('drophead', 'LIKE', '%' . request()->search_keyword . '%')
+                            ->orWhere('category', 'LIKE', '%' . request()->search_keyword . '%');
+                    });
+                    // $toi_articles = $toi_articles->where('edition_name', 'LIKE', '%' . request()->search_keyword . '%')
+                    //     ->orWhere('id', 'LIKE', '%' . request()->search_keyword . '%')
+                    //     ->orWhere('story_date', 'LIKE', '%' . request()->search_keyword . '%')
+                    //     ->orWhere('headline', 'LIKE', '%' . request()->search_keyword . '%')
+                    //     ->orWhere('byline', 'LIKE', '%' . request()->search_keyword . '%')
+                    //     ->orWhere('drophead', 'LIKE', '%' . request()->search_keyword . '%')
+                    //     ->orWhere('category', 'LIKE', '%' . request()->search_keyword . '%');
+
+                }
+                if (request()->word_count) {
+                    $query->where(function ($q) {
+                        $q->where('word_count', '>', request()->word_count);
+                    });
+                    // $toi_articles = $toi_articles->where('word_count', '>', request()->word_count);
+                }
+                if (request()->date_filter) {
+                    $query->where(function ($q) {
+                        $q->where('story_date', request()->date_filter);
+                    });
+                    // $toi_articles = $toi_articles->where('story_date', request()->date_filter);
+                }
+            });
             $count = $toi_articles->count();
             $toi_articles = $toi_articles->paginate(request()->rowsPerPage)->toArray();
             $toi_articles = $toi_articles['data'];
