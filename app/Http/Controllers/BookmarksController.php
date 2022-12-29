@@ -16,7 +16,9 @@ class BookmarksController extends Controller
     {
         $count = 0;
         if ($request->user_id) {
-            $bookmarks = Bookmark::where('user_id', '=', $request->user_id)->with('content')
+            $bookmarks = Bookmark::where('user_id', '=', $request->user_id)
+                ->where('is_deleted', false)
+                ->with('content')
                 ->get();
         } else {
             $bookmarks = request()->company->bookmarks;
