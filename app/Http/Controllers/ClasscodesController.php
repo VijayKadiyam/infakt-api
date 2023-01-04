@@ -118,6 +118,17 @@ class ClasscodesController extends Controller
 
         $classcode->update($request->all());
 
+        if ($classcode) {
+            $section = $classcode->section;
+            $standard = $classcode->section->standard;
+            $standard_name = $standard->name;
+            $section_name = $section->name;
+            $classcode_id = $classcode->id;
+            $board = Board::find($standard->board_id);
+
+            $classcode->classcode =  mb_substr($board['name'], 0, 2) . '/' . $standard_name . "" . $section_name . "/" . $classcode->subject_name . "/" . $classcode_id;
+            $classcode->update();
+        }
         return response()->json([
             'data'  =>  $classcode
         ], 200);
