@@ -10,6 +10,7 @@ class Section extends Model
         'company_id',
         'name',
         'standard_id',
+        'board_id',
         'is_active',
         'is_deleted',
     ];
