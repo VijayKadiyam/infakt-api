@@ -11,6 +11,7 @@ class Classcode extends Model
         'company_id',
         'standard_id',
         'section_id',
+        'board_id',
         'subject_name',
         'classcode',
         'is_deleted',

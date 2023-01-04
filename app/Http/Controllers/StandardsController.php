@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Board;
 use App\Classcode;
 use App\Role;
 use App\Section;
@@ -91,11 +92,14 @@ class StandardsController extends Controller
             $standard = new Standard(request()->all());
             $request->company->standards()->save($standard);
             $standardId = $standard->id;
+            $boardId = $standard->board_id;
+            $board = Board::find($standard->board_id);
             $standard_name = $standard->name;
             // Save Section
             if (isset($request->sections))
                 foreach ($request->sections as $section) {
                     $section['company_id'] = $standard->company_id;
+                    $section['board_id'] = $standard->board_id;
 
                     $store_section = new Section($section);
                     $standard->sections()->save($store_section);
@@ -106,10 +110,11 @@ class StandardsController extends Controller
                         foreach ($class_codes as $classcode) {
                             $classcode['company_id'] = $standard->company_id;
                             $classcode['standard_id'] = $standardId;
+                            $classcode['board_id'] = $boardId;
                             $class_code = new Classcode($classcode);
                             $store_section->classcodes()->save($class_code);
 
-                            $class_code['classcode'] = $standard_name . "" . $section_name . "/" . $classcode['subject_name'] . "/" . $class_code->id;
+                            $class_code['classcode'] = mb_substr($board['name'], 0, 2) . '/' . $standard_name . "" . $section_name . "/" . $classcode['subject_name'] . "/" . $class_code->id;
                             $class_code->update();
                         }
                     // ---------------------------------------------------
@@ -121,6 +126,7 @@ class StandardsController extends Controller
             $standard = Standard::find($request->id);
             $standard->update($request->all());
             $standard_name = $standard->name;
+            $board = Board::find($standard->board_id);
             // Check if Section deleted
             if (isset($request->sections))
                 $sectionIdResponseArray = array_pluck($request->sections, 'id');
@@ -140,6 +146,7 @@ class StandardsController extends Controller
             if (isset($request->sections))
                 foreach ($request->sections as $sec) {
                     $sec['company_id'] = $standard->company_id;
+                    $sec['board_id'] = $standard->board_id;
                     if (!isset($sec['id'])) {
                         $section = new Section($sec);
                         $standard->sections()->save($section);
@@ -168,6 +175,7 @@ class StandardsController extends Controller
                         foreach ($classcodes as $class_code) {
                             $class_code['standard_id'] = $standardId;
                             $class_code['company_id'] = $standard->company_id;
+                            $class_code['board_id'] = $standard->board_id;
                             if (!isset($class_code['id'])) {
                                 // return $class_code;
                                 $classcode = new Classcode($class_code);
@@ -176,7 +184,7 @@ class StandardsController extends Controller
                                 $classcode = Classcode::find($class_code['id']);
                                 $classcode->update($class_code);
                             }
-                            $classcode['classcode'] = $standard_name . "" . $section_name . "/" . $classcode->subject_name . "/" . $classcode->id;
+                            $classcode['classcode'] = mb_substr($board['name'], 0, 2) . '/' . $standard_name . "" . $section_name . "/" . $classcode->subject_name . "/" . $classcode->id;
                             $classcode->update();
                         }
                 }
