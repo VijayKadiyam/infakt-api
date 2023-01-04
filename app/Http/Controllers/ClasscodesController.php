@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Board;
 use App\Classcode;
 use App\Section;
 use Illuminate\Http\Request;
@@ -76,8 +77,9 @@ class ClasscodesController extends Controller
             $standard_name = $standard->name;
             $section_name = $section->name;
             $classcode_id = $classcode->id;
+            $board = Board::find($standard->board_id);
 
-            $classcode->classcode = $standard_name . "" . $section_name . "/" . $classcode->subject_name . "/" . $classcode_id;
+            $classcode->classcode =  mb_substr($board['name'], 0, 2) . '/' . $standard_name . "" . $section_name . "/" . $classcode->subject_name . "/" . $classcode_id;
             $classcode->update();
         }
         return response()->json([
