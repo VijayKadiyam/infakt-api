@@ -15,6 +15,15 @@ class StandardsController extends Controller
         $this->middleware(['auth:api', 'company']);
     }
 
+    public function masters(Request $request)
+    {
+        $boardsController = new BoardsController();
+        $boardsResponse = $boardsController->index($request);
+
+        return response()->json([
+            'boards'     =>  $boardsResponse->getData()->data,
+        ], 200);
+    }
     /**
      * Display a listing of the resource.
      *

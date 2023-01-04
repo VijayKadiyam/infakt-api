@@ -10,6 +10,7 @@ class Standard extends Model
         'name',
         'is_active',
         'is_deleted',
+        'board_id'
     ];
 
     public function company()
@@ -25,6 +26,10 @@ class Standard extends Model
     public function classcodes()
     {
         return $this->hasMany(Classcode::class);
+    }
+    public function boards()
+    {
+        return $this->hasMany(Board::class);
     }
     public function user_classcoedes()
     {
