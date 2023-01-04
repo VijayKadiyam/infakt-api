@@ -307,3 +307,6 @@ Route::resource('epaper_collections', 'EpaperCollectionsController');
 
 // Collection Epaper 
 Route::resource('collection_epapers', 'CollectionEpapersController');
+
+// Dictionary 
+Route::resource('dictionaries', 'DictionariesController');
