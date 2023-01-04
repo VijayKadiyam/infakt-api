@@ -251,4 +251,8 @@ class Company extends Model
   {
     return $this->hasMany(EpaperCollection::class)->with('user');
   }
+  public function i_dictionaries()
+  {
+    return $this->hasMany(Dictionary::class);
+  }
 }
