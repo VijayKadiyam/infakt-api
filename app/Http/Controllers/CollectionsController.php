@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Assignment;
 use App\Collection;
+use App\CollectionContent;
 use App\Notification;
 use App\UserClasscode;
 use Illuminate\Http\Request;
@@ -108,6 +109,29 @@ class CollectionsController extends Controller
             $request->request->add(['status' => $status]);
             $collection = new Collection($request->all());
             $collection->save();
+
+            if ($collection->id) {
+                $collection_contents  = [];
+                $msg = '';
+                $existing_collection_content = CollectionContent::where(['collection_id' => $collection->id, 'content_id' => request()->content_id])->first();
+                if (!$existing_collection_content) {
+                    $data = [
+                        'collection_id' => $collection->id,
+                        'content_id' => request()->content_id,
+                    ];
+                    $collection_contents = new CollectionContent($data);
+                    $collection_contents->save();
+
+                    $user = Auth::user();
+                    $user_role = $user->roles[0]->name;
+                    if ($user_role == "INFAKT TEACHER") {
+                        // If role is INFAKT TEACHER, Then All Collection are in pending
+                        $collection = Collection::find($collection->id)->update(['status' => false]);
+                    }
+                } else {
+                    $msg = 'Content already exist';
+                }
+            }
         } else {
             $msg = request()->collection_name . ' already exist.';
         }
